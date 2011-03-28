@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+{% if carenets %}
+<Carenets record_id="{{ record.id }}">
+  {% for carenet in carenets %}
+    <Carenet id="{{ carenet.id }}" name="{{ carenet.name }}" mode="explicit" />
+  {% endfor %}
+</Carenets>
+{% else %}
+<Carenets />
+{% endif %}

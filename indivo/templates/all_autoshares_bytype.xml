@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<DocumentSchemas>
+{% for type, autoshares in autoshares_by_type.iteritems %}
+<DocumentSchema type="{{type.type}}">
+{% for autoshare in autoshares %}
+  <Carenet id="{{ autoshare.carenet.id }}" name="{{ autoshare.carenet.name }}" mode="explicit" />
+{% endfor %}
+</DocumentSchema>
+{% endfor %}
+</DocumentSchemas>

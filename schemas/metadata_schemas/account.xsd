@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <element name="Account">
+    <complexType>
+      <sequence>
+	<element name="secret" type="string" minOccurs="0" maxOccurs="1" />
+	<element name="fullName" type="string" minOccurs="1" maxOccurs="1" />
+	<element name="contactEmail" type="string" minOccurs="1" maxOccurs="1" />
+	<element name="lastLoginAt" type="dateTime" minOccurs="1" maxOccurs="1" />
+	<element name="totalLoginCount" type="integer" minOccurs="1" maxOccurs="1" />
+	<element name="failedLoginCount" type="integer" minOccurs="1" maxOccurs="1" />
+	<element name="state" type="string" minOccurs="1" maxOccurs="1" />
+	<element name="lastStateChange" type="dateTime" minOccurs="1" maxOccurs="1" />
+	
+	<element name="authSystem" minOccurs="0" maxOccurs="unbounded">
+	  <complexType>
+	    <attribute name="name" type="string" use="required" />
+	    <attribute name="username" type="string" use="required" />
+	  </complexType>
+	</element>
+
+      </sequence>
+      <attribute name="id" type="string" use="required" />
+    </complexType>
+  </element>
+
+</schema>

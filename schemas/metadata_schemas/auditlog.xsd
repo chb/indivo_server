@@ -1,0 +1,20 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:element name="AuditLog">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="Entry" minOccurs="0" maxOccurs="unbounded">
+	  <xs:complexType>
+	    <xs:attribute name="request_datetime" type="xs:dateTime" use="required" />
+	    <xs:attribute name="effective_principal" type="xs:string" use="required" />
+	    <xs:attribute name="proxied_principal" type="xs:string" use="required" />
+	    <xs:attribute name="record_id" type="xs:string" use="required" />
+	    <xs:attribute name="document_id" type="xs:string" use="required" />
+	    <xs:attribute name="function" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+{% if carenet_accounts %}
+<CarenetAccounts>
+  {% for carenet_account in carenet_accounts %}
+    <CarenetAccount id="{{ carenet_account.account.email }}" fullName="{{ carenet_account.account.full_name }}" write="{% if carenet_account.can_write %}true{% else %}false{% endif %}" />
+  {% endfor %}
+</CarenetAccounts>
+{% else %}
+<CarenetAccounts />
+{% endif %}

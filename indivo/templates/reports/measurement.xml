@@ -1,0 +1,1 @@
+{% load template_utils %}<Measurement id="{{ measurement.id }}" value="{{ measurement.value }}" type="{{ measurement.type }}" datetime="{{ measurement.datetime|format_iso8601_datetime }}" unit="{{ measurment.unit }}" source_doc="{{ measurement.document_id }}" />

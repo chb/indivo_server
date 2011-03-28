@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:element name="Carenets">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="Carenet" minOccurs="0" maxOccurs="unbounded">
+	  <xs:complexType>
+	    <xs:attribute name="id" type="xs:string" use="required" />
+	    <xs:attribute name="name" type="xs:string" use="required" />
+	    <xs:attribute name="mode" type="xs:string" use="optional" />
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+      <xs:attribute name="record_id" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,16 @@
+{% load template_utils %}
+<Account id="{{ account.email }}">
+{% if account.secondary_secret %}
+  <secret>{{account.secondary_secret}}</secret>
+{% endif %}
+  <fullName>{{account.full_name}}</fullName>
+  <contactEmail>{{account.contact_email}}</contactEmail>
+  <lastLoginAt>{{account.last_login_at|format_iso8601_datetime}}</lastLoginAt>
+  <totalLoginCount>{{account.total_login_count}}</totalLoginCount>
+  <failedLoginCount>{{account.failed_login_count}}</failedLoginCount>
+  <state>{{account.state}}</state>
+  <lastStateChange>{{account.last_state_change|format_iso8601_datetime}}</lastStateChange>
+{% for auth_system in auth_systems %}
+  <authSystem name="{{ auth_system.auth_system.short_name }}" username="{{auth_system.username}}" />
+{% endfor %}
+</Account>

@@ -1,0 +1,8 @@
+<Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+  <lastname>{{ demographics.lastname }}</lastname>
+  <firstnames>{{ demographics.firstnames }}</firstnames>
+  <email>{{ demographics.email }}</email>
+  <address>{{ demographics.address }}</address>
+  <birthdate>{{ demographics.birthdate }}</birthdate>
+  <gender>{{ demographics.gender }}</gender>
+</Demographics>

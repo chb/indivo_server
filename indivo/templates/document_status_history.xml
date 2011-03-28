@@ -1,0 +1,7 @@
+<DocumentStatusHistory document_id="{{ document_id }}">
+  {% for doc_status in document_history %}
+    <DocumentStatus by="{{ doc_status.effective_principal }}" at="{{ doc_status.created_at }}" status="{{ doc_status.status.name }}">
+      <reason>{{ doc_status.reason }}</reason>
+    </DocumentStatus>
+  {%  endfor %}
+</DocumentStatusHistory>

@@ -1,0 +1,12 @@
+<Account id="joeuser@indivo.example.org">
+  <fullName>Joe User</fullName>
+  <contactEmail>joeuser@gmail.com</contactEmail>
+  <lastLoginAt>2010-05-04T15:34:23Z</lastLoginAt>
+  <totalLoginCount>43</totalLoginCount>
+  <failedLoginCount>0</failedLoginCount>
+  <state>active</state>
+  <lastStateChange>2009-04-03T13:12:12Z</lastStateChange>
+
+  <authSystem name="password" username="joeuser" />
+  <authSystem name="hospital_sso" username="Joe_User" />
+</Account>

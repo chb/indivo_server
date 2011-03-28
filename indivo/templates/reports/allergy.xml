@@ -1,0 +1,26 @@
+{% load template_utils %}<Allergy xmlns="http://indivo.org/vocab/xml/documents#">
+  {% if allergy.date_diagnosed %}
+  <dateDiagnosed>{{ allergy.date_diagnosed|format_iso8601_date}}</dateDiagnosed>
+  {% endif %}
+  {% if allergy.diagnosed_by %}
+  <diagnosedBy>{{ allergy.diagnosed_by }}</diagnosedBy>
+  {% endif %}
+  <allergen>
+    {% if allergy.allergen_type %}
+      <type{% if allergy.allergen_type_type %} type="{{allergy.allergen_type_type}}" value="{{allergy.allergen_type_value}}" abbrev="{{allergy.allergen_type_abbrev|check_empty}}"{% endif %}>
+        {{ allergy.allergen_type }}
+      </type>
+    {% endif %}
+    {% if allergy.allergen_name %}
+      <name{% if allergy.allergen_name_type %} type="{{allergy.allergen_name_type}}" value="{{allergy.allergen_name_value}}" abbrev="{{allergy.allergen_name_abbrev|check_empty}}"{% endif %}>
+        {{ allergy.allergen_name }}
+      </name>
+    {% endif %}
+  </allergen>
+  {% if allergy.reaction %}
+    <reaction>{{ allergy.reaction }}</reaction>
+  {% endif %}
+  {% if allergy.specifics %}
+    <specifics>{{ allergy.specifics }}</specifics>
+  {% endif %}
+</Allergy>

@@ -1,0 +1,6 @@
+{% load template_utils %}<?xml version="1.0" encoding="utf-8" ?>
+<Documents record_id="{{ record.id|check_empty }}" total_document_count="{{ tdc }}" {% if pha %} pha="{{pha.email|check_empty }}" {% endif %} >
+{% for doc in docs %}
+  {% include "document.xml" %}
+{% endfor %}
+</Documents>

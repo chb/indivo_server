@@ -1,0 +1,8 @@
+<App id="problems@apps.indivo.org">
+  <startURLTemplate>http://problems.indivo.org/auth/start?record_id={record_id}&amp;carenet_id={carenet_id}</startURLTemplate>
+  <name>Problem List</name>
+  <description>Managing your problem list</description>
+  <autonomous>false</autonomous>
+  <frameable>true</frameable>
+  <ui>true</ui>
+</App>

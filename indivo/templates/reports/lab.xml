@@ -1,0 +1,30 @@
+{% load template_utils %}<LabReport xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateMeasured>{{ lab.date_measured|format_iso8601_datetime }}</dateMeasured>
+  <labType>{{ lab.lab_type }}</labType>
+  <laboratory>
+    <name>{{lab.lab_name|check_empty}}</name>
+    <address>{{lab.lab_address|check_empty}}</address>
+  </laboratory>
+  <comments>{{lab.lab_comments|check_empty}}</comments>
+  {% if lab.first_panel_name %}
+  <firstPanelName>{{lab.first_panel_name|check_empty}}</firstPanelName>
+  {% endif %}
+  {% if lab.first_lab_test_name %}
+  <firstLabTestName>{{lab.first_lab_test_name}}</firstLabTestName>
+  {% endif %}
+  {% if lab.first_lab_test_value %}
+  <firstLabTestValue>{{lab.first_lab_test_value}}</firstLabTestValue>
+  {% endif %}
+  {% if lab.normal_range_minimum %}
+  <normalRangeMinimum>{{lab.normal_range_minimum}}</normalRangeMinimum>
+  {% endif %}
+  {% if lab.normal_range_maximum %}
+  <normalRangeMaximum>{{lab.normal_range_maximum}}</normalRangeMaximum>
+  {% endif %}
+  {% if lab.non_critical_range_minimum %}
+  <nonCriticalRangeMinimum>{{lab.non_critical_range_minimum}}</nonCriticalRangeMinimum>
+  {% endif %}
+  {% if lab.non_critical_range_maximum %}
+  <nonCriticalRangeMaximum>{{lab.non_critical_range_maximum}}</nonCriticalRangeMaximum>
+  {% endif %}
+</LabReport>

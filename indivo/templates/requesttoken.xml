@@ -1,0 +1,20 @@
+{% load template_utils %}
+<RequestToken token="{{request_token.token}}">
+  <record {% if request_token.record %}id="{{request_token.record.id}}"{% endif %}/>
+  <carenet {% if request_token.carenet %}id="{{request_token.carenet.id}}"{% endif %}/>
+  <kind>{% if share %}same{% else %}new{% endif %}</kind>
+  <App id="{{request_token.pha.email}}">
+    <name>{{request_token.pha.name}}</name>
+    <description>{{request_token.pha.description}}</description>
+    <autonomous>{{request_token.pha.is_autonomous}}</autonomous>
+    {% if request_token.pha.is_autonomous %}
+    <autonomousReason>{{request_token.pha.autonomous_reason}}</autonomousReason>
+    {% endif %}
+    <frameable>{{request_token.pha.frameable}}</frameable>
+    <ui>{{request_token.pha.has_ui}}</ui>
+  </App>
+
+  <Permissions>
+  </Permissions>
+
+</RequestToken>

@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:include schemaLocation="pha.xsd" />
+
+  <xs:element name="RequestToken">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="record" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:attribute name="id" type="xs:string" use="optional" />
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="carenet" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:attribute name="id" type="xs:string" use="optional" />
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="kind" type="xs:string" minOccurs="1" maxOccurs="1" />
+
+	<xs:element name="App" type="App" minOccurs="1" maxOccurs="1" />
+
+      </xs:sequence>
+      <xs:attribute name="token" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+	
+</xs:schema>

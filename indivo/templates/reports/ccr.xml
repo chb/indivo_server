@@ -1,0 +1,140 @@
+{% load template_utils %}
+<?xml version="1.0"?>
+<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+  <CCRDocumentObjectID>0</CCRDocumentObjectID>
+  <Language>
+    <Text>ENGLISH</Text>
+  </Language>
+  <Version>V1.0</Version>
+  <DateTime>
+    <Type>
+      <Text>Create</Text>
+      <ObjectAttribute>
+        <Attribute>DisplayDate</Attribute>
+        <AttributeValue>
+          <Value>09/30/10</Value>
+        </AttributeValue>
+      </ObjectAttribute>
+    </Type>
+    <ExactDateTime>{{now|format_iso8601_datetime}}</ExactDateTime>
+  </DateTime>
+  <Patient>
+    <ActorID>{{record.id}}</ActorID>
+  </Patient>
+  <From>
+    <ActorLink/>
+  </From>
+  <Body>
+    <Medications>
+      {% for medication in medications %}
+      <Medication>
+	<CCRDataObjectID>{{medication.document.id}}</CCRDataObjectID>
+	<DateTime>
+	  <Type>
+	    <Text>Dispense date</Text>
+	  </Type>
+	  <ExactDateTime>{{medication.started_at|format_iso8601_datetime}}</ExactDateTime>
+	</DateTime>
+	<Status>
+	  <Text>Active</Text>
+	</Status>
+	{% if medication.prescribed_by_name %}
+	<Source>
+          <Actor>
+            <ActorID>{{medication.prescribed_by_name}}</ActorID>
+            <ActorRole>
+	      <Text>Prescribing clinician</Text>
+	    </ActorRole>
+          </Actor>
+	</Source>
+	{% endif %}
+	<Product>
+	  <ProductName>
+	    <Text>{{medication.name}}</Text>
+	    <Code>
+	      <Value>{{medication.name_value}}</Value>
+	      <CodingSystem>{{medication.name_type}}</CodingSystem>
+	    </Code>
+	  </ProductName>
+	  <Strength>
+	    <Value>{{medication.strength_value}}</Value>
+	    <Units>
+	      <Unit>{{medication.strength_unit}}</Unit>
+	    </Units>
+	  </Strength>
+	</Product>
+	<Directions>
+          <Direction>
+            <Dose>
+              <Value>{{medication.dose_value}}</Value>
+              <Units>
+		<Unit>{{medication.dose_unit}}</Unit>
+              </Units>
+            </Dose>
+            <Route>
+              <Text>{{medication.route}}</Text>
+            </Route>
+            <Frequency>
+              <Value>{{medication.frequency}}</Value>
+            </Frequency>
+          </Direction>
+	</Directions>
+      </Medication>
+      {% endfor %}
+    </Medications>
+    <Immunizations>
+      {% for immunization in immunizations %}
+      <Immunization>
+        <CCRDataObjectID>{{immunization.document.id}}</CCRDataObjectID>
+	<DateTime>
+          <Type>
+            <Text>Start date</Text>
+          </Type>
+          <ExactDateTime>{{immunization.date_administered|format_iso8601_datetime}}</ExactDateTime>
+	</DateTime>
+      <Product>
+        <ProductName>
+          <Text>{{immunization.vaccine_type}}</Text>
+          <Code>
+            <Value>{{immunization.vaccine_type_value}}</Value>
+            <CodingSystem>{{immunization.vaccine_type_type}}</CodingSystem>
+          </Code>
+        </ProductName>
+      </Product>
+      </Immunization>
+      {% endfor %}
+    </Immunizations>
+    <VitalSigns>
+      {% for vitalsign in vitalsigns %}
+      <Result>
+        <CCRDataObjectID>{{vitalsign.document.id}}</CCRDataObjectID>
+	<Status/>
+	<Source/>
+	<Test>
+	  <CCRDataObjectID>{{vitalsign.document.id}}</CCRDataObjectID>
+          <Description>
+            <Text>{{vitalsign.name}}</Text>
+            <Code>
+              <Value>{{vitalsign.name_value}}</Value>
+              <CodingSystem>{{vitalsign.name_type}}</CodingSystem>
+            </Code>
+          </Description>
+	  <Status/>
+	  <Source/>
+          <TestResult>
+            <Value>{{vitalsign.value}}</Value>
+            <Units>
+              <Unit>{{vitalsign.unit}}</Unit>
+            </Units>
+          </TestResult>
+	</Test>
+      </Result>
+      {% endfor %}
+    </VitalSigns>
+
+    <!-- no results, need to figure out what's up there -->
+  </Body>
+  <Actors>
+  </Actors>
+</ContinuityOfCareRecord>
+  

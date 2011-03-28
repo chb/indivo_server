@@ -1,0 +1,125 @@
+<bootstrap>
+  <auth_systems>
+    <auth_system short_name='auth_system_example' internal_p='False' />
+  </auth_systems>
+  <accounts>
+    <account email='johnsmith@indivo.org'>
+      <full_name>John Smith</full_name>
+      <contact_email>johnsmith@example.org</contact_email>
+      <username>jsmith</username>
+      <password>password.example</password>
+      <records>
+        <record label='John S. Smith' />
+        <record label='Mary' />
+      </records>
+    </account>
+  </accounts>
+  <status_names>
+    <status id='1' name='active' />
+    <status id='2' name='void' />
+    <status id='3' name='archived' />
+  </status_names>
+  <document_schemas>
+    <document_schema type='http://indivo.org/vocab/xml/documents#Contact' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Demographics' />
+    <document_schema type='http://indivo.org/vocab/documentrels#answers' />
+    <document_schema type='http://indivo.org/vocab/documentrels#annotation' />
+    <document_schema type='http://indivo.org/vocab/documentrels#interpretation' />
+    <document_schema type='http://indivo.org/vocab/documentrels#followup' />
+    <document_schema type='http://indivo.org/vocab/documentrels#attachment' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Survey' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#SurveyAnswers' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#UserPreferences' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Allergy' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Annotation' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#AsthmaActionPlan' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#SimpleClinicalNote' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Equipment' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#HBA1C' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Immunization' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Lab' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Medication' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Problem' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Procedure' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#SchoolForm' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#SimpleClinicalNote' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#VitalSign' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#EncryptedDocument' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Genotype' />
+  </document_schemas>
+  <machine_apps>
+    <machine_app name='Sample Admin App' email='sample_admin_app@apps.indivo.org'>
+      <consumer_key>sampleadmin_key</consumer_key>
+      <secret>sampleadmin_secret</secret>
+      <app_type>admin</app_type>
+    </machine_app>
+    <machine_app name='Sample Chrome App' email='chrome@apps.indivo.org'>
+      <consumer_key>chrome</consumer_key>
+      <secret>chrome</secret>
+      <app_type>chrome</app_type>
+    </machine_app>
+  </machine_apps>
+  <user_apps>
+    <user_app name="Children's Hospital Boston Subscription Agent" email='indivoconnector@apps.indivo.org'>
+      <consumer_key>hospital-connector</consumer_key>
+      <secret>hospital-connector-secret</secret>
+      <start_url_template>
+	http://localhost:8003/indivo/start_auth?record_id={record_id}
+      </start_url_template>
+      <callback_url>
+	http://localhost:8003/indivo/after_auth
+      </callback_url>
+      <is_autonomous>True</is_autonomous>
+      <autonomous_reason>This app connects to your record to load new data into it while you sleep.</autonomous_reason>
+      <has_ui>True</has_ui>
+    </user_app>
+    <user_app name='Allergies' email='allergies@apps.indivo.org'>
+      <consumer_key>allergies@apps.indivo.org</consumer_key>
+      <secret>allergies</secret>
+      <frameable>True</frameable>
+      <has_ui>True</has_ui>
+      <start_url_template>
+        /apps/allergies/start_auth?record_id={record_id}&amp;carenet_id={carenet_id}
+      </start_url_template>
+      <callback_url>
+        /apps/allergies/after_auth
+      </callback_url>
+    </user_app>
+    <user_app name='Labs' email='labs@apps.indivo.org'>
+      <consumer_key>labs@apps.indivo.org</consumer_key>
+      <secret>labs</secret>
+      <frameable>True</frameable>
+      <has_ui>True</has_ui>
+      <start_url_template>
+        /apps/labs/start_auth?record_id={record_id}&amp;carenet_id={carenet_id}
+      </start_url_template>
+      <callback_url>
+        /apps/labs/after_auth
+      </callback_url>
+    </user_app>
+    <user_app name='Medications' email='medications@apps.indivo.org'>
+      <consumer_key>medications@apps.indivo.org</consumer_key>
+      <secret>medications</secret>
+      <frameable>True</frameable>
+      <has_ui>True</has_ui>
+      <start_url_template>
+        /apps/medications/start_auth?record_id={record_id}&amp;carenet_id={carenet_id}
+      </start_url_template>
+      <callback_url>
+        /apps/medications/after_auth
+      </callback_url>
+    </user_app>
+    <user_app name='Problems' email='problems@apps.indivo.org'>
+      <consumer_key>problems@apps.indivo.org</consumer_key>
+      <secret>problems</secret>
+      <frameable>True</frameable>
+      <has_ui>True</has_ui>
+      <start_url_template>
+        /apps/problems/start_auth?record_id={record_id}&amp;carenet_id={carenet_id}
+      </start_url_template>
+      <callback_url>
+        /apps/problems/after_auth
+      </callback_url>
+    </user_app>
+  </user_apps>
+</bootstrap>

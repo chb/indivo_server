@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Reports>
+  {% block summary %}{% endblock %}
+  {% block report %}{% endblock %}
+</Reports>

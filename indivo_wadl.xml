@@ -1,0 +1,4759 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<application xmlns="http://wadl.dev.java.net/2009/02" xmlns:iwe="http://org.indivo.server/indivoServerWadlExtension" xmlns:ns0="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+       xmlns:xsi="placeholder_for__http://www.w3.org/2001/XMLSchema-instance"
+ ns0:schemaLocation="http://wadl.dev.java.net/2009/02 file:///home/nate/NetBeansProjects/src/sh/wadl.xsd   http://org.indivo.server/indivoServerWadlExtension  file:///home/nate/NetBeansProjects/artifacts_from_wadl/src/main/xml/indivoServerWadlExtension.xsd">
+
+<!-- replace "placeholder_for__http://www.w3.org/2001/XMLSchema-instance" with "http://www.w3.org/2001/XMLSchema-instance"
+ to validate against indivo_wadl_restriction.xsd -->
+
+<doc title="indivo_server_Alaph-3" xml:lang="en">This wadl describes the Indivo REST API, version:alpha-3</doc>
+<grammars>
+<include href="NewsSearchResponse.xsd"/>
+<include href="Error.xsd"/>
+</grammars>
+<resources base="http://x-staging.indivo.org:8000">
+<wadl:doc xmlns:wadl="http://wadl.dev.java.net/2009/02">
+{
+
+grantsOauthLegged : {
+"None" : { "machineapp":"2L" ,"account":"3L" },
+"accessrule_carenet_account" : "3L",
+"accessrule_carenet_document" : "3L",
+"account_ruleset.account_rule" : "3L",
+"account_ruleset.is_owner" : "3L",
+"account_ruleset.reqtoken_carenet" : "3L",
+"account_ruleset.reqtoken_exists" : "3L",
+"account_ruleset.reqtoken_record" : "3L",
+"ar_carenet_account" : "3L",
+"ar_share_record_or_pha" : "3L",
+"full_control" : "3L",
+"machapp_ruleset.appspecific_rule" : "2L",
+"machapp_ruleset.machineapp_record_created_rule" : "2L",
+"machapp_ruleset.no_external_id" : "2L",
+"machapp_ruleset.principal_email_matches_principal" : "2L",
+"userapp_ruleset.userapp_documents" : "2L"
+},
+
+
+grantsText : {
+"None" : { "machineapp":"(2L) All admin apps", "account":"(3L) All accounts" },
+"accessrule_carenet_account" : "(3L) An account which controls the record or is in the carenet",
+"accessrule_carenet_document" : "(3L) An account which controls the record or has been granted a complete share of the record",
+"account_ruleset.account_rule" : "(3L) An account which matches the account on which the action is being performed",
+"account_ruleset.is_owner" : "(3L) An account which is the owner of the record on which the action is being performed",
+"account_ruleset.reqtoken_carenet" : "(3L) An account which is in the given carenet, and the given PHA is also in the given carenet",
+"account_ruleset.reqtoken_exists" : "(3L) An account using an existing request token",
+"account_ruleset.reqtoken_record" : "(3L) An account which can administer the given record for reqtoken approval",
+"ar_carenet_account" : "The currently-used access token's bound record matches the requested record OR The current account bound to this access token is in the requested carenet",
+"ar_share_record_or_pha" :
+   "(3L) A PHA which has proper record-or-carenet access, when using a token which corresponds to a share in the appropriate carenet if the carenet is specified",
+"full_control" : "(3L) An account which has full control over the given record",
+"machapp_ruleset.appspecific_rule" : "(2L) An admin app",
+"machapp_ruleset.machineapp_record_created_rule" : "(2L) An admin app which created the given record",
+"machapp_ruleset.no_external_id" : "(2L) An admin app",
+"machapp_ruleset.principal_email_matches_principal" :
+   "(2L) An admin app with and ID which matches the supplied app-id",
+"userapp_ruleset.userapp_documents" : "(2L) A PHA with an ID which matchres the supplied app-id"
+}
+
+}
+
+</wadl:doc>
+<resource xsi:type="IndivoNonURLResource" id="Overview">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Overview </span>
+</h2>
+<p>Personal Health Applications (PHAs) make HTTP calls to the Indivo API endpoint using the REST convention. <a class="external text" href="http://oauth.net/" rel="nofollow" title="http://oauth.net">oAuth</a>
+ is used to authenticate all calls, either in 2-legged mode for simple 
+authentication, or in 3-legged mode when the PHA is making a call with 
+delegated authentication, i.e. on behalf of the user.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoNonURLResource" id="Application_Types">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Types </span>
+</h3>
+<p>We consider three types of applications:
+</p>
+<ul>
+<li> <b>User Applications</b>, which individual Indivo users can add to their record.
+</li>
+<li> <b>Administrative Applications</b>, which are used to perform account and record manipulations.
+</li>
+<li> <b>Indivo Chrome</b>, which provides the public user interface to Indivo features.
+</li>
+</ul>
+<p>Per Indivo installation, there is one Indivo Chrome, a small handful 
+of administrative applications, and quite a number of user applications.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Terminology">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Terminology </span>
+</h3>
+<p>A <b>record</b> is the single set of medical information that pertains to an individual. It is composed of <b>documents</b>, including a <b>demographics document</b> which details the individual's contact information and name. A record can be accessed by one or more <b>accounts</b>.
+</p>
+<p>
+<b>oAuth</b> is the authentication protocol used by Indivo. In 2-legged oAuth, the PHA (the oAuth <b>consumer</b>) makes calls to Indivo (the oAuth <b>service provider</b>) using a <b>consumer key</b> to identify itself, and a <b>consumer secret</b>
+ to sign the request. In 3-legged oAuth, the PHA makes calls to Indivo 
+to access medical information as delegated by the user, using an 
+additional <b>token</b> and <b>token secret</b> that pertain to the specific Indivo record being accessed.
+</p>
+</span>
+</doc>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Authentication">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Authentication </span>
+</h2>
+<p>All calls to Indivo are authenticated using <a class="external text" href="http://oauth.net/" rel="nofollow" title="http://oauth.net">oAuth</a>.
+</p>
+<p>We detail the authentication process at <a href="http://wiki.chip.org/indivo/index.php/Indivo_Authentication" title="Indivo Authentication">Indivo Authentication</a>.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Design_Patterns">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Design Patterns </span>
+</h2>
+<p>Some common design patterns are repeated throughout the API. Not all 
+of these patterns are necessarily 100% supported by all Indivo API 
+implementations, though when they are they are consistent.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoNonURLResource" id="Email_Addresses_as_Identifiers">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Email Addresses as Identifiers </span>
+</h3>
+<p>Core accounts in Indivo X are identified by email addresses, because 
+email addresses provide mechanisms for distributed identification and 
+messaging. When an email address is included in a URL, it must be URL 
+encoded, where the <tt>@</tt> sign turns into <tt>%40</tt>.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Paging.2FFiltering_Results">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Paging/Filtering Results </span>
+</h3>
+<p>When a list of results are returned, the URL ends in a <tt>/</tt> and the HTTP method is a <tt>GET</tt>,
+ as is typical of REST design. In that case, Indivo X supports a generic
+ query string that determines paging and ordering of the results:
+</p>
+<pre>?offset={offset}&amp;limit={limit}&amp;order_by={order_by}&amp;status={document_status}&amp;modified_since={modified_since}
+</pre>
+<p>
+<tt>offset</tt> indicates which item number to start with, e.g. when getting a second batch of items.
+</p>
+<p>
+<tt>limit</tt> indicates the maximum number of items to return. This is used in combination with <tt>offset</tt> to accomplish paging. 
+</p>
+<p>
+<tt>order_by</tt> is dependent on the fields returned in the list
+ of items, and each call must thus define which fields are valid. Using 
+an invalid field in <tt>order_by</tt> results in no effect on the output, as if <tt>order_by</tt> were absent.
+</p>
+<p>
+<tt>status</tt> can be used where applicable.  It pertains to the
+ status of documents and can currently be set to one of three options: 
+'void', 'archived' or 'active'
+</p>
+<p>
+<tt>modified_since</tt> allows an application to look at items 
+that have been modified since a given timestamp, so that incremental 
+downloads may be possible.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="External_IDs">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> External IDs </span>
+</h3>
+<p>When a resource is created, the Indivo API offers the ability to create this resource using a <tt>PUT</tt> with an <tt>external_id</tt>
+ in the URL, so that the call is idempotent: if a failure occurs, the 
+call can be repeated safely and only the resource will not be created on
+ the second call if it was already created successfully during the first
+ call.
+</p>
+<p>An <tt>external_id</tt> is only valid within a particular PHA 
+scope. Other PHAs cannot see the external_id of a given document if they
+ didn't create the document, and certainly cannot access the document by
+ external_id.
+</p>
+</span>
+</doc>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Managing_Records_and_Documents">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Managing Records and Documents </span>
+</h2>
+<p>Data stored in Indivo cannot by permanently deleted by default: the 
+API enforces only appending data, not fully replacing it or removing it.
+ One exception is made to this rule to prevent storing typos forever: 
+for 5 minutes following the creation of a new Indivo document by a human
+ user (as opposed to a batch loading process), the creator of this 
+document can remove this document entirely. 
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Available_Records" path="/accounts/{account_id}/records/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Available Records </span>
+</h3>
+<pre>GET /accounts/{account_id}/records/
+</pre>
+<pre>&lt;Records account="joe@smith.org"&gt;
+  &lt;Record id="b43810b8-1ff0-11de-b090-001b63948875" label="Joe Smith" /&gt;
+  &lt;Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith" /&gt;
+&lt;/Records&gt;
+</pre>
+<p>supports paging, order by: label.
+</p>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Records account="joe@smith.org"&gt;
+  &lt;Record id="b43810b8-1ff0-11de-b090-001b63948875" label="Joe Smith" /&gt;
+  &lt;Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith" /&gt;
+&lt;/Records&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="record_list" iwe:shortname="read_records" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Record" path="/records/{record_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Record </span>
+</h3>
+<pre>GET /records/{record_id}
+</pre>
+<pre>&lt;Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith"&gt;
+  &lt;contact document_id="83nvb-038xcc-98xcv-234234325235" /&gt;
+  &lt;demographics document_id="646937a0-1ff1-11de-b090-001b63948875" /&gt;
+&lt;/Record&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith"&gt;
+  &lt;contact document_id="83nvb-038xcc-98xcv-234234325235" /&gt;
+  &lt;demographics document_id="646937a0-1ff1-11de-b090-001b63948875" /&gt;
+&lt;/Record&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="record" iwe:shortname="read_record" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Applications_attached_to_a_Record" path="/records/{record_id}/apps/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Applications attached to a Record </span>
+</h3>
+<pre>GET /records/{record_id}/apps/
+</pre>
+<pre>&lt;Apps&gt;
+  &lt;App id="f6fb1c56-1ff0-11de-b090-001b63948875"&gt;
+    &lt;startURL&gt;<a class="external free" href="http://example.org/app/start" rel="nofollow" title="http://example.org/app/start">http://example.org/app/start</a>&lt;/startURL&gt;
+    &lt;name&gt;Medical Surveys&lt;/name&gt;
+    &lt;frameable&gt;false&lt;/frameable&gt;
+  &lt;/App&gt;
+
+  &lt;App id="3c726d0c-1ff1-11de-b090-001b63948875"&gt;
+    &lt;startURL&gt;<a class="external free" href="http://example2.org/app/start" rel="nofollow" title="http://example2.org/app/start">http://example2.org/app/start</a>&lt;/startURL&gt;
+    &lt;name&gt;Flu Tracker&lt;/name&gt;
+    &lt;frameable&gt;true&lt;/frameable&gt;
+  &lt;/App&gt;
+&lt;/Apps&gt;
+</pre>
+<p>supports paging, order by: name.
+</p>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Apps&gt;
+  &lt;App id="f6fb1c56-1ff0-11de-b090-001b63948875"&gt;
+    &lt;startURL&gt;<a class="external free" href="http://example.org/app/start" rel="nofollow" title="http://example.org/app/start">http://example.org/app/start</a>&lt;/startURL&gt;
+    &lt;name&gt;Medical Surveys&lt;/name&gt;
+    &lt;frameable&gt;false&lt;/frameable&gt;
+  &lt;/App&gt;
+
+  &lt;App id="3c726d0c-1ff1-11de-b090-001b63948875"&gt;
+    &lt;startURL&gt;<a class="external free" href="http://example2.org/app/start" rel="nofollow" title="http://example2.org/app/start">http://example2.org/app/start</a>&lt;/startURL&gt;
+    &lt;name&gt;Flu Tracker&lt;/name&gt;
+    &lt;frameable&gt;true&lt;/frameable&gt;
+  &lt;/App&gt;
+&lt;/Apps&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="record_phas" iwe:shortname="get_record_apps" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Documents_within_a_Record">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Documents within a Record </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/documents/
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/
+</pre>
+<pre>&lt;Documents record_id="646937a0-1ff1-11de-b090-001b63948875"
+      xmlns:indivo="<a class="external free" href="http://indivohealth.org/xml/doctypes/" rel="nofollow" title="http://indivohealth.org/xml/doctypes/">http://indivohealth.org/xml/doctypes/</a>" type="indivo:Medication"&gt;
+  &lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+    &lt;.. document metadata fields ..&gt;
+  &lt;/Document&gt;
+&lt;/Documents&gt;
+</pre>
+<p>supports paging, order by document metadata fields (see <a href="http://wiki.chip.org/indivo/index.php/Indivo_Document_Metadata_Schema" title="Indivo Document Metadata Schema">Indivo Document Metadata Schema</a>).
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Documents record_id="646937a0-1ff1-11de-b090-001b63948875"
+      xmlns:indivo="<a class="external free" href="http://indivohealth.org/xml/doctypes/" rel="nofollow" title="http://indivohealth.org/xml/doctypes/">http://indivohealth.org/xml/doctypes/</a>" type="indivo:Medication"&gt;
+  &lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+    &lt;.. document metadata fields ..&gt;
+  &lt;/Document&gt;
+&lt;/Documents&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document_list" iwe:shortname="read_documents" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="carenet_document_list" iwe:shortname="get_carenet_documents" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="by_Type">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by Type </span>
+</h5>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/types/{type}/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/documents/types/{type}/
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/types/{type}/
+</pre>
+<p>
+<tt>type</tt> is the suffix of a URL that corresponds to the XML schema datatype, where the prefix is <tt>
+<a class="external free" href="http://indivo.org/vocab/xml/documents#" rel="nofollow" title="http://indivo.org/vocab/xml/documents#">http://indivo.org/vocab/xml/documents#</a>
+</tt>. Thus, <tt>type</tt> can be <tt>Medication</tt>, <tt>Encounter</tt>, etc.
+</p>
+<p>Indivo X supports storing XML documents whose datatype is not 
+among the default Indivo X recommended types. In those cases, if the XML
+ schema namespace doesn't end in a <tt>/</tt> or <tt>#</tt>, then as is typical in the XML/RDF community, a <tt>#</tt> is used as delimiter in the URI. Examples of document types include:
+</p>
+<ul>
+<li> <tt>
+<a class="external free" href="http://indivo.org/xml/phr/medication#Medication" rel="nofollow" title="http://indivo.org/xml/phr/medication#Medication">http://indivo.org/xml/phr/medication#Medication</a>
+</tt> (Indivo 3.1 data type)
+</li>
+<li> <tt>urn:astm-org:CCR#ContinuityOfCareRecord</tt>, as per <a class="external free" href="http://code.google.com/apis/health/ccrg_reference.html" rel="nofollow" title="http://code.google.com/apis/health/ccrg_reference.html">http://code.google.com/apis/health/ccrg_reference.html</a>
+</li>
+</ul>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="records" iwe:shortname="read_document_types" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>Because it is confusing to embed a full URL inside another URL's path, Indivo X supports a second call:
+</p>
+<pre>GET /records/{record_id}/documents/?type={type_url}
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/?type={type_url}
+</pre>
+<p>where <tt>type_url</tt> is now in the URL's query string.
+</p>
+<p>This call supports paging, order by document metadata fields (see <a href="http://wiki.chip.org/indivo/index.php/Indivo_Document_Metadata_Schema" title="Indivo Document Metadata Schema">Indivo Document Metadata Schema</a>).
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<request>
+<param name="type" style="query" type="xsd:string">
+<doc>{type_url}</doc>
+</param>
+</request>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document_list" iwe:shortname="read_documents" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="carenet_document_list" iwe:shortname="get_carenet_documents" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Single_Document" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/{document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Single Document </span>
+</h3>
+<pre>GET /records/{record_id}/documents/{document_id}
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/{document_id}
+</pre>
+<pre>{ Indivo Document Content }
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>{ Indivo Document Content }
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document" iwe:shortname="read_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="carenet_document" iwe:shortname="get_carenet_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_document</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Special_Documents">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Special Documents </span>
+</h3>
+<p>The Demographics and Contact documents are special in that there 
+should only be one of each per record, and they should be easy to find.
+</p>
+<p>See also:
+</p>
+<ul>
+<li> <a href="http://wiki.chip.org/indivo/index.php/Indivo_Document_Demographics_Schema" title="Indivo Document Demographics Schema">Indivo Document Demographics Schema</a>
+</li>
+<li> <a href="http://wiki.chip.org/indivo/index.php/Indivo_Document_Contact_Schema" title="Indivo Document Contact Schema">Indivo Document Contact Schema</a>
+</li>
+</ul>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Demographics" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/special/demographics">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Demographics </span>
+</h4>
+<pre>GET /records/{record_id}/documents/special/demographics
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/special/demographics
+</pre>
+<pre>{ Demographics Document }
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>{ Demographics Document }
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="read_special_document" iwe:shortname="read_special_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.machineapp_record_created_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="read_special_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.machineapp_record_created_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Updating_Demographics" path="/records/{record_id}/documents/special/demographics">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Updating Demographics </span>
+</h4>
+<pre>PUT /records/{record_id}/documents/special/demographics
+{ New Demographics Document }
+</pre>
+<pre>{ Indivo Document Metadata for the new Demographics document }
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{ New Demographics Document }</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>{ Indivo Document Metadata for the new Demographics document }
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="save_special_document" iwe:shortname="put_special_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.machineapp_record_created_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Contact" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/special/contact">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Contact </span>
+</h4>
+<pre>GET /records/{record_id}/documents/special/contact
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/special/contact
+</pre>
+<pre>{ Contact Document }
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>{ Contact Document }
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="read_special_document" iwe:shortname="read_special_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.machineapp_record_created_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="read_special_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.machineapp_record_created_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Updating_Contact" path="/records/{record_id}/documents/special/contact">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Updating Contact </span>
+</h4>
+<pre>PUT /records/{record_id}/documents/special/contact
+{ New Contact Document }
+</pre>
+<pre>{ Indivo Document Metadata for the new Contact document }
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{ New Contact Document }</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>{ Indivo Document Metadata for the new Contact document }
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="save_special_document" iwe:shortname="put_special_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.machineapp_record_created_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Document_Metadata" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/{document_id}/meta">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Document Metadata </span>
+</h3>
+<pre>GET /records/{record_id}/documents/{document_id}/meta
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/{document_id}/meta
+</pre>
+<pre>&lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+   &lt;disabledAt /&gt;
+   &lt;lastModifiedAt&gt;2009-04-06 13:34:23&lt;/lastModifiedAt&gt;
+&lt;/Document&gt;
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+   &lt;disabledAt /&gt;
+   &lt;lastModifiedAt&gt;2009-04-06 13:34:23&lt;/lastModifiedAt&gt;
+&lt;/Document&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document_meta" iwe:shortname="read_document_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="document_meta" iwe:shortname="read_carenet_document_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Document_Versions">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Document Versions </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/{document_id}/versions/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/documents/{document_id}/versions/
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/{document_id}/versions/
+</pre>
+<pre>&lt;Documents original_id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+  &lt;Document id="cb31fe32-1ee1-21de-c190-041b66935866"&gt;
+    &lt;.. DOC METADATA ..&gt;
+  &lt;/Document&gt;
+  &lt;Document id="b321ee42-1fc5-12ee-b530-051b43948378"&gt;
+    &lt;.. DOC METADATA ..&gt;
+  &lt;/Document&gt;
+&lt;/Documents&gt;
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Documents original_id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+  &lt;Document id="cb31fe32-1ee1-21de-c190-041b66935866"&gt;
+    &lt;.. DOC METADATA ..&gt;
+  &lt;/Document&gt;
+  &lt;Document id="b321ee42-1fc5-12ee-b530-051b43948378"&gt;
+    &lt;.. DOC METADATA ..&gt;
+  &lt;/Document&gt;
+&lt;/Documents&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document_versions" iwe:shortname="read_document_versions" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/external/{app_id}/{external_id}/meta">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by External ID </span>
+</h5>
+<pre>GET /records/{record_id}/documents/external/{app_id}/{external_id}/meta
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/external/{app_id}/{external_id}/meta
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document_meta" iwe:shortname="read_document_ext_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Document_Creation">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Document Creation </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /records/{record_id}/documents/
+{INDIVO_DOCUMENT_CONTENT}
+</pre>
+<pre>&lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875" /&gt;
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{INDIVO_DOCUMENT_CONTENT}</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875" /&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="document_create" iwe:shortname="post_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.no_external_id</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID_2" path="/records/{record_id}/documents/external/{app_id}/{external_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by External ID </span>
+</h5>
+<pre>PUT /records/{record_id}/documents/external/{app_id}/{external_id}
+{INDIVO_DOCUMENT_CONTENT}
+</pre>
+<p>Medical data cannot be replaced wholesale, only versioned. Thus, this
+ call will fail (with a 409 conflict error code) if a document already 
+exists in the given record with given external ID and app ID.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{INDIVO_DOCUMENT_CONTENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create" iwe:shortname="post_document_ext" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Document_Metadata_Update">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Document Metadata Update </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/label">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>Only the label on a document can be updated.
+</p>
+<pre>PUT /records/{record_id}/documents/{document_id}/label
+{new_document_label}
+</pre>
+<pre>&lt;OK /&gt;
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{new_document_label}</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;OK /&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="document_label" iwe:shortname="post_document_label" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID_3" path="/records/{record_id}/documents/external/{app_id}/{external_id}/label">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by External ID </span>
+</h5>
+<pre>PUT /records/{record_id}/documents/external/{app_id}/{external_id}/label
+{new_document_label}
+</pre>
+<pre>&lt;OK /&gt;
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{new_document_label}</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;OK /&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="document_label" iwe:shortname="put_document_ext_label" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Document_Replacement">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Document Replacement </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/replace">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>This call replaces one document with a new document content. The 
+existing document remains, but is marked suppressed and replaced by the 
+new document.
+</p>
+<pre>POST /records/{record_id}/documents/{document_id}/replace
+{indivo_document_content}
+</pre>
+<pre>&lt;Document id="e24a3b0e-1ff3-11de-b090-001b63948875"&gt;
+   &lt;.. DOC METADATA ..&gt;
+&lt;/Document&gt;
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{indivo_document_content}</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Document id="e24a3b0e-1ff3-11de-b090-001b63948875"&gt;
+   &lt;.. DOC METADATA ..&gt;
+&lt;/Document&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="document_version" iwe:shortname="replace_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_external_ID" path="/records/{record_id}/documents/{document_id}/replace/external/{app_id}/{external_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by external ID </span>
+</h5>
+<pre>PUT /records/{record_id}/documents/{document_id}/replace/external/{app_id}/{external_id}
+{indivo_document_content}
+</pre>
+<p>Medical data cannot be replaced wholesale, only versioned. Thus, this
+ call will fail (with a 409 conflict error code) if a document already 
+exists in the given record with given external ID and app ID.
+</p>
+<p>
+<br/>
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{indivo_document_content}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_version" iwe:shortname="put_document_ext_replace" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Document_Removal_and_Archival">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Document Removal and Archival </span>
+</h3>
+<p>Generally, documents in Indivo cannot be removed, they can only be 
+versioned. However, mistakes happen, and Indivo must deal with these 
+somehow. Also, information eventually is out of date or no longer 
+relevant.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Removing_a_recently_entered_document" path="/records/{record_id}/documents/{document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Removing a recently entered document </span>
+</h4>
+<p>If a document is entered by mistake, i.e. an annotation with at typo,
+ an allergy entered for the wrong child's record, Indivo allows for 
+wholesale document deletion within a short period of time after document
+ creation (configurable by installation, 1 hour by default).
+</p>
+<pre>DELETE /records/{record_id}/documents/{document_id}
+</pre>
+<p>This call will fail if other documents have been linked to the 
+document in question, or if the document has already been versioned.
+</p>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:server_method_name="document_delete" iwe:shortname="delete_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Voiding_a_document">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Voiding a document </span>
+</h4>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/set-status">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>If a document is entered in error, but the error goes unnoticed 
+beyond the grace period, then the document can no longer be deleted, it 
+can only be voided.
+</p>
+<pre>POST /records/{record_id}/documents/{document_id}/set-status
+ reason={reason}&amp;status=void
+</pre>
+<p>Only active documents can be voided. Voided documents are still 
+reachable, but their metadata indicates their status, and by default 
+they are not listed in typical document listings.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="reason" style="query" type="xsd:string">
+<doc>{reason}</doc>
+</param>
+<param name="status" style="query" type="xsd:string">
+<doc>void</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="document_set_status" iwe:shortname="set_document_status" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/set-status">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A document can be "unvoided" if the voiding was performed in error
+</p>
+<pre>POST /records/{record_id}/documents/{document_id}/set-status
+ reason={reason}&amp;status=active
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="reason" style="query" type="xsd:string">
+<doc>{reason}</doc>
+</param>
+<param name="status" style="query" type="xsd:string">
+<doc>active</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="document_set_status" iwe:shortname="set_document_status" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Archiving_a_document">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Archiving a document </span>
+</h4>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/set-status">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>If a document is no longer relevant, it can be archived so that it 
+doesn't show up by default. Archival is different from voiding in that 
+an archived document is still considered medically correct, just not 
+particularly relevant anymore.
+</p>
+<pre>POST /records/{record_id}/documents/{document_id}/set-status
+ reason={reason}&amp;status=archived
+</pre>
+<p>Archived documents are still reachable, but their metadata indicates 
+their archival status, and by default they are not listed in typical 
+document listings.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="reason" style="query" type="xsd:string">
+<doc>{reason}</doc>
+</param>
+<param name="status" style="query" type="xsd:string">
+<doc>archived</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="document_set_status" iwe:shortname="set_document_status" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/set-status">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A document can be "unarchived" if it becomes relevant again, if the archival was in error, etc...
+</p>
+<pre>POST /records/{record_id}/documents/{document_id}/set-status
+ reason={reason}&amp;status=active
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="reason" style="query" type="xsd:string">
+<doc>{reason}</doc>
+</param>
+<param name="status" style="query" type="xsd:string">
+<doc>active</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="document_set_status" iwe:shortname="set_document_status" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Document_Status_History" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/{document_id}/status-history">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Document Status History </span>
+</h4>
+<p>A document can be voided, unvoided, archived, unarchived a number of 
+times. The status change applies to entire version lineage of a 
+document. The history of statuses, in reverse chronological order, can 
+be obtained using the API call:
+</p>
+<pre>GET /records/{record_id}/documents/{document_id}/status-history
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/{document_id}/status-history
+</pre>
+<pre> &lt;DocumentStatusHistory document_id="{document_id}"&gt;
+   &lt;DocumentStatus by="{principal}" at="{timestamp}" status="{new_status}"&gt;
+      &lt;reason&gt;{reason}&lt;/reason&gt;
+   &lt;/DocumentStatus&gt;
+   &lt;DocumentStatus by="{principal}" at="{timestamp}" status="{new_status}"&gt;
+      &lt;reason&gt;{reason}&lt;/reason&gt;
+   &lt;/DocumentStatus&gt;
+   ...
+ &lt;/DocumentStatusHistory&gt;
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre> &lt;DocumentStatusHistory document_id="{document_id}"&gt;
+   &lt;DocumentStatus by="{principal}" at="{timestamp}" status="{new_status}"&gt;
+      &lt;reason&gt;{reason}&lt;/reason&gt;
+   &lt;/DocumentStatus&gt;
+   &lt;DocumentStatus by="{principal}" at="{timestamp}" status="{new_status}"&gt;
+      &lt;reason&gt;{reason}&lt;/reason&gt;
+   &lt;/DocumentStatus&gt;
+   ...
+ &lt;/DocumentStatusHistory&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="document_status_history" iwe:shortname="read_document_status_history" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Relating_Documents">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Relating Documents </span>
+</h3>
+<p>It is often useful to relate documents, e.g. annotating a document, 
+re-filling a prescription, connecting diagnoses to an encounter, etc. In
+ Indivo X, these relations can be declared no matter the data type of 
+the underlying document. An image of an X-ray might be related to an XML
+ document that interprets it, but of course there is no room in the 
+image file for a pointer. So all references are stored externally to the
+ documents.
+</p>
+<p>Relationship types are taken from a fixed list, including:
+</p>
+<ul>
+<li> <tt>interpretation</tt> </li>
+<li> <tt>annotation</tt> </li>
+<li> <tt>followup</tt> </li>
+</ul>
+<p>Eventually, full URLs will be supported for relationship types. The fixed list of types will then correspond to <tt>
+<a class="external free" href="http://indivo.org/vocab/documentrels#%7Brel_type%7D" rel="nofollow" title="http://indivo.org/vocab/documentrels#{rel_type}">http://indivo.org/vocab/documentrels#{rel_type}</a>
+</tt>
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/rels/{rel_type}/{other_document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>PUT /records/{record_id}/documents/{document_id}/rels/{rel_type}/{other_document_id}
+{EMPTY BODY}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{EMPTY BODY}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_rels" iwe:shortname="put_document_relate_existing" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/rels/{rel_type}/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /records/{record_id}/documents/{document_id}/rels/{rel_type}/
+{INDIVO DOCUMENT CONTENT}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{INDIVO DOCUMENT CONTENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create_by_rel" iwe:shortname="post_document_relate_given" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_external_ID_2" path="/records/{record_id}/documents/{document_id}/rels/{rel_type}/external/{app_id}/{external_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by external ID </span>
+</h5>
+<pre>PUT /records/{record_id}/documents/{document_id}/rels/{rel_type}/external/{app_id}/{external_id}
+{INDIVO DOCUMENT CONTENT}
+</pre>
+<p>Medical data cannot be replaced wholesale, only versioned. Thus, this
+ call will fail (with a 409 conflict error code) if a document already 
+exists in the given record with given external ID and app ID.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{INDIVO DOCUMENT CONTENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create_by_rel" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="retrieving_related_documents" path="/{records_OR_carenets}/{record_OR_carenet_id}/documents/{document_id}/rels/{rel_type}/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> retrieving related documents </span>
+</h5>
+<pre>GET /records/{record_id}/documents/{document_id}/rels/{rel_type}/
+</pre>
+<pre>GET /carenets/{carenet_id}/documents/{document_id}/rels/{rel_type}/
+</pre>
+<pre>&lt;Documents record_id="646937a0-1ff1-11de-b090-001b63948875"
+     xmlns:indivo="<a class="external free" href="http://indivohealth.org/xml/doctypes/" rel="nofollow" title="http://indivohealth.org/xml/doctypes/">http://indivohealth.org/xml/doctypes/</a>" related_to="2098ecea-23a3-11de-b4e2-001b63948875"
+     relationship="<a class="external free" href="http://indivo.org/vocab/documentrels#annotation" rel="nofollow" title="http://indivo.org/vocab/documentrels#annotation">http://indivo.org/vocab/documentrels#annotation</a>"&gt;
+  &lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+    &lt;disabledAt /&gt;
+    &lt;lastModifiedAt&gt;2009-04-06 13:34:23&lt;/lastModifiedAt&gt;
+  &lt;/Document&gt;
+&lt;/Documents&gt;
+</pre>
+<p>
+<br/>
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Documents record_id="646937a0-1ff1-11de-b090-001b63948875"
+     xmlns:indivo="<a class="external free" href="http://indivohealth.org/xml/doctypes/" rel="nofollow" title="http://indivohealth.org/xml/doctypes/">http://indivohealth.org/xml/doctypes/</a>" related_to="2098ecea-23a3-11de-b4e2-001b63948875"
+     relationship="<a class="external free" href="http://indivo.org/vocab/documentrels#annotation" rel="nofollow" title="http://indivo.org/vocab/documentrels#annotation">http://indivo.org/vocab/documentrels#annotation</a>"&gt;
+  &lt;Document id="ac21fe42-1ff1-11de-b090-001b63948875"&gt;
+    &lt;disabledAt /&gt;
+    &lt;lastModifiedAt&gt;2009-04-06 13:34:23&lt;/lastModifiedAt&gt;
+  &lt;/Document&gt;
+&lt;/Documents&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="get_documents_by_rel" iwe:shortname="get_document_relate" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Messaging_and_Notifications">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Messaging and Notifications </span>
+</h2>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Read_Messages_in_Account" path="/accounts/{account_id}/inbox/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Read Messages in Account </span>
+</h3>
+<pre>GET /accounts/{account_id}/inbox/?include_archive={1|0}
+</pre>
+<p>returns a list of messages. Schema defined in <a href="http://wiki.chip.org/indivo/index.php/Indivo_Inbox_Message_Schema" title="Indivo Inbox Message Schema">Indivo Inbox Message Schema</a>.
+</p>
+<p>By default, only non-archived messages are returned.
+</p>
+</span>
+</doc>
+<method name="GET">
+<request>
+<param name="include_archive" style="query" type="xsd:string">
+<doc>{1|0}</doc>
+</param>
+</request>
+<iwe:method_extension iwe:server_method_name="account_inbox" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Read_Single_Message_in_Account" path="/accounts/{account_id}/inbox/{message_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Read Single Message in Account </span>
+</h3>
+<pre>GET /accounts/{account_id}/inbox/{message_id}
+</pre>
+<p>returns a single message. Schema defined in <a href="http://wiki.chip.org/indivo/index.php/Indivo_Inbox_Message_Schema" title="Indivo Inbox Message Schema">Indivo Inbox Message Schema</a>.
+</p>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="account_inbox_message" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Archive_a_Message" path="/accounts/{account_id}/inbox/{message_id}/archive">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Archive a Message </span>
+</h3>
+<pre>POST /accounts/{account_id}/inbox/{message_id}/archive
+</pre>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Accept_a_Message_Attachment_into_Record" path="/accounts/{account_id}/inbox/{message_id}/attachments/{attachment_num}/accept">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Accept a Message Attachment into Record </span>
+</h3>
+<p>A user can accept an attachment from a message into their medical record.
+</p>
+<pre>POST /accounts/{account_id}/inbox/{message_id}/attachments/{attachment_num}/accept
+</pre>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:server_method_name="account_inbox_message_attachment_accept" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Send_a_Message_to_an_Account" path="/accounts/{account_id}/inbox/{message_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Send a Message to an Account </span>
+</h3>
+<pre>PUT /accounts/{account_id}/inbox/{message_id}
+subject={subject}&amp;body={body}&amp;severity={severity}
+</pre>
+<p>Severity need not be included. If it is included, it can be <tt>low</tt>, <tt>medium</tt>, or <tt>high</tt>.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="subject" style="query" type="xsd:string">
+<doc>{subject}</doc>
+</param>
+<param name="body" style="query" type="xsd:string">
+<doc>{body}</doc>
+</param>
+<param name="severity" style="query" type="xsd:string">
+<doc>{severity}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Send_a_Message_to_a_Record">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Send a Message to a Record </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/inbox/{message_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>PUT /records/{record_id}/inbox/{message_id}
+subject={subject}&amp;body={body}&amp;severity={severity}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="subject" style="query" type="xsd:string">
+<doc>{subject}</doc>
+</param>
+<param name="body" style="query" type="xsd:string">
+<doc>{body}</doc>
+</param>
+<param name="severity" style="query" type="xsd:string">
+<doc>{severity}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/inbox/{message_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>messages can have attached documents
+</p>
+<pre>PUT /records/{record_id}/inbox/{message_id}
+subject={subject}&amp;body={body}&amp;severity={severity}&amp;num_attachments={num_attachments}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="subject" style="query" type="xsd:string">
+<doc>{subject}</doc>
+</param>
+<param name="body" style="query" type="xsd:string">
+<doc>{body}</doc>
+</param>
+<param name="severity" style="query" type="xsd:string">
+<doc>{severity}</doc>
+</param>
+<param name="num_attachments" style="query" type="xsd:string">
+<doc>{num_attachments}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/inbox/{message_id}/attachments/{attachment_num}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>which then need to be uploaded separately (the message isn't delivered until all of its attachments are uploaded)
+</p>
+<pre>PUT /records/{record_id}/inbox/{message_id}/attachments/{attachment_num}
+{INDIVO_DOCUMENT}
+</pre>
+<p>The <tt>attachment_num</tt> URL parameter is a 1-indexed integer that represents the order of the attachment. It cannot be larger than <tt>num_attachments</tt> that was declared.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{INDIVO_DOCUMENT}</doc>
+</request>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Send_a_Notification_to_a_Record" path="/records/{record_id}/notify">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Send a Notification to a Record </span>
+</h3>
+<pre>POST /records/{record_id}/notify
+content={notification_content}&amp;app_url={relative_url}&amp;document_id={document_id}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="content" style="query" type="xsd:string">
+<doc>{notification_content}</doc>
+</param>
+<param name="app_url" style="query" type="xsd:string">
+<doc>{relative_url}</doc>
+</param>
+<param name="document_id" style="query" type="xsd:string">
+<doc>{document_id}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="record_notify" iwe:shortname="record_notify" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application-Specific_Storage">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Application-Specific Storage </span>
+</h2>
+<p>Application-specific storage is meant for bookkeeping by individual 
+applications that is not specific to any given record. These documents 
+can be deleted, since they are not part of any permanent medical record.
+ All application-specific storage API calls behave like the prior 
+document API calls, though the documents are accessible only to the 
+application in question.  Most implementations of the Indivo API will 
+likely impose a quota on Applications to ensure they do not store large 
+amounts of data in the application-specific storage. This quota may be 
+application-specific, depending on what the application is approved to 
+do.
+</p>
+<p>Where application-and-record-specific storage is a 3-legged oAuth
+ call, application-specific storage, since it doesn't correspond to any 
+given record, is a 2-legged oAuth call.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Application_Document_List" path="/apps/{app_id}/documents/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document List </span>
+</h3>
+<pre>GET /apps/{app_id}/documents/
+</pre>
+<p>supports paging, order by document metadata fields (see <a href="http://wiki.chip.org/indivo/index.php/Indivo_Document_Metadata_Schema" title="Indivo Document Metadata Schema">Indivo Document Metadata Schema</a>).
+</p>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document_list" iwe:shortname="read_app_documents" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="userapp">
+<iwe:grant>userapp_ruleset.userapp_documents</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.appspecific_rule</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Application_Single_Document" path="/apps/{app_id}/documents/{document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Single Document </span>
+</h3>
+<pre>GET /apps/{app_id}/documents/{document_id}
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document" iwe:shortname="read_app_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="userapp">
+<iwe:grant>userapp_ruleset.userapp_documents</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application_Document_Metadata">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Metadata </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/apps/{app_id}/documents/{document_id}/meta">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /apps/{app_id}/documents/{document_id}/meta
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document_meta" iwe:shortname="read_app_document_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="userapp">
+<iwe:grant>userapp_ruleset.userapp_documents</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID_4" path="/apps/{app_id}/documents/external/{external_id}/meta">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by External ID </span>
+</h5>
+<pre>GET /apps/{app_id}/documents/external/{external_id}/meta
+</pre>
+<p>(Note: no need to put the <tt>app_id</tt> twice in the URL, once for app-specific and once for <tt>external_id</tt>.)
+</p>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document_meta" iwe:shortname="read_app_document_ext_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="userapp">
+<iwe:grant>userapp_ruleset.userapp_documents</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application_Document_Creation">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Creation </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/apps/{app_id}/documents/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /apps/{app_id}/documents/
+{INDIVO_DOCUMENT_CONTENT}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{INDIVO_DOCUMENT_CONTENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create_or_update" iwe:shortname="post_app_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="userapp">
+<iwe:grant>userapp_ruleset.userapp_documents</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID_5" path="/apps/{app_id}/documents/external/{external_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by External ID </span>
+</h5>
+<pre>PUT /apps/{app_id}/documents/external/{external_id}
+{indivo_document}
+</pre>
+<p>As this is application-level storage, this will replace any existing document that existed beforehand.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{indivo_document}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create_or_update" iwe:shortname="post_app_document_ext" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="userapp">
+<iwe:grant>userapp_ruleset.userapp_documents</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Application_Document_Label_Update" path="/apps/{app_id}/documents/{document_id}/label">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Label Update </span>
+</h3>
+<pre>PUT /apps/{app_id}/documents/{document_id}/label
+{document_label}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{document_label}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_label" iwe:shortname="post_app_document_label" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application_Inbox">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Inbox </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/apps/{app_id}/inbox/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A list of messages destined for the application
+</p>
+<pre>GET /apps/{app_id}/inbox/
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/apps/{app_id}/inbox/{message_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A single message:
+</p>
+<pre>GET /apps/{app_id}/inbox/{message_id}
+</pre>
+<p>which will return a simple XML structure:
+</p>
+<pre>&lt;Message&gt;
+  &lt;from id="ben@indivohealth.org" /&gt;
+  &lt;record id="8cnd-xdfd-342d-dfdf-34343" /&gt;
+  &lt;subject&gt;{subject}&lt;/subject&gt;
+  &lt;body&gt;{body}&lt;/body&gt;
+  &lt;attachment num="1" type="SurveyAnswers" resource="/apps/{app_id}/inbox/{message_id}/attachments/1" /&gt;
+&lt;/Message&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Message&gt;
+  &lt;from id="ben@indivohealth.org" /&gt;
+  &lt;record id="8cnd-xdfd-342d-dfdf-34343" /&gt;
+  &lt;subject&gt;{subject}&lt;/subject&gt;
+  &lt;body&gt;{body}&lt;/body&gt;
+  &lt;attachment num="1" type="SurveyAnswers" resource="/apps/{app_id}/inbox/{message_id}/attachments/1" /&gt;
+&lt;/Message&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/apps/{app_id}/inbox/{message_id}/attachments/{attachment_num}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>and a way to retrieve attachments
+</p>
+<pre>GET /apps/{app_id}/inbox/{message_id}/attachments/{attachment_num}
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application-and-Record-Specific_Storage">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Application-and-Record-Specific Storage </span>
+</h2>
+<p>Application-and-record-specific storage is meant for bookkeeping by 
+individual applications. These documents can be deleted, since they are 
+not part of the permanent medical record. All application-specific 
+storage API calls behave like the prior document API calls, though the 
+documents are accessible only to the application in question.  Most 
+implementations of the Indivo API will likely impose a quota on 
+Applications to ensure they do not store large amounts of data in the 
+application-specific storage. This quota may be application-specific, 
+depending on what the application is approved to do.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Application_Document_List_2" path="/records/{record_id}/apps/{app_id}/documents/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document List </span>
+</h3>
+<pre>GET /records/{record_id}/apps/{app_id}/documents/
+</pre>
+<p>supports paging, order by document metadata fields (see <a href="http://wiki.chip.org/indivo/index.php/Indivo_Document_Metadata_Schema" title="Indivo Document Metadata Schema">Indivo Document Metadata Schema</a>).
+</p>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document_list" iwe:shortname="get_recapp_documents" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Application_Single_Document_2" path="/records/{record_id}/apps/{app_id}/documents/{document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Single Document </span>
+</h3>
+<pre>GET /records/{record_id}/apps/{app_id}/documents/{document_id}
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document" iwe:shortname="get_recapp_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application_Document_Metadata_2">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Metadata </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/apps/{app_id}/documents/{document_id}/meta">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/apps/{app_id}/documents/{document_id}/meta
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document_meta" iwe:shortname="read_recapp_document_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID_6" path="/records/{record_id}/apps/{app_id}/documents/external/{external_id}/meta">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by External ID </span>
+</h5>
+<pre>GET /records/{record_id}/apps/{app_id}/documents/external/{external_id}/meta
+</pre>
+<p>(Note: no need to put the <tt>app_id</tt> twice in the URL, once for app-specific and once for <tt>external_id</tt>.)
+</p>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="document_meta" iwe:shortname="read_recapp_document_ext_meta" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Application_Document_Creation_2">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Creation </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/apps/{app_id}/documents/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /records/{record_id}/apps/{app_id}/documents/
+{INDIVO_DOCUMENT_CONTENT}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{INDIVO_DOCUMENT_CONTENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create_or_update" iwe:shortname="post_recapp_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_External_ID_7" path="/records/{record_id}/apps/{app_id}/documents/external/{external_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> by External ID </span>
+</h4>
+<pre>PUT /records/{record_id}/apps/{app_id}/documents/external/{external_id}
+{INDIVO_DOCUMENT_CONTENT}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{INDIVO_DOCUMENT_CONTENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_create_or_update" iwe:shortname="put_recapp_document_ext" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Application_Document_Label_Update_2" path="/records/{record_id}/apps/{app_id}/documents/{document_id}/label">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Label Update </span>
+</h3>
+<pre>PUT /records/{record_id}/apps/{app_id}/documents/{document_id}/label
+{document_label}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{document_label}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="document_label" iwe:shortname="put_recapp_document_label" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Application_Document_Deletion" path="/records/{record_id}/apps/{app_id}/documents/{document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Application Document Deletion </span>
+</h3>
+<pre>DELETE /records/{record_id}/apps/{app_id}/documents/{document_id}
+</pre>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:shortname="delete_recapp_document" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Processed_Medical_Reports">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Processed Medical Reports </span>
+</h2>
+<p>Indivo processes documents into medical reports. Each report can be 
+altered by the normal paging mechanism described above. Over time, new 
+reports may be introduced. For now, we define these as the <tt>minimal</tt> set of reports.
+</p>
+<p>All reports support paging, with order by fields dependent on the report details.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Measurements" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/measurements/{lab_code}/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Measurements </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/measurements/{lab_code}/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/measurements/{lab_code}/
+</pre>
+<pre>&lt;Measurements&gt;
+&lt;/Measurements&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Measurements&gt;
+&lt;/Measurements&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="measurement_list" iwe:shortname="read_measurements" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="measurement_list" iwe:shortname="read_carenet_measurements" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Medications" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/medications/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Medications </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/medications/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/medications/
+</pre>
+<pre>&lt;Medications&gt;
+&lt;/Medications&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Medications&gt;
+&lt;/Medications&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="medication_list" iwe:shortname="read_medications" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="medication_list" iwe:shortname="read_carenet_medications" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Allergies" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/allergies/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Allergies </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/allergies/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/allergies/
+</pre>
+<pre>&lt;Allergies&gt;
+&lt;/Allergies&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+<p>
+<br/>
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Allergies&gt;
+&lt;/Allergies&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="allergy_list" iwe:shortname="read_allergies" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="allergy_list" iwe:shortname="read_carenet_allergies" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Equipment" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/equipment/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Equipment </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/equipment/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/equipment/
+</pre>
+<pre>&lt;Equipment&gt;
+&lt;/Equipment&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+<p>
+<br/>
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Equipment&gt;
+&lt;/Equipment&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="equipment_list" iwe:shortname="read_equipment" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="equipment_list" iwe:shortname="read_carenet_equipment" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Immunizations" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/immunizations/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Immunizations </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/immunizations/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/immunizations/
+</pre>
+<pre>&lt;Immunizations&gt;
+&lt;/Immunizations&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Immunizations&gt;
+&lt;/Immunizations&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="immunization_list" iwe:shortname="read_immunizations" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="immunization_list" iwe:shortname="read_carenet_immunizations" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Procedures" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/procedures/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Procedures </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/procedures/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/procedures/
+</pre>
+<pre>&lt;Procedures&gt;
+&lt;/Procedures&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Procedures&gt;
+&lt;/Procedures&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="procedure_list" iwe:shortname="read_procedures" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="procedure_list" iwe:shortname="read_carenet_procedures" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Problems" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/problems/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Problems </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/problems/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/problems/
+</pre>
+<pre>&lt;Problems&gt;
+&lt;/Problems&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Problems&gt;
+&lt;/Problems&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="problem_list" iwe:shortname="read_problems" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="problem_list" iwe:shortname="read_carenet_problems" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Vitals" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/vitals/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Vitals </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/vitals/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/vitals/
+</pre>
+<pre>&lt;Vitals&gt;
+&lt;/Vitals&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Vitals&gt;
+&lt;/Vitals&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="vitals_list" iwe:shortname="read_vitals" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:records_or_carenets="carenets" iwe:server_method_name="vitals_list" iwe:shortname="read_carenet_vitals" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Labs" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/labs/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Labs </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/labs/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/labs/
+</pre>
+<pre>&lt;Labs&gt;
+&lt;/Labs&gt;
+</pre>
+<p>supports paging, order by fields TBD.
+</p>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="lab_list" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Simple_Clinical_Note" path="/{records_OR_carenets}/{record_OR_carenet_id}/reports/minimal/simple-clinical-notes/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Simple Clinical Note </span>
+</h3>
+<pre>GET /records/{record_id}/reports/minimal/simple-clinical-notes/
+</pre>
+<pre>GET /carenets/{carenet_id}/reports/minimal/simple-clinical-notes/
+</pre>
+</span>
+</doc>
+<param name="records_OR_carenets" style="template">
+<option value="records"/>
+<option value="carenets"/>
+</param>
+<param name="record_OR_carenet_id" style="template"/>
+<method name="GET">
+<iwe:method_extension iwe:records_or_carenets="records" iwe:server_method_name="simple_clinical_notes_list" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" iwe:records_or_carenets="carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Coding_Systems">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Coding Systems </span>
+</h2>
+<p>A number of Indivo documents contain coded values. These can be based
+ on UMLS, SNOMED, etc. Indivo provides a generic API for looking up 
+coded values. This API is particularly built to support live 
+autocomplete in JavaScript.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="List_Coding_Systems" path="/codes/systems/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> List Coding Systems </span>
+</h3>
+<pre>GET /codes/systems/
+</pre>
+<p>returns a JSON list of coding systems:
+</p>
+<pre>[{'short_name': 'umls-snomed', 'name': 'UMLS SNOMED', 'description' : '...'},
+ {..},
+ {..}]
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>[{'short_name': 'umls-snomed', 'name': 'UMLS SNOMED', 'description' : '...'},
+ {..},
+ {..}]
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="coding_systems_list" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Search_Coding_System" path="/codes/systems/{short_name}/query">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Search Coding System </span>
+</h3>
+<pre>GET /codes/systems/{short_name}/query?q={query}
+</pre>
+<p>query the coding system with the given text. Returns a JSON list of terms
+</p>
+<pre>[{"abbreviation": null, "code": "38341003", "consumer_value": null, "umls_code": "C0020538", "full_value": "Hypertensive disorder, systemic arterial (disorder)"},
+ {"abbreviation": null, "code": "55822004", "consumer_value": null, "umls_code": "C0020473", "full_value": "Hyperlipidemia (disorder)"}]
+</pre>
+</span>
+</doc>
+<method name="GET">
+<request>
+<param name="q" style="query" type="xsd:string">
+<doc>{query}</doc>
+</param>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>[{"abbreviation": null, "code": "38341003", "consumer_value": null, "umls_code": "C0020538", "full_value": "Hypertensive disorder, systemic arterial (disorder)"},
+ {"abbreviation": null, "code": "55822004", "consumer_value": null, "umls_code": "C0020473", "full_value": "Hyperlipidemia (disorder)"}]
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="coding_system_query" iwe:shortname="lookup_code" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Administrative_API">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Administrative API </span>
+</h2>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Account_Information" path="/accounts/{account_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Account Information </span>
+</h3>
+<pre>GET /accounts/{account_id}
+</pre>
+<p>The <tt>account_id</tt> is typically in the form of an email address. This call returns a bunch of information about the account:
+</p>
+<pre>&lt;Account id="ben@indivo.org"&gt;
+ &lt;secret&gt;671468&lt;/secret&gt;
+ &lt;fullName&gt;Ben Adida&lt;/fullName&gt;
+ &lt;contactEmail&gt;ben@adida.net&lt;/contactEmail&gt;
+ &lt;lastLoginAt&gt;2009-12-11T06:29:11.556286+00:00&lt;/lastLoginAt&gt;
+ &lt;totalLoginCount&gt;5&lt;/totalLoginCount&gt;
+ &lt;failedLoginCount&gt;0&lt;/failedLoginCount&gt;
+ &lt;state&gt;active&lt;/state&gt;
+ &lt;lastStateChange&gt;2009-12-11T14:22:04.453416+00:00&lt;/lastStateChange&gt;
+ &lt;authSystem name="password" username="joesmith" /&gt;
+&lt;/Account&gt;
+</pre>
+<p>
+<br/>
+The possible account states are:
+</p>
+<ul>
+<li> <tt>uninitialized</tt>, an account that has been created by an 
+administrative application and has not been activated by the user yet 
+(with their confirmation URL and code).
+</li>
+<li> <tt>active</tt>, a normal active account.
+</li>
+<li> <tt>disabled</tt>, an account locked because too many failed login attempts.
+</li>
+<li> <tt>retired</tt>, an account that is no longer in use.
+</li>
+</ul>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Account id="ben@indivo.org"&gt;
+ &lt;secret&gt;671468&lt;/secret&gt;
+ &lt;fullName&gt;Ben Adida&lt;/fullName&gt;
+ &lt;contactEmail&gt;ben@adida.net&lt;/contactEmail&gt;
+ &lt;lastLoginAt&gt;2009-12-11T06:29:11.556286+00:00&lt;/lastLoginAt&gt;
+ &lt;totalLoginCount&gt;5&lt;/totalLoginCount&gt;
+ &lt;failedLoginCount&gt;0&lt;/failedLoginCount&gt;
+ &lt;state&gt;active&lt;/state&gt;
+ &lt;lastStateChange&gt;2009-12-11T14:22:04.453416+00:00&lt;/lastStateChange&gt;
+ &lt;authSystem name="password" username="joesmith" /&gt;
+&lt;/Account&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="account_info" iwe:shortname="account_info" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Account_Query" path="/accounts/search">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Account Query </span>
+</h3>
+<p>This API call searches for accounts using a few parameters:
+</p>
+<pre>GET /accounts/search?fullname={fullname}&amp;contact_email={contact_email}
+</pre>
+<pre>&lt;Accounts&gt;
+  &lt;Account id="ben@indivo.org"&gt;
+    &lt;secret&gt;671468&lt;/secret&gt;
+    &lt;fullName&gt;Ben Adida&lt;/fullName&gt;
+    &lt;contactEmail&gt;ben@adida.net&lt;/contactEmail&gt;
+    &lt;lastLoginAt&gt;2009-12-11T06:29:11.556286+00:00&lt;/lastLoginAt&gt;
+    &lt;totalLoginCount&gt;5&lt;/totalLoginCount&gt;
+    &lt;failedLoginCount&gt;0&lt;/failedLoginCount&gt;
+    &lt;state&gt;ok&lt;/state&gt;
+    &lt;lastStateChange&gt;2009-12-11T14:22:04.453416+00:00&lt;/lastStateChange&gt;
+    &lt;authSystem name="password" username="joesmith" /&gt;
+  &lt;/Account&gt;
+  
+  &lt;Account&gt;
+     ....
+  &lt;/Account&gt;
+
+  ...
+&lt;/Accounts&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<request>
+<param name="fullname" style="query" type="xsd:string">
+<doc>{fullname}</doc>
+</param>
+<param name="contact_email" style="query" type="xsd:string">
+<doc>{contact_email}</doc>
+</param>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Accounts&gt;
+  &lt;Account id="ben@indivo.org"&gt;
+    &lt;secret&gt;671468&lt;/secret&gt;
+    &lt;fullName&gt;Ben Adida&lt;/fullName&gt;
+    &lt;contactEmail&gt;ben@adida.net&lt;/contactEmail&gt;
+    &lt;lastLoginAt&gt;2009-12-11T06:29:11.556286+00:00&lt;/lastLoginAt&gt;
+    &lt;totalLoginCount&gt;5&lt;/totalLoginCount&gt;
+    &lt;failedLoginCount&gt;0&lt;/failedLoginCount&gt;
+    &lt;state&gt;ok&lt;/state&gt;
+    &lt;lastStateChange&gt;2009-12-11T14:22:04.453416+00:00&lt;/lastStateChange&gt;
+    &lt;authSystem name="password" username="joesmith" /&gt;
+  &lt;/Account&gt;
+  
+  &lt;Account&gt;
+     ....
+  &lt;/Account&gt;
+
+  ...
+&lt;/Accounts&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="account_search" iwe:shortname="account_search" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Account_Creation_and_Maintenance">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Account Creation and Maintenance </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/accounts/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /accounts/
+account_id={account_id}&amp;contact_email={contact_email}&amp;full_name={full_name}&amp;primary_secret_p={0|1}&amp;secondary_secret_p={0|1}
+</pre>
+<p>The <tt>account_id</tt> is typically in the form of an email address.
+</p>
+<p>The primary and secondary secret arguments are optional and are 
+used for helping the user initialize their account securely. A primary 
+secret is sent directly by Indivo X server to the user at their 
+account_id email address in the form of a URL with an embedded secret. A
+ secondary secret is generated by Indivo X and made available to the 
+admin application using the /secret API call for the account. If it is 
+asked for in  this call, it is required at account activation time right
+ after the user clicks on the activation URL (aka the primary secret). A
+ secondary secret makes sense only if a primary secret is also 
+requested. That's why it's called "secondary."
+</p>
+<pre>&lt;Account id="max@adida.net"&gt;
+  &lt;secret&gt;671468&lt;/secret&gt;
+  &lt;fullName&gt;Joe Smith&lt;/fullName&gt;
+  &lt;contactEmail&gt;joe@smith.net&lt;/contactEmail&gt;
+  &lt;lastLoginAt&gt;2009-12-11T06:29:11.556286+00:00&lt;/lastLoginAt&gt;
+  &lt;totalLoginCount&gt;0&lt;/totalLoginCount&gt;
+  &lt;failedLoginCount&gt;0&lt;/failedLoginCount&gt;
+  &lt;state&gt;uninitialized&lt;/state&gt;
+  &lt;lastStateChange&gt;2009-12-11T14:22:04.453416+00:00&lt;/lastStateChange&gt;
+  &lt;authSystem name="password" username="joesmith" /&gt;
+&lt;/Account&gt;
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="account_id" style="query" type="xsd:string">
+<doc>{account_id}</doc>
+</param>
+<param name="contact_email" style="query" type="xsd:string">
+<doc>{contact_email}</doc>
+</param>
+<param name="full_name" style="query" type="xsd:string">
+<doc>{full_name}</doc>
+</param>
+<param name="primary_secret_p" style="query" type="xsd:string">
+<doc>{0|1}</doc>
+</param>
+<param name="secondary_secret_p" style="query" type="xsd:string">
+<doc>{0|1}</doc>
+</param>
+</representation>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Account id="max@adida.net"&gt;
+  &lt;secret&gt;671468&lt;/secret&gt;
+  &lt;fullName&gt;Joe Smith&lt;/fullName&gt;
+  &lt;contactEmail&gt;joe@smith.net&lt;/contactEmail&gt;
+  &lt;lastLoginAt&gt;2009-12-11T06:29:11.556286+00:00&lt;/lastLoginAt&gt;
+  &lt;totalLoginCount&gt;0&lt;/totalLoginCount&gt;
+  &lt;failedLoginCount&gt;0&lt;/failedLoginCount&gt;
+  &lt;state&gt;uninitialized&lt;/state&gt;
+  &lt;lastStateChange&gt;2009-12-11T14:22:04.453416+00:00&lt;/lastStateChange&gt;
+  &lt;authSystem name="password" username="joesmith" /&gt;
+&lt;/Account&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="account_create" iwe:shortname="create_account" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Setting_a_Username_and_Password" path="/accounts/{account_id}/authsystems/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Setting a Username and Password </span>
+</h4>
+<p>Accounts initially have no "authentication systems" attached to them.
+ Over time, Indivo accounts will be usable with OpenID and other 
+authentication systems. An account needs to enabled for each 
+authentication system that we want to use for that account. The default 
+system is "password". Setting up the password and the associated 
+username is done as follows:
+</p>
+<pre>POST /accounts/{account_id}/authsystems/
+system=password&amp;username={username}&amp;password={password}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="system" style="query" type="xsd:string">
+<doc>password</doc>
+</param>
+<param name="username" style="query" type="xsd:string">
+<doc>{username}</doc>
+</param>
+<param name="password" style="query" type="xsd:string">
+<doc>{password}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="account_authsystem_add" iwe:shortname="add_auth_system" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Resending_Initialization_URL" path="/accounts/{account_id}/secret-resend">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Resending Initialization URL </span>
+</h4>
+<p>The email sent to initialize an account may get lost. This API call resends the email.
+</p>
+<pre>POST /accounts/{account_id}/secret-resend
+</pre>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:server_method_name="account_resend_secret" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Resetting_an_Account" path="/accounts/{account_id}/reset">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Resetting an Account </span>
+</h4>
+<p>If a password is forgotten, the solution is to reset the account, 
+which will prevent logins until the new initialization URL is clicked, 
+and the new password is entered.
+</p>
+<pre>POST /accounts/{account_id}/reset
+</pre>
+<p>This call sets the status of an account back to "uninitialized", and 
+resets the secret URL. The initialize URL should then be resent as per 
+the previous API call.
+</p>
+<p>Note that this call resets both the primary and secondary 
+secrets. The user will need to be given this secondary secret in a 
+channel other than email. If the Chrome Application (the user interface)
+ performed this reset, then the secondary secret should display on 
+screen while the primary secret is automatically sent by email. The user
+ interface can obtain the secondary secret (which is short) by doing a 
+GET on the account URL, as per Account Info above.
+</p>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:server_method_name="account_reset" iwe:shortname="account_reset" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Initalizing_an_Account" path="/accounts/{account_id}/initialize">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Initalizing an Account </span>
+</h4>
+<p>Initializing an account that has been reset requires both the primary
+ and secondary secrets. The primary secret is sent in the URL, and the 
+secondary secret should be collected by the user interface. 
+Specifically, the recommended process is:
+</p>
+<ul>
+<li> Indivo Backend server sends the reinitialization URL to the 
+user as 
+{INDIVO_UI_SERVER}/account/initialize/{account_id}/{primary_secret}
+</li>
+<li> Indivo UI server checks that the requested account is indeed 
+in uninitialized state and prompts the user for his secondary secret 
+(which the user knows simply as the "secret") and his new password.
+</li>
+<li> Indivo UI server attempts to initialize the account:
+</li>
+</ul>
+<pre>POST /accounts/{account_id}/initialize
+primary_secret={primary_secret}&amp;secondary_secret={secondary_secret}
+</pre>
+<p>and obtains <tt>SUCCESS</tt>.
+</p>
+<ul>
+<li> Indivo UI server sets the password to the new value provided by the user using the next call.
+</li>
+</ul>
+<p>
+<br/>
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="primary_secret" style="query" type="xsd:string">
+<doc>{primary_secret}</doc>
+</param>
+<param name="secondary_secret" style="query" type="xsd:string">
+<doc>{secondary_secret}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Setting_Account_State" path="/accounts/{account_id}/set-state">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Setting Account State </span>
+</h4>
+<p>The state of an account can be either: uninitialized, active, disabled, or retired. The state can be changed by an admin call:
+</p>
+<pre>POST /accounts/{account_id}/set-state
+state={new_state}
+</pre>
+<p>returning <tt>SUCCESS</tt> if everything is well.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="state" style="query" type="xsd:string">
+<doc>{new_state}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="account_set_state" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+
+<resource id="account-info-update" path="/accounts/{account_id}/info-set">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline">Update Account Info</span>
+</h4>
+<p>A user can update his account name and contact email
+</p>
+<pre>POST /accounts/{account_id}/info-set
+full_name={full_name}&amp;contact_email={contact_email}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="full_name" style="query" type="xsd:string">
+<doc>{full_name}</doc>
+</param>
+<param name="contact_email" style="query" type="xsd:string">
+<doc>{contact_email}</doc>
+</param>
+</representation>
+</request>
+<method_extension iwe:server_method_name="account_info_change" iwe:shortname="account_info_change" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</method_extension>
+</method>
+</resource>
+
+<resource id="account-username-set" path="/accounts/{account_id}/authsystems/password/set-username">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline">Set Account Username</span>
+</h4>
+<p>A user can change his username
+</p>
+<pre>POST /accounts/{account_id}/authsystems/password/set-username
+username={username}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="username" style="query" type="xsd:string">
+<doc>{username}</doc>
+</param>
+</representation>
+</request>
+<method_extension iwe:server_method_name="account_username_set" iwe:shortname="account_username_set" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</method_extension>
+</method>
+</resource>
+
+<resource xsi:type="IndivoURLResource" id="Setting_a_Password" path="/accounts/{account_id}/authsystems/password/set">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Setting a Password </span>
+</h4>
+<p>The Chrome UI can change a user's password forcefully:
+</p>
+<pre>POST /accounts/{account_id}/authsystems/password/set
+password={password}
+</pre>
+<p>This should be used only in the context of an account reinitialization.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="password" style="query" type="xsd:string">
+<doc>{password}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="account_password_set" iwe:shortname="account_set_password" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Changing_a_Password" path="/accounts/{account_id}/authsystems/password/change">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Changing a Password </span>
+</h4>
+<p>A user can change his password, which the Chrome client can achieve 
+by making this API call. The old password must be correct for this 
+change to succeed.
+</p>
+<pre>POST /accounts/{account_id}/authsystems/password/change
+old={old_password]&amp;new={new_password}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="old" style="query" type="xsd:string">
+<doc>{old_password]</doc>
+</param>
+<param name="new" style="query" type="xsd:string">
+<doc>{new_password}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="account_password_change" iwe:shortname="account_change_password" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.account_rule</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Account_Secrets" path="/accounts/{account_id}/primary-secret">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Account Secrets </span>
+</h3>
+<p>This should be used very sparingly as the primary secret should rarely be seen outside of the Indivo backend
+</p>
+<pre>GET /accounts/{account_id}/primary-secret
+</pre>
+<pre>&lt;secret&gt;{secret}&lt;/secret&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;secret&gt;{secret}&lt;/secret&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="account_primary_secret" iwe:shortname="account_primary_secret" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Record_Creation">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Record Creation </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /records/
+{CONTACT_DOCUMENT}
+</pre>
+<pre>&lt;Record id="" label="Joe Smith"&gt;
+   &lt;contact document_id="" /&gt;
+   &lt;demographics document_id="" /&gt;
+&lt;/Record&gt;
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{CONTACT_DOCUMENT}</doc>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Record id="" label="Joe Smith"&gt;
+   &lt;contact document_id="" /&gt;
+   &lt;demographics document_id="" /&gt;
+&lt;/Record&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="record_create" iwe:shortname="create_record" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.principal_email_matches_principal</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="by_external_ID_3" path="/records/external/{app_id}/{external_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h5> <span class="mw-headline"> by external ID </span>
+</h5>
+<pre>PUT /records/external/{app_id}/{external_id}
+{CONTACT_DOCUMENT}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{CONTACT_DOCUMENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="record_create" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>machapp_ruleset.principal_email_matches_principal</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Set_Record_Owner" path="/records/{record_id}/owner">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Set Record Owner </span>
+</h3>
+<pre>PUT /records/{record_id}/owner
+{ACCOUNT_ID}
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{ACCOUNT_ID}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="record_set_owner" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Prime_a_Record_with_a_PHA" path="/records/{record_id}/apps/{app_id}/setup">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Prime a Record with a PHA </span>
+</h3>
+<pre>POST /records/{record_id}/apps/{app_id}/setup
+{SETUP_DOCUMENT}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<doc>{SETUP_DOCUMENT}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="record_pha_setup" iwe:shortname="post_recapp_setup" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Removing_a_PHA_from_a_Record" path="/records/{record_id}/apps/{app_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Removing a PHA from a Record </span>
+</h3>
+<pre>DELETE  /records/{record_id}/apps/{app_id}
+</pre>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:server_method_name="pha_record_delete" iwe:shortname="delete_record_app" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Indivo_Chrome_.2F_User_Interface_API">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Indivo Chrome / User Interface API </span>
+</h2>
+<p>These API calls are reserved for the UI server, which is deeply 
+trusted to authorized other applications, proxy the user's credentials, 
+etc.. It's only a separate server for modularity, otherwise it has the 
+same level of trust as the backend Indivo server.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Create_a_Session" path="/oauth/internal/session_create">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Create a Session </span>
+</h3>
+<p>Start a session for a user.
+</p>
+<pre>POST /oauth/internal/session_create
+username={username}&amp;password={password}
+</pre>
+<pre>oauth_token=&lt;TOKEN&gt;&amp;oauth_token_secret=&lt;SECRET&gt;&amp;account_id=&lt;ACCOUNT_ID&gt;&amp;x_oauth_expiration_policy=usersession
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="username" style="query" type="xsd:string">
+<doc>{username}</doc>
+</param>
+<param name="password" style="query" type="xsd:string">
+<doc>{password}</doc>
+</param>
+</representation>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>oauth_token=&lt;TOKEN&gt;&amp;oauth_token_secret=&lt;SECRET&gt;&amp;account_id=&lt;ACCOUNT_ID&gt;&amp;x_oauth_expiration_policy=usersession
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="session_create" iwe:shortname="create_session" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Claim_a_Request_Token" path="/oauth/internal/request_tokens/{request_token}/claim">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Claim a Request Token </span>
+</h3>
+<p>Before a request token can be viewed at all, it has to be claimed by a
+ user. This ensures that a request token can't be partially used by one 
+user and completed by another.
+</p>
+<pre>POST /oauth/internal/request_tokens/{request_token}/claim
+</pre>
+<p>The session-based chrome authentication will indicate to the backend 
+which Account to associate with this request token. Once this call has 
+been made for a request token, a second call with different session 
+authentication will fail. (A second call with the same user 
+authentication will be just fine, we don't want a reload to cause a 
+problem.)
+</p>
+<p>If the request token is bound to an Indivo record (because the 
+PHA knew it was authorizing for a given record), and the claimant does 
+not have administrative rights over the record, this call will fail and 
+the request token will be invalidated.
+</p>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:server_method_name="request_token_claim" iwe:shortname="claim_request_token" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Retrieve_Information_about_an_oAuth_request_token" path="/oauth/internal/request_tokens/{request_token}/info">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Retrieve Information about an oAuth request token </span>
+</h3>
+<p>When authorizing a request token, the Indivo UI needs to know what 
+that token represents. Once the token is claimed, the request token 
+yields information via the call:
+</p>
+<pre>GET /oauth/internal/request_tokens/{request_token}/info
+</pre>
+<p>This can only be called with session authentication matching the Account which claimed the request token earlier.
+</p>
+<p>This call returns an XML data structure with information about exactly what the app is and what it's asking the user.
+</p>
+<pre>&lt;RequestToken token="{request_token_string}" record_id="{record_id}"&gt;
+
+  &lt;kind&gt;{request-kind}&lt;/kind&gt;
+
+  &lt;App id="surveys@apps.indivohealth.org"&gt;
+      &lt;name&gt;Medical Surveys&lt;/name&gt;
+      &lt;description&gt;take surveys from home&lt;/description&gt;
+      &lt;frameable&gt;true&lt;/frameable&gt;
+      &lt;ui&gt;true&lt;/ui&gt;
+  &lt;/App&gt;
+
+  &lt;Permissions&gt;
+     &lt;.. description of requested permissions ..&gt;
+  &lt;/Permissions&gt;
+
+  &lt;DataUsageAgreement&gt;
+     &lt;.. data usage intent ..&gt;
+  &lt;/DataUsageAgreement&gt;
+
+&lt;/RequestToken&gt;
+</pre>
+<p>The <tt>record_id</tt> attribute on the <tt>RequestToken</tt> may be 
+absent. It is present in the case where the request token has been 
+pre-bound to the record (because the app knows that it's trying to bind a
+ given record). In that case, the Chrome UI should <i>not</i> give the user the option of attaching the app to a different record than the one prescribed.
+</p>
+<p>If a <tt>record_id</tt> is present, then the <tt>kind</tt> element is also present and indicates:
+</p>
+<ul>
+<li> <tt>new</tt>: a new request for a PHA that has not been authorized for this record yet
+</li>
+<li> <tt>same</tt>: a request for a PHA that is already attached to the record and no new permissions are requested
+</li>
+<li> <tt>upgrade</tt>: a request for a PHA that is already attached
+ to the record but that is asking for more permissions or more 
+permissive usage of the data.
+</li>
+</ul>
+<p>In the <tt>same</tt> case, the Chrome UI is allowed to immediate approve the request token.
+</p>
+<p>In other cases, the Chrome UI <i>must</i> explain to the user that new permissions / rights are being granted and prompt for approval.
+</p>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;RequestToken token="{request_token_string}" record_id="{record_id}"&gt;
+
+  &lt;kind&gt;{request-kind}&lt;/kind&gt;
+
+  &lt;App id="surveys@apps.indivohealth.org"&gt;
+      &lt;name&gt;Medical Surveys&lt;/name&gt;
+      &lt;description&gt;take surveys from home&lt;/description&gt;
+      &lt;frameable&gt;true&lt;/frameable&gt;
+      &lt;ui&gt;true&lt;/ui&gt;
+  &lt;/App&gt;
+
+  &lt;Permissions&gt;
+     &lt;.. description of requested permissions ..&gt;
+  &lt;/Permissions&gt;
+
+  &lt;DataUsageAgreement&gt;
+     &lt;.. data usage intent ..&gt;
+  &lt;/DataUsageAgreement&gt;
+
+&lt;/RequestToken&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="request_token_info" iwe:shortname="get_request_token_info" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.reqtoken_exists</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Approve_a_Request_Token" path="/oauth/internal/request_tokens/{request_token}/approve">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Approve a Request Token </span>
+</h3>
+<p>If a user approves an app addition, then the Chrome UI server needs to let the backend know.
+</p>
+<pre>POST /oauth/internal/request_tokens/{request_token}/approve
+record_id={indivo_record_id}
+</pre>
+<p>This call, if it succeeds with a 200, will return the location to which the user's browser should be redirected:
+</p>
+<pre>location={url_to_redirect_to}
+</pre>
+<p>This call's session authentication must match that which claimed the 
+request token. The record ID is the record to which the user is 
+attaching the application (i.e. my child's record, not my own.) If the 
+request token was pre-bound to a record, this record ID parameter <i>must</i> match, or this will throw an error.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="record_id" style="query" type="xsd:string">
+<doc>{indivo_record_id}</doc>
+</param>
+</representation>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>location={url_to_redirect_to}
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="request_token_approve" iwe:shortname="approve_request_token" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.reqtoken_record</iwe:grant>
+<iwe:grant>account_ruleset.reqtoken_carenet</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Retrieve_and_Update_Account_Info">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Retrieve and Update Account Info </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/accounts/{account_id}/check-primary-secret/{primary_secret}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>When an Indivo account is uninitialized, the Chrome application 
+(which is THE user interface) must be able to check an account's status 
+to provide the initialization screen.
+</p>
+<p>Retrieving the account information can be done using the account 
+info call from above. Checking the primary secret can be done using:
+</p>
+<pre>GET /accounts/{account_id}/check-primary-secret/{primary_secret}
+</pre>
+<p>which will return 
+</p>
+<pre>&lt;result&gt;true&lt;/result&gt;
+</pre>
+<p>or 
+</p>
+<pre>&lt;result&gt;false&lt;/result&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;result&gt;true&lt;/result&gt;
+</pre>
+</span>
+</doc>
+</response>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;result&gt;false&lt;/result&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/accounts/{account_id}/initialize">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>Then, to initialize the account, the Chrome app makes the following call:
+</p>
+<pre>POST /accounts/{account_id}/initialize
+primary_secret={primary_secret]&amp;secondary_secret={secondary_secret}&amp;password={password}
+</pre>
+<p>which will then return the account info XML with the new account status of "ok".
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="primary_secret" style="query" type="xsd:string">
+<doc>{primary_secret]</doc>
+</param>
+<param name="secondary_secret" style="query" type="xsd:string">
+<doc>{secondary_secret}</doc>
+</param>
+<param name="password" style="query" type="xsd:string">
+<doc>{password}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Verifying_Signed_URLs" path="/oauth/internal/surl-verify">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Verifying Signed URLs </span>
+</h3>
+<p>In some cases, an Indivo app will sign a URL that directs the user to
+ the Indivo Chrome. A prime example is the use of Indivo Chrome widgets,
+ i.e. the Document Sharing widget, that apps can embed within their user
+ interface to reuse functionality from Indivo Chrome. A signed URL looks
+ like this:
+</p>
+<pre>/widgets/WidgetName?param1=foo&amp;param2=bar&amp;surl_timestamp=&lt;TIMESTAMP&gt;&amp;surl_token=&lt;TOKEN&gt;&amp;surl_sig=&lt;SIGNATURE&gt;
+</pre>
+<p>The signature contained in <tt>surl_sig</tt> is effectively a signature on the rest of the URL. The signature algorithm is as follows:
+</p>
+<p>- an app, with oAuth access token &lt;TOKEN&gt; and oAuth access token secret &lt;SECRET&gt;, wishes to sign a URL.
+- the app generates the SURL secret that corresponds to this access token as follows:
+</p>
+<pre>&lt;SURL_SECRET&gt; = HMAC(&lt;TOKEN_SECRET&gt;, "SURL-SECRET")
+</pre>
+<p>using base64 encoding, where the idea is to actually sign the <em>string</em> "SURL-SECRET" to obtain the SURL secret itself.
+</p>
+<p>- this SURL secret is then used to sign the URL, first by 
+appending a timestamp, the SURL token, and then computing the signature
+</p>
+<pre>&lt;SURL_SIG&gt; = HMAC(&lt;SURL_SECRET&gt;, "/widgets/WidgeName?...&amp;surl_timestamp=&lt;TIMESTAMP&gt;&amp;surl_token=&lt;TOKEN&gt;")
+</pre>
+<p>in base 64, then appending it as a query parameter <tt>surl_sig</tt>.
+</p>
+<p>Indivo then provides an API for verifying such signed URLs:
+</p>
+<pre>GET /oauth/internal/surl-verify?url={url}
+
+&lt;result&gt;{ok|bad}&lt;/result&gt;
+</pre>
+<p>where the URL parameter is URL-encoded, of course.
+</p>
+</span>
+</doc>
+<method name="GET">
+<request>
+<param name="url" style="query" type="xsd:string">
+<doc>{url}</doc>
+</param>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;result&gt;{ok|bad}&lt;/result&gt;</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="surl_verify" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Overview_2">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Overview </span>
+</h2>
+<p>We want to simplify sharing. Each record will have carenets of 
+people, data, and apps, and, by default, each record will have 3 simple 
+carenets: physicians, family, and work/school.
+</p>
+<p>Documents of certain types can be auto-shared into certain 
+carenets. Users can override the type-auto-sharing on a 
+document-by-document basis.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Making_Other_APIs_Carenet-aware">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Making Other APIs Carenet-aware </span>
+</h2>
+<p>All document and reporting calls that can be made on <tt>/records/{record_id}</tt> can be made on <tt>/carenets/{carenet_id}</tt>. For example:
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoNonURLResource" id="List_Documents_by_Type_in_a_CareNet">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> List Documents by Type in a CareNet </span>
+</h3>
+<pre>GET /carenets/{carenet_id}/documents/?type={indivo_document_type_url}
+</pre>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Report_in_a_CareNet">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Report in a CareNet </span>
+</h3>
+<pre>GET /carenets/{carenet_id}/reports/minimal/immunizations/
+</pre>
+<p>For more on reporting calls please see:  <a class="external free" href="http://wiki.chip.org/indivo/index.php/Indivo_API#Processed_Medical_Reports" rel="nofollow" title="http://wiki.chip.org/indivo/index.php/Indivo_API#Processed_Medical_Reports">http://wiki.chip.org/indivo/index.php/Indivo_API#Processed_Medical_Reports</a>
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoURLResource" id="List_Carenets" path="/records/{record_id}/carenets/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> List Carenets </span>
+</h3>
+<p>A record owner can list the available carenets:
+</p>
+<pre>GET /records/{record_id}/carenets/
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="carenet_list" iwe:shortname="get_record_carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Basic_Record_Info" path="/carenets/{carenet_id}/record">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Basic Record Info </span>
+</h3>
+<p>A carenet user needs basic information about the record that the carenet belongs to, at least for UI
+</p>
+<pre>GET /carenets/{carenet_id}/record
+</pre>
+<pre>&lt;Record id="..." label="..."&gt;
+&lt;/Record&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Record id="..." label="..."&gt;
+&lt;/Record&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="carenet_record" iwe:shortname="get_carenet_record" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Authorization_into_a_CareNet">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Authorization into a CareNet </span>
+</h2>
+<p>When an app is added, it is given, along with its oAuth token, an <tt>xoauth_indivo_record_id</tt> that the token corresponds to. In addition, the app will now receive an <tt>xoauth_indivo_carenet_id</tt>.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Sharing_API">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Sharing API </span>
+</h2>
+</span>
+</doc>
+<resource xsi:type="IndivoNonURLResource" id="Full_Record_Shares">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Full Record Shares </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/shares/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>Entire records can be shared. The list of accounts with whom a record is shared can be obtained:
+</p>
+<pre>GET /records/{record_id}/shares/
+</pre>
+<pre>&lt;Shares&gt;
+   &lt;Share id="..." account="..." /&gt;
+   &lt;Share id="..." pha="..." /&gt;
+&lt;/Shares&gt;
+
+</pre>
+<p>Note how some of these shares indicate sharing with a PHA when that PHA has been added to the record.
+</p>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Shares&gt;
+   &lt;Share id="..." account="..." /&gt;
+   &lt;Share id="..." pha="..." /&gt;
+&lt;/Shares&gt;
+
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="record_shares" iwe:shortname="get_shares" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.is_owner</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/shares/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A new full-record share with an account can be created as follows:
+</p>
+<pre>POST /records/{record_id}/shares/
+account_id={account_id}&amp;role_label={role_label}
+</pre>
+<p>The role_label is currently nothing more than that: a label. The label will come back in the XML for &lt;Shares&gt;
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="account_id" style="query" type="xsd:string">
+<doc>{account_id}</doc>
+</param>
+<param name="role_label" style="query" type="xsd:string">
+<doc>{role_label}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="record_share_add" iwe:shortname="create_share" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.is_owner</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/shares/{account_id}/delete">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A share can then be removed using
+</p>
+<pre>POST /records/{record_id}/shares/{account_id}/delete
+</pre>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:server_method_name="record_share_delete" iwe:shortname="delete_share" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>account_ruleset.is_owner</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Place_a_document_in_a_carenet" path="/records/{record_id}/documents/{document_id}/carenets/{carenet_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Place a document in a carenet </span>
+</h3>
+<pre>PUT /records/{record_id}/documents/{document_id}/carenets/{carenet_id}
+ {}
+</pre>
+<p>When a document is explicitly shared with a carenet, it is no longer 
+tied to the auto-sharing rules for that carenet. However, auto-sharing 
+rules with other carenets still apply.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<request>
+<doc>{}</doc>
+</request>
+<iwe:method_extension iwe:server_method_name="carenet_document_placement" iwe:shortname="post_carenet_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Remove_a_document_from_a_carenet" path="/records/{record_id}/documents/{document_id}/carenets/{carenet_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Remove a document from a carenet </span>
+</h3>
+<pre>DELETE /records/{record_id}/documents/{document_id}/carenets/{carenet_id}
+</pre>
+<p>When a document is explicitly UNshared from a carenet, it is no 
+longer tied to the auto-sharing rules for that carenet. However, 
+auto-sharing rules with other carenets still apply.
+</p>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:server_method_name="carenet_document_delete" iwe:shortname="delete_carenet_document" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Revert_a_document_to_auto-share_rules" path="/records/{record_id}/documents/{document_id}/carenets/{carenet_id}/autoshare-revert">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Revert a document to auto-share rules </span>
+</h3>
+<pre>POST /records/{record_id}/documents/{document_id}/carenets/{carenet_id}/autoshare-revert
+</pre>
+<p>This means that, for this carenet, this document reverts to automatic
+ sharing rules. This might mean a removal of the share with this 
+carenet, or an addition, or no effect. However, from this point on, the 
+record-wide rules apply.
+</p>
+</span>
+</doc>
+<method name="POST">
+<iwe:method_extension iwe:server_method_name="autoshare_revert" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="List_carenets_where_a_document_is_present" path="/records/{record_id}/documents/{document_id}/carenets/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> List carenets where a document is present </span>
+</h3>
+<pre>GET /records/{record_id}/documents/{document_id}/carenets/
+</pre>
+<pre> &lt;Carenets&gt;
+   &lt;Carenet id=".." name="..." mode="explicit" /&gt;
+   &lt;Carenet id=".." name="..." mode="bytype"/&gt;
+   &lt;Carenet id=".." name="..." mode="explicit" value="negative" /&gt;
+ &lt;/Carenets&gt;
+</pre>
+<p>The <tt>mode</tt> attribute indicates how this document is shared. <tt>explicit</tt> means that the sharing preferences for this document are explicitly set. <tt>bytype</tt> indicates that it was auto-shared by document type. Other modes may be enabled in the future.
+</p>
+<p>The <tt>value</tt> attribute indicates a negative share with a carenet, meaning that the user explicitly wants this document <em>not</em> shared with this carenet, even if auto-share rules would otherwise share it. Obviously this only makes sense for <tt>explicit</tt> carenet-shares.
+</p>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre> &lt;Carenets&gt;
+   &lt;Carenet id=".." name="..." mode="explicit" /&gt;
+   &lt;Carenet id=".." name="..." mode="bytype"/&gt;
+   &lt;Carenet id=".." name="..." mode="explicit" value="negative" /&gt;
+ &lt;/Carenets&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="document_carenets" iwe:shortname="get_document_carenets" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Never_Share">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Never Share </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/nevershare">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>A user should be able to ask that a document be "never shared". This 
+flag prevents any sharing, no matter what the auto-share rules may be.
+</p>
+<pre>PUT /records/{record_id}/documents/{document_id}/nevershare
+</pre>
+</span>
+</doc>
+<method name="PUT">
+<iwe:method_extension iwe:server_method_name="document_set_nevershare" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/documents/{document_id}/nevershare">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<p>And the nevershare flag can be removed easily
+</p>
+<pre>DELETE /records/{record_id}/documents/{document_id}/nevershare
+</pre>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:server_method_name="document_remove_nevershare" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Get_Auto-Sharing_Preferences" path="/records/{record_id}/autoshare/bytype/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Get Auto-Sharing Preferences </span>
+</h3>
+<pre>GET /records/{record_id}/autoshare/bytype/?type={indivo_document_type}
+</pre>
+<pre> &lt;Carenets&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+ &lt;/Carenets&gt;
+</pre>
+<p>Documents of a certain type can be auto-shared, so that they are 
+added to a carenet when they are added to the record. This call lists 
+the auto-sharing by document type.
+</p>
+</span>
+</doc>
+<method name="GET">
+<request>
+<param name="type" style="query" type="xsd:string">
+<doc>{indivo_document_type}</doc>
+</param>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre> &lt;Carenets&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+ &lt;/Carenets&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="autoshare_list" iwe:shortname="get_autoshare" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+
+<resource xsi:type="IndivoURLResource" id="get_authosharing_all" path="/records/{record_id}/autoshare/bytype/all" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Get All Auto-Sharing Preferences </span>
+</h3>
+<pre>GET /records/{record_id}/autoshare/bytype/all
+</pre>
+<pre>
+&lt;DocumentSchemas&gt;
+ &lt;DocumentSchema type=".."&gt;
+  &lt;Carenets&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+  &lt;/Carenets&gt;
+ &lt;/DocumentSchema&gt;
+&lt;/DocumentSchemas&gt;
+</pre>
+<p>This call lists all auto-sharing preferences.
+</p>
+</span>
+</doc>
+<method name="GET">
+<request>
+</request>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>
+&lt;DocumentSchemas&gt;
+ &lt;DocumentSchema type=".."&gt;
+  &lt;Carenets&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+   &lt;Carenet id=".." name="..." /&gt;
+  &lt;/Carenets&gt;
+ &lt;/DocumentSchema&gt;
+&lt;/DocumentSchemas&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="autoshare_list_bytype_all" iwe:shortname="get_autoshare_bytype_all" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+
+<resource xsi:type="IndivoNonURLResource" id="Set_Auto-Sharing_Preferences">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Set Auto-Sharing Preferences </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/autoshare/carenets/{carenet_id}/bytype/set">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /records/{record_id}/autoshare/carenets/{carenet_id}/bytype/set
+type={indivo_document_type}
+</pre>
+<p>This sets the auto-share preferences for a type of document for a given carenet.
+</p>
+<p>These preferences apply to all documents that do not have an explicit sharing preference declared on them.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="type" style="query" type="xsd:string">
+<doc>{indivo_document_type}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="autoshare_create" iwe:shortname="post_autoshare" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="machineapp">
+<iwe:grant>None</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/autoshare/carenets/{carenet_id}/bytype/unset">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>POST /records/{record_id}/autoshare/carenets/{carenet_id}/bytype/unset
+type={indivo_document_type}
+</pre>
+<p>This removes the auto-share preference for that doctype and that carenet.
+</p>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="type" style="query" type="xsd:string">
+<doc>{indivo_document_type}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="autoshare_delete" iwe:shortname="delete_autoshare" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Managing_Carenets_.28more_Sharing_API.29">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Managing Carenets (more Sharing API) </span>
+</h2>
+<p>Users needs to be able to place apps and people inside carenets. Apps
+ are placed inside carenets when they are authorized. Users are placed 
+in carenets more explicitly.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" id="Listing_Apps_in_a_Carenet" path="/carenets/{carenet_id}/apps/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Listing Apps in a Carenet </span>
+</h3>
+<pre>GET /carenets/{carenet_id}/apps/
+</pre>
+</span>
+</doc>
+<method name="GET">
+<iwe:method_extension iwe:server_method_name="carenet_apps_list" iwe:shortname="get_carenet_apps" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Adding_an_App_to_a_Carenet" path="/carenets/{carenet_id}/apps/{pha_email}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Adding an App to a Carenet </span>
+</h3>
+<pre>PUT /carenets/{carenet_id}/apps/{pha_email}
+</pre>
+<p>No read/write issues here, permissions are per-user at that point, 
+this is just about whether the app is visible in the carenet at all.
+</p>
+</span>
+</doc>
+<method name="PUT">
+<iwe:method_extension iwe:server_method_name="carenet_apps_create" iwe:shortname="post_carenet_app" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Removing_an_App_from_a_Carenet" path="/carenets/{carenet_id}/apps/{pha_email}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Removing an App from a Carenet </span>
+</h3>
+<pre>DELETE /carenets/{carenet_id}/apps/{pha_email}
+</pre>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:server_method_name="carenet_apps_delete" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Listing_People_in_a_Carenet" path="/carenets/{carenet_id}/accounts/" type="#list_of_results_returned">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Listing People in a Carenet </span>
+</h3>
+<pre>GET /carenets/{carenet_id}/accounts/
+</pre>
+<pre>&lt;Accounts&gt;
+  &lt;Account id="ben@indivo.org" write="true" /&gt;
+  &lt;Account id="friend@indivo.org" write="false" /&gt;
+&lt;/Accounts&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Accounts&gt;
+  &lt;Account id="ben@indivo.org" write="true" /&gt;
+  &lt;Account id="friend@indivo.org" write="false" /&gt;
+&lt;/Accounts&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="carenet_account_list" iwe:shortname="get_carenet_accounts" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Adding_a_Person_to_a_Carenet" path="/carenets/{carenet_id}/accounts/">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Adding a Person to a Carenet </span>
+</h3>
+<pre>POST /carenets/{carenet_id}/accounts/
+account_id={account_id}&amp;write={false|true}
+</pre>
+</span>
+</doc>
+<method name="POST">
+<request>
+<representation mediaType="application/x-www-form-urlencoded">
+<param name="account_id" style="query" type="xsd:string">
+<doc>{account_id}</doc>
+</param>
+<param name="write" style="query" type="xsd:string">
+<doc>{false|true}</doc>
+</param>
+</representation>
+</request>
+<iwe:method_extension iwe:server_method_name="carenet_account_create" iwe:shortname="post_carenet_account" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Removing_a_Person_from_a_Carenet" path="/carenets/{carenet_id}/accounts/{account_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Removing a Person from a Carenet </span>
+</h3>
+<pre>DELETE /carenets/{carenet_id}/accounts/{account_id}
+</pre>
+</span>
+</doc>
+<method name="DELETE">
+<iwe:method_extension iwe:server_method_name="carenet_account_delete" iwe:shortname="delete_carenet_account" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="account">
+<iwe:grant>full_control</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+</resource>
+<resource xsi:type="IndivoURLResource" id="Checking_One.27s_Own_Permissions" path="/carenets/{carenet_id}/accounts/{account_id}/permissions">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Checking One's Own Permissions </span>
+</h2>
+<p>An app or a person may need to check what permissions it has in a given carenet.
+</p>
+<pre>GET /carenets/{carenet_id}/accounts/{account_id}/permissions
+</pre>
+<pre>GET /carenets/{carenet_id}/apps/{app_id}/permissions
+</pre>
+<p>In either case, the return value is:
+</p>
+<pre>&lt;Permissions&gt;
+  &lt;DocumentType type="*" write="{true|false}" /&gt;
+&lt;/Permissions&gt;
+</pre>
+<p>Note how the document type is always "*" for now, since an app or a 
+person can see anything that lives in a given carenet, although we may 
+eventually further limit this for apps. The "write" attribute determines
+ whether the account or app has the ability to add data to the given 
+carenet.
+</p>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /carenets/{carenet_id}/apps/{app_id}/permissions</pre>
+</span>
+</doc>
+</response>
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Permissions&gt;
+  &lt;DocumentType type="*" write="{true|false}" /&gt;
+&lt;/Permissions&gt;
+</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:server_method_name="carenet_account_permissions" iwe:shortname="get_carenet_account_permissions" xmlns="http://org.indivo.server/indivoServerWadlExtension">
+<iwe:grants iwe:principal="accesstoken">
+<iwe:grant>ar_share_record_or_pha</iwe:grant>
+</iwe:grants>
+<iwe:grants iwe:principal="account">
+<iwe:grant>accessrule_carenet_account</iwe:grant>
+</iwe:grants>
+</iwe:method_extension>
+</method>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Apps_and_Carenets">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Apps and Carenets </span>
+</h2>
+<p>Indivo apps are given a <tt>record_id</tt> and an access token that 
+matches that record to read and write documents, read reports, annotate,
+ etc.. In a sharing scenario, apps must become carenet-aware.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoNonURLResource" id="Requirements">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Requirements </span>
+</h3>
+<ul>
+<li> an app should be easily placed within any number of carenets, i.e. physicians and family, but not work/school.
+</li>
+</ul>
+<ul>
+<li> when an app is activated on a given record, it must have access
+ to no more data than the user who activated it. For example, if the 
+owner selects the app, then the app may have access to the entire 
+record. If the owner's school nurse activates the app, the nurse should 
+have access to only the data that is in the work/school carenet.
+</li>
+</ul>
+<ul>
+<li> there may be a need to further constrain an app, so that even 
+if the owner activates the app, it should not be able to see every data 
+type, or may be constrained to one of the carenets anyways. This is 
+DEFERRED for now.
+</li>
+</ul>
+<ul>
+<li> we must not depend on app developers to properly partition 
+information. If an app is active in both the Family and Physicians 
+carenets, and knows that the <tt>record_id</tt> is the same in both 
+cases, it may well intermix data without realizing it. This would be 
+bad. We need to make it harder for apps to hurt the user.
+</li>
+</ul>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Scenario">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Scenario </span>
+</h3>
+<p>Alice owns her Indivo record and has shared it with Bob, her HR 
+representative at work, placing Bob in the "Work/School" carenet. Alice 
+is pregnant but does not wish to reveal this information to her 
+co-workers just yet. She has added the "Pregnancy Tracker" app to her 
+record, making it visible to her Family and Physician carenets, but not 
+to to her Work/School carenet. Alice has a history of depression, 
+information which she has shared with her Physicians, but not with her 
+Family.
+</p>
+</span>
+</doc>
+<resource xsi:type="IndivoNonURLResource" id="Visible_Apps">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Visible Apps </span>
+</h4>
+<p>The "Pregnancy Tracker" app has been added to the Family and 
+Physicians carenets, but not the Work/School carenet, so Bob cannot even
+ see the application when he visits Alice's record. This is enforced by 
+the Indivo platform itself.
+</p>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Activating_and_using_an_App">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h4> <span class="mw-headline"> Activating and using an App </span>
+</h4>
+<p>Charlie, Alice's father, is eager to check up on his future 
+grandchild's progress. He logs into Indivo, selects Alice's record. He 
+sees "Pregnancy Tracker" because that app is visible to the Family 
+carenet. He launches the app, and uses its functionality to track 
+Alice's progress, her fetus's growth, her blood tests, etc. The process 
+when launching the app is:
+</p>
+<ul>
+<li> clicking on the app directs the IFRAME to the <tt>start_url</tt>
+ for the pregnancy tracker. The app must receive an indication of which 
+record is being accessed at this point. This cannot be the <tt>record_id</tt> alone, and we may not even want to include the <tt>record_id</tt> at all, otherwise the app might confuse this data with that accessible to Physicians later on. Thus, instead of passing <tt>record_id</tt> to the IFRAME, Indivo passes only <tt>carenet_id</tt>.
+</li>
+</ul>
+<ul>
+<li> the oAuth process begins with the <tt>carenet_id</tt> only as part of the request for a request token.
+</li>
+</ul>
+<ul>
+<li> Indivo checks that the logged-in-user has the right to access this carenet, and if so authorizes the token.
+</li>
+</ul>
+<ul>
+<li> the token is bound to that carenet only, and cannot be used on any other carenet.
+</li>
+</ul>
+<ul>
+<li> the app can make requests to
+</li>
+</ul>
+<pre>/carenets/{carenet_id}/documents/...
+</pre>
+<p>without using the <tt>record_id</tt> at all. It doesn't need to know the <tt>record_id</tt>.
+</p>
+<ul>
+<li> when the app is later activated by a Physician, who does have 
+access to Alice's history of depression, the app gets a different <tt>carenet_id</tt>, and from that carenet has access to the documents including mental health.
+</li>
+</ul>
+<ul>
+<li> this is not fool-proof: we still probably need to give the app 
+access to some record information that will yield a unique identifier 
+using the name, DoB, etc... but at least the default behavior for the 
+app will not allow error-prone tracking across carenets.
+</li>
+</ul>
+</span>
+</doc>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="oAuth_Mechanics">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> oAuth Mechanics </span>
+</h3>
+<p>We start with:
+</p>
+<ul>
+<li> a CarenetAccount row that shares a record's carenet with another account
+</li>
+<li> a Share rowthat indicates that an app has access to the record
+</li>
+<li> a CarenetPHA row that makes the app available in the carenet.
+</li>
+</ul>
+<p>The oAuth process is then:
+</p>
+<ul>
+<li> PHA requests a request token with a carenet_id instead of a record_id as parameter.
+</li>
+<li> PHA needs to have a share into the record or into the specific carenet for this to succeed.
+</li>
+<li> the request token needs to keep track of the carenet, because the Share might be for the whole record.
+</li>
+<li> the user approving the request token should be in the carenet in question.
+</li>
+<li> the access token already stores the account of the person it's proxying for, so that should be enough.
+</li>
+</ul>
+</span>
+</doc>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Auditing">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h3> <span class="mw-headline"> Auditing </span>
+</h3>
+</span>
+</doc>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/audits">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/audits
+ &lt;Audits&gt;&lt;/Audits&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Audits&gt;&lt;/Audits&gt;</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/audits/documents/{document_id}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/audits/documents/{document_id}
+ &lt;Audits&gt;&lt;/Audits&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Audits&gt;&lt;/Audits&gt;</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+<resource xsi:type="IndivoURLResource" path="/records/{record_id}/audits/documents/{document_id}/functions/{function_name}">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>GET /records/{record_id}/audits/documents/{document_id}/functions/{function_name}
+ &lt;Audits&gt;&lt;/Audits&gt;
+</pre>
+</span>
+</doc>
+<method name="GET">
+<response>
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<pre>&lt;Audits&gt;&lt;/Audits&gt;</pre>
+</span>
+</doc>
+</response>
+<iwe:method_extension iwe:not_implemented="indivo_server-v0.8.3.7" xmlns="http://org.indivo.server/indivoServerWadlExtension"/>
+</method>
+</resource>
+</resource>
+</resource>
+<resource xsi:type="IndivoNonURLResource" id="Data_Usage_Intent_and_Share_Tracking">
+<doc>
+<span xmlns="http://www.w3.org/1999/xhtml">
+<h2> <span class="mw-headline"> Data Usage Intent and Share Tracking </span>
+</h2>
+</span>
+</doc>
+</resource>
+</resources>
+<resource_type id="list_of_results_returned">
+<param name="offset" style="query" type="xsd:string">
+<doc>{offset}</doc>
+</param>
+<param name="limit" style="query" type="xsd:string">
+<doc>{limit}</doc>
+</param>
+<param name="order_by" style="query" type="xsd:string">
+<doc>{order_by}</doc>
+</param>
+<param name="status" style="query" type="xsd:string">
+<doc>{document_status}</doc>
+</param>
+<param name="modified_since" style="query" type="xsd:string">
+<doc>{modified_since}</doc>
+</param>
+</resource_type>
+</application>

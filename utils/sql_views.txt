@@ -1,0 +1,6 @@
+create view document_view as select ir.id as record_id, substring(ip.email from 0 for 12) as email, id.id as document_id, substring(id.content from 0 for 15) as content, ids.type, id.original_id, id.replaced_by_id from \"indivo_record\" ir join \"indivo_principal\" ip on ip.id = ir.owner_id left join \"indivo_document\" id on id.record_id = ir.id left join indivo_documentschema ids on id.type_id = ids.id;"
+
+create view account_view as select ir.label, ip.email, ia.total_login_count, ia.secondary_secret, ia.last_login_at, ia.failed_login_count, ia.state, ia.last_state_change from indivo_record ir left join indivo_account ia on ir.owner_id = ia.account_id left join indivo_principal ip on ip.id = ia.account_id order by ir.label;"
+
+create view share_view as select ip.email as share_principal, ir2.label as share_record_label, ip2.email as pha_email, ip.created_at as principal_created_at, ir.label as record_label, ip3.email as record_owner from indivo_principal ip left join indivo_share share on ip.id = share.principal_id left join indivo_principal ip2 on ip2.id = share.pha_id left join indivo_record ir on ir.id = share.record_id left join indivo_principal ip3 on ip3.id = ir.owner_id left join indivo_account ia on ir.owner_id = ia.account_id left join indivo_record ir2 on ir2.owner_id = ip.id where share.record_id is not null order by ir.label;"
+

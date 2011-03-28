@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<AuditLog>
+{% for audit in audits %}
+  <Entry request_datetime="{{ audit.req_datetime }}" effective_principal="{{ audit.req_effective_principal_email }}" proxied_principal="{{ audit.req_proxied_principal_email }}" record_id="{{ audit.record }}" document_id="{{ audit.document }}" function="{{ audit.req_view_func }}" />
+{% endfor %}
+</AuditLog>

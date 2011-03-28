@@ -1,0 +1,20 @@
+{% load template_utils %}<Procedure xmlns="http://indivo.org/vocab/xml/documents#">
+  <datePerformed>{{ procedure.date_performed|format_iso8601_datetime }}</datePerformed>
+  {% if procedure.name %}
+  <name{% if procedure.name_type %} type="{{ procedure.name_type }}" value="{{ procedure.name_value }}" abbrev="{{ procedure.name_abbrev|check_empty }}"{% endif %}>{{ procedure.name }}</name>
+  {% endif %}
+  {% if procedure.provider_name %}
+  <Provider>
+    <name>{{ procedure.provider_name }}</name>
+    {% if procedure.provider_institution %}
+    <institution>{{ procedure.provider_institution }}</institution>
+    {% endif %}
+  </Provider>
+  {% endif %}
+  {% if procedure.location %}
+  <location>{{ procedure.location }}</location>
+  {% endif %}
+  {% if procedure.comments %}
+  <comments>{{ procedure.comments }}</comments>
+  {% endif %}
+</Procedure>

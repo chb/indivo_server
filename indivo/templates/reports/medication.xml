@@ -1,0 +1,73 @@
+{% load template_utils %}<Medication xmlns="http://indivo.org/vocab/xml/documents#">
+  {% if medication.date_started %}
+    <dateStarted>{{ medication.date_started|format_iso8601_date }}</dateStarted>
+  {% endif %}
+  {% if medication.date_stopped %}
+  <dateStopped>{{ medication.date_stopped|format_iso8601_date }}</dateStopped>
+  {% endif %}
+  {% if medication.name %}
+  <name{% if medication.name_type %} type="{{ medication.name_type }}" value="{{ medication.name_value }}"{% if medication.name_abbrev %} abbrev="{{ medication.name_abbrev }}"{% endif %}{% endif %}>{{ medication.name }}</name>
+  {% endif %}
+  {% if medication.brand_name %}
+  <brandName{% if medication.brand_name_type %} type="{{ medication.brand_name_type }}" value="{{ medication.brand_name_value }}"{% if medication.brand_name_abbrev %} abbrev="{{ medication.brand_name_abbrev }}"{% endif %}{% endif %}>{{ medication.brand_name }}</brandName>
+  {% endif %}
+  <dose>
+    {% if medication.dose_value %}
+    <value>{{ medication.dose_value }}</value>
+    {% if medication.dose_unit %}
+      <unit{% if medication.dose_unit_type %} type="{{ medication.dose_unit_type }}" value="{{ medication.dose_unit_value }}"{% if medication.dose_unit_abbrev %} abbrev="{{ medication.dose_unit_abbrev }}"{% endif %}{% endif %}>{{ medication.dose_unit }}</unit>
+    {% endif %}
+    {% endif %}
+    {% if medication.dose_textvalue %}
+    <textValue>{{ medication.dose_textvalue }}</textValue>
+    {% endif %}
+  </dose>
+  {% if medication.route %}
+  <route{% if medication.route_type %} type="{{ medication.route_type }}" value="{{ medication.route_value }}"{% if medication.route_abbrev %} abbrev="{{ medication.route_abbrev }}"{% endif %}{% endif %}>{{ medication.route }}</route>
+  {% endif %}
+  {% if medication.strength_value or medication.strength_textvalue %}
+  <strength>
+    {% if medication.strength_value %}
+    <value>{{ medication.strength_value }}</value>
+    {% if medication.strength_unit %}
+      <unit{% if medication.strength_unit_type %} type="{{ medication.strength_unit_type }}" value="{{ medication.strength_unit_value }}"{% if medication.strength_unit_abbrev %} abbrev="{{ medication.strength_unit_abbrev }}"{% endif %}{% endif %}>{{ medication.strength_unit }}</unit>
+    {% endif %}
+    {% else %}
+    <textValue>{{ medication.strength_textvalue }}</textValue>
+    {% endif %}
+  </strength>
+  {% endif %}
+  {% if medication.frequency %}
+    <frequency{% if medication.frequency_type %} type="{{ medication.frequency_type }}" value="{{ medication.frequency_value }}"{% if medication.frequency_abbrev %} abbrev="{{ medication.frequency_abbrev }}"{% endif %}{% endif %}>{{ medication.frequency }}</frequency>
+  {% endif %}
+  {% if medication.prescribed_by_name %}
+    <prescription>
+      <by>
+        {% if medication.prescribed_by_name %}
+          <name>{{ medication.prescribed_by_name }}</name>
+        {% endif %}
+        {% if medication.prescribed_by_institution %}
+          <institution>{{ medication.prescribed_by_institution }}</institution>
+        {% endif %}
+      </by>
+      {% if medication.prescribed_on %}
+        <on>{{ medication.prescribed_on|format_iso8601_date }}</on>
+      {% endif %}
+      {% if medication.prescribed_stop_on %}
+        <stopOn>{{ medication.prescribed_stop_on|format_iso8601_date }}</stopOn>
+      {% endif %}
+      {% if medication.dispense_as_written %}
+        <dispenseAsWritten>{{ medication.dispense_as_written }}</dispenseAsWritten>
+      {% endif %}
+      {% if medication.prescription_duration %}
+        <duration>{{ medication.prescription_duration }}</duration>
+      {% endif %}
+      {% if medication.prescription_refill_info %}
+        <refillInfo>{{ medication.prescription_refill_info }}</refillInfo>
+      {% endif %}
+      {% if medication.prescription_instructions %}
+        <instructions>{{ medication.prescription_instructions }}</instructions>
+      {% endif %}
+    </prescription>
+  {% endif %}
+</Medication>

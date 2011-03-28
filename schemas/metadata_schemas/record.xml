@@ -1,0 +1,5 @@
+<Record id="123" label="Joe User" shared="true">
+  <contact document_id="790" />
+  <demographics document_id="467" />
+  <created at="2010-10-23T10:23:34Z" by="indivoconnector@apps.indivo.org" />
+</Record>

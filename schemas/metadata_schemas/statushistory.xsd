@@ -1,0 +1,21 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:element name="DocumentStatusHistory">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="DocumentStatus" minOccurs="0" maxOccurs="unbounded">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="reason" type="xs:string" minOccurs="1" maxOccurs="1" />
+	    </xs:sequence>
+	    <xs:attribute name="by" type="xs:string" use="required" />
+	    <xs:attribute name="at" type="xs:dateTime" use="required" />
+	    <xs:attribute name="status" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+      <xs:attribute name="document_id" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,35 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:element name="Notifications">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="Notification">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="sender" type="xs:string" minOccurs="1" maxOccurs="1" />
+	      <xs:element name="received_at" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+	      <xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1" />
+
+	      <xs:element name="record" minOccurs="1" maxOccurs="1">
+		<xs:complexType>
+		  <xs:attribute name="id" type="xs:string" use="required" />
+		  <xs:attribute name="label" type="xs:string" use="required" />
+		</xs:complexType>
+	      </xs:element>
+
+	      <xs:element name="document" minOccurs="0" maxOccurs="1">
+		<xs:complexType>
+		  <xs:attribute name="id" type="xs:string" use="required" />
+		  <xs:attribute name="label" type="xs:string" use="required" />
+		</xs:complexType>
+	      </xs:element>
+	      
+	    </xs:sequence>
+	    <xs:attribute name="id" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	
+</xs:schema>

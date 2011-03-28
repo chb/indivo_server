@@ -1,0 +1,35 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:element name="Record">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="contact" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:attribute name="document_id" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="demographics" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:attribute name="document_id" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="created" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:attribute name="at" type="xs:dateTime" use="optional" />
+	    <xs:attribute name="by" type="xs:string" use="optional" />
+	  </xs:complexType>
+	</xs:element>
+	
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="label" type="xs:string" use="required" />
+      <xs:attribute name="shared" type="xs:boolean" use="optional" />
+      <xs:attribute name="carenet_id" type="xs:string" use="optional" />
+      <xs:attribute name="carenet_name" type="xs:string" use="optional" />
+      <xs:attribute name="role_label" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+	
+</xs:schema>

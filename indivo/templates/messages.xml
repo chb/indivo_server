@@ -1,0 +1,19 @@
+{% load template_utils %}<?xml version="1.0" encoding="utf-8" ?>
+<Messages>
+{% for message in messages %}
+<Message id="{{message.id}}">
+  <sender>{{message.sender.email}}</sender>
+  <received_at>{{message.received_at}}</received_at>
+  <read_at>{{message.read_at|check_empty}}</read_at>
+  <archived_at>{{message.archived_at|check_empty}}</archived_at>
+  <subject>{{message.subject}}</subject>
+  <severity>{{message.severity}}</severity>
+{% if message.about_record_id %}
+  <record id="{{message.about_record_id}}" />
+{% endif %}
+  {% for attachment in message.messageattachment_set.all %}
+  <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.type}}" />
+  {% endfor %}
+</Message>
+{% endfor %}
+</Messages>

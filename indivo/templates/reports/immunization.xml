@@ -1,0 +1,45 @@
+{% load template_utils %}<Immunization xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateAdministered>{{ immunization.date_administered|format_iso8601_datetime }}</dateAdministered>
+  {% if immunization.administered_by %}
+  <administeredBy>
+    {{ immunization.administered_by }}
+  </administeredBy>
+  {% endif %}
+  {% if immunization.vaccine_type %}
+  <vaccine>
+    <type{% if immunization.vaccine_type_type %} type="{{ immunization.vaccine_type_type }}" value="{{ immunization.vaccine_type_value }}" abbrev="{{ immunization.vaccine_type_abbrev|check_empty }}"{% endif %}>
+      {{ immunization.vaccine_type }}
+    </type>
+    {% if immunization.vaccine_manufacturer %}
+    <manufacturer>
+      {{ immunization.vaccine_manufacturer }}
+    </manufacturer>
+    {% endif %}
+    {% if immunization.vaccine_lot %}
+    <lot>
+      {{ immunization.vaccine_lot }}
+    </lot>
+    {% endif %}
+    {% if immunization.vaccine_expiration %}
+    <expiration>
+      {{ immunization.vaccine_expiration }}
+    </expiration>
+    {% endif %}
+  </vaccine>
+  {% endif %}
+  {% if immunization.sequence %}
+  <sequence>
+    {{ immunization.sequence }}
+  </sequence>
+  {% endif %}
+  {% if immunization.anatomic_surface %}
+  <anatomicSurface{% if immunization.anatomic_surface_type %} type="{{ immunization.anatomic_surface_type }}" value="{{ immunization.anatomic_surface_value }}" abbrev="{{ immunization.anatomic_surface_abbrev|check_empty }}"{% endif %}>
+    {{ immunization.anatomic_surface }}
+  </anatomicSurface>
+  {% endif %}
+  {% if immunization.adverse_event %}
+  <adverseEvent>
+    {{ immunization.adverse_event }}
+  </adverseEvent>
+  {% endif %}
+</Immunization>

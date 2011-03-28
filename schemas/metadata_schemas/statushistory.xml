@@ -1,0 +1,5 @@
+<DocumentStatusHistory document_id="456">
+    <DocumentStatus by="joeuser@indivo.example.org" at="2010-09-03T12:45:12Z" status="archived">
+      <reason>no longer relevant</reason>
+    </DocumentStatus>
+</DocumentStatusHistory>

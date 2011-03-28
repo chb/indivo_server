@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Records>
+{% for record in records %}
+  <Record id="{{ record.id }}" label="{{ record.label }}" />
+{% endfor %}
+
+{% for share in full_shares %}
+  <Record id="{{ share.record.id }}" label="{{ share.record.label }} (shared)" shared="true" {% if share.role_label %}role_label="{{share.role_label}}" {% endif %}/>
+{% endfor %}
+
+{% for share in carenet_shares %}
+  <Record id="{{ share.carenet.record.id }}" label="{{ share.carenet.record.label }} (carenet)" shared="true" carenet_id="{{share.carenet.id}}" carenet_name="{{share.carenet.name}}" />
+{% endfor %}
+</Records>

@@ -1,0 +1,26 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:complexType name="App">
+    <xs:sequence>
+      <xs:element name="startURLTemplate" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="autonomous" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+      <xs:element name="autonomousReason" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="frameable" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+      <xs:element name="ui" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:element name="App" type="App" />
+
+  <xs:element name="Apps">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="App" type="App" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

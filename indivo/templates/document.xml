@@ -1,0 +1,49 @@
+{% load template_utils %}
+<Document id="{{ doc.id|check_empty }}" type="{{ doc.type.uri|check_empty }}" size="{{ doc.size|check_empty }}" digest="{{ doc.digest|check_empty }}" record_id="{{record.id}}">
+  {% if doc.created_at %}
+    <createdAt>{{ doc.created_at|format_iso8601_datetime }}</createdAt>
+    <creator id="{{ doc.creator.email }}" type="{{ doc.creator.type }}">
+      <fullname>{{ doc.creator.name }}</fullname>
+    </creator>
+  {% endif %}
+  {% if doc.suppressed_at %}
+    <suppressedAt>{{ doc.suppressed_at|format_iso8601_datetime }}</suppresedAt>
+    <suppressor id="{{ doc.suppressed_by.email }}" type="{{ doc.suppressed_by.type }}">
+      <fullname>{{ doc.suppressed_by.account.full_name }}</fullname>
+    </suppressor>
+  {% endif %}
+  {% if doc.replaced_by_id %}
+    <replacedBy id="{{ doc.replaced_by_id|check_empty }}"/>
+  {% endif %}
+  {% if doc.replaces %}
+    <replaces id="{{ doc.replaces|check_empty }}"/>
+  {% endif %}
+  {% if doc.original_id %}
+    <original id="{{ doc.original_id|check_empty }}"/>
+  {% endif %}
+  {% if doc.latest_id %}
+    <latest id="{{ doc.latest_id|check_empty }}" createdAt="{{ doc.latest_created_at|format_iso8601_datetime }}" createdBy="{{ doc.latest_creator_email|check_empty }}" />
+  {% endif %}
+  {% if doc.label %}
+    <label>{{ doc.label|check_empty }}</label>
+  {% endif %}
+  {% if doc.status.name %}
+    <status>{{ doc.status.name|check_empty }}</status>
+  {% endif %}
+    <nevershare>{% if doc.nevershare %}true{% else %}false{% endif %}</nevershare>
+  {% if doc.relates_to %}
+    <relatesTo>
+      {% for relationship in doc.relates_to %}
+      <relation type="{{relationship.relationship__type}}" count="{{relationship.count}}" />
+      {% endfor %}
+    </relatesTo>
+  {% endif %}
+
+  {% if doc.is_related_from %}
+    <isRelatedFrom>
+      {% for relationship in doc.is_related_from %}
+      <relation type="{{relationship.relationship__type}}" count="{{relationship.count}}" />
+      {% endfor %}
+    </isRelatedFrom>
+  {% endif %}
+</Document>

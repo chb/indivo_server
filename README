@@ -1,0 +1,14 @@
+
+Instructions at http://wiki.chip.org/indivo
+
+All source code is licensed under GPLv3.
+
+- now needs django_extensions
+http://github.com/django-extensions/django-extensions.git
+
+- cron jobs should be scheduled to run
+python manage.py cleanup_old_tokens
+
+- now needs markdown support
+
+easy_install Markdown

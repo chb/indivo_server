@@ -1,0 +1,12 @@
+<RequestToken token="XYZ">
+  <record id="123" />
+  <carenet />
+  <kind>new</kind>
+  <App id="problems@apps.indivo.org">
+    <name>Problem List</name>
+    <description>Managing your list of problems</description>
+    <autonomous>false</autonomous>
+    <frameable>true</frameable>
+    <ui>true</ui>
+  </App>
+</RequestToken>

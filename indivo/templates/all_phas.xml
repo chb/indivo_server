@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PHAs>
+{% for pha in phas %}
+<PHA id="{{pha.id}}" ui="{{pha.has_ui}}">
+  <startURL>{{pha.start_url}}</startURL>
+  <name>{{pha.name}}</name>
+  <description>{{pha.description}}</description>
+</PHA>
+{% endfor %}
+</PHAs>

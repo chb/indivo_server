@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+{% if phas %}
+<Apps>
+{% for pha in phas %}
+<App id="{{pha.email}}">
+  <startURLTemplate>{{pha.start_url_template}}</startURLTemplate>
+  <name>{{pha.name}}</name>
+  <description>{{pha.description}}</description>
+  <autonomous>{{pha.is_autonomous}}</autonomous>
+{% if pha.is_autonomous %}
+  <autonomousReason>{{pha.autonomous_reason}}</autonomousReason>
+{% endif %}
+  <frameable>{{pha.frameable}}</frameable>
+  <ui>{{pha.has_ui}}</ui>
+</App>
+{% endfor %}
+</Apps>
+{% else %}
+<Apps/>
+{% endif %}

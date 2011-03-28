@@ -1,0 +1,8 @@
+<Message id="879">
+  <sender>doctor@example.indivo.org</sender>
+  <received_at>2010-09-04T14:12:12Z</received_at>
+  <subject>your test results are looking good</subject>
+  <severity>normal</severity>
+  <record id="123" />
+  <attachment num="1" type="http://indivo.org/vocab/xml/documents#Lab" size="12546" />
+</Message>

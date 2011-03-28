@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<AuditLog>
+  <Entry request_datetime="2010-09-03T12:30:01Z" effective_principal="joeuser@indivo.example.org" proxied_principal="problems@apps.indivo.org" record_id="123" document_id="456" function="document" />
+  <Entry request_datetime="2010-09-03T12:32:01Z" effective_principal="joeuser@indivo.example.org" proxied_principal="problems@apps.indivo.org" record_id="123" document_id="456" function="document_update" />
+</AuditLog>

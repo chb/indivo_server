@@ -1,0 +1,38 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+  <xs:complexType name="Message">
+    <xs:sequence>
+      <xs:element name="sender" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="received_at" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+      <xs:element name="read_at" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+      <xs:element name="subject" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="severity" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="record" minOccurs="0" maxOccurs="1">
+	<xs:complexType>
+	  <xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>
+      </xs:element>
+
+      <xs:element name="attachment" minOccurs="0" maxOccurs="unbounded">
+	<xs:complexType>
+	  <xs:attribute name="num" type="xs:integer" use="required" />
+	  <xs:attribute name="type" type="xs:string" use="required" />
+	  <xs:attribute name="size" type="xs:integer" use="required" />
+	</xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:element name="Message" type="Message" />
+  
+  <xs:element name="Messages">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="Message" type="Message" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+</xs:schema>
