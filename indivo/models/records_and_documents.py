@@ -10,7 +10,7 @@ import urllib, hashlib
 
 from base import Object, Principal, BaseModel, INDIVO_APP_LABEL
 from accounts import Account
-from shares import Share, Carenet
+from shares import AccountFullShare, PHAShare, Carenet
 from messaging import Message
 from notifications import Notification
 from status import StatusName, DocumentStatusHistory
@@ -44,18 +44,18 @@ class Record(Object):
     return 'Record %s' % self.id
 
   def can_admin(self, account):
-    return (self.owner == account) or Share.objects.filter(record = self, with_account = account)
+    return (self.owner == account) or AccountFullShare.objects.filter(record = self, with_account = account)
 
   @property
   def phas(self):
     # addeed a filter for those shares that are not pha shares
-    return [s.with_pha for s in self.shares.all() if s.with_pha]
+    return [s.with_pha for s in self.pha_shares.all()]
 
   def has_pha(self, pha):
     # look for token
     try:
-      tok = Share.objects.filter(record = self, with_pha = pha)
-    except Share.DoesNotExist:
+      tok = PHAShare.objects.filter(record = self, with_pha = pha)
+    except PHAShare.DoesNotExist:
       return False
 
     return len(tok) > 0

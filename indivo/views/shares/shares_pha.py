@@ -23,8 +23,8 @@ def carenet_apps_create(request, carenet, pha):
   """
   # make sure the PHA already has access to record
   try:
-    pha = carenet.record.shares.get(with_pha__email = pha.email).with_pha
-  except Share.DoesNotExist:
+    pha = carenet.record.pha_shares.get(with_pha__email = pha.email).with_pha
+  except PHAShare.DoesNotExist:
     raise Http404
 
   CarenetPHA.objects.get_or_create(carenet=carenet, pha=pha)

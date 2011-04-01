@@ -65,7 +65,7 @@ class InternalTests(django.test.TestCase):
         return doc
 
     def addAppToRecord(self, **kwargs):
-        share = Share.objects.create(**kwargs)
+        share = PHAShare.objects.create(**kwargs)
         return share
 
     def createCarenet(self, **kwargs):
@@ -110,8 +110,8 @@ class InternalTests(django.test.TestCase):
     def addAppToCarenet(self, pha, carenet):
         # make sure PHA is already in record
         try:
-            share = carenet.record.shares.get(with_pha__email = pha.email)
-        except Share.DoesNotExist:
+            share = carenet.record.pha_shares.get(with_pha__email = pha.email)
+        except PHAShare.DoesNotExist:
             share = self.addAppToRecord(record=carenet.record, with_pha=pha)
 
         return CarenetPHA.objects.create(carenet=carenet, pha=pha)

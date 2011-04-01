@@ -110,22 +110,42 @@ class CarenetAutoshare(Object):
     app_label = INDIVO_APP_LABEL
     unique_together = (("carenet","record","type"))
 
-
 # SZ: We are no longer using for people
 # Ben Adida 2010-12-09: actually, for whole-record share, we are still using this for accounts.
-class Share(Object):
+# Daniel Haas 2011-04-01: Breaking apart the two use cases: PHAShare vs. AccountFullShare
+class AccountFullShare(Object):
   """
-  Sharing a record with a principal
+  Sharing a record with an account
   """
 
   # the record that's being shared
-  record = models.ForeignKey('Record', related_name = 'shares')
+  record = models.ForeignKey('Record', related_name = 'fullshares')
   
-  # we could be smart here and have just a reference to a Principal
-  # however, this would make querying for all PHAs and individuals difficult.
-  # so there doesn't seem to be a need for this "smarts"
-  with_account = models.ForeignKey('Account', related_name='shares_to', null=True)
-  with_pha = models.ForeignKey('PHA', related_name='shares_to', null=True)
+  # the account being share with, no longer nullable
+  with_account = models.ForeignKey('Account', related_name='fullshares_to')
+
+  # a label for the share. This will probably go away in a future release,
+  # but it's important to tag for now the role that various shares have.
+  # this is called a "label" because it has no enforcement value
+  role_label = models.CharField(max_length = 50, null=True)
+
+  class Meta:
+    app_label = INDIVO_APP_LABEL
+    unique_together = ('record', 'with_account')
+
+# SZ: We are no longer using for people
+# Ben Adida 2010-12-09: actually, for whole-record share, we are still using this for accounts.
+# Daniel Haas 2011-04-01: Breaking apart the two use cases: PHAShare vs. AccountFullShare
+class PHAShare(Object):
+  """
+  Sharing a record with a PHA
+  """
+
+  # the record that's being shared
+  record = models.ForeignKey('Record', related_name = 'pha_shares')
+
+  # the PHA being shared with, no longer nullable
+  with_pha = models.ForeignKey('PHA', related_name='pha_shares_to')
 
   # authorized
   authorized_at = models.DateTimeField(null=True, blank=True)
@@ -139,27 +159,15 @@ class Share(Object):
   # not when an app is accessed by a user who happens to be in a carenet for that record.
   carenet = models.ForeignKey('Carenet', null=True)
 
-  # a label for full-shares with *accounts*. This will probably go away in a future release,
-  # but it's important to tag for now the role that various shares have.
-  # this is called a "label" because it has no enforcement value
-  role_label = models.CharField(max_length = 50, null=True)
-
-  # does this share enable offline access?
-  # this only makes sense for PHA shares
-  # REMOVED 2010-07-27, since now the apps are the ones
-  # that hold the autonomous information
-  # offline = models.BooleanField(default = False)
-
   class Meta:
     app_label = INDIVO_APP_LABEL
-    unique_together = (('record', 'with_account'),
-                       ('record', 'with_pha'),)
+    unique_together = ('record', 'with_pha')
     
 
   def new_access_token(self, token_str, token_secret, account=None, carenet=None):
     """
     create a new access token based on this share
-
+    
     an account must be specified if the app is not autonomous.
 
     if the app is autonomous, the specified account should have full access
@@ -233,7 +241,7 @@ class AccessToken(Principal, Token):
   token_secret = models.CharField(max_length=60)
 
   # derived from a share
-  share = models.ForeignKey('Share')
+  share = models.ForeignKey('PHAShare')
 
   # who is this token on behalf of? Might be nulls here.
   # when this is carenet-limited, the account scopes permissions
@@ -317,7 +325,7 @@ class ReqToken(Principal, Token):
   authorized_by = models.ForeignKey('Account', null = True)
 
   # the share that this results in
-  share = models.ForeignKey('Share', null=True)
+  share = models.ForeignKey('PHAShare', null=True)
 
   # is this request token for offline access?
   # REMOVED 2010-07-27, since now the apps contain the indication of autonomy

@@ -29,7 +29,7 @@ def pha_record_delete(request, record, pha):
     CarenetPHA.objects.filter(carenet__record = record, pha=pha).delete()
 
     # delete all the share objects that matter
-    Share.objects.filter(with_pha=pha, record=record.id).delete()
+    PHAShare.objects.filter(with_pha=pha, record=record.id).delete()
   except:
     raise Http404
   return DONE
@@ -162,15 +162,15 @@ def request_token_info(request, reqtoken):
 
   try:
     if reqtoken.record:
-      share = Share.objects.get(record = reqtoken.record, with_pha = reqtoken.pha)
+      share = PHAShare.objects.get(record = reqtoken.record, with_pha = reqtoken.pha)
     elif reqtoken.carenet:
       # if there is a carenet, then we look up the corresponding record
       # and see if this app is already granted access to it.
       #
       # note that the user will still need to be in this carenet to approve
       # the request token
-      share = Share.objects.get(record = reqtoken.carenet.record, with_pha = reqtoken.pha)
-  except Share.DoesNotExist:
+      share = PHAShare.objects.get(record = reqtoken.carenet.record, with_pha = reqtoken.pha)
+  except PHAShare.DoesNotExist:
     pass
 
   return render_template('requesttoken', {'request_token':reqtoken, 'share' : share}, type='xml')

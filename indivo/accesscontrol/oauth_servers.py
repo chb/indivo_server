@@ -120,14 +120,13 @@ class UserDataStore(oauth.OAuthStore):
     # store the share in the request token
     # added use of defaults to reduce code size if creating an object
     if record:
-      share, create_p = models.Share.objects.get_or_create( record        = record, 
-                                                            with_pha      = request_token.pha, 
-                                                            with_account  = None, 
-                                                            defaults = {'authorized_at': request_token.authorized_at, 
-                                                                        'authorized_by': request_token.authorized_by})
+      share, create_p = models.PHAShare.objects.get_or_create( record        = record, 
+                                                               with_pha      = request_token.pha, 
+                                                               defaults = {'authorized_at': request_token.authorized_at, 
+                                                                           'authorized_by': request_token.authorized_by})
     else:
       # this is a carenet only situation, we NEVER create the share
-      share = models.Share.objects.get(record = carenet.record, with_pha = request_token.pha, with_account=None)
+      share = models.PHAShare.objects.get(record = carenet.record, with_pha = request_token.pha)
       
     request_token.share = share
     request_token.save()
