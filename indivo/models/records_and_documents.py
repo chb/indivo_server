@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 
-import urllib, hashlib
+import urllib, hashlib, uuid
 
 from base import Object, Principal, BaseModel, INDIVO_APP_LABEL
 from accounts import Account
@@ -370,7 +370,25 @@ class Document(Object):
       # Mark document as processed
       self.processed = True
 
+    # Oracle is incompatible with multi-column unique constraints where
+    # one column might be null (i.e., UNIQUE(record, external_id)).
+    # We therefore insure that all Documents have an external id,
+    # mirroring the internal id if none was passed in.
+  
+    # Set the external_id to a random uuid so that we can save it to the
+    # db before it has an internal id
+    if not self.external_id:
+      self.external_id = 'TEMP-EXTID' + str(uuid.uuid4())
+
     super(Document,self).save(*args, **kwargs)
+
+    # Do we need to rewrite this to the DB after changes?
+    save_again = False
+
+    # If we set a temporary external_id, set it to mirror the internal id
+    if self.external_id.startswith('TEMP-EXTID'):
+      self.external_id = self.id
+      save_again = True
 
     # Update newly created Fact objs, if any
     for fobj in fobjs_to_update:
@@ -380,6 +398,9 @@ class Document(Object):
 
     if not self.original:
       self.original = self
+      save_again = True
+
+    if save_again:
       self.save()
 
 DocumentSchema.setup()
