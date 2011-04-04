@@ -8,15 +8,6 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Removing unique constraint on 'Share', fields ['record', 'with_pha']
-        db.delete_unique('indivo_share', ['record_id', 'with_pha_id'])
-
-        # Removing unique constraint on 'Share', fields ['record', 'with_account']
-        db.delete_unique('indivo_share', ['record_id', 'with_account_id'])
-
-        # Deleting model 'Share'
-        db.delete_table('indivo_share')
-
         # Adding model 'AccountFullShare'
         db.create_table('indivo_accountfullshare', (
             ('id', self.gf('django.db.models.fields.CharField')(max_length=50, primary_key=True)),
@@ -49,12 +40,12 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'PHAShare', fields ['record', 'with_pha']
         db.create_unique('indivo_phashare', ['record_id', 'with_pha_id'])
 
-        # Changing field 'AccessToken.share'
-        db.alter_column('indivo_accesstoken', 'share_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['indivo.PHAShare']))
+        # Dropping Foreign Key constraint on 'AccessToken.share'
+        db.delete_foreign_key('indivo_accesstoken', 'share_id')
 
-        # Changing field 'ReqToken.share'
-        db.alter_column('indivo_reqtoken', 'share_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['indivo.PHAShare'], null=True))
-
+        # Dropping Foreign Key constraint on 'ReqToken.share'
+        db.delete_foreign_key('indivo_reqtoken', 'share_id')
+        
 
     def backwards(self, orm):
         
@@ -64,38 +55,16 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'AccountFullShare', fields ['record', 'with_account']
         db.delete_unique('indivo_accountfullshare', ['record_id', 'with_account_id'])
 
-        # Adding model 'Share'
-        db.create_table('indivo_share', (
-            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(related_name='share_created_by', null=True, to=orm['indivo.Principal'])),
-            ('authorized_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('with_pha', self.gf('django.db.models.fields.related.ForeignKey')(related_name='shares_to', null=True, to=orm['indivo.PHA'])),
-            ('authorized_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='shares_authorized_by', null=True, to=orm['indivo.Account'])),
-            ('id', self.gf('django.db.models.fields.CharField')(max_length=50, primary_key=True)),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
-            ('role_label', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
-            ('record', self.gf('django.db.models.fields.related.ForeignKey')(related_name='shares', to=orm['indivo.Record'])),
-            ('with_account', self.gf('django.db.models.fields.related.ForeignKey')(related_name='shares_to', null=True, to=orm['indivo.Account'])),
-            ('carenet', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['indivo.Carenet'], null=True)),
-        ))
-        db.send_create_signal('indivo', ['Share'])
-
-        # Adding unique constraint on 'Share', fields ['record', 'with_account']
-        db.create_unique('indivo_share', ['record_id', 'with_account_id'])
-
-        # Adding unique constraint on 'Share', fields ['record', 'with_pha']
-        db.create_unique('indivo_share', ['record_id', 'with_pha_id'])
-
         # Deleting model 'AccountFullShare'
         db.delete_table('indivo_accountfullshare')
 
         # Deleting model 'PHAShare'
         db.delete_table('indivo_phashare')
 
-        # Changing field 'AccessToken.share'
+        # Adding Foreign Key constraint on 'AccessToken.share'
         db.alter_column('indivo_accesstoken', 'share_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['indivo.Share']))
 
-        # Changing field 'ReqToken.share'
+        # Adding Foreign Key constraint on 'ReqToken.share'
         db.alter_column('indivo_reqtoken', 'share_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['indivo.Share'], null=True))
 
 
@@ -106,7 +75,7 @@ class Migration(SchemaMigration):
             'carenet': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.Carenet']", 'null': 'True'}),
             'expires_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'principal_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['indivo.Principal']", 'unique': 'True', 'primary_key': 'True'}),
-            'share': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.PHAShare']"}),
+            'share': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'token': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'token_secret': ('django.db.models.fields.CharField', [], {'max_length': '60'})
         },
@@ -560,7 +529,7 @@ class Migration(SchemaMigration):
             'pha': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.PHA']"}),
             'principal_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['indivo.Principal']", 'unique': 'True', 'primary_key': 'True'}),
             'record': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.Record']", 'null': 'True'}),
-            'share': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.PHAShare']", 'null': 'True'}),
+            'share': ('django.db.models.fields.CharField', [], {'max_length':'50', 'null': 'True'}),
             'token': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'token_secret': ('django.db.models.fields.CharField', [], {'max_length': '60'}),
             'verifier': ('django.db.models.fields.CharField', [], {'max_length': '60'})
@@ -586,6 +555,20 @@ class Migration(SchemaMigration):
             'secret': ('django.db.models.fields.CharField', [], {'max_length': '60'}),
             'token': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.Account']", 'null': 'True'})
+        },
+        'indivo.share': {
+            'Meta': {'unique_together': "(('record', 'with_account'), ('record', 'with_pha'))", 'object_name': 'Share'},
+            'authorized_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'authorized_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'shares_authorized_by'", 'null': 'True', 'to': "orm['indivo.Account']"}),
+            'carenet': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.Carenet']", 'null': 'True'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'creator': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'share_created_by'", 'null': 'True', 'to': "orm['indivo.Principal']"}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'}),
+            'modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
+            'record': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'shares'", 'to': "orm['indivo.Record']"}),
+            'role_label': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
+            'with_account': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'shares_to'", 'null': 'True', 'to': "orm['indivo.Account']"}),
+            'with_pha': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'shares_to'", 'null': 'True', 'to': "orm['indivo.PHA']"})
         },
         'indivo.simpleclinicalnote': {
             'Meta': {'object_name': 'SimpleClinicalNote', '_ormbases': ['indivo.Fact']},
