@@ -9,13 +9,13 @@ from indivo.models import *
 from reportutils import report_orderby_update
 
 
-@marsloader
+@marsloader()
 def vitals_list(request, limit, offset, status, category=None, order_by='-created_at', record=None, carenet=None):
   """For 1:1 mapping from URLs to views: calls _vitals_list"""
   return _vitals_list(request, limit, offset, status, category, order_by, record, carenet)
 
 
-@marsloader
+@marsloader()
 def carenet_vitals_list(request, limit, offset, status, category=None, order_by='-created_at', record=None, carenet=None):
   """For 1:1 mapping from URLs to views: calls _vitals_list"""
   return _vitals_list(request, limit, offset, status, category, order_by, record, carenet)

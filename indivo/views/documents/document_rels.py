@@ -1,7 +1,7 @@
 from indivo.views.base import *
 from indivo.views.documents.document import _document_create, _render_documents, _get_document
 
-@marsloader
+@marsloader()
 def get_documents_by_rel(request, record, document_id, rel, limit, offset, status, order_by='id', pha=None):
   """
   get all documents related to argument-document by rel-type defined by rel

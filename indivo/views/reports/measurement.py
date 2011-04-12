@@ -9,13 +9,13 @@ from indivo.models import *
 from reportutils import report_orderby_update
 
 
-@marsloader
+@marsloader()
 def measurement_list(request, limit, offset, status, order_by, lab_code, record):
   """ For 1:1 mapping of URLs to views: calls _measurement_list """
   return _measurement_list(request, limit, offset, status, order_by, lab_code, record=record)
 
 
-@marsloader
+@marsloader()
 def carenet_measurement_list(request, limit, offset, status, order_by, lab_code, carenet):
   """ For 1:1 mapping of URLs to views: calls _measurement_list """
   return _measurement_list(request, limit, offset, status, order_by, lab_code, carenet=carenet)

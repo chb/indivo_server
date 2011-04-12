@@ -9,13 +9,13 @@ from indivo.models import *
 from reportutils import report_orderby_update
 
 
-@marsloader
+@marsloader()
 def allergy_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
   """For 1:1 mapping of URLs to views. Calls _allergy_list"""
   return _allergy_list(request, limit, offset, status, order_by, record, carenet)
 
 
-@marsloader
+@marsloader()
 def carenet_allergy_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
   """For 1:1 mapping of URLs to views. Calls _allergy_list"""
   return _allergy_list(request, limit, offset, status, order_by, record, carenet)

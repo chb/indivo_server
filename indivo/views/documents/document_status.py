@@ -18,7 +18,6 @@ def document_set_status(request, record, document_id):
   return DONE
 
 
-@marsloader
 def document_status_history(request, record, document_id):
   document = _get_document(record=record, document_id=document_id)
   if not document:

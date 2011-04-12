@@ -37,7 +37,7 @@ def _document_version(request, record, document_id, pha=None, external_id=None):
 
 
 
-@marsloader
+@marsloader()
 def document_versions(request, record, document_id, limit, offset, status, order_by='created_at'):
   """Retrieve the versions of a document"""
   document = _get_document(record=record, document_id=document_id)

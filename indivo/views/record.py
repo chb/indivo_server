@@ -13,7 +13,7 @@ ACTIVE_STATE = 'active'
 
 
 
-@marsloader
+@marsloader()
 def record_list(request, account, status, limit=None, offset=None, order_by=None):
   """
   A list of records available for a given account

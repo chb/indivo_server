@@ -9,7 +9,7 @@ from indivo.models import *
 from reportutils import report_orderby_update
 
 
-@marsloader
+@marsloader()
 def simple_clinical_notes_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
   if carenet:
     record = carenet.record

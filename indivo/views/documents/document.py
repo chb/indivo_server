@@ -235,17 +235,17 @@ def _render_document(document):
   return HttpResponse(document.content, mimetype="application/xml")
 
 
-@marsloader
+@marsloader()
 def app_document_list(request, pha, limit, offset, status, order_by='created_at'):
   """For 1:1 mapping of URLs to views. Calls document_list"""
   return document_list(request, limit, offset, status, order_by, pha=pha)
 
-@marsloader
+@marsloader()
 def record_document_list(request, record, limit, offset, status, order_by='created_at'):
   """For 1:1 mapping of URLs to views. Calls document_list"""
   return document_list(request, limit, offset, status, order_by, record=record)
 
-@marsloader
+@marsloader()
 def record_app_document_list(request, record, pha, limit, offset, status, order_by='created_at'):
   """For 1:1 mapping of URLs to views. Calls document_list"""
   return document_list(request, limit, offset, status, order_by, record=record, pha=pha)

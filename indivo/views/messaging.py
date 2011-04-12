@@ -57,13 +57,13 @@ def record_message_attach(request, record, message_id, attachment_num):
 
                                 
 
-@marsloader
+@marsloader()
 def record_inbox(request, record, limit, offset, status, order_by):
   messages = record.get_messages().order_by(order_by)
   return render_template('messages', {'messages' : messages})
 
 
-@marsloader
+@marsloader()
 def account_inbox(request, account, limit, offset, status, order_by):
   messages = account.message_as_recipient.order_by(order_by)
 
@@ -109,7 +109,7 @@ def account_message_archive(request, account, message_id):
   return DONE
 
 
-@marsloader
+@marsloader()
 def account_notifications(request, account, limit, offset, status, order_by):
   notifications = Notification.objects.filter(account = account).order_by(order_by)
   return render_template('notifications', {'notifications' : notifications})

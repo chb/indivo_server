@@ -7,6 +7,7 @@ from django.template import Context, loader
 from django.conf import settings
 from django import http
 from django.utils import simplejson
+from django.db.models import Q
 
 from xml.dom import minidom
 
@@ -110,17 +111,28 @@ def django_json(func):
   functools.update_wrapper(func_with_json_conversion, func)
   return func_with_json_conversion
 
-def carenet_filter(carenet, report_list):
+def carenet_filter(carenet, report_queryset):
   # SZ: Fix!
   # A report may contain documents of different types
+  # DH 04-07-2011: Fixed to run against a queryset without evaluating it.
   from indivo import models
-  carenet_report = []
-  if carenet:
-    for report_obj in report_list:
-      if models.CarenetDocument.objects.select_related().filter(
-          carenet=carenet, document=report_obj.document) or \
-         models.CarenetAutoshare.objects.select_related().filter(
-          carenet=carenet, type=report_obj.document.type): 
-        carenet_report.append(report_obj)
-    return carenet_report
-  return report_list
+
+  if carenet:  
+
+    # All doc types the carenet autoshares with
+    carenet_autoshare_types = models.DocumentSchema.objects.filter(carenetautoshare__carenet = carenet)
+
+    # The doc is individually shared in the carenet
+    doc_shared_in_carenet = Q(document__carenetdocument__carenet=carenet, document__carenetdocument__share_p=True)
+
+    # The doc is shared in the carenet via an autoshare, and there is no autoshare exception for the document
+    doc_shared_in_autoshare = Q(document__type__in=carenet_autoshare_types, document__nevershare=False) \
+        & ~Q(document__carenetdocument__carenet=carenet, document__carenetdocument__share_p=False)
+
+    # The doc may be listed in the search.
+    doc_in_carenet = doc_shared_in_carenet | doc_shared_in_autoshare
+
+    # Add the filter, but don't force evaluation
+    report_queryset = report_queryset.filter(doc_in_carenet)
+
+  return report_queryset

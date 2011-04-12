@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.http import urlencode
 
 from indivo.models import *
+from indivo.tests.data import *
 import urls
 import re
 from xml.dom import minidom
@@ -119,6 +120,22 @@ class InternalTests(django.test.TestCase):
     def createMessage(self, **kwargs):
         message = Message.objects.create(**kwargs)
         return message
+
+    def loadTestLabs(self, record, creator):
+        md = hashlib.sha256()
+        labs = [lab01, lab02, lab03, lab04]
+        for lab in labs:
+            md.update(lab)
+            lab_args = {'record':record,
+                        'content':lab,
+                        'size':len(lab),
+                        'digest':md.hexdigest(),
+                        'label':'testing',
+                        'creator':creator}
+            self.createDocument(**lab_args)
+        return list(Lab.objects.all())
+            
+        
 
     def setUp(self):
         self.disableAccessControl()

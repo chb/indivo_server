@@ -53,7 +53,7 @@ def carenet_record(request, carenet):
   return render_template('record', {'record': carenet.record})
 
 
-@marsloader
+@marsloader()
 def carenet_document_list(request, carenet, limit, offset, status, order_by):
   """List documents from a given carenet
 

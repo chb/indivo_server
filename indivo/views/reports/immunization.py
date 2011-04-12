@@ -9,13 +9,13 @@ from indivo.models import *
 from reportutils import report_orderby_update
 
 
-@marsloader
+@marsloader()
 def immunization_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
   """For 1:1 mapping of URLs to views: calls _immunization_list"""
   return _immunization_list(request, limit, offset, status, order_by, record, carenet)
 
 
-@marsloader
+@marsloader()
 def carenet_immunization_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
   """For 1:1 mapping of URLs to views: calls _immunization_list"""
   return _immunization_list(request, limit, offset, status, order_by, record, carenet)
