@@ -1,0 +1,2 @@
+patient_access_key = "<PatientAccessKey> <record_id>456</record_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> <access_key> <patient_id>123</patient_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> </access_key> </PatientAccessKey>"
+access_key = "<AccessKey> <record_id>456</record_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> <access_key> <patient_id>123</patient_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> </access_key> </AccessKey>"

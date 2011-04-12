@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.http import urlencode
 
 from indivo.models import *
-from indivo.tests.data import *
+from indivo.tests.data.reports.lab import *
 import urls
 import re
 from xml.dom import minidom
