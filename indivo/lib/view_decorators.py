@@ -40,7 +40,7 @@ def marsloader(query_api_support = False):
       arg_defaults = {
         'limit': 100, 
         'offset': 0,
-        'order_by': '-%s'%(DEFAULT_ORDERBY) if not request.GET.has_key('aggregate_by') else None,
+        'order_by': '-%s'%(DEFAULT_ORDERBY) if not request.GET.has_key('aggregate_by') or not query_api_support else None,
         'status': models.StatusName.objects.get(name='active'),
         }
       query_api_defaults = {
