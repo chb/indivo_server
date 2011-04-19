@@ -19,7 +19,7 @@ def record_list(request, account, status, limit=None, offset=None, order_by=None
   A list of records available for a given account
   """
   records = account.records_owned_by.all()
-  full_shares = account.shares_to.all()
+  full_shares = account.fullshares_to.all()
   carenet_shares = account.carenetaccount_set.all()
   return render_template('record_list', {'records': records, 'full_shares' : full_shares, 'carenet_shares': carenet_shares})
 
@@ -63,8 +63,8 @@ def record_phas(request, record):
 
 def record_pha(request, record, pha):
   try:
-    pha = record.shares.get(with_pha__email = pha.email).with_pha
-  except Share.DoesNotExist:
+    pha = record.pha_shares.get(with_pha__email = pha.email).with_pha
+  except PHAShare.DoesNotExist:
     raise Http404
   pha.start_url = utils.url_interpolate(pha.start_url_template, {'record_id' : record.id})
   return render_template('pha', {'pha':pha})
@@ -87,8 +87,9 @@ def record_notify(request, record):
 def record_shares(request, record):
   """ List the shares of a record"""
 
-  shares = record.shares.all()
-  return render_template('shares', {'shares': shares, 'record': record})
+  pha_shares = record.pha_shares.all()
+  full_shares = record.fullshares.all()
+  return render_template('shares', {'fullshares': full_shares, 'phashares':pha_shares, 'record': record})
 
 
 def record_share_add(request, record):
@@ -103,7 +104,7 @@ def record_share_add(request, record):
       other_account_id = request.POST[ACCOUNT_ID]
       account = Account.objects.get(email=other_account_id)
       RecordNotificationRoute.objects.get_or_create(account = account, record = record)
-      share = Share.objects.get_or_create(record = record, with_account = account, role_label = request.POST.get('role_label', None))
+      share = AccountFullShare.objects.get_or_create(record = record, with_account = account, role_label = request.POST.get('role_label', None))
       return DONE
     else:
       return HttpResponseBadRequest()
@@ -117,7 +118,7 @@ def record_share_delete(request, record, other_account_id):
   """Remove a share"""
 
   try:
-    shares = Share.objects.filter(record = record, with_account = Account.objects.get(email=other_account_id))
+    shares = AccountFullShare.objects.filter(record = record, with_account = Account.objects.get(email=other_account_id))
     shares.delete()
     return DONE
   except Account.DoesNotExist:

@@ -61,22 +61,23 @@ class AuditWrapper(object):
 
     # Insert into Audit
     # Ben 2010-01-19: simpler fix for func name.
-    self.audit_obj = Audit.objects.create(  req_view_func = view_func.func_name,
-                                            req_url=request.META['PATH_INFO'],
-                                            req_datetime=now,
-                                            req_ip_address=request.META['REMOTE_ADDR'],
-                                            req_domain=remote_host,
-                                            req_headers=req_headers,
-                                            req_method=request.META['REQUEST_METHOD'],
-                                            # req_principal_id=principal_id,
-                                            # req_principal_email=principal_email,
-                                            # req_principal_creator_email=principal_creator,
-                                            # req_principal_type=principal_type,
-                                            req_effective_principal_email = effective_principal_email,
-                                            req_proxied_by_principal_email = proxied_by_email,
-                                            resp_code=200,
-                                            record=record_id,
-                                            document=document_id)
+    # DH 2011-04-15: stop hitting the database twice per request: wait until response to save
+    self.audit_obj = Audit(  req_view_func = view_func.func_name,
+                             req_url=request.META['PATH_INFO'],
+                             req_datetime=now,
+                             req_ip_address=request.META['REMOTE_ADDR'],
+                             req_domain=remote_host,
+                             req_headers=req_headers,
+                             req_method=request.META['REQUEST_METHOD'],
+                             # req_principal_id=principal_id,
+                             # req_principal_email=principal_email,
+                             # req_principal_creator_email=principal_creator,
+                             # req_principal_type=principal_type,
+                             req_effective_principal_email = effective_principal_email,
+                             req_proxied_by_principal_email = proxied_by_email,
+                             resp_code=200,
+                             record=record_id,
+                             document=document_id)
 
   ## MAY NO LONGER BE NEEDED (Ben 2010-01-19)
   def get_principal(self, principal):

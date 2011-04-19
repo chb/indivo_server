@@ -70,7 +70,7 @@ class Account(Principal):
     True if the Account has a full share of the record
     """
     try:
-      return indivo.models.Share.objects.filter(record=record, with_account=self)
+      return indivo.models.AccountFullShare.objects.filter(record=record, with_account=self)
     except:
       return False
 

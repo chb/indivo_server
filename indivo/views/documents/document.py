@@ -96,7 +96,7 @@ def _document_create(creator, content, pha, record,
                   ORIGINAL_ID : replaces_document.original_id if replaces_document else None
                   }
     if status:
-      create_args[STATUS] = status
+      doc_args[STATUS] = status
 
     # create the document
     new_doc = Document.objects.create(**doc_args)
