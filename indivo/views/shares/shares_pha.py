@@ -27,7 +27,11 @@ def carenet_apps_create(request, carenet, pha):
   except PHAShare.DoesNotExist:
     raise Http404
 
-  CarenetPHA.objects.get_or_create(carenet=carenet, pha=pha)
+  if not pha.is_autonomous:
+    CarenetPHA.objects.get_or_create(carenet=carenet, pha=pha)
+  else:
+    return HttpResponseBadRequest('Autonomous apps may not be linked to individual carenets: they always access the entire record')
+
   return DONE
 
 
