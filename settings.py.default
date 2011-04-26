@@ -9,6 +9,10 @@ APP_HOME = '/web/indivo_server'
 # URL prefix
 SITE_URL_PREFIX = "http://localhost"
 
+# Audit Settings
+AUDIT_LEVEL = 'HIGH' # 'HIGH', 'MED', 'LOW', 'NONE'
+AUDIT_OAUTH = True # Audit the calls used solely for the oauth dance?
+AUDIT_FAILURE = True # Audit the calls that return with unsuccessful status (4XX, 5XX)?
 
 ADMINS = (
 )
