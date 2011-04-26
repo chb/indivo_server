@@ -10,42 +10,98 @@ from indivo.accesscontrol import security
 from indivo.models import Audit, Principal, Record, Document
 from time import strftime
 from django.http import *
+from django.conf import settings
+
+# AUDIT DATA CATEGORIES:
+BASIC = 'basic' # REQUIRED, if audit_level > 'NONE': basic info about request
+PRINCIPAL_INFO = 'principal_info' # identifier of principal making request
+RESOURCES = 'resources' # resources accessed by request
+REQUEST_INFO = 'request_info' # Data passed in through the request (headers, ip, domain, etc.)
+RESPONSE_INFO = 'response_info' # Response code, error messages, etc.
+
+AUDIT_LEVELS = {
+  'NONE': [],
+  'LOW': [BASIC, PRINCIPAL_INFO],
+  'MED': [BASIC, PRINCIPAL_INFO, RESOURCES],
+  'HIGH': [BASIC, PRINCIPAL_INFO, RESOURCES, REQUEST_INFO, RESPONSE_INFO]
+}
 
 class AuditWrapper(object):
   """
   Audit...
   """
 
-  def process_request(self, request):
-    if not request.principal:
-      try:
-        request.principal, request.oauth_request = security.get_principal(request)
-      except:
+  # DH 04-25-2011: Not sure what this was for--let's try getting rid of it.
+  #def process_request(self, request):
+  #  if not request.principal:
+  #    try:
+  #      request.principal, request.oauth_request = security.get_principal(request)
+  #    except:
         # to get around an annoying bug for now, when auth fails
-        pass
+  #      pass
+
+  def __init__(self):
+    # get Audit related settings
+    self.audit_level = settings.AUDIT_LEVEL
+    self.audit_oauth = settings.AUDIT_OAUTH
+    self.audit_failure = settings.AUDIT_FAILURE
+    if not AUDIT_LEVELS.has_key(self.audit_level):
+      raise Exception('Invalid audit level in settings.py: %s'%(self.audit_level))
+
+    self.audit_obj = None
+
+  def must_audit(self, request):
+    if self.audit_level == 'None':
+      return False
+    return self.audit_oauth or (not request.META['PATH_INFO'].startswith('/oauth'))
 
   def process_view(self, request, view_func, view_args, view_kwargs):
+    basic = {}
+    principal_info = {}
+    resources = {}
+    request_info = {}
 
-    # no longer needed
-    # principal_id, principal_email, principal_creator, principal_type = self.get_principal(request.principal)
+    # Don't audit unless required to
+    if not self.must_audit(request):
+      self.audit_obj = None
+      return None
 
-    
-    proxied_by_email = None
-    effective_principal_email = None
-    
-    if request.principal:
-      effective_principal_email = request.principal.effective_principal.email
-      proxied_by = request.principal.proxied_by
-      if proxied_by:
-        proxied_by_email = proxied_by.email
-
-    ids = self.resolve_external_id(view_kwargs)
-    record_id = ids['record_id']
-    document_id =  ids['document_id']
-    now = strftime("%Y-%m-%d %H:%M:%S")
+    # Basic Info
+    basic['datetime'] = strftime("%Y-%m-%d %H:%M:%S")
 
     if hasattr(view_func, 'resolve'):
       view_func = view_func.resolve(request)
+    basic['view_func'] = view_func.func_name
+
+    # Principal Info
+    if request.principal:
+      principal_info['effective_principal_email'] = request.principal.effective_principal.email
+      proxied_by = request.principal.proxied_by
+      if proxied_by:
+        principal_info['proxied_by_email'] = proxied_by.email
+
+    # Resources
+    carenet_id = record_id = None
+    if view_kwargs.has_key('record'):
+      resources['record_id'] = view_kwargs['record'].id
+    elif view_kwargs.has_key('carenet'):
+      resources['carenet_id'] = view_kwargs['carenet'].id
+
+    if view_kwargs.has_key('document_id'):
+      resources['document_id'] = view_kwargs['document_id']
+
+    if view_kwargs.has_key('external_id'):
+
+      # No need to resolve external ids: the info will still be in the DB
+      resources['external_id'] = view_kwargs['external_id']
+      
+    if view_kwargs.has_key('message_id'):
+      resources['message_id'] = view_kwargs['message_id']
+
+    if view_kwargs.has_key('pha'):
+      resources['pha_id'] = view_kwargs['pha'].id
+
+    # Request Info
 
     # if request.META contains HTTP_AUTHORIZATION then use it
     # SZ: Temporary solution
@@ -58,78 +114,65 @@ class AuditWrapper(object):
     remote_host = ''
     if request.META.has_key('REMOTE_HOST'):
       remote_host = request.META['REMOTE_HOST']
+    request_info['req_domain'] = remote_host
+    request_info['req_headers'] = req_headers
+    request_info['req_method'] = request.META['REQUEST_METHOD']
+    request_info['req_ip_address'] = request.META['REMOTE_ADDR']
+    request_info['req_url'] = request.META['PATH_INFO']
 
-    # Insert into Audit
-    # Ben 2010-01-19: simpler fix for func name.
-    # DH 2011-04-15: stop hitting the database twice per request: wait until response to save
-    self.audit_obj = Audit(  req_view_func = view_func.func_name,
-                             req_url=request.META['PATH_INFO'],
-                             req_datetime=now,
-                             req_ip_address=request.META['REMOTE_ADDR'],
-                             req_domain=remote_host,
-                             req_headers=req_headers,
-                             req_method=request.META['REQUEST_METHOD'],
-                             # req_principal_id=principal_id,
-                             # req_principal_email=principal_email,
-                             # req_principal_creator_email=principal_creator,
-                             # req_principal_type=principal_type,
-                             req_effective_principal_email = effective_principal_email,
-                             req_proxied_by_principal_email = proxied_by_email,
-                             resp_code=200,
-                             record=record_id,
-                             document=document_id)
-
-  ## MAY NO LONGER BE NEEDED (Ben 2010-01-19)
-  def get_principal(self, principal):
-    # Get the id and creator of the principal
-    principal_id = ''
-    principal_email = ''
-    principal_creator = ''
-    principal_type = ''
-    if principal:
-      if hasattr(principal, 'id') and \
-         principal.id:
-        principal_id = principal.id
-      if hasattr(principal, 'email'):
-        principal_email = principal.email
-      if hasattr(principal, 'creator') and \
-        principal.creator:
-        principal_creator = Principal.objects.get(id=principal.creator.id).email
-      if hasattr(principal, '__class__()') and \
-          hasattr(principal.__class__(), '__repr__()'):
-        principal_type = principal.__class__().__repr__()
-    return principal_id, principal_email, principal_creator, principal_type
-
-  def resolve_external_id(self, view_kwargs):
-    # FIXME: is this working with external IDs?
-    # I don't think so.
-    # I'm also concerned about doing DB queries in the auditing portion (Ben 2010-08-15)
-    record_id_str     = 'record_id'
-    document_id_str   = 'document_id'
-    app_email_str     = 'app_email'
-    external_id_str   = 'external_id'
-    res = {record_id_str : '', document_id_str : ''}
-    kwargs_obj = {record_id_str : Record, document_id_str : Document}
-    externalid_exists = view_kwargs.has_key(app_email_str) and view_kwargs.has_key(external_id_str)
-    for kwarg, obj in kwargs_obj.items():
-      if not view_kwargs.has_key(kwarg):
-        if externalid_exists:
-          res[kwarg] = obj.objects.get(external_id=view_kwargs[kwarg]).id
+    # Build Audit object based on audit level
+    data = {}
+    for data_category in AUDIT_LEVELS[self.audit_level]:
+      if data_category == BASIC:
+        data.update(basic)
+      if data_category == PRINCIPAL_INFO:
+        data.update(principal_info)
+      elif data_category == RESOURCES:
+        data.update(resources)
+      elif data_category == REQUEST_INFO:
+        data.update(request_info)
       else:
-        res[kwarg] = view_kwargs[kwarg]
-    return res
+        pass # ignore data categories we don't know about
+
+    self.audit_obj = Audit(**data) if data else None
+    
+    return None
 
   def process_response(self, request, response):
+
+    # Don't audit unless required to
+    if not self.must_audit(request):
+      return response
+
+    # Build up data
     content_type = 'text/plain'
     content_type_str = 'content-type'
+
     status_code = 500
     if hasattr(response, 'status_code'):
       status_code = response.status_code
+
     if hasattr(response, '_headers') and \
         response._headers.has_key(content_type_str) and \
         response._headers[content_type_str][1]:
       content_type = response._headers[content_type_str][1]
-    self.save_response(status_code, content_type)
+
+    # Did the request complete successfully
+    request_successful =  status_code < 400
+
+    data = {}
+    for data_category in AUDIT_LEVELS[self.audit_level]:
+      if data_category == BASIC:
+        data['request_successful'] = request_successful
+    
+      elif data_category == RESPONSE_INFO:
+        data['resp_code'] = status_code
+        data['resp_headers'] = content_type
+        # Add error message in here mabye
+
+    # Don't audit if we failed and aren't auditing failures
+    if self.audit_failure or status_code < 400:
+      self.save_response(data)
 
     if status_code == 403:
       logging.error("permission denied")
@@ -138,23 +181,18 @@ class AuditWrapper(object):
 
     return response
 
-  def save_response(self, status_code, content_type, content=''):
-    if hasattr(self, 'audit_obj'):
-      self.audit_obj.resp_code      = status_code
-      self.audit_obj.resp_headers   = content_type
-      # SZ: For now, resp_error_msg will always be an empty string
-      self.audit_obj.resp_error_msg = content
-      self.audit_obj.save()
+  def save_response(self, data):
+    if not self.audit_obj and data:
+      # We got an exception before hitting auditwrapper on the way in: make sure to add basic info
+      data['datetime'] = strftime("%Y-%m-%d %H:%M:%S")
+      self.audit_obj = Audit(**data)
 
-  # deprecated 2010-01-19: just use func.func_name
-  def get_function_name(self, func_repr):
-    try:
-      nbsp = ' '
-      search_str = 'at'
-      func_repr = func_repr.strip()
-      return func_repr[func_repr.find(nbsp):func_repr.find(nbsp + search_str + nbsp)]
-    except:
-      return func_repr
+    else:
+      for k,v in data.iteritems():
+        if hasattr(self.audit_obj, k):
+          setattr(self.audit_obj, k, v)
+        
+    self.audit_obj.save()
 
   def process_exception(self, request, exception):
     print >> sys.stderr, exception
