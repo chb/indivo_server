@@ -65,7 +65,7 @@ class DocumentProcessing:
   def __init__(self, doc, mime_type):
     # changed this from heuristic to declared mime type (Ben 1/07/2011)
     # if mime_type is null, we assume it's XML
-    self.is_binary      = (mime_type and mime_type != 'application/xml')
+    self.is_binary      = (mime_type and mime_type != 'application/xml' and mime_type != 'text/xml')
 
     # SZ: Assigned twice so that it is initially set
     self.doc            = self.set_doc(doc)
