@@ -69,3 +69,44 @@ class ReportingInternalTests(InternalTests):
 #        print 'RESPONSE 4: ', response.content
 
         #CHECK RESULTS MORE CAREFULLY
+
+    def test_get_audits(self):
+        record_id = self.records[0].id        
+
+        # make some audits
+        import datetime
+        audit_args = {
+            'datetime': datetime.datetime.now(),
+            'view_func': 'FUNC1',
+            'request_successful': True,
+            'record_id': record_id
+            }
+        Audit.objects.create(**audit_args)
+        audit_args = {
+            'datetime': datetime.datetime.now(),
+            'view_func': 'FUNC2',
+            'request_successful': True, 
+            'record_id': record_id
+            }
+        Audit.objects.create(**audit_args)
+
+
+        url = '/records/%s/audits/query/?date_range=request_date*2010-03-10T00:00:00Z*'%(record_id)
+        response = self.client.get(url)
+        # Should see 2 entries
+        print 'RESPONSE 1: ', response.content
+
+        url = '/records/%s/audits/query/?date_range=request_date*2010-03-10T00:00:00Z*&function_name=FUNC1'%(record_id)
+        response = self.client.get(url)
+        # Should see 1 entry
+        print 'RESPONSE 2: ', response.content
+
+        url = '/records/%s/audits/query/?aggregate_by=count*request_date&date_range=request_date*2010-03-10T00:00:00Z*'%(record_id)
+        response = self.client.get(url)
+        # Should see [{'aggregation': 4}]
+        print 'RESPONSE 3: ', response.content
+
+        url = '/records/%s/audits/query/?aggregate_by=count*request_date&date_range=request_date*2010-03-10T00:00:00Z*&function_name=FUNC1'%(record_id)
+        response = self.client.get(url)
+        # Should see [{'aggregation': 1}]
+        print 'RESPONSE 4: ', response.content

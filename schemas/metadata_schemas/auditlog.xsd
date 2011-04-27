@@ -1,18 +1,50 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">  
 
   <xs:element name="AuditLog">
     <xs:complexType>
       <xs:sequence>
-	<xs:element name="Entry" minOccurs="0" maxOccurs="unbounded">
-	  <xs:complexType>
-	    <xs:attribute name="request_datetime" type="xs:dateTime" use="required" />
-	    <xs:attribute name="effective_principal" type="xs:string" use="required" />
-	    <xs:attribute name="proxied_principal" type="xs:string" use="required" />
-	    <xs:attribute name="record_id" type="xs:string" use="required" />
-	    <xs:attribute name="document_id" type="xs:string" use="required" />
-	    <xs:attribute name="function" type="xs:string" use="required" />
-	  </xs:complexType>
-	</xs:element>
+        <xs:element name="Entry" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BasicInfo" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+		  <xs:attribute name="datetime" type="xs:dateTime" use="required" />
+                  <xs:attribute name="view_func" type="xs:string" use="required" />
+		  <xs:attribute name="request_successful" type="xs:boolean" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="PrincipalInfo" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+		  <xs:attribute name="effective_principal" type="xs:string" use="required" />
+                  <xs:attribute name="proxied_principal" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Resources" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+		  <xs:attribute name="carenet_id" type="xs:string" use="required" />
+                  <xs:attribute name="record_id" type="xs:string" use="required" />
+                  <xs:attribute name="pha_id" type="xs:string" use="required" />
+                  <xs:attribute name="document_id" type="xs:string" use="required" />
+                  <xs:attribute name="external_id" type="xs:string" use="required" />
+                  <xs:attribute name="message_id" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="RequestInfo" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="req_url" type="xs:string" use="required" />
+                  <xs:attribute name="req_ip_address" type="xs:string" use="required" />
+                  <xs:attribute name="req_domain" type="xs:string" use="required" />
+                  <xs:attribute name="req_method" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="ResponseInfo" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="resp_code" type="xs:integer" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

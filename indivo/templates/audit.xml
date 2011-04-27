@@ -1,6 +1,13 @@
+{% load template_utils %}
 <?xml version="1.0" encoding="utf-8" ?>
 <AuditLog>
 {% for audit in audits %}
-  <Entry request_datetime="{{ audit.req_datetime }}" effective_principal="{{ audit.req_effective_principal_email }}" proxied_principal="{{ audit.req_proxied_principal_email }}" record_id="{{ audit.record }}" document_id="{{ audit.document }}" function="{{ audit.req_view_func }}" />
+  <Entry>
+    <BasicInfo datetime="{{ audit.datetime|format_iso8601_datetime }}" view_func="{{ audit.view_func|check_empty }}" request_successful="{% if audit.request_successful %}true{% else %}false{% endif %}" />
+    <PrincipalInfo effective_principal="{{ audit.effective_principal_email|check_empty }}" proxied_principal="{{ audit.proxied_by_email|check_empty }}" />
+    <Resources carenet_id="{{ audit.carenet_id|check_empty }}" record_id="{{ audit.record_id|check_empty }}" pha_id="{{ audit.pha_id|check_empty }}" document_id="{{ audit.document_id|check_empty }}" external_id="{{ audit.external_id|check_empty }}" message_id="{{ audit.message_id|check_empty }}" />
+    <RequestInfo req_url="{{ audit.req_url|check_empty }}" req_ip_address="{{ audit.req_ip_address|check_empty }}" req_domain="{{ audit.req_domain|check_empty }}" req_method="{{ audit.req_method|check_empty }}" />
+    <ResponseInfo resp_code="{{ audit.resp_code|check_empty }}" />
+  </Entry>
 {% endfor %}
 </AuditLog>

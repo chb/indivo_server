@@ -4,15 +4,73 @@ Indivo Views -- Auditing
 
 import logging
 from base import *
-# SZ: Ignore order_by, use req_datetime
+from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
+from indivo.lib.utils import render_template
+from indivo.lib.query import execute_query, DATE, STRING, NUMBER
+from indivo.models import Audit
+from django.http import HttpResponseBadRequest, HttpResponse
 
+AUDIT_FILTERS = {
+  'record_id': ('record_id', STRING),
+  'document_id': ('document_id', STRING),
+  'external_id': ('external_id', STRING),
+  'request_date': ('datetime', DATE),
+  'function_name': ('view_func', STRING),
+  'principal_email':('effective_principal_email', STRING),
+  'proxied_by_email': ('proxied_by_email', STRING),
+  DEFAULT_ORDERBY: ('datetime', DATE),
+}
 
+@marsloader(query_api_support=True)
+def audit_query(request, group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, filters,
+                record=None):
+  '''Select Audit Objects via the Query API Interface'''
+  try:
+    if record:
+      # Careful: security hole here.
+      # /records/abc/audits/?record_id=bcd is dangerous
+      # Eliminate that possibility
+      if filters.has_key('record_id') and filters['record_id'] is not record.id:
+        return HttpResponseBadRequest('Cannot make Audit queries over records not in the request url')
+
+      filters['record_id'] = record.id
+
+    results, trc, aggregate_p = execute_query(Audit, AUDIT_FILTERS,
+                                              group_by, date_group, aggregate_by,
+                                              limit, offset, order_by,
+                                              None, date_range, filters, # ignore status for audits
+                                              record=None, carenet=None)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))
+
+  # output the appropriate template
+  if aggregate_p:
+    template = 'reports/aggregate'
+    template_args = {'data': results,
+                     'trc': trc,
+                     'limit': limit,
+                     'offset': offset,
+                     'order_by': order_by}
+    # Hack until we build the aggregate schema
+    return HttpResponse(str(results))
+
+  else:
+    template = 'audit'
+    template_args = {'audits': results}
+    return render_template(template, template_args, type="xml")
+
+##################################
+## DEPRECATED CALLS:             #
+## Use Query API via audit_query #
+##################################
 @marsloader()
 def audit_function_view(request, record, document_id, function_name, limit, offset, order_by, status=None):
   try:
-    audits = Audit.objects.filter(  record=record.id,
-                                    document=document_id, 
-      req_view_func=function_name).order_by('req_datetime').reverse()[offset:offset+limit]
+    audits = Audit.objects.filter(record_id=record.id,
+                                  document_id=document_id, 
+                                  view_func=function_name).order_by('-datetime')[offset:offset+limit]
     return render_template('audit', {'audits' : audits}, type='xml')
   except:
     raise Http404
@@ -21,7 +79,7 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
 @marsloader()
 def audit_record_view(request, record, limit, offset, order_by, status = None):
   try:
-    audits = Audit.objects.filter(record=record.id).order_by('req_datetime').reverse()[offset:offset+limit]
+    audits = Audit.objects.filter(record_id=record.id).order_by('-datetime')[offset:offset+limit]
     return render_template('audit', {'audits' : audits}, type='xml')
   except:
     raise Http404
@@ -30,8 +88,8 @@ def audit_record_view(request, record, limit, offset, order_by, status = None):
 @marsloader()
 def audit_document_view(request, record, document_id, limit, offset, order_by, status=None):
   try:
-    audits = Audit.objects.filter(  record=record.id,
-                                    document=document_id).order_by('req_datetime').reverse()[offset:offset+limit]
+    audits = Audit.objects.filter(record_id=record.id,
+                                  document_id=document_id).order_by('-datetime')[offset:offset+limit]
     return render_template('audit', {'audits' : audits}, type='xml')
   except:
     raise Http404

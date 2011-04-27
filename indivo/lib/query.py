@@ -6,7 +6,6 @@ from indivo.lib.utils import carenet_filter
 from indivo.lib.iso8601 import parse_utc_date
 from django.db.models import Avg, Count, Max, Min, Sum
 
-ANY = 'any'
 DATE = 'date'
 STRING = 'string'
 NUMBER = 'number'
@@ -94,12 +93,13 @@ def execute_query(model, model_filters,
 def apply_filters(results, record, carenet, filters, date_range, status, valid_filters, model):
     if carenet:
         record = carenet.record
-    if not record:
-        raise ValueError('Called Lab list with invalid record and/or carenet')
+    
+    # Need to allow queries with no record or carenet, i.e. the Audit table, which has 'record_id', not 'record'
+    if record:
+        results = results.filter(record=record)
 
     # Carenet filters.
     # DH 04-07-2011: Moved up front and changed to not evaluate the queryset
-    results = results.filter(record=record)
     results = carenet_filter(carenet, results)
 
 
