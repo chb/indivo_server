@@ -11,5 +11,3 @@ python manage.py cleanup_old_tokens
 - now needs markdown support
 
 easy_install Markdown
-
-Testing Edit via github.com
