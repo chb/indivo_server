@@ -5,9 +5,7 @@
   {% if medication.date_stopped %}
   <dateStopped>{{ medication.date_stopped|format_iso8601_date }}</dateStopped>
   {% endif %}
-  {% if medication.name %}
-  <name{% if medication.name_type %} type="{{ medication.name_type }}" value="{{ medication.name_value }}"{% if medication.name_abbrev %} abbrev="{{ medication.name_abbrev }}"{% endif %}{% endif %}>{{ medication.name }}</name>
-  {% endif %}
+  <name {% if medication.name_type %} type="{{ medication.name_type }}" value="{{ medication.name_value }}"{% if medication.name_abbrev %} abbrev="{{ medication.name_abbrev }}"{% endif %}{% endif %}>{% if medication.name %} {{ medication.name }} {% endif %}</name>
   {% if medication.brand_name %}
   <brandName{% if medication.brand_name_type %} type="{{ medication.brand_name_type }}" value="{{ medication.brand_name_value }}"{% if medication.brand_name_abbrev %} abbrev="{{ medication.brand_name_abbrev }}"{% endif %}{% endif %}>{{ medication.brand_name }}</brandName>
   {% endif %}
@@ -37,37 +35,35 @@
     {% endif %}
   </strength>
   {% endif %}
-  {% if medication.frequency %}
-    <frequency{% if medication.frequency_type %} type="{{ medication.frequency_type }}" value="{{ medication.frequency_value }}"{% if medication.frequency_abbrev %} abbrev="{{ medication.frequency_abbrev }}"{% endif %}{% endif %}>{{ medication.frequency }}</frequency>
-  {% endif %}
+  <frequency {% if medication.frequency_type %} type="{{ medication.frequency_type }}" value="{{ medication.frequency_value }}"{% if medication.frequency_abbrev %} abbrev="{{ medication.frequency_abbrev }}"{% endif %}{% endif %}> {% if medication.frequency %}{{ medication.frequency }}  {% endif %}</frequency>
   {% if medication.prescribed_by_name %}
-    <prescription>
-      <by>
-        {% if medication.prescribed_by_name %}
-          <name>{{ medication.prescribed_by_name }}</name>
-        {% endif %}
-        {% if medication.prescribed_by_institution %}
-          <institution>{{ medication.prescribed_by_institution }}</institution>
-        {% endif %}
-      </by>
-      {% if medication.prescribed_on %}
-        <on>{{ medication.prescribed_on|format_iso8601_date }}</on>
+  <prescription>
+    <by>
+      {% if medication.prescribed_by_name %}
+      <name>{{ medication.prescribed_by_name }}</name>
       {% endif %}
-      {% if medication.prescribed_stop_on %}
-        <stopOn>{{ medication.prescribed_stop_on|format_iso8601_date }}</stopOn>
+      {% if medication.prescribed_by_institution %}
+      <institution>{{ medication.prescribed_by_institution }}</institution>
       {% endif %}
-      {% if medication.dispense_as_written %}
-        <dispenseAsWritten>{{ medication.dispense_as_written }}</dispenseAsWritten>
-      {% endif %}
-      {% if medication.prescription_duration %}
-        <duration>{{ medication.prescription_duration }}</duration>
-      {% endif %}
-      {% if medication.prescription_refill_info %}
-        <refillInfo>{{ medication.prescription_refill_info }}</refillInfo>
-      {% endif %}
-      {% if medication.prescription_instructions %}
-        <instructions>{{ medication.prescription_instructions }}</instructions>
-      {% endif %}
-    </prescription>
+    </by>
+    {% if medication.prescribed_on %}
+    <on>{{ medication.prescribed_on|format_iso8601_date }}</on>
+    {% endif %}
+    {% if medication.prescribed_stop_on %}
+    <stopOn>{{ medication.prescribed_stop_on|format_iso8601_date }}</stopOn>
+    {% endif %}
+    {% if medication.dispense_as_written %}
+    <dispenseAsWritten>{{ medication.dispense_as_written }}</dispenseAsWritten>
+    {% endif %}
+    {% if medication.prescription_duration %}
+    <duration>{{ medication.prescription_duration }}</duration>
+    {% endif %}
+    {% if medication.prescription_refill_info %}
+    <refillInfo>{{ medication.prescription_refill_info }}</refillInfo>
+    {% endif %}
+    {% if medication.prescription_instructions %}
+    <instructions>{{ medication.prescription_instructions }}</instructions>
+    {% endif %}
+  </prescription>
   {% endif %}
 </Medication>
