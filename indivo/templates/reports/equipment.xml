@@ -1,31 +1,16 @@
-{% extends "reports/reports.xml" %}
-{% load template_utils %}
-{% block summary %}
-  <Summary total_document_count="{{trc}}" limit="{{limit}}" offset="{{offset}}" order_by="{{order_by}}" />
-{% endblock %}
-{% block report %}
-{% for e in equipment %}
-<Report>
-  <Meta>
-    {{ e.document_id|get_doc_obj }}
-  </Meta>
-  <Item>
-    <Equipment xmlns="http://indivo.org/vocab/xml/documents#">
-      {% if e.date_started %}
-      <dateStarted>{{e.date_started|format_iso8601_date}}</dateStarted>
-      {% endif %}
-      {% if e.date_stopped %}
-      <dateStopped>{{e.date_stopped|format_iso8601_date}}</dateStopped>
-      {% endif %}
-      <name>{{ e.name }}</name>
-      {% if e.vendor %}
-        <vendor>{{ e.vendor }}</vendor>
-      {% endif %}
-      {% if e.description %}
-        <description>{{ e.description }}</description>
-      {% endif %}
-    </Equipment>
-  </Item>
-</Report>
-{% endfor %}
-{% endblock %}
+{% load template_utils %}<Equipment xmlns="http://indivo.org/vocab/xml/documents#">
+  {% if fobj.date_started %}
+  <dateStarted>{{fobj.date_started|format_iso8601_date}}</dateStarted>
+  {% endif %}
+  {% if fobj.date_stopped %}
+  <dateStopped>{{fobj.date_stopped|format_iso8601_date}}</dateStopped>
+  {% endif %}
+  <name>{{ fobj.name }}</name>
+  {% if fobj.vendor %}
+  <vendor>{{ fobj.vendor }}</vendor>
+  {% endif %}
+  {% if fobj.description %}
+  <description>{{ fobj.description }}</description>
+  {% endif %}
+</Equipment>
+

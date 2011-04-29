@@ -2,7 +2,7 @@
 Common Functionality for support of the Query API
 """
 
-from indivo.lib.utils import carenet_filter
+from indivo.lib.utils import carenet_filter, render_template
 from indivo.lib.iso8601 import parse_utc_date
 from django.db.models import Avg, Count, Max, Min, Sum
 
@@ -36,6 +36,31 @@ TIME_INCRS = {
   'weekofyear': 'WW',
   'monthofyear': 'MM'
 }
+
+OUTPUT_TEMPLATE = 'reports/report'
+AGGREGATE_TEMPLATE = 'reports/aggregate.xml'
+
+def render_results_template(results, trc, aggregate_p, item_template,
+                            group_by, date_group, aggregate_by,
+                            limit, offset, order_by,
+                            status, date_range, filters,
+                            output_template=OUTPUT_TEMPLATE):
+    if aggregate_p:
+        item_template = AGGREGATE_TEMPLATE
+    template_args = {'fobjs': results,
+                     'trc': trc,
+                     'group_by': group_by, 
+                     'date_group': date_group, 
+                     'aggregate_by': aggregate_by,
+                     'limit': limit, 
+                     'offset': offset,
+                     'order_by': order_by,
+                     'status': status,
+                     'date_range': date_range, 
+                     'filters':filters,        
+                     'item_template': item_template
+                     }
+    return render_template(output_template, template_args, type="xml")
 
 def execute_query(model, model_filters,
                   group_by, date_group, aggregate_by,

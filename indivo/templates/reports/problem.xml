@@ -1,17 +1,17 @@
 {% load template_utils %}<Problem xmlns="http://indivo.org/vocab/xml/documents#">
-  {% if problem.date_onset %}
-    <dateOnset>{{ problem.date_onset|format_iso8601_datetime }}</dateOnset>
+  {% if fobj.date_onset %}
+    <dateOnset>{{ fobj.date_onset|format_iso8601_datetime }}</dateOnset>
   {% endif %}
-  {% if problem.date_resolution %}
-    <dateResolution>{{ problem.date_resolution|format_iso8601_datetime }}</dateResolution>
+  {% if fobj.date_resolution %}
+    <dateResolution>{{ fobj.date_resolution|format_iso8601_datetime }}</dateResolution>
   {% endif %}
-  {% if problem.name %}
-    <name{% if problem.name_type %} type="{{ problem.name_type }}" value="{{ problem.name_value }}" abbrev="{{ problem.name_abbrev|check_empty }}"{% endif %}>{{ problem.name }}</name>
+  {% if fobj.name %}
+    <name{% if fobj.name_type %} type="{{ fobj.name_type }}" value="{{ fobj.name_value }}" abbrev="{{ fobj.name_abbrev|check_empty }}"{% endif %}>{{ fobj.name }}</name>
   {% endif %}
-  {% if problem.comments %}
-    <comments>{{ problem.comments }}</comments>
+  {% if fobj.comments %}
+    <comments>{{ fobj.comments }}</comments>
   {% endif %}
-  {% if problem.diagnosed_by %}
-    <diagnosedBy>{{ problem.diagnosed_by }}</diagnosedBy>
+  {% if fobj.diagnosed_by %}
+    <diagnosedBy>{{ fobj.diagnosed_by }}</diagnosedBy>
   {% endif %}
 </Problem>

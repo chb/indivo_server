@@ -4,8 +4,7 @@ Indivo Views -- Equipment
 
 from django.http import HttpResponseBadRequest, HttpResponse
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
-from indivo.lib.utils import render_template
-from indivo.lib.query import execute_query, DATE, STRING, NUMBER
+from indivo.lib.query import execute_query, render_results_template, DATE, STRING, NUMBER
 from indivo.models import Equipment
 
 EQUIPMENT_FILTERS = {
@@ -15,6 +14,8 @@ EQUIPMENT_FILTERS = {
   'equipment_vendor': ('vendor', STRING),
   DEFAULT_ORDERBY : ('created_at', DATE)
 }
+
+EQUIPMENT_TEMPLATE = 'reports/equipment.xml'
 
 def equipment_list(*args, **kwargs):
   """For 1:1 mapping of URLs to views. Calls _equipment_list"""
@@ -30,8 +31,6 @@ def _equipment_list(request, group_by, date_group, aggregate_by,
                        limit, offset, order_by,
                        status, date_range, filters,
                        record=None, carenet=None):
-
-
   try:
     results, trc, aggregate_p = execute_query(Equipment, EQUIPMENT_FILTERS,
                                               group_by, date_group, aggregate_by,
@@ -41,15 +40,7 @@ def _equipment_list(request, group_by, date_group, aggregate_by,
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
 
-
-  if aggregate_p:
-    # Waiting on aggregate schema
-    return HttpResponse(str(results))
-
-  return render_template('reports/equipment', 
-                          { 'equipment' : results,
-                            'trc' : trc,
-                            'limit' : limit,
-                            'offset' : offset,
-                            'order_by' : order_by },
-                          type="xml")
+  return render_results_template(results, trc, aggregate_p, EQUIPMENT_TEMPLATE,
+                                 group_by, date_group, aggregate_by,
+                                 limit, offset, order_by,
+                                 status, date_range, filters)
