@@ -3,12 +3,12 @@
 {% block summary %}
   <Summary total_document_count="{{ trc }}" limit="{{ limit }}" offset="{{ offset }}" order_by="{{ order_by }}" />
   <QueryParams>
-    {% if group_by %}<group_by value="{{ group_by }}" />{% endif %}
-    {% if date_group %}<date_group value="{{ date_group.field }}*{{ date_group.time_incr }}" />{% endif %}
-    {% if aggregate_by %}<aggregate_by value="{{ aggregate_by.operator }}*{{ aggregate_by.field }}" />{% endif %}
-    {% if date_range %}<date_range value="{{ date_range.field }}*{{ date_range.start_date|format_iso8601_datetime }}*{{ date_range.end_date|format_iso8601_datetime }}" />{% endif %}
+    {% if group_by %}<GroupBy value="{{ group_by }}" />{% endif %}
+    {% if date_group %}<DateGroup value="{{ date_group.field }}*{{ date_group.time_incr }}" />{% endif %}
+    {% if aggregate_by %}<AggregateBy value="{{ aggregate_by.operator }}*{{ aggregate_by.field }}" />{% endif %}
+    {% if date_range %}<DateRange value="{{ date_range.field }}*{{ date_range.start_date|format_iso8601_datetime }}*{{ date_range.end_date|format_iso8601_datetime }}" />{% endif %}
     {% if filters %}<Filters>
-      {% for filter_name, filter_value in filters.items %}<filter name="{{ filter_name }}" value="{{ filter_value }}"/>{% endfor %}
+      {% for filter_name, filter_value in filters.items %}<Filter name="{{ filter_name }}" value="{{ filter_value }}"/>{% endfor %}
     </Filters>{% endif %}
   </QueryParams>
 {% endblock %}
