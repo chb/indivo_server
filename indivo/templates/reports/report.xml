@@ -1,0 +1,24 @@
+{% extends "reports/reports.xml" %}
+{% load template_utils %}
+{% block summary %}
+  <Summary total_document_count="{{ trc }}" limit="{{ limit }}" offset="{{ offset }}" order_by="{{ order_by }}" />
+  <QueryParams>
+    {% if group_by %}<GroupBy value="{{ group_by }}" />{% endif %}
+    {% if date_group %}<DateGroup value="{{ date_group.field }}*{{ date_group.time_incr }}" />{% endif %}
+    {% if aggregate_by %}<AggregateBy value="{{ aggregate_by.operator }}*{{ aggregate_by.field }}" />{% endif %}
+    {% if date_range %}<DateRange value="{{ date_range.field }}*{{ date_range.start_date|format_iso8601_datetime }}*{{ date_range.end_date|format_iso8601_datetime }}" />{% endif %}
+    {% if filters %}<Filters>
+      {% for filter_name, filter_value in filters.items %}<Filter name="{{ filter_name }}" value="{{ filter_value }}"/>{% endfor %}
+    </Filters>{% endif %}
+  </QueryParams>
+{% endblock %}
+{% block report %}
+{% for fobj in fobjs %}
+<Report>
+  <Meta>{{ fobj.document_id|get_doc_obj }}</Meta>
+  <Item>
+    {% include item_template %}
+  </Item>
+</Report>
+{% endfor %}
+{% endblock %}
