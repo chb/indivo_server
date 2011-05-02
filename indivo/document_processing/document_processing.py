@@ -133,6 +133,13 @@ class DocumentProcessing:
         else:
           raise ValueError("BAD SCHEMA PATH: %s"%schema_path)
 
+  def validate_xml_syntax(self, xml_doc):
+    ''' Make sure that the incoming document is properly formatted XML, regardless of content'''
+    try:
+      xml_etree = etree.XML(xml_doc)
+    except Exception as e:
+      raise ValueError("Input document didn't parse as XML, error was: %s"%(str(e)))
+
   def validate_xml(self, xml_doc, xsd_doc):
     # the <include /> tags in our xsd files are relative paths from the schema dir,
     # so lxml won't find the referenced files unless we resolve the schemaLocation property.
@@ -187,6 +194,9 @@ class DocumentProcessing:
         globals().has_key(self.doc_class_rel[doc_schema.type]['class']):
 
       # Validate the document XML
+      if settings.VALIDATE_XML_SYNTAX:
+        self.validate_xml_syntax(self.doc[OCON])
+
       if settings.VALIDATE_XML:
         schema = self.get_schema_file()
         if schema:
