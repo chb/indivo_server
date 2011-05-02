@@ -2,11 +2,10 @@
 Indivo Views -- Auditing
 """
 
-import logging
+import logging, copy
 from base import *
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
-from indivo.lib.utils import render_template
-from indivo.lib.query import execute_query, DATE, STRING, NUMBER
+from indivo.lib.query import execute_query, render_results_template, DATE, STRING, NUMBER
 from indivo.models import Audit
 from django.http import HttpResponseBadRequest, HttpResponse
 
@@ -21,6 +20,8 @@ AUDIT_FILTERS = {
   DEFAULT_ORDERBY: ('datetime', DATE),
 }
 
+AUDIT_TEMPLATE = 'audit.xml'
+
 @marsloader(query_api_support=True)
 def audit_query(request, group_by, date_group, aggregate_by,
                 limit, offset, order_by,
@@ -28,6 +29,7 @@ def audit_query(request, group_by, date_group, aggregate_by,
                 record=None):
   '''Select Audit Objects via the Query API Interface'''
   try:
+    query_filters = copy.copy(filters)
     if record:
       # Careful: security hole here.
       # /records/abc/audits/?record_id=bcd is dangerous
@@ -35,31 +37,21 @@ def audit_query(request, group_by, date_group, aggregate_by,
       if filters.has_key('record_id') and filters['record_id'] is not record.id:
         return HttpResponseBadRequest('Cannot make Audit queries over records not in the request url')
 
-      filters['record_id'] = record.id
+      query_filters['record_id'] = record.id
 
     results, trc, aggregate_p = execute_query(Audit, AUDIT_FILTERS,
                                               group_by, date_group, aggregate_by,
                                               limit, offset, order_by,
-                                              None, date_range, filters, # ignore status for audits
+                                              None, date_range, query_filters, # ignore status for audits
                                               record=None, carenet=None)
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
 
-  # output the appropriate template
-  if aggregate_p:
-    template = 'reports/aggregate'
-    template_args = {'data': results,
-                     'trc': trc,
-                     'limit': limit,
-                     'offset': offset,
-                     'order_by': order_by}
-    # Hack until we build the aggregate schema
-    return HttpResponse(str(results))
+  return render_results_template(results, trc, aggregate_p, AUDIT_TEMPLATE,
+                                 group_by, date_group, aggregate_by,
+                                 limit, offset, order_by,
+                                 status, date_range, filters)
 
-  else:
-    template = 'audit'
-    template_args = {'audits': results}
-    return render_template(template, template_args, type="xml")
 
 ##################################
 ## DEPRECATED CALLS:             #

@@ -1,13 +1,8 @@
 {% load template_utils %}
-<?xml version="1.0" encoding="utf-8" ?>
-<AuditLog>
-{% for audit in audits %}
-  <Entry>
-    <BasicInfo datetime="{{ audit.datetime|format_iso8601_datetime }}" view_func="{{ audit.view_func|check_empty }}" request_successful="{% if audit.request_successful %}true{% else %}false{% endif %}" />
-    <PrincipalInfo effective_principal="{{ audit.effective_principal_email|check_empty }}" proxied_principal="{{ audit.proxied_by_email|check_empty }}" />
-    <Resources carenet_id="{{ audit.carenet_id|check_empty }}" record_id="{{ audit.record_id|check_empty }}" pha_id="{{ audit.pha_id|check_empty }}" document_id="{{ audit.document_id|check_empty }}" external_id="{{ audit.external_id|check_empty }}" message_id="{{ audit.message_id|check_empty }}" />
-    <RequestInfo req_url="{{ audit.req_url|check_empty }}" req_ip_address="{{ audit.req_ip_address|check_empty }}" req_domain="{{ audit.req_domain|check_empty }}" req_method="{{ audit.req_method|check_empty }}" />
-    <ResponseInfo resp_code="{{ audit.resp_code|check_empty }}" />
-  </Entry>
-{% endfor %}
-</AuditLog>
+<AuditEntry>
+  <BasicInfo datetime="{{ fobj.datetime|format_iso8601_datetime }}" view_func="{{ fobj.view_func|check_empty }}" request_successful="{% if fobj.request_successful %}true{% else %}false{% endif %}" />
+  <PrincipalInfo effective_principal="{{ fobj.effective_principal_email|check_empty }}" proxied_principal="{{ fobj.proxied_by_email|check_empty }}" />
+  <Resources carenet_id="{{ fobj.carenet_id|check_empty }}" record_id="{{ fobj.record_id|check_empty }}" pha_id="{{ fobj.pha_id|check_empty }}" document_id="{{ fobj.document_id|check_empty }}" external_id="{{ fobj.external_id|check_empty }}" message_id="{{ fobj.message_id|check_empty }}" />
+  <RequestInfo req_url="{{ fobj.req_url|check_empty }}" req_ip_address="{{ fobj.req_ip_address|check_empty }}" req_domain="{{ fobj.req_domain|check_empty }}" req_method="{{ fobj.req_method|check_empty }}" />
+  <ResponseInfo resp_code="{{ fobj.resp_code|check_empty }}" />
+</AuditEntry>
