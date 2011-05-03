@@ -216,6 +216,7 @@ def record_pha_setup(request, record, pha):
                                   external_id = Document.prepare_external_id('SETUP', pha, pha_specific=True, record_specific=True))
 
   # preauthorize the token.
+  from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
   access_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record)
 
   # return the token

@@ -6,11 +6,9 @@ import urllib, urlparse
 
 from base import *
 
-from indivo.accesscontrol.oauth_servers import OAUTH_SERVER, SESSION_OAUTH_SERVER
 from oauth.djangoutils import extract_request
 from oauth import oauth
 from indivo.views.documents.document import _get_document
-from indivo.accesscontrol import auth
 from indivo.lib import iso8601
 import base64, hmac, datetime
 
@@ -53,6 +51,7 @@ def request_token(request):
     # ask the oauth server to generate a request token given the HTTP request
     try:
       # we already have the oauth_request in context, so we don't get it again
+      from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
       request_token = OAUTH_SERVER.generate_request_token(request.oauth_request, 
                                                           record_id = request.POST.get('indivo_record_id', None),
                                                           carenet_id = request.POST.get('indivo_carenet_id', None))
@@ -67,6 +66,7 @@ def exchange_token(request):
     # this will check proper oauth for this action
 
     try:
+      from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
       access_token = OAUTH_SERVER.exchange_request_token(request.oauth_request)
       # an exception can be raised if there is a bad signature (or no signature) in the request
     except:
@@ -99,6 +99,7 @@ def user_authorization(request):
       if not record.can_admin(request.principal):
         raise Exception("cannot administer this record")
 
+    from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
     request_token = OAUTH_SERVER.authorize_request_token(token.token, record = record, account = request.principal)
 
     # where to redirect to + parameters
@@ -116,6 +117,7 @@ def user_authorization(request):
 ##
 
 def session_create(request):
+  from indivo.accesscontrol import auth
   password = None
   if request.POST.has_key('username'):
     username = request.POST['username']
@@ -136,6 +138,7 @@ def session_create(request):
 
   if user.is_active:
     # auth worked, created a session based token
+    from indivo.accesscontrol.oauth_servers import SESSION_OAUTH_SERVER
     token = SESSION_OAUTH_SERVER.generate_and_preauthorize_access_token(request.principal, user=user)
   else:
     raise PermissionDenied()
@@ -200,6 +203,7 @@ def request_token_approve(request, reqtoken):
   # or to this carenet is already done in accesscontrol
   
   # authorize the request token
+  from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
   request_token = OAUTH_SERVER.authorize_request_token(reqtoken.token, record = record, carenet = carenet, account = request.principal)
 
   # where to redirect to + parameters
