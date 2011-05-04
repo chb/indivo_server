@@ -184,6 +184,10 @@ class DocumentProcessing:
   def _process(self):
     """ Process the incoming doc """
 
+    # Make sure we have a valid XML string at all
+    if settings.VALIDATE_XML_SYNTAX:
+      self.validate_xml_syntax(self.doc[OCON])
+
     # Is this document registered in document schema?
     # Is this document registered in doc_class_rel?
     # Does doc_class_rel contain 'class'?
@@ -194,9 +198,6 @@ class DocumentProcessing:
         globals().has_key(self.doc_class_rel[doc_schema.type]['class']):
 
       # Validate the document XML
-      if settings.VALIDATE_XML_SYNTAX:
-        self.validate_xml_syntax(self.doc[OCON])
-
       if settings.VALIDATE_XML:
         schema = self.get_schema_file()
         if schema:
