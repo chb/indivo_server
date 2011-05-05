@@ -22,8 +22,11 @@ removes all objects, and "process" re-processes existing documents to create new
         elif args[0] == 'process':
             print "Re-processing all Documents..."
             for doc in Document.objects.all():
-                doc.processed = False                
-                doc.save()
+                
+                # only reprocess the most recent version of docs
+                if not doc.replaced_by:
+                    doc.processed = False                
+                    doc.save()
             print "Done."
         else:
             raise CommandError('Invalid argument: %s. Expected "drop" or "process"'%args[0])
