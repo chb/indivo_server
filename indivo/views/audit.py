@@ -5,7 +5,7 @@ Indivo Views -- Auditing
 import logging, copy
 from base import *
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
-from indivo.lib.query import execute_query, render_results_template, DATE, STRING, NUMBER
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
 from indivo.models import Audit
 from django.http import HttpResponseBadRequest, HttpResponse
 
@@ -28,30 +28,31 @@ def audit_query(request, group_by, date_group, aggregate_by,
                 status, date_range, filters,
                 record=None):
   '''Select Audit Objects via the Query API Interface'''
+  query_filters = copy.copy(filters)
+  if record:
+    # Careful: security hole here.
+    # /records/abc/audits/?record_id=bcd is dangerous
+    # Eliminate that possibility
+    if filters.has_key('record_id') and filters['record_id'] is not record.id:
+      return HttpResponseBadRequest('Cannot make Audit queries over records not in the request url')
+    
+    query_filters['record_id'] = record.id
+
+  q = FactQuery(Audit, AUDIT_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                None, date_range, query_filters, # ignore status for audits
+                record=None, carenet=None)
   try:
-    query_filters = copy.copy(filters)
-    if record:
-      # Careful: security hole here.
-      # /records/abc/audits/?record_id=bcd is dangerous
-      # Eliminate that possibility
-      if filters.has_key('record_id') and filters['record_id'] is not record.id:
-        return HttpResponseBadRequest('Cannot make Audit queries over records not in the request url')
+    # Don't display record_id in the output if it wasn't in the query string.
+    q.execute()
+    if q.query_filters.has_key('record_id') and not filters.has_key('record_id'):
+      del q.query_filters['record_id']
+    
+    return q.render(AUDIT_TEMPLATE)
 
-      query_filters['record_id'] = record.id
-
-    results, trc, aggregate_p = execute_query(Audit, AUDIT_FILTERS,
-                                              group_by, date_group, aggregate_by,
-                                              limit, offset, order_by,
-                                              None, date_range, query_filters, # ignore status for audits
-                                              record=None, carenet=None)
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
-
-  return render_results_template(results, trc, aggregate_p, AUDIT_TEMPLATE,
-                                 group_by, date_group, aggregate_by,
-                                 limit, offset, order_by,
-                                 status, date_range, filters)
-
 
 ##################################
 ## DEPRECATED CALLS:             #
@@ -62,8 +63,16 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
   try:
     audits = Audit.objects.filter(record_id=record.id,
                                   document_id=document_id, 
-                                  view_func=function_name).order_by('-datetime')[offset:offset+limit]
-    return render_template('audit', {'audits' : audits}, type='xml')
+                                  view_func=function_name).order_by('-datetime')
+    return render_template('reports/report', 
+                           {'fobjs' : audits[offset:offset+limit],
+                            'trc': len(audits),
+                            'item_template': AUDIT_TEMPLATE,
+                            'limit': limit,
+                            'offset': offset,
+                            'order_by': order_by,
+                            'status': status}, 
+                           type='xml')
   except:
     raise Http404
 
@@ -71,8 +80,16 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
 @marsloader()
 def audit_record_view(request, record, limit, offset, order_by, status = None):
   try:
-    audits = Audit.objects.filter(record_id=record.id).order_by('-datetime')[offset:offset+limit]
-    return render_template('audit', {'audits' : audits}, type='xml')
+    audits = Audit.objects.filter(record_id=record.id).order_by('-datetime')
+    return render_template('reports/report', 
+                           {'fobjs' : audits[offset:offset+limit],
+                            'trc': len(audits),
+                            'item_template': AUDIT_TEMPLATE,
+                            'limit': limit,
+                            'offset': offset,
+                            'order_by': order_by,
+                            'status': status}, 
+                           type='xml')
   except:
     raise Http404
 
@@ -81,7 +98,15 @@ def audit_record_view(request, record, limit, offset, order_by, status = None):
 def audit_document_view(request, record, document_id, limit, offset, order_by, status=None):
   try:
     audits = Audit.objects.filter(record_id=record.id,
-                                  document_id=document_id).order_by('-datetime')[offset:offset+limit]
-    return render_template('audit', {'audits' : audits}, type='xml')
+                                  document_id=document_id).order_by('-datetime')
+    return render_template('reports/report', 
+                           {'fobjs' : audits[offset:offset+limit],
+                            'trc': len(audits),
+                            'item_template': AUDIT_TEMPLATE,
+                            'limit': limit,
+                            'offset': offset,
+                            'order_by': order_by,
+                            'status': status}, 
+                           type='xml')
   except:
     raise Http404
