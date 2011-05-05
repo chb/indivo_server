@@ -4,7 +4,7 @@ Indivo Views -- Measurements
 
 from django.http import HttpResponseBadRequest, HttpResponse
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
-from indivo.lib.query import execute_query, render_results_template, DATE, STRING, NUMBER
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
 from indivo.models import Measurement
 import copy
 
@@ -34,16 +34,17 @@ def _measurement_list(request, group_by, date_group, aggregate_by,
   if lab_code:
     query_filters['lab_code'] = lab_code
 
+  q = FactQuery(Measurement, MEASUREMENT_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, query_filters,
+                record, carenet)
   try:
-    results, trc, aggregate_p = execute_query(Measurement, MEASUREMENT_FILTERS,
-                                              group_by, date_group, aggregate_by,
-                                              limit, offset, order_by,
-                                              status, date_range, query_filters,
-                                              record, carenet)
+    # hack, so we don't display lab_code in the output if it wasn't in the query string.
+    q.execute()
+    if q.query_filters.has_key('lab_code') and not filters.has_key('lab_code'):
+      del q.query_filters['lab_code']
+
+    return q.render(MEASUREMENT_TEMPLATE)
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
-
-  return render_results_template(results, trc, aggregate_p, MEASUREMENT_TEMPLATE,
-                                 group_by, date_group, aggregate_by,
-                                 limit, offset, order_by,
-                                 status, date_range, filters)
