@@ -4,7 +4,7 @@ Indivo Views -- Vitals
 
 from django.http import HttpResponseBadRequest, HttpResponse
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
-from indivo.lib.query import execute_query, render_results_template, DATE, STRING, NUMBER
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
 from indivo.models import Vitals
 
 VITALS_FILTERS = {
@@ -34,17 +34,14 @@ def _vitals_list(request, group_by, date_group, aggregate_by,
   if category and not filters.has_key('category'):
     category = category.replace("_"," ")
     filters['category'] = category
+    
+  q = FactQuery(Vitals, VITALS_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, filters,
+                record, carenet)
 
   try:
-    results, trc, aggregate_p = execute_query(Vitals, VITALS_FILTERS,
-                                              group_by, date_group, aggregate_by,
-                                              limit, offset, order_by,
-                                              status, date_range, filters,
-                                              record, carenet)
+    return q.render(VITALS_TEMPLATE)
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
-
-  return render_results_template(results, trc, aggregate_p, VITALS_TEMPLATE,
-                                 group_by, date_group, aggregate_by,
-                                 limit, offset, order_by,
-                                 status, date_range, filters)
