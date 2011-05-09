@@ -318,7 +318,8 @@ def load_access_rules():
         or pha_record_access(principal, record)
   views = [audit_record_view,
            audit_document_view,
-           audit_function_view]
+           audit_function_view,
+           audit_query]
   AccessRule('Audit Access', audit_access, views)
 
   # Autoshare-related views: should phas or admins be able to do this?
