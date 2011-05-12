@@ -9,7 +9,7 @@ from indivo.models import Procedure
 
 PROCEDURE_FILTERS = {
   'procedure_name' : ('name', STRING),
-  'date_performed': ('date_resolution', DATE),
+  'date_performed': ('date_performed', DATE),
   DEFAULT_ORDERBY : ('created_at', DATE)
 }
 

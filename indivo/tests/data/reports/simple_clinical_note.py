@@ -1,5 +1,7 @@
+from indivo.tests.data.base import TestXMLDoc
 
-clinical_note= """
+_TEST_CLINICAL_NOTES = [
+    """
 <SimpleClinicalNote xmlns="http://indivo.org/vocab/xml/documents#">
   <dateOfVisit>2010-02-02T12:00:00Z</dateOfVisit>
   <finalizedAt>2010-02-03T13:54:03Z</finalizedAt>
@@ -90,4 +92,7 @@ clinical_note= """
     Patient presents with a serious condition of X and is probably going to need to see a doctor about Y and Z.
   </content>
 </SimpleClinicalNote>
-"""
+""",
+]
+
+TEST_CLINICAL_NOTES = [TestXMLDoc(raw_content) for raw_content in _TEST_CLINICAL_NOTES]

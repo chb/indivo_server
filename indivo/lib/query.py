@@ -209,7 +209,7 @@ class FactQuery(object):
                 else:
                     raise ValueError('Invalid date_group Increment: %s'%(time_incr))
             else:
-                raise ValueError('Invalid grouping field for fact type %s: %s'%(self.model.__name__, date_group['field']))
+                raise ValueError('Invalid grouping field for fact type %s: %s'%(self.model.__name__, self.date_group['field']))
     
         if group_field is not 'all':
             results = results.values(group_field)
