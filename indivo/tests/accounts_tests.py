@@ -69,7 +69,7 @@ class AccountInternalTests(InternalTests):
 
     def test_add_attachment(self):
         attachment_num = 0
-        self.message.add_attachment(attachment_num, '<?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>')
+        self.message.add_attachment(attachment_num, '<?xml version="1.0" ?><body></body>')
         response = self.client.post('/accounts/%s/inbox/%s/attachments/%s/accept'%(EMAIL,MESSAGE_ID,attachment_num))
         self.assertEquals(response.status_code, 200)
 

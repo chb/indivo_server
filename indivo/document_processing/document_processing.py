@@ -65,7 +65,7 @@ class DocumentProcessing:
   def __init__(self, doc, mime_type):
     # changed this from heuristic to declared mime type (Ben 1/07/2011)
     # if mime_type is null, we assume it's XML
-    self.is_binary      = (mime_type and mime_type != 'application/xml')
+    self.is_binary      = (mime_type and mime_type != 'application/xml' and mime_type != 'text/xml')
 
     # SZ: Assigned twice so that it is initially set
     self.doc            = self.set_doc(doc)
@@ -133,6 +133,13 @@ class DocumentProcessing:
         else:
           raise ValueError("BAD SCHEMA PATH: %s"%schema_path)
 
+  def validate_xml_syntax(self, xml_doc):
+    ''' Make sure that the incoming document is properly formatted XML, regardless of content'''
+    try:
+      xml_etree = etree.XML(xml_doc)
+    except Exception as e:
+      raise ValueError("Input document didn't parse as XML, error was: %s"%(str(e)))
+
   def validate_xml(self, xml_doc, xsd_doc):
     # the <include /> tags in our xsd files are relative paths from the schema dir,
     # so lxml won't find the referenced files unless we resolve the schemaLocation property.
@@ -176,6 +183,10 @@ class DocumentProcessing:
 
   def _process(self):
     """ Process the incoming doc """
+
+    # Make sure we have a valid XML string at all
+    if settings.VALIDATE_XML_SYNTAX:
+      self.validate_xml_syntax(self.doc[OCON])
 
     # Is this document registered in document schema?
     # Is this document registered in doc_class_rel?

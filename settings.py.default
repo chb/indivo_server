@@ -99,7 +99,8 @@ INSTALLED_APPS = (
 
 XSLT_STYLESHEET_LOC = APP_HOME + '/indivo/document_processing/stylesheets/'
 XSD_SCHEMA_LOC = APP_HOME + '/schemas/doc_schemas/'
-VALIDATE_XML = True
+VALIDATE_XML_SYNTAX = True # Validate all incoming XML docs for basic syntax?
+VALIDATE_XML = True # Validate XML docs to process against the Indivo schemas?
 
 # the standard port for the UI server is 80 on the same machine
 UI_SERVER_URL = 'http://localhost'
