@@ -1,7 +1,5 @@
 This Branch is for the development of a revamped Audit interface
 
-Instructions at http://wiki.chip.org/indivo
-
 All source code is licensed under GPLv3.
 
 - now needs django_extensions

@@ -72,12 +72,15 @@ def save_special_document(request, record, special_document):
   doc = get_special_doc(record, carenet=None, special_document=special_document)
 
   # this will do the right thing in terms of replacement
-  new_doc = _document_create(record=record, 
-                             creator=request.principal, 
-                             content=request.raw_post_data,
-                             pha=None,
-                             replaces_document=doc)
-
+  try:
+    new_doc = _document_create(record=record, 
+                               creator=request.principal, 
+                               content=request.raw_post_data,
+                               pha=None,
+                               replaces_document=doc)
+  except:
+    return HttpResponseBadRequest('Invalid document: special documents must be valid XML')
+    
   # update the record pointer
   set_special_doc(record, special_document, new_doc)
 

@@ -5,9 +5,7 @@
   {% if fobj.date_stopped %}
   <dateStopped>{{ fobj.date_stopped|format_iso8601_date }}</dateStopped>
   {% endif %}
-  {% if fobj.name %}
-  <name{% if fobj.name_type %} type="{{ fobj.name_type }}" value="{{ fobj.name_value }}"{% if fobj.name_abbrev %} abbrev="{{ fobj.name_abbrev }}"{% endif %}{% endif %}>{{ fobj.name }}</name>
-  {% endif %}
+  <name{% if fobj.name_type %} type="{{ fobj.name_type }}" value="{{ fobj.name_value }}"{% if fobj.name_abbrev %} abbrev="{{ fobj.name_abbrev }}"{% endif %}{% endif %}>{% if fobj.name %}{{ fobj.name }}{% endif %}</name>
   {% if fobj.brand_name %}
   <brandName{% if fobj.brand_name_type %} type="{{ fobj.brand_name_type }}" value="{{ fobj.brand_name_value }}"{% if fobj.brand_name_abbrev %} abbrev="{{ fobj.brand_name_abbrev }}"{% endif %}{% endif %}>{{ fobj.brand_name }}</brandName>
   {% endif %}
@@ -30,16 +28,14 @@
     {% if fobj.strength_value %}
     <value>{{ fobj.strength_value }}</value>
     {% if fobj.strength_unit %}
-      <unit{% if fobj.strength_unit_type %} type="{{ fobj.strength_unit_type }}" value="{{ fobj.strength_unit_value }}"{% if fobj.strength_unit_abbrev %} abbrev="{{ fobj.strength_unit_abbrev }}"{% endif %}{% endif %}>{{ fobj.strength_unit }}</unit>
+    <unit{% if fobj.strength_unit_type %} type="{{ fobj.strength_unit_type }}" value="{{ fobj.strength_unit_value }}"{% if fobj.strength_unit_abbrev %} abbrev="{{ fobj.strength_unit_abbrev }}"{% endif %}{% endif %}>{{ fobj.strength_unit }}</unit>
     {% endif %}
     {% else %}
     <textValue>{{ fobj.strength_textvalue }}</textValue>
     {% endif %}
   </strength>
   {% endif %}
-  {% if fobj.frequency %}
-    <frequency{% if fobj.frequency_type %} type="{{ fobj.frequency_type }}" value="{{ fobj.frequency_value }}"{% if fobj.frequency_abbrev %} abbrev="{{ fobj.frequency_abbrev }}"{% endif %}{% endif %}>{{ fobj.frequency }}</frequency>
-  {% endif %}
+  <frequency{% if fobj.frequency_type %} type="{{ fobj.frequency_type }}" value="{{ fobj.frequency_value }}"{% if fobj.frequency_abbrev %} abbrev="{{ fobj.frequency_abbrev }}"{% endif %}{% endif %}>{% if fobj.frequency %}{{ fobj.frequency }}{% endif %}</frequency>
   {% if fobj.prescribed_by_name %}
     <prescription>
       <by>
@@ -69,5 +65,5 @@
         <instructions>{{ fobj.prescription_instructions }}</instructions>
       {% endif %}
     </prescription>
-  {% endif %}
+    {% endif %}
 </Medication>
