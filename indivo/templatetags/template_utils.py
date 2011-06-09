@@ -5,6 +5,7 @@ from django.template import Context, loader
 from django.template.defaultfilters import stringfilter
 from indivo.models import Document
 from indivo.lib import iso8601
+from indivo.views.documents.document import _set_doc_latest, _get_doc_relations
 
 register = template.Library()
 
@@ -23,7 +24,13 @@ check_empty.is_safe = True
 @stringfilter
 def get_doc_obj(doc_id):
   try:
-    return loader.get_template('document.xml').render(Context({'doc': Document.objects.get(id=doc_id)}))
+    doc = Document.objects.get(id=doc_id)
+    
+    # append the doc metadata
+    _set_doc_latest(doc)
+    doc.relates_to, doc.is_related_from = _get_doc_relations(doc)
+
+    return loader.get_template('document.xml').render(Context({'doc': doc, 'record': doc.record}))
   except:
     return ""
 get_doc_obj.is_safe = True
