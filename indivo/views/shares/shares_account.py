@@ -19,7 +19,7 @@ def carenet_account_create(request, carenet):
     try:
       carenets = CarenetAccount.objects.create(
                     carenet = carenet,
-                    account = Account.objects.get(contact_email=account_id),
+                    account = Account.objects.get(email=account_id),
                     can_write = (request.POST['write'] == 'true')
                   )
     except Carenet.DoesNotExist:
