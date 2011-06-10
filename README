@@ -1,5 +1,3 @@
-This Branch is for the development of a revamped Audit interface
-
 All source code is licensed under GPLv3.
 
 - now needs django_extensions
