@@ -12,7 +12,7 @@
 	        <name_abbrev><xsl:value-of select='indivodoc:name/@abbrev' /></name_abbrev>
         </xsl:if>
         <xsl:apply-templates select='indivodoc:provider' />
-        <location><xsl:value-of select='indivodoc:comments/text()' /></location>
+        <location><xsl:value-of select='indivodoc:location/text()' /></location>
         <comments><xsl:value-of select='indivodoc:comments/text()' /></comments>
       </fact>
     </facts>
