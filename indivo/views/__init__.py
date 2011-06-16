@@ -1,6 +1,6 @@
 """ Indivo Views """
 
-VERSION = '0.8.2.2'
+VERSION = '0.9.3.0'
 
 from account    import *
 from audit      import *
