@@ -2,7 +2,8 @@
 Common Functionality for support of the Query API
 """
 
-from indivo.lib.utils import carenet_filter, render_template
+from indivo.lib.sharing_utils import carenet_facts_filter
+from indivo.lib.utils import render_template
 from indivo.lib.iso8601 import parse_utc_date
 from django.db.models import Avg, Count, Max, Min, Sum
 
@@ -143,7 +144,7 @@ class FactQuery(object):
         # Need to allow queries with no record or carenet, i.e., Audit, which isn't constrained to a single record
         if self.record:
             results = results.filter(record=self.record)
-        results = carenet_filter(self.carenet, results)
+        results = carenet_facts_filter(self.carenet, results)
 
 
         filter_args = {}
