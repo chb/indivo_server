@@ -8,52 +8,78 @@ import datetime
 
 import markdown
 from indivo.lib import mdx_linkexpander
+from django.db import IntegrityError
 
 def _get_subject(request):
   subject = []
   subject.append(request.POST.get('subject', "[no subject]"))
   return ''.join(subject)
 
-@transaction.commit_on_success
-
+@transaction.commit_manually
 def account_send_message(request, account):
   """
   account messages have no attachments for now
   """
-  Message.objects.create( 
-    account             = account, 
-    sender              = request.principal, 
-    recipient           = account, 
-    external_identifier = request.POST.get('message_id', None), 
-    subject             = _get_subject(request),
-    body                = request.POST.get('body', "[no body]"),
-    severity            = request.POST.get('severity', 'low'))
-  account.notify_account_of_new_message()
-  return DONE
+  try:
+    Message.objects.create( 
+      account             = account, 
+      sender              = request.principal, 
+      recipient           = account, 
+      external_identifier = request.POST.get('message_id', None), 
+      subject             = _get_subject(request),
+      body                = request.POST.get('body', "[no body]"),
+      severity            = request.POST.get('severity', 'low'))
+    account.notify_account_of_new_message()
+  except IntegrityError: # Occurs if the same sender uses the same message_id for different messages.
+    transaction.rollback()
+    return HttpResponseBadRequest('Duplicate external id: %s. Each message requires a unique message_id'%message_id)
+  else:
+    transaction.commit()
+    return DONE
 
-
-@transaction.commit_on_success
+# Django handles transactions weirdly with Postgres:
+# Although an integrity error doesn't dirty the DB, PG won't accept
+# any additional DB operations until the transaction containing the error
+# is closed, and Django won't automatically rollback on error. So let's do this manually.
+@transaction.commit_manually
 def record_send_message(request, record, message_id):
-  record.send_message(
-    external_identifier = message_id, 
-    sender              = request.principal.effective_principal,
-    subject             = _get_subject(request),
-    body                = request.POST.get('body',    '[no body]'),
-    body_type           = request.POST.get('body_type',    'plaintext'),
-    num_attachments     = request.POST.get('num_attachments', 0),
-    severity            = request.POST.get('severity', 'low'))
-  return DONE
+  try:
+    record.send_message(
+      external_identifier = message_id, 
+      sender              = request.principal.effective_principal,
+      subject             = _get_subject(request),
+      body                = request.POST.get('body',    '[no body]'),
+      body_type           = request.POST.get('body_type',    'plaintext'),
+      num_attachments     = request.POST.get('num_attachments', 0),
+      severity            = request.POST.get('severity', 'low'))
+  except IntegrityError: # Occurs if the same sender uses the same message_id for different messages.
+    transaction.rollback()
+    return HttpResponseBadRequest('Duplicate external id: %s. Each message requires a unique message_id'%message_id)
+  else:
+    transaction.commit()
+    return DONE
 
-
-@transaction.commit_on_success
+# See record_send_message above for explanation of transaction handling
 def record_message_attach(request, record, message_id, attachment_num):
+  """ Calls the transaction-wrapped _record_message_attach. """
+  try:
+    return _record_message_attach(request, record, message_id, attachment_num)
+  except IntegrityError: # Occurs if the same attachment_num is used twice
+    return HttpResponseBadRequest('Duplicate attachment number: %s. Each attachment must have a unique number, 1-indexed'%attachment_num)
+
+@transaction.commit_manually
+def _record_message_attach(request, record, message_id, attachment_num):
   # there may be more than one message here
   messages = Message.objects.filter(about_record = record, external_identifier = message_id)
-
-  for message in messages:
-    message.add_attachment(attachment_num, request.raw_post_data)
-  
-  return DONE
+  try:
+    for message in messages:
+      message.add_attachment(attachment_num, request.raw_post_data)
+  except IntegrityError:
+    transaction.rollback()
+    return HttpResponseBadRequest('Duplicate attachment number: %s. Each attachment number must be unique and 1-indexed'%attachment_num)
+  else:
+    transaction.commit()
+    return DONE
 
                                 
 

@@ -64,6 +64,10 @@ class Message(Object):
 
     num_attachments = models.IntegerField(default = 0)
 
+    class Meta:
+        app_label = INDIVO_APP_LABEL
+        unique_together = (('account', 'external_identifier', 'sender'),)
+
     @property
     def ready(self):
         return self.messageattachment_set.count() == self.num_attachments
