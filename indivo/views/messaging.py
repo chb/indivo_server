@@ -60,15 +60,8 @@ def record_send_message(request, record, message_id):
     return DONE
 
 # See record_send_message above for explanation of transaction handling
-def record_message_attach(request, record, message_id, attachment_num):
-  """ Calls the transaction-wrapped _record_message_attach. """
-  try:
-    return _record_message_attach(request, record, message_id, attachment_num)
-  except IntegrityError: # Occurs if the same attachment_num is used twice
-    return HttpResponseBadRequest('Duplicate attachment number: %s. Each attachment must have a unique number, 1-indexed'%attachment_num)
-
 @transaction.commit_manually
-def _record_message_attach(request, record, message_id, attachment_num):
+def record_message_attach(request, record, message_id, attachment_num):
   # there may be more than one message here
   messages = Message.objects.filter(about_record = record, external_identifier = message_id)
   try:
@@ -120,8 +113,14 @@ def account_inbox_message(request, account, message_id):
 
 def account_inbox_message_attachment_accept(request, account, message_id, attachment_num):
   message = account.message_as_recipient.get(id = message_id)
-  message.get_attachment(int(attachment_num)).save_as_document(account)
-  return DONE
+  
+  # this might fail, if the document doesn't validate
+  try:
+    message.get_attachment(int(attachment_num)).save_as_document(account)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))
+  else:
+    return DONE
 
 
 def account_message_archive(request, account, message_id):
