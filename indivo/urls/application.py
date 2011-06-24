@@ -19,7 +19,9 @@ urlpatterns = patterns('',
     # One app-specific document
     # app-specific document replace
     (r'^/documents/(?P<document_id>[^/]+)$', 
-      MethodDispatcher({'GET': app_specific_document, 'PUT': app_document_create_or_update})),
+      MethodDispatcher({'GET': app_specific_document, 
+                        'PUT': app_document_create_or_update, 
+                        'DELETE': app_document_delete})),
 
     # update
     (r'^/documents/(?P<document_id>[^/]+)/update$', app_document_update),

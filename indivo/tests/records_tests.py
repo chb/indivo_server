@@ -210,6 +210,14 @@ class RecordInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         # Check that we got the doc
 
+    def test_delete_record_app_specific_doc(self):
+        record_id = self.records[0].id
+        pha_email = self.phas[0].email
+        doc_id = self.ras_docs[0].id
+        url = '/records/%s/apps/%s/documents/%s'%(record_id, pha_email, doc_id)
+        response = self.client.delete(url)
+        self.assertEquals(response.status_code, 200)
+
     def test_set_record_app_specific_doc_label(self):
         record_id = self.records[0].id
         pha_email = self.phas[0].email

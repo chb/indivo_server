@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     # single document
     (r'^(?P<document_id>[^/]+)$', MethodDispatcher({
                 'GET': record_specific_document, 
-                'DELETE': document_delete})),
+                'DELETE': record_document_delete})),
     
     # document metadata
     (r'^(?P<document_id>[^/]+)/meta$', MethodDispatcher({ 'GET': record_document_meta,

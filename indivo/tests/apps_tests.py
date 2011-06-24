@@ -90,6 +90,10 @@ class PHAInternalTests(InternalTests):
         response = self.client.get('/apps/%s/documents/%s'%(APP_EMAIL,self.doc.id))        
         self.assertEquals(response.status_code, 200)            
 
+    def test_delete_document(self):
+        response = self.client.delete('/apps/%s/documents/%s'%(APP_EMAIL, self.doc.id))
+        self.assertEquals(response.status_code, 200)
+
     def test_put_document(self):
         response = self.client.get('/apps/%s/documents/%s/update'%(APP_EMAIL,self.doc.id))
         self.assertEquals(response.status_code, 200)            
