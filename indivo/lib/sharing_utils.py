@@ -27,11 +27,14 @@ def document_carenets_filter(document, carenets):
   if document.nevershare:
     return carenets.none()
 
+  # Constrain to the record we're looking for
+  carenets = carenets.filter(record=document.record)
+
   # The carenet has been shared with explicitly
   explicitly_shared_with = Q(carenetdocument__document=document, carenetdocument__share_p=True)
 
-  # The carenets has been shared with implicitly via autoshares
-  implicitly_shared_with = Q(carenetautoshare__type=document.type)
+  # The carenet has been shared with implicitly via autoshares
+  implicitly_shared_with = Q(carenetautoshare__type=document.type, carenetautoshare__type__isnull=False)
 
   # There is an exception to the autoshares
   implicit_share_exception = Q(carenetdocument__document=document, carenetdocument__share_p=False)
