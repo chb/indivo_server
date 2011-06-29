@@ -177,13 +177,12 @@ class Account(Principal):
   @property
   def password_info(self):
     try:
-      # SZ: Check to see if there are multiple account_auth_systems
       return self.auth_systems.get(auth_system=AuthSystem.PASSWORD())
     except AccountAuthSystem.DoesNotExist:
       return None
-    except:
-      # SZ: Remove this once the auth_systems check (above) is implemented
-      return None
+    except AccountAuthSystem.MultipleObjectsReturned:
+      # Added a database constraint: this should never happen
+      raise
 
   def _add_password_auth_system(self, username):
     self.auth_systems.get_or_create(auth_system=AuthSystem.PASSWORD(), username=username)
@@ -325,4 +324,9 @@ class AccountAuthSystem(Object):
   
   class Meta:
     app_label = INDIVO_APP_LABEL
-    unique_together = (('auth_system', 'username'),)
+
+    # One account can't have duplicate auth_systems
+    # One auth_system can't have duplicate usernames
+    unique_together = (('auth_system', 'account'),
+                       ('auth_system', 'username'),
+                       )

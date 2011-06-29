@@ -6,6 +6,7 @@ from base import *
 import urllib
 from indivo.lib import utils
 from django.http import HttpResponseBadRequest
+from django.db import IntegrityError
 
 ACTIVE_STATE, UNINITIALIZED_STATE = 'active', 'uninitialized'
 HTTP_METHOD_GET = 'GET'
@@ -143,37 +144,35 @@ def account_search(request):
   return render_template('accounts_search', {'accounts': query}, type='xml')
 
 
-@transaction.commit_on_success
+@transaction.commit_manually
 def account_authsystem_add(request, account):
   USERNAME, PASSWORD = 'username', 'password'
 
   if request.POST.has_key(USERNAME):
     username = request.POST[USERNAME]
   else:
+    transaction.rollback()
     return HttpResponseBadRequest('No username')
 
   try:
     system = AuthSystem.objects.get(short_name = request.POST['system'])
-    #Doesn't account for same account within two different auth systems
-    #if account.auth_systems.count() > 0:
-    #  return HttpResponseBadRequest()
     account.auth_systems.create(username    = username.lower().strip(), 
                                 auth_system = system)
   except AuthSystem.DoesNotExist:
-    raise PermissionDenied()
-  except:
-    # SZ: Remove once integrity constraint/transactions/get_or_replace() issue is resolved
-    from django.db import transaction
     transaction.rollback()
-    return HttpResponseBadRequest()
-
-  if system == AuthSystem.PASSWORD() and request.POST.has_key(PASSWORD):
-    account.password_set(request.POST[PASSWORD])
-    account.set_state(ACTIVE_STATE)
-    account.save()
-
-  # return the account info instead
-  return DONE
+    raise PermissionDenied()
+  except IntegrityError:
+    transaction.rollback()
+    return HttpResponseBadRequest('Duplicate attempt to add authsystem to account')
+  else:
+    if system == AuthSystem.PASSWORD() and request.POST.has_key(PASSWORD):
+      account.password_set(request.POST[PASSWORD])
+      account.set_state(ACTIVE_STATE)
+      account.save()
+    
+    transaction.commit()
+    # return the account info instead
+    return DONE
 
 
 def account_forgot_password(request):

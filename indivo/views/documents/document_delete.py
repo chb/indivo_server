@@ -42,7 +42,7 @@ def record_document_delete(request, document_id, record):
     document.delete()
     return DONE
   else:
-    raise Exception("document was inserted too long ago to allow this, or was not created by you")
+    return HttpResponseBadRequest("document was inserted too long ago to delete, or was not created by you")
 
 
 def documents_delete(request, record):
