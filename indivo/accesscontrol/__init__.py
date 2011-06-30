@@ -88,7 +88,6 @@ def load_access_rules():
            account_password_set,
            account_primary_secret,
            record_create,
-           record_create_ext,
            record_set_owner,
            record_pha_setup,
            account_secret,
@@ -96,6 +95,13 @@ def load_access_rules():
            carenet_create] # Is this account Management? Why can only Admins create?
   AccessRule('Account Management Admin App Only', 
              account_management_admin_app_only, views)
+
+  def account_management_by_ext_id(principal, principal_email, **unused_args):
+    return principal.isType('MachineApp') \
+        and principal.email == principal_email # No scoping ext_ids to different principals
+  views = [record_create_ext]
+  AccessRule('Account Management By Ext Id', 
+             account_management_by_ext_id, views)
 
   def chrome_app_priveleges(principal, **unused_args):
     return principal.isType('chrome')
@@ -247,16 +253,11 @@ def load_access_rules():
            report_ccr,
            record_document_list,
            record_document_meta,
-           record_document_meta_ext,
            record_specific_document,
-           record_document_label_ext,
            record_document_label,
            record_document_delete,
-           document_create_by_ext_id,
-           document_version_by_ext_id,
            document_versions,
            document_create_by_rel,
-           document_create_by_rel_with_ext_id,
            get_documents_by_rel,
            document_set_status,
            document_status_history,
@@ -264,6 +265,17 @@ def load_access_rules():
            document_carenets]
   AccessRule('Record Doc Access', record_doc_access, views)
   
+  def record_doc_access_ext(principal, record, pha, **unused_args):
+    return record_doc_access(principal, record) \
+        and principal.effective_principal.isSame(pha) # Can't scope ext_ids to phas that aren't you
+  views = [document_create_by_ext_id,
+           document_create_by_rel_with_ext_id,
+           document_version_by_ext_id,
+           record_document_label_ext,
+           record_document_meta_ext,
+           ]
+  AccessRule('Record Doc Access Ext', record_doc_access_ext, views)
+
   def record_admin_doc_access(principal, record, **unused_args):
     return record_doc_access(principal, record) \
         or principal.createdRecord(record)  #special case: Admin Apps need to create docs
