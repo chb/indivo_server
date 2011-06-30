@@ -18,6 +18,7 @@ class Authorization(object):
 
   def process_view(self, request, view_func, view_args, view_kwargs):
     """ The process_view() hook allows us to examine the request before view_func is called"""
+
     # Special override flag
     if self.OVERRIDE:
       return None
@@ -28,7 +29,11 @@ class Authorization(object):
       return None
  
     if hasattr(view_func, 'resolve'):
-      view_func = view_func.resolve(request)
+      resolved_func = view_func.resolve(request)
+      if not resolved_func:
+        return view_func.resolution_error_response
+      else:
+        view_func = resolved_func
 
     try:
       if view_func and self.valid_principal_p(request):

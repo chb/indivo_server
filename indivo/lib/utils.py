@@ -29,11 +29,15 @@ class MethodDispatcher(object):
     view_func = self.methods.get(request.method, None)
     return view_func
 
+  @property
+  def resolution_error_response(self):
+    return http.HttpResponseNotAllowed(self.methods.keys())
+
   def __call__(self, request, *args, **kwargs):
     view_func = self.resolve(request)
     if view_func:
       return view_func(request, *args, **kwargs)
-    return http.HttpResponseNotAllowed(self.methods.keys())
+    return self.resolution_error_response
 
 def is_valid_email(email):
   return True if email_re.match(email) else False
