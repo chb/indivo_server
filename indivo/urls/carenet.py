@@ -4,6 +4,10 @@ from indivo.views import *
 from indivo.lib.utils import MethodDispatcher
 
 urlpatterns = patterns('',
+    (r'^$', MethodDispatcher({
+                'DELETE' : carenet_delete})),
+    (r'^/rename$', MethodDispatcher({
+                'POST' : carenet_rename})),
     (r'^/record$', carenet_record),
     (r'^/accounts/$',
                 MethodDispatcher({

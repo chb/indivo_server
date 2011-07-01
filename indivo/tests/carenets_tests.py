@@ -24,6 +24,8 @@ SPECIAL_DOCS = {'contact':CONTACT, 'demographics':DEMOGRAPHICS}
 
 LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
 
+CARENET_NAME = 'NEWNAME'
+
 class CarenetInternalTests(InternalTests):
     accounts = []
     records = []
@@ -147,6 +149,19 @@ class CarenetInternalTests(InternalTests):
 
     def tearDown(self):
         super(CarenetInternalTests,self).tearDown()
+
+    def test_delete_carenet(self):
+        c_id = self.carenets[0].id
+        url = '/carenets/%s'%(c_id)
+        response = self.client.delete(url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_rename_carenet(self):
+        c_id = self.carenets[0].id
+        url = '/carenets/%s/rename'%(c_id)
+        data = {'name': CARENET_NAME}
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 200)
 
     def test_remove_account_from_carenet(self):
         c_id = self.carenets[0].id

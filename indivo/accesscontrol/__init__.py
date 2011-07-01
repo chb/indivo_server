@@ -160,7 +160,9 @@ def load_access_rules():
   # Should admins do these? Why can't record-level PHAs do these? define more clearly
   def carenet_control(principal, carenet, **unused_args):
     return full_control(principal, carenet.record)
-  views = [carenet_account_create,
+  views = [carenet_delete,
+           carenet_rename,
+           carenet_account_create,
            carenet_account_delete,
            carenet_apps_create,
            carenet_apps_delete,
