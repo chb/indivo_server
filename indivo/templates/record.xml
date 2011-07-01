@@ -1,3 +1,4 @@
+{% spaceless %}
 {% load template_utils %}
 <?xml version="1.0" encoding="utf-8" ?>
 <Record id="{{ record.id }}" label="{{record.label}}">
@@ -5,3 +6,4 @@
   <demographics document_id="{{record.demographics.id}}" />
   <created at="{{record.created_at|format_iso8601_datetime}}"{% if record.creator %} by="{{record.creator.email}}"{% endif %} />
 </Record>
+{% endspaceless %}

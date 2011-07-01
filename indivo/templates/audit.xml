@@ -1,3 +1,4 @@
+{% spaceless %}
 {% load template_utils %}
 <AuditEntry>
   <BasicInfo datetime="{{ fobj.datetime|format_iso8601_datetime }}" view_func="{{ fobj.view_func|check_empty }}" request_successful="{% if fobj.request_successful %}true{% else %}false{% endif %}" />
@@ -6,3 +7,4 @@
   <RequestInfo req_url="{{ fobj.req_url|check_empty }}" req_ip_address="{{ fobj.req_ip_address|check_empty }}" req_domain="{{ fobj.req_domain|check_empty }}" req_method="{{ fobj.req_method|check_empty }}" />
   <ResponseInfo resp_code="{{ fobj.resp_code|check_empty }}" />
 </AuditEntry>
+{% endspaceless %}

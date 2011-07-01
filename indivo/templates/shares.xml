@@ -1,3 +1,4 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 <Shares record="{{ record.id }}">
   {% for share in fullshares %}
@@ -7,3 +8,4 @@
     <Share id="{{ share.id }}" pha="{{share.with_pha.email}}" />
   {% endfor %}
 </Shares>
+{% endspaceless %}

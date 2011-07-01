@@ -1,3 +1,4 @@
+{% spaceless %}
 {% load template_utils %}<?xml version="1.0" encoding="utf-8" ?>
 <Message id="{{message.id}}">
   <sender>{{message.sender.email}}</sender>
@@ -15,3 +16,4 @@
   <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.type}}" saved_to_doc_id="{{attachment.saved_to_document_id}}" />
   {% endfor %}
 </Message>
+{% endspaceless %}

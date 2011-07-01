@@ -1,3 +1,4 @@
+{% spaceless %}
 {% load template_utils %}
 <Document id="{{ doc.id|check_empty }}" type="{{ doc.type.uri|check_empty }}" size="{{ doc.size|check_empty }}" digest="{{ doc.digest|check_empty }}" record_id="{{record.id}}">
   {% if doc.created_at %}
@@ -47,3 +48,4 @@
     </isRelatedFrom>
   {% endif %}
 </Document>
+{% endspaceless %}

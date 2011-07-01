@@ -1,3 +1,4 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 {% if carenets %}
 <Carenets record_id="{{ record.id }}">
@@ -8,3 +9,4 @@
 {% else %}
 <Carenets />
 {% endif %}
+{% endspaceless %}

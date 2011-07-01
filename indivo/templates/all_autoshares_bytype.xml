@@ -1,3 +1,4 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 <DocumentSchemas>
 {% for type, autoshares in autoshares_by_type.iteritems %}
@@ -8,3 +9,4 @@
 </DocumentSchema>
 {% endfor %}
 </DocumentSchemas>
+{% endspaceless %}

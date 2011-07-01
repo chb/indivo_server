@@ -1,2 +1,4 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 <Document id="{{ doc.id }}" type="{{ doc.type.uri }}" />
+{% endspaceless %}

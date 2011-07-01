@@ -1,6 +1,8 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 <Accounts>
   {% for account in accounts %}
     {% include "_account.xml" %}
   {% endfor %}
 </Accounts>
+{% endspaceless %}

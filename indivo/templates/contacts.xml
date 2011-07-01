@@ -1,3 +1,4 @@
+{% spaceless %}
 <Contact id="{{ contact.id }}" xmlns="http://indivo.org/vocab/xml/documents#">
     <name>
         <fullName>{{ contact.full_name }}</fullName>
@@ -5,4 +6,4 @@
         <familyName>{{ contact.family_name }}</familyName>
     </name>
 </Contact>
-
+{% endspaceless %}

@@ -1,3 +1,4 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 <App id="{{pha.email}}">
   <startURLTemplate>{{pha.start_url_template}}</startURLTemplate>
@@ -10,4 +11,4 @@
   <frameable>{{pha.frameable}}</frameable>
   <ui>{{pha.has_ui}}</ui>
 </App>
-
+{% endspaceless %}

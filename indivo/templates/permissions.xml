@@ -1,3 +1,5 @@
+{% spaceless %}
 <Permissions>
   <DocumentType type="*" write="true" />
 </Permissions>
+{% endspaceless %}

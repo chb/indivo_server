@@ -1,3 +1,4 @@
+{% spaceless %}
 <?xml version="1.0" encoding="utf-8" ?>
 <Records>
 {% for record in records %}
@@ -12,3 +13,4 @@
   <Record id="{{ share.carenet.record.id }}" label="{{ share.carenet.record.label }} (carenet)" shared="true" carenet_id="{{share.carenet.id}}" carenet_name="{{share.carenet.name}}" />
 {% endfor %}
 </Records>
+{% endspaceless %}
