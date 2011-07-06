@@ -257,7 +257,6 @@ def load_access_rules():
            record_document_meta,
            record_specific_document,
            record_document_label,
-           record_document_delete,
            document_versions,
            document_create_by_rel,
            get_documents_by_rel,

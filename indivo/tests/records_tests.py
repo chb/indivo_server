@@ -432,14 +432,6 @@ class RecordInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         # CODE LOOKS FUNKY--MAKE SURE THIS WORKS FOR REAL
 
-    def test_delete_record_specific_doc(self):
-        record_id = self.records[0].id
-        doc_id = self.rs_docs[1].id
-        url = '/records/%s/documents/%s'%(record_id, doc_id)
-        response = self.client.delete(url)
-        self.assertEquals(response.status_code, 200)
-        # Test 1 hour rule
-
     def test_get_record_specific_doc(self):
         record_id = self.records[0].id
         doc_id = self.rs_docs[0].id
