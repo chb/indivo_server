@@ -91,8 +91,7 @@ def load_access_rules():
            record_set_owner,
            record_pha_setup,
            account_secret,
-           account_send_message,
-           carenet_create] # Is this account Management? Why can only Admins create?
+           account_send_message]
   AccessRule('Account Management Admin App Only', 
              account_management_admin_app_only, views)
 
@@ -186,7 +185,8 @@ def load_access_rules():
   views = [record_phas,
            record_pha,
            record_get_owner,
-           carenet_list]
+           carenet_list,
+           carenet_create]
   AccessRule('Record Limited Access', record_limited_access, views)
 
   def record_access(principal, record, **unused_args):
