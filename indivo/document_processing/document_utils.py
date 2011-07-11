@@ -7,7 +7,7 @@ class DocumentUtils:
     docset = Document.objects.filter(original=docobj.original)
 
     try:
-      latest = docset.order_by('created_at')[0]
+      latest = docset.order_by('-created_at')[0]
     except IndexError:
       raise ValueError("No objects exist with original document of passed document, db is in a corrupted state")
 

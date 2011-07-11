@@ -17,7 +17,7 @@
     <replacedBy id="{{ doc.replaced_by_id|check_empty }}"/>
   {% endif %}
   {% if doc.replaces %}
-    <replaces id="{{ doc.replaces|check_empty }}"/>
+    <replaces id="{{ doc.replaces.id|check_empty }}"/>
   {% endif %}
   {% if doc.original_id %}
     <original id="{{ doc.original_id|check_empty }}"/>
