@@ -18,6 +18,11 @@ def _document_version(request, record, document_id, pha=None, external_id=None):
   if not old_document:
     raise Http404
 
+  # Can't version an already versioned document
+  if old_document.replaced_by:
+    return HttpResponseBadRequest("Can't version a document that has already been versioned. Get the latest version of the document.")
+
+
   full_external_id = Document.prepare_external_id(external_id, pha)
   try:
     new_doc = _document_create(record=record, 

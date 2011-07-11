@@ -337,9 +337,10 @@ class Document(Object):
     Handle document processing whenever a new document is created. This method
     processes the document, updates fact objects, and then saves the document
     """
-    fobjs_to_update = []
-    if not self.processed:
+    if self.processed:
+      doc = None # Nothing to do here
 
+    else:
       # import dynamically because DocumentProcessing imports DocumentSchema from this file
       from indivo.document_processing.document_processing import DocumentProcessing
       doc = DocumentProcessing(self.content, self.mime_type)
@@ -348,17 +349,10 @@ class Document(Object):
       if not self.pha and self.content:
         doc.process()
 
-      # Update fact docs as Necessary
-      if hasattr(doc, 'f_objs'):
-        for fobj in doc.f_objs:
-
-          # Delete fact objects from the document we are replacing
-          if self.replaces:
-            fobj.__class__.objects.filter(document = self.replaces).delete()
-
-          # we can't update here, since we don't have an id yet
-          if fobj:
-            fobjs_to_update.append(fobj)
+      # Delete fact objects from the document we are replacing
+      if self.replaces:
+        from indivo.models import Fact
+        Fact.objects.filter(document = self.replaces).delete()
 
       # Update document info based on processing
       if doc.is_binary:
@@ -390,11 +384,13 @@ class Document(Object):
       self.external_id = self.id
       save_again = True
 
-    # Update newly created Fact objs, if any
-    for fobj in fobjs_to_update:
-      fobj.document = self
-      fobj.record   = self.record
-      fobj.save()
+    # Update newly created Fact objs, if we created any
+    if doc and hasattr(doc, 'f_objs'):
+      for fobj in doc.f_objs:
+        if fobj:
+          fobj.document = self
+          fobj.record = self.record
+          fobj.save()
 
     if not self.original:
       self.original = self
