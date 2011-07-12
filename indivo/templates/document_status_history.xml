@@ -2,7 +2,7 @@
 {% load template_utils %}
 <DocumentStatusHistory document_id="{{ document_id }}">
   {% for doc_status in document_history %}
-    <DocumentStatus by="{{ doc_status.effective_principal.email }}" at="{{ doc_status.created_at|format_iso8601_datetime }}" status="{{ doc_status.status.name }}">
+    <DocumentStatus by="{{ doc_status.effective_principal }}" at="{{ doc_status.created_at|format_iso8601_datetime }}" status="{{ doc_status.status.name }}">
       <reason>{{ doc_status.reason }}</reason>
     </DocumentStatus>
   {%  endfor %}
