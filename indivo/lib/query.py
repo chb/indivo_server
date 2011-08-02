@@ -276,9 +276,12 @@ class FactQuery(object):
             elif self.date_group:
                 order_by_field = self.date_group['time_incr']
 
+            # Django seems to be nondeterministic in its ordering of ties, so let's add an implicit secondary ordering on primary key
+            secondary_order_by = 'id'
+
             # Do the ordering
             order_by_str = order_by_field if not desc else '-'+order_by_field
-            results = results.order_by(order_by_str)    
+            results = results.order_by(order_by_str, secondary_order_by)    
         else:
             # Clear ordering if none was specified, to avoid bad interactions with grouping
             results = results.order_by()
