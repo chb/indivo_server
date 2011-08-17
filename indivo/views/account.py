@@ -76,18 +76,18 @@ def account_info_set(request, account):
 @transaction.commit_on_success
 def account_initialize(request, account, primary_secret):
     SECONDARY_SECRET = 'secondary_secret'
-
+    
     # check primary secret
     if account.primary_secret != primary_secret:
         account.on_failed_login()
         raise PermissionDenied()
-
+    
     if account.state != UNINITIALIZED_STATE:
         raise PermissionDenied()
     
     # if there is a secondary secret in the account, check it in the form
-    if request.POST.has_key(SECONDARY_SECRET):
-        secondary_secret = request.POST[SECONDARY_SECRET]
+    if not account.secondary_secret or request.POST.has_key(SECONDARY_SECRET):
+        secondary_secret = request.POST.get(SECONDARY_SECRET)
         if account.secondary_secret and secondary_secret != account.secondary_secret:
             account.on_failed_login()
             raise PermissionDenied()
@@ -101,14 +101,14 @@ def account_initialize(request, account, primary_secret):
 
 
 def account_primary_secret(request, account):
-    return render_template('secret', {'secret':account.primary_secret})
+    return render_template('secret', {'secret': account.primary_secret})
 
 
 def account_info(request, account):
     # get the account auth systems
     auth_systems = account.auth_systems.all()
-    return render_template('account', { 'account'               : account,
-                                                                            'auth_systems'  : auth_systems })
+    return render_template('account', {'account': account,
+                                'auth_systems': auth_systems})
 
 
 def account_check_secrets(request, account, primary_secret):
