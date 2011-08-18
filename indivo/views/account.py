@@ -129,7 +129,7 @@ def account_check_secrets(request, account, primary_secret):
 def account_search(request):
     """Search accounts"""
     
-    fullname            = request.GET.get('fullname', None)
+    fullname      = request.GET.get('fullname', None)
     contact_email = request.GET.get('contact_email', None)
     
     if not (fullname or contact_email):
