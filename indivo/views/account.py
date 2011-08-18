@@ -192,7 +192,11 @@ def account_forgot_password(request):
         account.reset()
     else:
         return HttpResponseBadRequest("Account has not been initialized")
-    account.send_forgot_password_email()
+    
+    try:
+        account.send_forgot_password_email()
+    except Exception, e:
+        logging.exception(e)
     return HttpResponse("<secret>%s</secret>" % account.secondary_secret)
 
 
