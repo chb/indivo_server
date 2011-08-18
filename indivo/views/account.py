@@ -4,6 +4,7 @@ Indivo views for Account
 
 from base import *
 import urllib
+import logging
 from indivo.lib import utils
 from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
@@ -93,7 +94,10 @@ def account_initialize(request, account, primary_secret):
             raise PermissionDenied()
         
         account.state = ACTIVE_STATE
-        account.send_welcome_email()
+        try:
+            account.send_welcome_email()
+        except Exception, e:
+            logging.exception(e)
         account.save()
         
         return DONE
@@ -194,7 +198,10 @@ def account_forgot_password(request):
 
 def account_resend_secret(request, account):
     # FIXME: eventually check the status of the account
-    account.send_secret()
+    try:
+        account.send_secret()
+    except Exception, e:
+        logging.exception(e)
     
     # probably ok to return DONE, but it should just be empty, like Flickr
     return DONE
@@ -230,12 +237,13 @@ def account_create(request):
         secondary_secret_p  = (request.POST.get('secondary_secret_p', "0") == "1")
         
         # we don't allow setting the password here anymore
-        
         new_account.save()
         
-        #SZ: if password and len(password) > 0:
         if primary_secret_p:
             new_account.generate_secrets(secondary_secret_p = secondary_secret_p)
-            new_account.send_secret()
+            try:
+                new_account.send_secret()
+            except Exception, e:
+                logging.exception(e)
     
-    return render_template('account', {'account' : new_account}, type='xml')
+    return render_template('account', {'account': new_account}, type='xml')

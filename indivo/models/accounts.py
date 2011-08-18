@@ -131,10 +131,10 @@ class Account(Principal):
     # email the owner of the record with the secret
     def send_secret(self):
         # mail template
-        subject = utils.render_template_raw('indivo/email/secret/subject', {'account' : self}, type='txt').strip()
-        body = utils.render_template_raw('indivo/email/secret/body',
+        subject = utils.render_template_raw('email/secret/subject', {'account': self}, type='txt').strip()
+        body = utils.render_template_raw('email/secret/body',
                                             {'account': self,
-                                          'url_prefix': settings.SITE_URL_PREFIX,
+                                          'url_prefix': settings.UI_SERVER_URL,
                                   'email_support_name': settings.EMAIL_SUPPORT_NAME,
                                'email_support_address': settings.EMAIL_SUPPORT_ADDRESS,
                                            'full_name': self.full_name or self.contact_email},
@@ -145,7 +145,7 @@ class Account(Principal):
                         ["%s <%s>" % (self.full_name or self.contact_email, self.contact_email)])
     
     def notify_account_of_new_message(self):
-        subject = utils.render_template_raw('email/new_message/subject', {'account' : self}, type='txt').strip()
+        subject = utils.render_template_raw('email/new_message/subject', {'account': self}, type='txt').strip()
         body = utils.render_template_raw('email/new_message/body', 
                                             {'account': self, 
                                            'full_name': self.full_name or self.contact_email,
@@ -158,11 +158,11 @@ class Account(Principal):
                         ["%s <%s>" % (self.full_name or self.contact_email, self.contact_email)])
     
     def send_welcome_email(self):
-        subject = utils.render_template_raw('email/welcome/subject', {'account' : self}, type='txt').strip()
+        subject = utils.render_template_raw('email/welcome/subject', {'account': self}, type='txt').strip()
         body = utils.render_template_raw('email/welcome/body', 
                                             { 'account': self, 
                                             'full_name': self.full_name or self.contact_email,
-                                           'url_prefix': settings.SITE_URL_PREFIX, 
+                                           'url_prefix': settings.UI_SERVER_URL, 
                                    'email_support_name': settings.EMAIL_SUPPORT_NAME,
                                 'email_support_address': settings.EMAIL_SUPPORT_ADDRESS }, 
                                         type='txt')

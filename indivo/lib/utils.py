@@ -46,12 +46,20 @@ def random_string(length, choices=[string.letters]):
     # FIXME: seed!
     return "".join([random.choice(''.join(choices)) for i in xrange(length)])
 
-def send_mail(subject, body, sender, recipient):
+def send_mail(subject, body, sender, recipient_list):
     # if send mail?
     if settings.SEND_MAIL:
-        mail.send_mail(subject, body, sender, recipient)
+        try:
+            mail.send_mail(subject, body, sender, recipient_list)
+        except Exception, e:
+            print "Exception raised when trying to send the following email: %s" % e
+            print '-----'
+            print "From: %s\nTo: %s\nSubject: %s\n\n" % (sender, ', '.join(recipient_list), subject)
+            print body
+            print '-----'
+            raise e
     else:
-        logging.debug("send_mail to set to false, would have sent email to %s\n\n%s" % (recipient, body))
+        logging.debug("send_mail to set to false, would have sent email to %s\n\n%s" % (', '.join(recipient_list), body))
 
 def render_template_raw(template_name, vars, type='xml'):
     t_obj = loader.get_template('%s.%s' % (template_name, type))
@@ -60,7 +68,7 @@ def render_template_raw(template_name, vars, type='xml'):
 
 def render_template(template_name, vars, type='xml'):
     content = render_template_raw(template_name, vars, type)
-
+    
     mimetype = 'text/plain'
     if type == 'xml':
         mimetype = "application/xml"
@@ -76,8 +84,8 @@ def get_element_value(dom, el):
         return ""
 
 def url_interpolate(url_template, vars):
-    """Interpolate a URL template
-    
+    """
+    Interpolate a URL template
     TODO: security review this
     """
     
@@ -90,8 +98,8 @@ def url_interpolate(url_template, vars):
     return result_url
 
 def is_browser(request):
-    """Determine if the request accepts text/html, in which case
-         it's a user at a browser.
+    """
+    Determine if the request accepts text/html, in which case it's a user at a browser.
     """
     accept_header = request.META.get('HTTP_ACCEPT', False) or request.META.get('ACCEPT', False)
     if accept_header and isinstance(accept_header, str):
