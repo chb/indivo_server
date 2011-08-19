@@ -254,7 +254,7 @@ class Account(Principal):
         subject = utils.render_template_raw('email/forgot_password/subject', {'account': self}, type='txt').strip()
         body = utils.render_template_raw('email/forgot_password/body', 
                                             {'account': self, 
-                                          'url_prefix': settings.SITE_URL_PREFIX,
+                                          'url_prefix': settings.UI_SERVER_URL,
                                   'email_support_name': settings.EMAIL_SUPPORT_NAME, 
                                'email_support_address': settings.EMAIL_SUPPORT_ADDRESS},
                                             type='txt')
