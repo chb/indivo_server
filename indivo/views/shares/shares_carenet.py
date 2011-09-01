@@ -44,6 +44,6 @@ def carenet_rename(request, carenet):
             carenet.save()
         except IntegrityError:
             transaction.rollback()
-            return HttpResponseBadRequest('Carenet name is already taken')
+            return HttpResponseBadRequest('Carenet name is already taken')                  # Indivo UI relies on this string to identify the reason of the 400 being returned
         return render_template('carenets', {'carenets': [carenet], 'record':carenet.record}, type="xml")
     return HttpResponseBadRequest('Please provide a new name for the carenet')
