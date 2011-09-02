@@ -3,8 +3,6 @@ Indivo Views -- Base
 """
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
-from django.contrib.auth.models import User
-
 from django.core.exceptions import *
 from django.core import serializers
 from django.db import transaction
