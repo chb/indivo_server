@@ -268,7 +268,7 @@ def load_access_rules():
   
   def record_doc_access_ext(principal, record, pha, **unused_args):
     return pha_record_access(principal, record) \
-        and principal.proxied_by.isSame(pha) # Can't scope ext_ids to phas that aren't you
+        and (principal.isSame(pha) or principal.proxied_by.isSame(pha))# Can't scope ext_ids to phas that aren't you
   views = [document_create_by_ext_id,
            document_create_by_rel_with_ext_id,
            document_version_by_ext_id,
