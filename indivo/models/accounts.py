@@ -190,7 +190,7 @@ class Account(Principal):
             raise
     
     def _add_password_auth_system(self, username):
-        self.auth_systems.get_or_create(auth_system=AuthSystem.PASSWORD(), username=username)
+        self.auth_systems.get_or_create(auth_system=AuthSystem.PASSWORD(), username=username.lower().strip())
     
     def _password_params_get(self):
         if not self.password_info:

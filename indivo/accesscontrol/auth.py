@@ -18,7 +18,7 @@ def authenticate(request, username, password=None, system=None):
     if password:
       user = models.AccountAuthSystem.objects.get( 
           auth_system = models.AuthSystem.PASSWORD(), 
-          username    = urllib.unquote(username)).account
+          username    = urllib.unquote(username).lower().strip()).account
       if user.is_active and user.password_check(password):
         user.on_successful_login()
         return user
@@ -28,7 +28,7 @@ def authenticate(request, username, password=None, system=None):
     elif system:
       user = models.AccountAuthSystem.objects.get( 
           auth_system = models.AuthSystem.objects.get(short_name=system), 
-          username    = urllib.unquote(username)).account
+          username    = urllib.unquote(username).lower().strip()).account
       if user.is_active:
         return user
       else:
