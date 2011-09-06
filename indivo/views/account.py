@@ -160,7 +160,7 @@ def account_authsystem_add(request, account):
     
     try:
         system = AuthSystem.objects.get(short_name = request.POST['system'])
-        account.auth_systems.create(username = username.lower().strip(), 
+        account.auth_systems.create(username = username, 
                                  auth_system = system)
     except AuthSystem.DoesNotExist:
         transaction.rollback()

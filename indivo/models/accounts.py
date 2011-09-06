@@ -330,3 +330,8 @@ class AccountAuthSystem(Object):
         unique_together = (('auth_system', 'account'),
                             ('auth_system', 'username'),
                           )
+
+    def save(self, *args, **kwargs):
+        """ Enforce lowercase usernames. """
+        self.username = self.username.lower().strip()
+        super(AccountAuthSystem,self).save(*args, **kwargs)
