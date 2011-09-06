@@ -35,7 +35,8 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_create_accounts(self):
-        response = self.client.post('/accounts/', urlencode({'account_id' : EMAIL,'full_name':'fl','contact_email':'contactemail','password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        email = "mymail2@mail.ma"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':'contactemail','password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)        
         
     def test_change_password(self):

@@ -53,6 +53,11 @@ class Account(Principal):
     
     def __unicode__(self):
         return 'Account %s' % self.id
+
+    def save(self, *args, **kwargs):
+        """ Enforce case-insensitive emails. """
+        self.email = self.email.lower().strip()
+        super(Account,self).save(*args, **kwargs)
     
     # Accesscontrol:
     # roles that an Account could have

@@ -222,7 +222,7 @@ def account_create(request):
     if not account_id or not utils.is_valid_email(account_id):
         return HttpResponseBadRequest("Account ID not valid")
     
-    new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id))
+    new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
         """
         generate a secondary secret or not? Requestor can say no.
@@ -249,5 +249,9 @@ def account_create(request):
                 new_account.send_secret()
             except Exception, e:
                 logging.exception(e)
+
+    # account already existed
+    else:
+        return HttpResponseBadRequest("An account with email address %s already exists."%account_id)
     
     return render_template('account', {'account': new_account}, type='xml')

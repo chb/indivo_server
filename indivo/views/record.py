@@ -101,7 +101,7 @@ def record_share_add(request, record):
   ACCOUNT_ID = 'account_id'
   try:
     if request.POST.has_key(ACCOUNT_ID):
-      other_account_id = request.POST[ACCOUNT_ID]
+      other_account_id = request.POST[ACCOUNT_ID].lower().strip()
       account = Account.objects.get(email=other_account_id)
       RecordNotificationRoute.objects.get_or_create(account = account, record = record)
       share = AccountFullShare.objects.get_or_create(record = record, with_account = account, role_label = request.POST.get('role_label', None))
@@ -118,7 +118,7 @@ def record_share_delete(request, record, other_account_id):
   """Remove a share"""
 
   try:
-    shares = AccountFullShare.objects.filter(record = record, with_account = Account.objects.get(email=other_account_id))
+    shares = AccountFullShare.objects.filter(record = record, with_account = Account.objects.get(email=other_account_id.lower().strip()))
     shares.delete()
     return DONE
   except Account.DoesNotExist:
