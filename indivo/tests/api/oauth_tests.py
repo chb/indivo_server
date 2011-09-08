@@ -1,6 +1,6 @@
 import django.test
 from indivo.models import *
-from internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests
 
 EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
 

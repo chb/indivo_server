@@ -7,3 +7,6 @@
 [submodule "schemas/doc_schemas"]
 	path = schemas/doc_schemas
 	url = git@github.com:chb/indivo_schemas.git
+[submodule "indivo/tests/client"]
+	path = indivo/tests/client
+	url = git@github.com:chb/indivo_client_py.git

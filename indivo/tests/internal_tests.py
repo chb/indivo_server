@@ -17,15 +17,22 @@ class InternalTests(django.test.TestCase):
     dependency_data_sections = {}
 
     # hackish, like we like it
-    def disableAccessControl(self):
+    def _get_auth_middleware(self):
         self.client.get("/")
         
         # find the right middleware
         for middleware in self.client.handler._view_middleware:
             cls = middleware.__self__.__class__
             if cls.__name__ == 'Authorization':
-                cls.override()
-                break
+                return cls
+
+    def disableAccessControl(self):
+        mw = self._get_auth_middleware()
+        mw.override()
+
+    def enableAccessControl(self):
+        mw = self._get_auth_middleware()
+        mw.cancel_override()
 
     def loadModelDependencies(self):
         def get_indivo_data_xml():
@@ -82,6 +89,10 @@ class InternalTests(django.test.TestCase):
             del kwargs['schema']
         pha = PHA.objects.create(**kwargs)
         return pha
+    
+    def createAdminApp(self, **kwargs):
+        app = MachineApp.objects.create(**kwargs)
+        return app
 
     def createRecord(self, **kwargs):
         record = Record.objects.create(**kwargs)
@@ -150,72 +161,3 @@ class InternalTests(django.test.TestCase):
 
             else:
                 m.objects.all().delete()
-        
-    # def test_gettable_urls(self):
-    #     patternMapper = {'record_id':str(Record.objects.all()[0].id),
-    #                      'carenet_id':str(Carenet.objects.all()[0].id),
-    #                      'pha_email':str(PHA.objects.all()[0].email),
-    #                      'pha_id':self.carenetId,
-    #                      'document_id':self.carenetId,
-    #                      'request_token':self.carenetId,
-    #                      'account_id':str(Account.objects.all()[0].email),
-    #                      'account_email':str(Account.objects.all()[0].email),
-    #                      'primary_secret':self.carenetId,
-    #                      'secondary_secret':self.carenetId,
-    #                      'message_id':self.carenetId,
-    #                      'special_document':self.carenetId,
-    #                      'short_name':self.carenetId,
-    #                      'external_id':self.carenetId,
-    #                      'rel_type':self.carenetId,
-    #                      'type':self.carenetId,
-    #                      'app_id':self.carenetId,
-    #                      'app_email':self.carenetId,
-    #                      'category':self.carenetId,
-    #                      'lab':self.carenetId,
-    #                      'function_name':self.carenetId,
-    #                      'rel':self.carenetId,
-    #                      'lab_code':self.carenetId,
-    #                      'other_account_id':self.carenetId,
-    #                      'path':self.carenetId,
-    #                      'principal_email':self.carenetId,
-    #                      'attachment_num':'0',
-    #                      'document_id_0':self.carenetId,
-    #                      'document_id_1':self.carenetId}
-
-        
-    #     allIndivoURLs = {}
-        
-    #     def show_urls(urllist, parentPath):            
-    #         for entry in urllist:
-                
-    #             if hasattr(entry, 'url_patterns'):
-    #                 newParentPath = parentPath + entry.regex.pattern[1:]
-    #                 show_urls(entry.url_patterns, newParentPath)
-    #             else:
-    #                 if isinstance(entry.callback, indivo.lib.utils.MethodDispatcher):
-    #                     allIndivoURLs[(parentPath + entry.regex.pattern[1:-1])] = entry.callback.methods.keys()
-    #                 else:
-    #                     allIndivoURLs[(parentPath + entry.regex.pattern[1:-1])] = ['GET']       
-    #     show_urls(urls.urlpatterns, "")
-    #     #import pdb;pdb.set_trace()
-    #     # match things inside <> that are in the context of (?P< your match >..) 
-    #     for url,methods in allIndivoURLs.iteritems():            
-    #         testUrl = url
-    #         for pattern in re.finditer( '\(\?P<(.*?)>.*?\)', url):
-    #             testUrl = testUrl.replace(pattern.group(0),patternMapper[pattern.group(1)])
-
-    #         for method in methods:
-    #             #import pdb; pdb.set_trace()
-    #             response = getattr(self.client,method.lower())(testUrl, {})
-    #             self.assertFalse(response.status_code / 500 > 1)
-                
-        
-
-    # def test_record(self):
-    #     method = 'GET'
-    #     testUrl = "records/684b0337-db87-4143-8d55-08800be5126c/reports/minimal/procedures/"
-    #     response = getattr(self.client,method.lower())(testUrl,{})
-    #     response = getattr(self.client,method.lower())(testUrl,{})
-    #     import pdb;pdb.set_trace()
-    #     self.assertFalse(response.status_code / 500 > 1)
-

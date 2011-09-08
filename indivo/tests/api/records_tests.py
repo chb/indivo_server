@@ -1,5 +1,5 @@
 from indivo.models import *
-from internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests
 from django.utils.http import urlencode
 import hashlib, uuid
 
