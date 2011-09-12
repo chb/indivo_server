@@ -1,9 +1,9 @@
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
+from indivo.tests.data.account import TEST_ACCOUNTS
+from indivo.tests.data.app import TEST_USERAPPS
 from django.utils.http import urlencode
 import hashlib, uuid
-
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
 
 CONTACT = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
 
@@ -55,8 +55,7 @@ class RecordInternalTests(InternalTests):
         self.rs_docs = []
 
         # Create an Account (with a few records)
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL}
-        self.accounts.append(self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args))
+        self.accounts.append(self.createAccount(TEST_ACCOUNTS[4]))
 
         # Track the records and carenets we just created
         for record in Record.objects.all():
@@ -65,19 +64,7 @@ class RecordInternalTests(InternalTests):
             self.carenets.append(carenet)
 
         # Create an App
-        pha_args = {'name' : 'myApp',
-                    'email' : 'myApp@my.com',
-                    'consumer_key' : 'myapp',
-                    'secret' : 'myapp',
-                    'has_ui' : True,
-                    'frameable' : True,
-                    'is_autonomous' : False,
-                    'autonomous_reason' : '',
-                    'start_url_template' : 'http://myapp.com/start',
-                    'callback_url' : 'http://myapp.com/afterauth',
-                    'description' : 'ITS MY APP',
-                    }
-        self.phas.append(self.createPHA(**pha_args))
+        self.phas.append(self.createUserApp(TEST_USERAPPS[0]))
 
         #Add the app to a record
         share_args = {'record': self.records[0],

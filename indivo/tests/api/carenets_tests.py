@@ -1,16 +1,10 @@
 import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
+from indivo.tests.data.account import TEST_ACCOUNTS
+from indivo.tests.data.app import TEST_USERAPPS
 from django.utils.http import urlencode
 import hashlib
-
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
-
-EMAIL2 = "mymail2@mail.ma"
-USER2 = "user2"
-
-EMAIL3 = "mymail3@mail.ma"
-USER3 = "user3"
 
 DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
 DOCUMENT2 = '''<DOC>HERE'S MY CONTENT 2!</DOC>'''
@@ -47,8 +41,7 @@ class CarenetInternalTests(InternalTests):
 
         # Create an account, with some records that can be shared and their default carenets
         # Don't track this account, since it can't share with itself
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL}
-        self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args)
+        self.createAccount(TEST_ACCOUNTS[4])
 
         # Track the records we created
         for r in Record.objects.all():
@@ -59,40 +52,22 @@ class CarenetInternalTests(InternalTests):
         self.carenets.append(self.createCarenet(**carenet_args))
 
         # Create another account to share our records
-        acct_args['email'] = EMAIL2
-        self.accounts.append(self.createAccount(USER2, PASSWORD, [], **acct_args))
+        self.accounts.append(self.createAccount(TEST_ACCOUNTS[0]))
         
         # Add the account to the test carenet
         self.addAccountToCarenet(self.accounts[0], self.carenets[0])
 
         # Add a third account that doesn't share anything yet
-        acct_args['email'] = EMAIL3
-        self.accounts.append(self.createAccount(USER3, PASSWORD, [], **acct_args))
+        self.accounts.append(self.createAccount(TEST_ACCOUNTS[1]))
 
         # Create a pha
-        pha_args = {'name' : 'myApp',
-                    'email' : 'myApp@my.com',
-                    'consumer_key' : 'myapp',
-                    'secret' : 'myapp',
-                    'has_ui' : True,
-                    'frameable' : True,
-                    'is_autonomous' : False,
-                    'autonomous_reason' : '',
-                    'start_url_template' : 'http://myapp.com/start',
-                    'callback_url' : 'http://myapp.com/afterauth',
-                    'description' : 'ITS MY APP',
-                    }
-        self.phas.append(self.createPHA(**pha_args))
+        self.phas.append(self.createUserApp(TEST_USERAPPS[0]))
 
         # Add the pha to the test carenet
         self.addAppToCarenet(self.phas[0], self.carenets[0])
 
         # Create another pha that doesn't share anything yet
-        pha_args['name'] = 'myApp2'
-        pha_args['email'] = 'myApp2@my.com'
-        pha_args['consumer_key'] = 'myapp2'
-        pha_args['secret'] = 'myapp2'
-        self.phas.append(self.createPHA(**pha_args))
+        self.phas.append(self.createUserApp(TEST_USERAPPS[1]))
 
         # But share it with the record so we can add it to carenets easily
         self.addAppToRecord(record=self.records[0], with_pha=self.phas[1])

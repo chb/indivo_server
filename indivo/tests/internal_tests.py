@@ -80,36 +80,30 @@ class InternalTests(django.test.TestCase):
         carenet = Carenet.objects.create(**kwargs)
         return carenet
 
-
-    def createPHA(self, **kwargs):
-        try:
-            if kwargs.has_key('schema'):
-                kwargs['schema'] = models.DocumentSchema.objects.get(type=kwargs['schema'])
-        except models.DocumentSchema.DoesNotExist:
-            del kwargs['schema']
-        pha = PHA.objects.create(**kwargs)
-        return pha
+    def createUserApp(self, test_userapp):
+        test_userapp.save()
+        return test_userapp.django_obj
     
-    def createAdminApp(self, **kwargs):
-        app = MachineApp.objects.create(**kwargs)
-        return app
+    def createMachineApp(self, test_machineapp):
+        test_machineapp.save()
+        return test_machineapp.django_obj
 
     def createRecord(self, **kwargs):
         record = Record.objects.create(**kwargs)
         record.create_default_carenets()
         return record
-              
-    def createAccount(self, username, password, records, **acctargs):
-        account = self.createUninitializedAccount(records, **acctargs)
-        account.set_username_and_password(username = username, 
-                                          password = password)
+
+    def createAccount(self, test_account):
+        account = self.createUninitializedAccount(test_account)
+        account.set_username_and_password(username = test_account.username, 
+                                          password = test_account.password)
         return account
     
-    def createUninitializedAccount(self, records, **acctargs):
-        account = Account.objects.create(**acctargs)
-        for label in records:
-            self.createRecord(label=label, owner=account)
-        return account
+    def createUninitializedAccount(self, test_account):
+        test_account.save()
+        for label in test_account.records:
+            self.createRecord(label=label, owner=test_account.django_obj)
+        return test_account.django_obj
 
     def addDocToCarenet(self, doc, carenet):
         cd = CarenetDocument.objects.create(carenet=carenet, document=doc)
@@ -132,14 +126,14 @@ class InternalTests(django.test.TestCase):
         message = Message.objects.create(**kwargs)
         return message
 
-    def loadTestReports(self, record, creator):
+    def loadTestReports(self, record):
         for report in TEST_REPORTS:
             report_args = {'record':record,
                            'content':report.xml,
                            'size':report.size(),
                            'digest':report.digest(),
                            'label':report.label,
-                           'creator':creator}
+                           'creator':record.owner}
             self.createDocument(**report_args)
 
     def setUp(self):
