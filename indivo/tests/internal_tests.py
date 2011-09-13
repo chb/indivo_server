@@ -81,12 +81,10 @@ class InternalTests(django.test.TestCase):
         return carenet
 
     def createUserApp(self, test_userapp):
-        test_userapp.save()
-        return test_userapp.django_obj
+        return self.saveTestObj(test_userapp)
     
     def createMachineApp(self, test_machineapp):
-        test_machineapp.save()
-        return test_machineapp.django_obj
+        return self.saveTestObj(test_machineapp)
 
     def createRecord(self, **kwargs):
         record = Record.objects.create(**kwargs)
@@ -100,10 +98,10 @@ class InternalTests(django.test.TestCase):
         return account
     
     def createUninitializedAccount(self, test_account):
-        test_account.save()
+        account = self.saveTestObj(test_account)
         for label in test_account.records:
-            self.createRecord(label=label, owner=test_account.django_obj)
-        return test_account.django_obj
+            self.createRecord(label=label, owner=account)
+        return account
 
     def addDocToCarenet(self, doc, carenet):
         cd = CarenetDocument.objects.create(carenet=carenet, document=doc)
@@ -122,9 +120,21 @@ class InternalTests(django.test.TestCase):
 
         return CarenetPHA.objects.create(carenet=carenet, pha=pha)
         
-    def createMessage(self, **kwargs):
-        message = Message.objects.create(**kwargs)
-        return message
+    def createMessage(self, test_message, account, about_record=None):
+        test_message.account = account
+        test_message.sender = account
+        test_message.recipient = account
+        test_message.about_record = about_record
+        return self.saveTestObj(test_message)
+
+    def saveTestObj(self, test_obj):
+        test_obj.save()
+        return test_obj.django_obj
+
+    def createAttachment(self, test_attachment, message, attachment_num):
+        test_attachment.message = message
+        test_attachment.attachment_num = attachment_num
+        return self.saveTestObj(test_attachment)
 
     def loadTestReports(self, record):
         for report in TEST_REPORTS:
@@ -145,12 +155,18 @@ class InternalTests(django.test.TestCase):
         # Delete all models from the DB: Blanket cleanup
         for m in models.get_models():
 
-            # Don't mess with built in django models
-            if m.__module__.startswith('django'):
+            # Don't mess with non-indivo models
+            if m.__module__.startswith('django') or \
+                    m.__module__.startswith('south') or \
+                    m.__module__.startswith('codingsystems'):
                 continue
             
             # Don't delete basic dependencies
-            elif m in self.dependencies:
+            elif self.dependencies.has_key(m):
+                continue
+
+            # Don't delete abstract models: this will be taken care by subclasses
+            elif m.Meta.abstract:
                 continue
 
             else:

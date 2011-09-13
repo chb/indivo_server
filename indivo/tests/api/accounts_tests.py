@@ -3,28 +3,22 @@ from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from django.utils.http import urlencode
 from indivo.tests.data.account import TEST_ACCOUNTS
-
-MESSAGE_ID, MESSAGE_SEVERITY, MESSAGE_SUBJ, MESSAGE_TYPE, MESSAGE_BODY = ('message_id', 'low', 'subj', 'plaintext', 'message body')
+from indivo.tests.data.message import TEST_MESSAGES, TEST_ATTACHMENTS
 
 class AccountInternalTests(InternalTests):  
 
     def setUp(self):
         super(AccountInternalTests,self).setUp()
 
-        # create account
+        # create an account
         self.account = self.createAccount(TEST_ACCOUNTS[4])
 
-        # create message
-        message_args = {'id':MESSAGE_ID, \
-                            'account':self.account, \
-                            'sender':self.account, \
-                            'about_record':self.account.default_record, \
-                            'recipient':self.account, \
-                            'severity':MESSAGE_SEVERITY, \
-                            'subject':MESSAGE_SUBJ, \
-                            'body_type':MESSAGE_TYPE, \
-                            'body':MESSAGE_BODY}        
-        self.message = self.createMessage(**message_args)                                    
+        # hold on to one of the records we just created for the account
+        self.record = Record.objects.all()[0]
+
+        # create a message, with an attachment
+        self.message = self.createMessage(TEST_MESSAGES[2], self.account, about_record=self.record)
+        self.attachment = self.createAttachment(TEST_ATTACHMENTS[0], self.message, 1)
     
     def tearDown(self):
         super(AccountInternalTests,self).tearDown()
@@ -64,17 +58,15 @@ class AccountInternalTests(InternalTests):
 
 
     def test_add_archive(self):    
-        response = self.client.post('/accounts/%s/inbox/%s/archive'%(self.account.email,MESSAGE_ID))
+        response = self.client.post('/accounts/%s/inbox/%s/archive'%(self.account.email,self.message.id))
         self.assertEquals(response.status_code, 200)        
 
-    def test_add_attachment(self):
-        attachment_num = 0
-        self.message.add_attachment(attachment_num, '<?xml version="1.0" ?><body></body>')
-        response = self.client.post('/accounts/%s/inbox/%s/attachments/%s/accept'%(self.account.email,MESSAGE_ID,attachment_num))
+    def test_accept_attachment(self):
+        response = self.client.post('/accounts/%s/inbox/%s/attachments/%s/accept'%(self.account.email,self.message.id,self.attachment.attachment_num))
         self.assertEquals(response.status_code, 200)
 
     def test_get_message(self):
-        response = self.client.get('/accounts/%s/inbox/%s'%(self.account.email,MESSAGE_ID))
+        response = self.client.get('/accounts/%s/inbox/%s'%(self.account.email,self.message.id))
         self.assertEquals(response.status_code, 200)    
 
     def test_get_inbox(self):
@@ -82,7 +74,12 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)    
 
     def test_send_message_to_account(self):
-        response = self.client.post('/accounts/%s/inbox/'%(self.account.email), urlencode({'message_id':MESSAGE_ID,'body':MESSAGE_BODY,'severity':MESSAGE_SEVERITY}),'application/x-www-form-urlencoded')
+        msg = TEST_MESSAGES[0]
+        data = {'message_id': msg.external_identifier,
+                'body':msg.body,
+                'severity':msg.severity,
+                }
+        response = self.client.post('/accounts/%s/inbox/'%(self.account.email), urlencode(data),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
 
     def test_update_account_info(self):

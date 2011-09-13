@@ -2,6 +2,7 @@ from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from indivo.tests.data.account import TEST_ACCOUNTS
 from indivo.tests.data.app import TEST_USERAPPS
+from indivo.tests.data.message import TEST_MESSAGES, TEST_ATTACHMENTS
 from django.utils.http import urlencode
 import hashlib, uuid
 
@@ -27,13 +28,6 @@ REL = 'annotation'
 
 STATUS = {'status':'void', 'reason':'because I CAN'}
 
-MSG = {'subject':'Here is a message!',
-       'body':'Oops, not much message.',
-       'body_type':'plaintext',
-       'num_attachments':1,
-       'severity':'high'}
-MSG_ID = uuid.uuid4()
-
 LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
 
 class RecordInternalTests(InternalTests):
@@ -43,6 +37,8 @@ class RecordInternalTests(InternalTests):
     ras_docs = []
     carenets = []
     rs_docs = []
+    messages = []
+
 
     def setUp(self):
         super(RecordInternalTests,self).setUp()
@@ -53,6 +49,7 @@ class RecordInternalTests(InternalTests):
         self.phas = []
         self.ras_docs = []
         self.rs_docs = []
+        self.messages = []
 
         # Create an Account (with a few records)
         self.accounts.append(self.createAccount(TEST_ACCOUNTS[4]))
@@ -128,6 +125,15 @@ class RecordInternalTests(InternalTests):
             record.demographics = self.rs_docs[3]
             record.contact = self.rs_docs[2]
             record.save()
+
+        # Add a message sent to our record
+        self.messages.append(self.createMessage(TEST_MESSAGES[0], self.accounts[0], about_record=self.records[0]))
+
+        # The message we will send (not yet in the DB)
+        self.messages.append(TEST_MESSAGES[2])
+
+        # An attachment to attach (not yet in the DB)
+        self.attachment = TEST_ATTACHMENTS[0]
 
     def tearDown(self):
         super(RecordInternalTests,self).tearDown()
@@ -556,17 +562,21 @@ class RecordInternalTests(InternalTests):
     def test_record_send_message(self):
         # Test send and attach together to avoid setup
         record_id = self.records[0].id
-        msg_id = MSG_ID
-        attachment_num = 1
+        msg = self.messages[1]
+        data = {'subject':msg.subject,
+                'body':msg.body,
+                'body_type':msg.body_type,
+                'num_attachments':msg.num_attachments,
+                'severity':msg.severity}
 
         # Send a message
-        url = '/records/%s/inbox/%s'%(record_id, msg_id)
-        response = self.client.post(url, data=urlencode(MSG), content_type='application/x-www-form-urlencoded')
+        url = '/records/%s/inbox/%s'%(record_id, msg.external_identifier)
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
         
         # Attach to the message
-        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg_id, attachment_num)
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg.external_identifier, self.attachment.attachment_num)
+        response = self.client.post(url, data=self.attachment.content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_record_notify(self):

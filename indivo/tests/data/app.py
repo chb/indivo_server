@@ -1,5 +1,5 @@
 from indivo.models import PHA, MachineApp, DocumentSchema
-from base import TestModel
+from base import TestModel, raw_data_to_objs
 
 class TestUserApp(TestModel):
     model_fields = ['name', 'email', 'consumer_key', 'secret', 'has_ui',
@@ -85,7 +85,7 @@ _TEST_UIAPPS = [
      },
     ]
 
-TEST_USERAPPS = [TestUserApp(**raw_data) for raw_data in _TEST_USERAPPS]
-TEST_AUTONOMOUS_APPS = [TestUserApp(**raw_data) for raw_data in _TEST_AUTONOMOUS_APPS]
-TEST_ADMINAPPS = [TestMachineApp(**raw_data) for raw_data in _TEST_ADMINAPPS]
-TEST_UIAPPS = [TestMachineApp(**raw_data) for raw_data in _TEST_UIAPPS]
+TEST_USERAPPS = raw_data_to_objs(_TEST_USERAPPS, TestUserApp)
+TEST_AUTONOMOUS_APPS = raw_data_to_objs(_TEST_AUTONOMOUS_APPS, TestUserApp)
+TEST_ADMINAPPS = raw_data_to_objs(_TEST_ADMINAPPS, TestMachineApp)
+TEST_UIAPPS = raw_data_to_objs(_TEST_UIAPPS, TestMachineApp)

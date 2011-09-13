@@ -1,7 +1,7 @@
 import string
 from indivo.lib import utils
 from indivo.models import Account
-from base import TestModel
+from base import TestModel, raw_data_to_objs
 
 class TestAccount(TestModel):
     model_fields = ['email', 'full_name', 'contact_email', 'primary_secret', 'secondary_secret']
@@ -62,4 +62,4 @@ _TEST_ACCOUNTS = [
      },
     ]
 
-TEST_ACCOUNTS = [TestAccount(**raw_data) for raw_data in _TEST_ACCOUNTS]
+TEST_ACCOUNTS = raw_data_to_objs(_TEST_ACCOUNTS, TestAccount)

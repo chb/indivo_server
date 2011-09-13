@@ -26,6 +26,12 @@ class TestModel(object):
     def __init__(self):
         raise NotImplementedError("TestModel is a virtual class: subclass me!")
 
+    def __setattr__(self, item, value):
+        """Update our django_object whenever our fields get updated"""
+        if hasattr(self, 'django_obj') and self.django_obj:
+            setattr(self.django_obj, item, value)
+        return super(TestModel, self).__setattr__(item, value)
+
     def build_django_obj(self):
         model_args = {}
         for f in self.model_fields:
@@ -34,4 +40,9 @@ class TestModel(object):
         self.django_obj = self.model_class(**model_args)
 
     def save(self):
+        if not hasattr(self, 'django_obj') or not self.django_obj:
+            self.build_django_obj()
         self.django_obj.save()
+
+def raw_data_to_objs(data_list, target_object):
+    return [target_object(**raw_data) for raw_data in data_list]
