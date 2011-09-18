@@ -118,20 +118,18 @@ class FactQuery(object):
         if not self.flat_aggregation:
             results = self._apply_ordering(results)
     
-        # 5. limit and offset. Must evaluate the queryset here, so Django doesn't do fuzzy stuff
-        # with the ordering.
+        # 5. limit and offset. Make sure to grab the total result count
+        # before paging is applied and we lose it.
 
-        # Evaluate the QuerySet and format it appropriately even with differing code paths above
+        # No need to get the count or worry about paging for a flat
+        # aggregation, which was already evaluated
         if self.flat_aggregation:
+            self.trc = 1
             results = [results] # [{'aggregation': 'value'}]
+
+        # Avoid evaluation for as long as possible: pass back a QuerySet object
         else:
-            results = list(results) # [obj1, obj2, ...] or [{'group_field': 'value', 'aggregation':'agg_value'} ..]
-
-        # Grab the total result count before we apply paging and lose it
-        self.trc = len(results)
-
-        # Handle Paging, ignore if we have a single aggregation
-        if not self.flat_aggregation:
+            self.trc = results.count()
             results = results[self.offset:self.offset+self.limit]
 
         # And we're done!

@@ -195,5 +195,4 @@ class AuditWrapper(object):
     self.audit_obj.save()
 
   def process_exception(self, request, exception):
-    print >> sys.stderr, exception
-    sys.stderr.flush()
+    logging.error(str(exception))

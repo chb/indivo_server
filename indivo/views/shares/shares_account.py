@@ -15,7 +15,7 @@ def carenet_account_create(request, carenet):
   ACCOUNT_ID = 'account_id'
   if request.POST.has_key(ACCOUNT_ID) and \
       request.POST.has_key('write'):
-    account_id = request.POST[ACCOUNT_ID]
+    account_id = request.POST[ACCOUNT_ID].lower().strip()
     try:
       carenets = CarenetAccount.objects.create(
                     carenet = carenet,

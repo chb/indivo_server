@@ -55,6 +55,10 @@ class Authorization(object):
   def override(cls):
     cls.OVERRIDE = True
 
+  @classmethod
+  def cancel_override(cls):
+    cls.OVERRIDE = False
+
 Authorization.OVERRIDE = False
 
 # Mark that the authorization module has been loaded

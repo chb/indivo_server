@@ -1,5 +1,5 @@
 from indivo.models import *
-from internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests
 from django.utils.http import urlencode
 import hashlib, uuid
 
@@ -174,7 +174,7 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get(url2)
         self.assertEquals(response.status_code, 200)
 
-        url3 = '/records/%s/reports/minimal/allergies/?allergen_type=Drugs&order_by=date_diagnosed&date_range=date_diagnosed*2000-03-10T00:00:00Z*'%(record_id)
+        url3 = '/records/%s/reports/minimal/allergies/?allergen_type=Drugs&order_by=date_diagnosed&date_range=date_diagnosed*2000-03-10T00:00:00Z*&offset=1'%(record_id)
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 

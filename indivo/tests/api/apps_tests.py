@@ -1,6 +1,6 @@
 import django.test
 from indivo.models import *
-from internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests
 
 #app vars
 APP_EMAIL,ASDF = ('myApp@my.com', 'asdf')
@@ -14,17 +14,17 @@ class PHAInternalTests(InternalTests):
     def setUp(self):
         super(PHAInternalTests,self).setUp()
         # create app
-        pha_args = {'name' : 'myApp', \
-                        'email' : APP_EMAIL, \
-                        'consumer_key' : 'myapp', \
-                        'secret' : 'myapp', \
-                        'has_ui' : True, \
-                        'frameable' : True, \
-                        'is_autonomous' : False, \
-                        'autonomous_reason' : '', \
-                        'start_url_template' : 'http://myapp.com/start', \
-                        'callback_url' : 'http://myapp.com/afterauth', \
-                        'description' : 'ITS MY APP'}
+        pha_args = {'name' : 'myApp', 
+                    'email' : APP_EMAIL, 
+                    'consumer_key' : 'myapp', 
+                    'secret' : 'myapp', 
+                    'has_ui' : True, 
+                    'frameable' : True, 
+                    'is_autonomous' : False, 
+                    'autonomous_reason' : '', 
+                    'start_url_template' : 'http://myapp.com/start', 
+                    'callback_url' : 'http://myapp.com/afterauth', 
+                    'description' : 'ITS MY APP'}
         self.pha = self.createPHA(**pha_args)
 
         # create account

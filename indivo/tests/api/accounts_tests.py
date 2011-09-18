@@ -1,6 +1,6 @@
 import django.test
 from indivo.models import *
-from internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests
 from django.utils.http import urlencode
 
 EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS, PRIMARY_SECRET, SECONDARY_SECRET = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"), '010101', '010101')
@@ -35,7 +35,8 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_create_accounts(self):
-        response = self.client.post('/accounts/', urlencode({'account_id' : EMAIL,'full_name':'fl','contact_email':'contactemail','password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        email = "mymail2@mail.ma"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':'contactemail','password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)        
         
     def test_change_password(self):
