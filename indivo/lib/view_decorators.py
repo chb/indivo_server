@@ -54,7 +54,8 @@ def marsloader(query_api_support = False):
       # an invalid filter
       new_args = copy.copy(kwargs)
       filters = {}
-      for arg, value in request.GET.iteritems():
+      for _arg, value in request.GET.iteritems():
+        arg = str(_arg)
         try:
           if arg == 'limit':
             new_args[arg] = int(value)
