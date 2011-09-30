@@ -32,7 +32,7 @@ class ReportingInternalTests(InternalTests):
             self.carenets.append(carenet)
 
         #Add some sample Reports
-        self.loadTestReports(self.records[0])
+        self.loadTestReports(record=self.records[0])
         self.labs = list(Lab.objects.all())
 
     def tearDown(self):

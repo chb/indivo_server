@@ -1,33 +1,18 @@
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from indivo.tests.data.account import TEST_ACCOUNTS
+from indivo.tests.data.record import TEST_RECORDS
 from indivo.tests.data.app import TEST_USERAPPS
 from indivo.tests.data.message import TEST_MESSAGES, TEST_ATTACHMENTS
+from indivo.tests.data.document import TEST_R_DOCS, TEST_RA_DOCS, TEST_DEMOGRAPHICS, TEST_CONTACTS, SPECIAL_DOCS
 from django.utils.http import urlencode
 import hashlib, uuid
 
-CONTACT = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
-
-CONTACT1 = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
-
-DEMOGRAPHICS = '''<Demographics xmlns="http://indivo.org/vocab/xml/documents#"> <foo>bar</foo></Demographics>'''
-
-SPECIAL_DOCS = {'contact':CONTACT, 'demographics':DEMOGRAPHICS}
-
-DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
-DOC_LABEL = 'A Document!'
-DOCUMENT2 = '''<DOC>HERE'S MY SECOND CONTENT</DOC>'''
-EXT_IDS = ('EXT_ID1', 'EXT_ID2', 'EXT_ID3')
 DOCUMENT_TYPE = 'Lab'
-
 AUDIT_FUNC_NAME = 'record_app_specific_document'
-
 CARENET_LABEL = 'New Carenet'
-
 REL = 'annotation'
-
 STATUS = {'status':'void', 'reason':'because I CAN'}
-
 LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
 
 class RecordInternalTests(InternalTests):
@@ -69,65 +54,24 @@ class RecordInternalTests(InternalTests):
         self.addAppToRecord(**share_args)
 
         #Create a record-app-specific doc
-        md = hashlib.sha256()
-        md.update(DOCUMENT)
-        doc_args = {'record':self.records[0],
-                    'content':DOCUMENT,
-                    'pha':self.phas[0],
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        self.ras_docs.append(self.createDocument(**doc_args))
+        self.ras_docs.append(self.createDocument(TEST_RA_DOCS[0], record=self.records[0], pha=self.phas[0]))
 
         #Create a record-specific doc
-        md.update(DOCUMENT)
-        doc_args = {'record':self.records[0],
-                    'content':DOCUMENT,
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        self.rs_docs.append(self.createDocument(**doc_args))
+        self.rs_docs.append(self.createDocument(TEST_R_DOCS[6], record = self.records[0]))
 
         #Create a record-specific doc with an external id
-        md.update(DOCUMENT2)
-        doc_args = {'record':self.records[0],
-                    'content':DOCUMENT2,
-                    'size':len(DOCUMENT2),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': NoUser.objects.all()[0],
-                    'external_id': Document.prepare_external_id(EXT_IDS[1], self.phas[0]) }
-        self.rs_docs.append(self.createDocument(**doc_args))
+        self.rs_docs.append(self.createDocument(TEST_R_DOCS[0], record=self.records[0]))
 
         # Create a contact and demographics doc
-        md.update(CONTACT1)
-        doc_args = {'record':self.records[0],
-                    'content':CONTACT1,
-                    'size':len(CONTACT1),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        self.rs_docs.append(self.createDocument(**doc_args))
+        self.rs_docs.append(self.createDocument(TEST_CONTACTS[0], record=self.records[0]))
 
-        md.update(DEMOGRAPHICS)
-        doc_args = {'record':self.records[0],
-                    'content':DEMOGRAPHICS,
-                    'size':len(DEMOGRAPHICS),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        self.rs_docs.append(self.createDocument(**doc_args))
+        self.rs_docs.append(self.createDocument(TEST_DEMOGRAPHICS[0], record=self.records[0]))
 
         # Set our records' special docs
         for record in self.records:
             record.demographics = self.rs_docs[3]
             record.contact = self.rs_docs[2]
             record.save()
-
-        # Add a message sent to our record
-        self.messages.append(self.createMessage(TEST_MESSAGES[0], self.accounts[0], about_record=self.records[0]))
 
         # The message we will send (not yet in the DB)
         self.messages.append(TEST_MESSAGES[2])
@@ -140,14 +84,14 @@ class RecordInternalTests(InternalTests):
 
     def test_create_record_ext(self):
         principal_email = self.accounts[0].email
-        url='/records/external/%s/%s'%(principal_email, EXT_IDS[0])
-        response = self.client.put(url, data=CONTACT, content_type='text/xml')
+        url='/records/external/%s/%s'%(principal_email, TEST_RECORDS[5].local_external_id)
+        response = self.client.put(url, data=TEST_CONTACTS[0].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         # Check for label, contact doc, etc.
 
     def test_create_record(self):
         url = '/records/' 
-        response = self.client.post(url, data=CONTACT, content_type='text/xml')
+        response = self.client.post(url, data=TEST_CONTACTS[0].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         # Check for label, contact doc, etc.
 
@@ -179,17 +123,17 @@ class RecordInternalTests(InternalTests):
         pha_email = self.phas[0].email
 
         # Create a rec-app specific doc by ext_id, post
-        url = '/records/%s/apps/%s/documents/external/%s'%(record_id, pha_email, EXT_IDS[0])
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        url = '/records/%s/apps/%s/documents/external/%s'%(record_id, pha_email, TEST_RA_DOCS[1].local_external_id)
+        response = self.client.post(url, data=TEST_RA_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         
         # Create by put (should overwrite doc)
-        url = '/records/%s/apps/%s/documents/external/%s'%(record_id, pha_email, EXT_IDS[0])
-        response = self.client.put(url, data=DOCUMENT2, content_type='text/xml')
+        url = '/records/%s/apps/%s/documents/external/%s'%(record_id, pha_email, TEST_RA_DOCS[1].local_external_id)
+        response = self.client.put(url, data=TEST_RA_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
         # Get Meta by ext_id
-        url = '/records/%s/apps/%s/documents/external/%s/meta'%(record_id, pha_email, EXT_IDS[0]) 
+        url = '/records/%s/apps/%s/documents/external/%s/meta'%(record_id, pha_email, TEST_RA_DOCS[1].local_external_id) 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # Check for correctness
@@ -216,7 +160,7 @@ class RecordInternalTests(InternalTests):
         pha_email = self.phas[0].email
         doc_id = self.ras_docs[0].id
         url = '/records/%s/apps/%s/documents/%s/label'%(record_id, pha_email, doc_id)
-        response = self.client.put(url, data=DOC_LABEL, content_type='text/plain')
+        response = self.client.put(url, data=TEST_RA_DOCS[0].label, content_type='text/plain')
         self.assertEquals(response.status_code, 200)
 
     def test_get_record_app_specific_doc_meta(self):
@@ -232,7 +176,7 @@ class RecordInternalTests(InternalTests):
         pha_email = self.phas[0].email
         doc_id = self.ras_docs[0].id
         url = '/records/%s/apps/%s/documents/%s/update'%(record_id, pha_email, doc_id)
-        response = self.client.post(url, data=DOCUMENT2, content_type='text/xml')
+        response = self.client.post(url, data=TEST_RA_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_list_record_app_specific_docs(self):
@@ -246,14 +190,14 @@ class RecordInternalTests(InternalTests):
         record_id = self.records[0].id
         pha_email = self.phas[0].email
         url = '/records/%s/apps/%s/documents/'%(record_id, pha_email)
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        response = self.client.post(url, data=TEST_RA_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_setup_record_app(self):
         record_id = self.records[0].id
         pha_email = self.phas[0].email
         url = '/records/%s/apps/%s/setup'%(record_id, pha_email)
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        response = self.client.post(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
     
     def test_get_view_function_audit(self):
@@ -327,15 +271,15 @@ class RecordInternalTests(InternalTests):
 
     def test_set_record_specific_doc_label_ext(self):
         record_id = self.records[0].id
-        ext_id = EXT_IDS[1]
+        ext_id = TEST_R_DOCS[0].local_external_id
         pha_email = self.phas[0].email
         url= '/records/%s/documents/external/%s/%s/label'%(record_id, pha_email, ext_id)
-        response = self.client.put(url, data=DOC_LABEL, content_type='text/plain')
+        response = self.client.put(url, data=TEST_R_DOCS[0].label, content_type='text/plain')
         self.assertEquals(response.status_code, 200)
 
     def test_get_record_specific_doc_meta_ext(self):
         record_id = self.records[0].id
-        ext_id = EXT_IDS[1]
+        ext_id = TEST_R_DOCS[0].local_external_id
         pha_email = self.phas[0].email
         url = '/records/%s/documents/external/%s/%s/meta'%(record_id, pha_email, ext_id)
         response = self.client.get(url)
@@ -343,10 +287,10 @@ class RecordInternalTests(InternalTests):
 
     def test_create_record_specific_doc_ext(self):
         record_id = self.records[0].id
-        ext_id = EXT_IDS[0]
+        ext_id = TEST_R_DOCS[1].local_external_id
         pha_email = self.phas[0].email
         url = '/records/%s/documents/external/%s/%s'%(record_id, pha_email, ext_id)
-        response = self.client.put(url, data=DOCUMENT, content_type='text/xml')
+        response = self.client.put(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_relate_existing_record_specific_docs(self):
@@ -360,18 +304,18 @@ class RecordInternalTests(InternalTests):
 
     def test_create_record_specific_doc_by_rel_ext(self):
         record_id = self.records[0].id
-        ext_id = EXT_IDS[0]
+        ext_id = TEST_R_DOCS[1].local_external_id
         rel = REL
         pha_email = self.phas[0].email
         doc_id = self.rs_docs[0].id
         url = '/records/%s/documents/%s/rels/%s/external/%s/%s'%(record_id, doc_id, rel, pha_email, ext_id)
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        response = self.client.post(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
         # Test put as well, should create new doc
-        ext_id = EXT_IDS[2]
+        ext_id = TEST_R_DOCS[2].local_external_id
         url = '/records/%s/documents/%s/rels/%s/external/%s/%s'%(record_id, doc_id, rel, pha_email, ext_id)
-        response = self.client.put(url, data=DOCUMENT2, content_type='text/xml')
+        response = self.client.put(url, data=TEST_R_DOCS[2].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_get_record_specific_docs_by_rel(self):
@@ -388,7 +332,7 @@ class RecordInternalTests(InternalTests):
         rel = REL
         doc_id = self.rs_docs[0].id
         url = '/records/%s/documents/%s/rels/%s/'%(record_id, doc_id, rel)
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        response = self.client.post(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         
     def test_get_record_specific_doc_carenets(self):
@@ -436,7 +380,7 @@ class RecordInternalTests(InternalTests):
         record_id = self.records[0].id
         doc_id = self.rs_docs[0].id
         url = '/records/%s/documents/%s/label'%(record_id, doc_id)
-        response = self.client.post(url, data=DOC_LABEL, content_type='text/xml')
+        response = self.client.post(url, data=TEST_R_DOCS[1].label, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         
     def test_get_record_specific_doc_meta(self):
@@ -473,16 +417,16 @@ class RecordInternalTests(InternalTests):
         record_id = self.records[0].id
         doc_id = self.rs_docs[0].id
         pha_email = self.phas[0].email
-        ext_id = EXT_IDS[0]
+        ext_id = TEST_R_DOCS[1].local_external_id
         url = '/records/%s/documents/%s/replace/external/%s/%s'%(record_id, doc_id, pha_email, ext_id)
-        response = self.client.put(url, data=DOCUMENT2, content_type='text/xml')
+        response = self.client.put(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_replace_record_specific_doc(self):
         record_id = self.records[0].id
         doc_id = self.rs_docs[0].id
         url = '/records/%s/documents/%s/replace'%(record_id, doc_id)
-        response = self.client.post(url, data=DOCUMENT2, content_type='text/xml')
+        response = self.client.post(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         
     def test_set_record_specific_doc_status(self):
@@ -517,7 +461,7 @@ class RecordInternalTests(InternalTests):
     def test_create_record_specific_doc(self):
         record_id = self.records[0].id
         url = '/records/%s/documents/'%(record_id)
-        response = self.client.post(url, data=DOCUMENT, content_type='text/xml')
+        response = self.client.post(url, data=TEST_R_DOCS[1].content, content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_delete_all_record_specific_docs(self):
@@ -528,7 +472,7 @@ class RecordInternalTests(InternalTests):
 
     def test_get_special_doc(self):
         record_id = self.records[0].id
-        for doc_type, doc in SPECIAL_DOCS.iteritems():
+        for doc_type in SPECIAL_DOCS.keys():
             url = '/records/%s/documents/special/%s'%(record_id, doc_type)
             response = self.client.get(url)
             self.assertEquals(response.status_code, 200)
@@ -562,7 +506,7 @@ class RecordInternalTests(InternalTests):
     def test_record_send_message(self):
         # Test send and attach together to avoid setup
         record_id = self.records[0].id
-        msg = self.messages[1]
+        msg = self.messages[0]
         data = {'subject':msg.subject,
                 'body':msg.body,
                 'body_type':msg.body_type,
@@ -582,7 +526,7 @@ class RecordInternalTests(InternalTests):
     def test_record_notify(self):
         record_id = self.records[0].id
         url = '/records/%s/notify'%(record_id)
-        data = {'content':DOCUMENT2, 
+        data = {'content':TEST_R_DOCS[1].content, 
                 'document_id':self.rs_docs[1].id}
         response =self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)

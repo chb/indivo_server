@@ -24,12 +24,10 @@ class TestUserApp(TestModel):
         self.start_url_template = start_url_template
         self.callback_url = callback_url
         self.description = description
-        if schema:
-            try:
-                self.schema = DocumentSchema.objects.get(type=schema)
-            except DocumentSchema.DoesNotExist:
-                self.schema = None
-        self.build_django_obj()
+        try:
+            self.schema = DocumentSchema.objects.get(type=schema)
+        except DocumentSchema.DoesNotExist:
+            self.schema = None
 
 class TestMachineApp(TestModel):
     model_fields = ['name', 'email', 'consumer_key', 'secret', 'app_type']
@@ -41,8 +39,6 @@ class TestMachineApp(TestModel):
         self.consumer_key = consumer_key
         self.secret = secret
         self.app_type = app_type
-        self.build_django_obj()
-
 
 _TEST_USERAPPS = [
     {'name' : 'myApp', 

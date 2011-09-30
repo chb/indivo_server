@@ -1,4 +1,4 @@
-from indivo.tests.data.base import TestXMLDoc
+from base import report_content_to_test_docs
 
 _TEST_ALLERGIES_INVALID = [
     # an allergy with a bad date that should trigger a validation problem
@@ -86,5 +86,5 @@ _TEST_ALLERGIES = [
 
 ]
 
-TEST_ALLERGIES_INVALID = [TestXMLDoc(raw_data) for raw_data in _TEST_ALLERGIES_INVALID]
-TEST_ALLERGIES = [TestXMLDoc(raw_data) for raw_data in _TEST_ALLERGIES]
+TEST_ALLERGIES_INVALID = report_content_to_test_docs(_TEST_ALLERGIES_INVALID)
+TEST_ALLERGIES = report_content_to_test_docs(_TEST_ALLERGIES)

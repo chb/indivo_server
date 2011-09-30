@@ -17,8 +17,9 @@ class AccountInternalTests(InternalTests):
         self.record = Record.objects.all()[0]
 
         # create a message, with an attachment
-        self.message = self.createMessage(TEST_MESSAGES[2], self.account, about_record=self.record)
-        self.attachment = self.createAttachment(TEST_ATTACHMENTS[0], self.message, 1)
+        self.message = self.createMessage(TEST_MESSAGES[2], about_record=self.record, account=self.account,
+                                          sender=self.account, recipient=self.account)
+        self.attachment = self.createAttachment(TEST_ATTACHMENTS[0], attachment_num=1)
     
     def tearDown(self):
         super(AccountInternalTests,self).tearDown()
@@ -89,7 +90,7 @@ class AccountInternalTests(InternalTests):
     def test_init_account(self):
         new_acct = self.createUninitializedAccount(TEST_ACCOUNTS[0])
         url = '/accounts/%s/initialize/%s'%(new_acct.email,new_acct.primary_secret)
-        response = self.client.post(url, urlencode({'secondary_secret':self.account.secondary_secret}), 'application/x-www-form-urlencoded')
+        response = self.client.post(url, urlencode({'secondary_secret':new_acct.secondary_secret}), 'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
 
     def test_get_notifications(self):

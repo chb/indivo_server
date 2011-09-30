@@ -3,21 +3,12 @@ from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from indivo.tests.data.account import TEST_ACCOUNTS
 from indivo.tests.data.app import TEST_USERAPPS
+from indivo.tests.data.document import TEST_R_DOCS, TEST_CONTACTS, TEST_DEMOGRAPHICS, SPECIAL_DOCS
+from indivo.tests.data.carenet import TEST_CARENETS
 from django.utils.http import urlencode
 import hashlib
 
-DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
-DOCUMENT2 = '''<DOC>HERE'S MY CONTENT 2!</DOC>'''
-DOC_LABEL = 'A Document!'
-
-CONTACT = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
-
-DEMOGRAPHICS = '''<Demographics xmlns="http://indivo.org/vocab/xml/documents#"> <foo>bar</foo></Demographics>'''
-
-SPECIAL_DOCS = {'contact':CONTACT, 'demographics':DEMOGRAPHICS}
-
 LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
-
 CARENET_NAME = 'NEWNAME'
 
 class CarenetInternalTests(InternalTests):
@@ -48,8 +39,7 @@ class CarenetInternalTests(InternalTests):
             self.records.append(r)
 
         # Create a test carenet on a record
-        carenet_args = {'name': 'test_carenet', 'record': self.records[0]}
-        self.carenets.append(self.createCarenet(**carenet_args))
+        self.carenets.append(self.createCarenet(TEST_CARENETS[0], record=self.records[0]))
 
         # Create another account to share our records
         self.accounts.append(self.createAccount(TEST_ACCOUNTS[0]))
@@ -73,47 +63,17 @@ class CarenetInternalTests(InternalTests):
         self.addAppToRecord(record=self.records[0], with_pha=self.phas[1])
 
         #Create a record-specific doc
-        md = hashlib.sha256()
-        md.update(DOCUMENT)
-        doc_args = {'record':self.records[0],
-                    'content':DOCUMENT,
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        self.docs.append(self.createDocument(**doc_args))
+        self.docs.append(self.createDocument(TEST_R_DOCS[6], record=self.records[0]))
 
         # Add it to a carenet
         self.addDocToCarenet(self.docs[0], self.carenets[0])
 
         #Create another record-specific doc that isn't shared yet
-        md.update(DOCUMENT2)
-        doc_args = {'record':self.records[0],
-                    'content':DOCUMENT2,
-                    'size':len(DOCUMENT2),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        self.docs.append(self.createDocument(**doc_args))
+        self.docs.append(self.createDocument(TEST_R_DOCS[7], record=self.records[0]))
 
         # Set up our record's sepcial docs and add them to our carenet
-        md.update(CONTACT)
-        doc_args = {'record':self.records[0],
-                    'content':CONTACT,
-                    'size':len(CONTACT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        contact = self.createDocument(**doc_args)
-
-        md.update(DEMOGRAPHICS)
-        doc_args = {'record':self.records[0],
-                    'content':DEMOGRAPHICS,
-                    'size':len(DEMOGRAPHICS),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts[0]}
-        demographics = self.createDocument(**doc_args)
+        contact = self.createDocument(TEST_CONTACTS[0], record=self.records[0])
+        demographics = self.createDocument(TEST_DEMOGRAPHICS[0], record=self.records[0])
         
         self.records[0].demographics = demographics
         self.records[0].contact = contact
@@ -220,7 +180,7 @@ class CarenetInternalTests(InternalTests):
 
     def test_get_carenet_special_document(self):
         c_id = self.carenets[0].id
-        for doc_type, doc in SPECIAL_DOCS.iteritems():
+        for doc_type in SPECIAL_DOCS.keys():
             url = '/carenets/%s/documents/special/%s'%(c_id, doc_type)
             response = self.client.get(url)
             self.assertEquals(response.status_code, 200)

@@ -5,6 +5,7 @@ from django.utils.http import urlencode
 
 from indivo.models import *
 from indivo.tests.data.reports import TEST_REPORTS
+from indivo.tests.data.record import TEST_RECORDS
 import urls
 import re
 from xml.dom import minidom
@@ -68,39 +69,37 @@ class InternalTests(django.test.TestCase):
 
         self.dependencies_loaded = True
 
-    def createDocument(self, **kwargs):
-        doc = Document.objects.create(**kwargs)
-        return doc
+    def createDocument(self, test_document, **overrides):
+        return self.saveTestObj(test_document, overrides)
 
     def addAppToRecord(self, **kwargs):
         share = PHAShare.objects.create(**kwargs)
         return share
 
-    def createCarenet(self, **kwargs):
-        carenet = Carenet.objects.create(**kwargs)
-        return carenet
+    def createCarenet(self, test_carenet, **overrides):
+        return self.saveTestObj(test_carenet, overrides)
 
-    def createUserApp(self, test_userapp):
-        return self.saveTestObj(test_userapp)
+    def createUserApp(self, test_userapp, **overrides):
+        return self.saveTestObj(test_userapp, overrides)
     
-    def createMachineApp(self, test_machineapp):
-        return self.saveTestObj(test_machineapp)
+    def createMachineApp(self, test_machineapp, **overrides):
+        return self.saveTestObj(test_machineapp, overrides)
 
-    def createRecord(self, **kwargs):
-        record = Record.objects.create(**kwargs)
+    def createRecord(self, test_record, **overrides):
+        record = self.saveTestObj(test_record, overrides)
         record.create_default_carenets()
         return record
 
-    def createAccount(self, test_account):
-        account = self.createUninitializedAccount(test_account)
+    def createAccount(self, test_account, **overrides):
+        account = self.createUninitializedAccount(test_account, **overrides)
         account.set_username_and_password(username = test_account.username, 
                                           password = test_account.password)
         return account
     
-    def createUninitializedAccount(self, test_account):
-        account = self.saveTestObj(test_account)
-        for label in test_account.records:
-            self.createRecord(label=label, owner=account)
+    def createUninitializedAccount(self, test_account, **overrides):
+        account = self.saveTestObj(test_account, overrides)
+        for test_record in test_account.records:
+            self.createRecord(test_record, owner=account)
         return account
 
     def addDocToCarenet(self, doc, carenet):
@@ -120,31 +119,20 @@ class InternalTests(django.test.TestCase):
 
         return CarenetPHA.objects.create(carenet=carenet, pha=pha)
         
-    def createMessage(self, test_message, account, about_record=None):
-        test_message.account = account
-        test_message.sender = account
-        test_message.recipient = account
-        test_message.about_record = about_record
-        return self.saveTestObj(test_message)
+    def createMessage(self, test_message, **overrides):
+        return self.saveTestObj(test_message, overrides)
 
-    def saveTestObj(self, test_obj):
+    def saveTestObj(self, test_obj, overrides_dict):
+        test_obj.update(overrides_dict)
         test_obj.save()
         return test_obj.django_obj
 
-    def createAttachment(self, test_attachment, message, attachment_num):
-        test_attachment.message = message
-        test_attachment.attachment_num = attachment_num
-        return self.saveTestObj(test_attachment)
+    def createAttachment(self, test_attachment, **overrides):
+        return self.saveTestObj(test_attachment, overrides)
 
-    def loadTestReports(self, record):
+    def loadTestReports(self, **overrides):
         for report in TEST_REPORTS:
-            report_args = {'record':record,
-                           'content':report.xml,
-                           'size':report.size(),
-                           'digest':report.digest(),
-                           'label':report.label,
-                           'creator':record.owner}
-            self.createDocument(**report_args)
+            self.saveTestObj(report, overrides)
 
     def setUp(self):
         self.disableAccessControl()

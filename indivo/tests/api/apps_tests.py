@@ -3,9 +3,7 @@ from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from indivo.tests.data.account import TEST_ACCOUNTS
 from indivo.tests.data.app import TEST_USERAPPS
-
-#doc vars
-DOCUMENT, DOC_LABEL, EXT_ID = ('''<DOC>HERE'S MY CONTENT</DOC>''', 'A Document!', 'ext_id')
+from indivo.tests.data.document import TEST_A_DOCS
 
 class PHAInternalTests(InternalTests):
 
@@ -19,24 +17,10 @@ class PHAInternalTests(InternalTests):
         self.account = self.createAccount(TEST_ACCOUNTS[4])
         
         # create app specific externally referenced doc
-        md = hashlib.sha256()
-        md.update(DOCUMENT)
-        doc_args = {'content':DOCUMENT,
-                    'pha':self.app,
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.account,
-                    'external_id' : Document.prepare_external_id(EXT_ID, self.app, pha_specific=True, record_specific=False) }
-        self.external_doc = self.createDocument(**doc_args)
+        self.external_doc = self.createDocument(TEST_A_DOCS[1], pha=self.app)
+
         # create app specific doc
-        doc_args = {'content':DOCUMENT,
-                    'pha':self.app,
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.account }
-        self.doc = self.createDocument(**doc_args)
+        self.doc = self.createDocument(TEST_A_DOCS[0], pha=self.app)
 
     def tearDown(self):
         super(PHAInternalTests,self).tearDown()
@@ -54,7 +38,7 @@ class PHAInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_external_document_meta(self):
-        response = self.client.get('/apps/%s/documents/external/%s/meta'%(self.app.email,EXT_ID))
+        response = self.client.get('/apps/%s/documents/external/%s/meta'%(self.app.email,TEST_A_DOCS[1].local_external_id))
         self.assertEquals(response.status_code, 200)            
 
     def test_put_external_document(self):

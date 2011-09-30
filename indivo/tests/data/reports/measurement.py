@@ -1,4 +1,4 @@
-from indivo.tests.data.base import TestXMLDoc
+from base import report_content_to_test_docs
 
 hba1c = [ {'value' : '3.4', 'datetime' : '2009-01-02T12:03:10Z'},
           {'value' : '9.2', 'datetime' : '2008-01-22T17:29:59Z'},
@@ -26,4 +26,4 @@ _TEST_MEASUREMENTS = [
 
 ]
 
-TEST_MEASUREMENTS = [TestXMLDoc(raw_content) for raw_content in _TEST_MEASUREMENTS]
+TEST_MEASUREMENTS = report_content_to_test_docs(_TEST_MEASUREMENTS)
