@@ -1,3 +1,5 @@
 
-#Unit Tests
-from unittests import *
+# Unit Tests
+
+# Tests of Django Models
+from models import *
