@@ -1,8 +1,8 @@
 import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
-
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
+from indivo.tests.data.account import TEST_ACCOUNTS
+from indivo.tests.data.app import TEST_USERAPPS
 
 class OauthInternalTests(InternalTests):
     
@@ -10,23 +10,8 @@ class OauthInternalTests(InternalTests):
         # This might not be sufficient: oauth might require reqTokens or Shares to be setup...
         # Should we even be testing oauth calls with accesscontrol disabled?
         super(OauthInternalTests,self).setUp(self)
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL}
-        self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args)
-
-        pha_args = {'name' : 'myApp',
-                     'email' : 'myApp@my.com',
-                     'consumer_key' : 'myapp',
-                     'secret' : 'myapp',
-                     'has_ui' : True,
-                     'frameable' : True,
-                     'is_autonomous' : False,
-                     'autonomous_reason' : '',
-                     'start_url_template' : 'http://myapp.com/start',
-                     'callback_url' : 'http://myapp.com/afterauth',
-                     'description' : 'ITS MY APP',
-                     'document_schema' : None
-                     }
-        self.createPHA(**pha_args)
+        self.createAccount(TEST_ACCOUNTS[4])
+        self.createUserApp(TEST_USERAPPS[0])
 
     def tearDown(self):
         super(OauthInternalTests,self).tearDown(self)

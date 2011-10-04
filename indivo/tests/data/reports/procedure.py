@@ -1,4 +1,4 @@
-from indivo.tests.data.base import TestXMLDoc
+from base import report_content_to_test_docs
 
 _TEST_PROCEDURES = [
     """
@@ -24,4 +24,4 @@ _TEST_PROCEDURES = [
 """,
 ]
 
-TEST_PROCEDURES = [TestXMLDoc(raw_content) for raw_content in _TEST_PROCEDURES]
+TEST_PROCEDURES = report_content_to_test_docs(_TEST_PROCEDURES)

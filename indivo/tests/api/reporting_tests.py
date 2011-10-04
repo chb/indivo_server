@@ -1,11 +1,8 @@
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
+from indivo.tests.data.account import TEST_ACCOUNTS
 from django.utils.http import urlencode
 import hashlib, uuid
-
-from indivo.tests.data import *
-
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
 
 DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
 DOC_LABEL = 'A Document!'
@@ -26,8 +23,7 @@ class ReportingInternalTests(InternalTests):
         self.labs = []
 
         # Create an Account (with a few records)
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL}
-        self.accounts.append(self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args))
+        self.accounts.append(self.createAccount(TEST_ACCOUNTS[4]))
 
         # Track the records and carenets we just created
         for record in Record.objects.all():
@@ -36,7 +32,7 @@ class ReportingInternalTests(InternalTests):
             self.carenets.append(carenet)
 
         #Add some sample Reports
-        self.loadTestReports(self.records[0], self.accounts[0])
+        self.loadTestReports(record=self.records[0])
         self.labs = list(Lab.objects.all())
 
     def tearDown(self):
