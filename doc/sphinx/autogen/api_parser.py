@@ -2,15 +2,16 @@
 Pull relevant info from the indivo_server codebase to generate a framework for Indivo documentation
 """
 
-from django.conf import settings
-from operator import attrgetter
-
 # Add indivo_server to the sys path so that our script can find the codebase
 # and Django can find settings.py
 import sys, os
 os.chdir('../..')
 sys.path.append(os.getcwd())
 sys.path.append("%s/.."%os.getcwd())
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+from django.conf import settings
+from operator import attrgetter
 
 from indivo.accesscontrol.access_rule import AccessRule
 import indivo
