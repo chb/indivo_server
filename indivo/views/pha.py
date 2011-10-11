@@ -3,6 +3,7 @@ Indivo views -- PHAs
 """
 
 import urllib, urlparse
+import logging
 
 from base import *
 
@@ -14,10 +15,10 @@ import base64, hmac, datetime
 
 def all_phas(request):
     """A list of the PHAs as JSON"""
-    
+
     phas = PHA.objects.all()
     return render_template('phas', {'phas': phas}, type="xml")
-
+    
 def pha(request, pha):
     return render_template('pha', {'pha' : pha}, type="xml")
 
@@ -25,7 +26,7 @@ def pha_record_delete(request, record, pha):
     try:
         # delete all the carenet placements of the app
         CarenetPHA.objects.filter(carenet__record = record, pha=pha).delete()
-        
+
         # delete all the share objects that matter
         PHAShare.objects.filter(with_pha=pha, record=record.id).delete()
     except:
@@ -76,13 +77,13 @@ def exchange_token(request):
 
 def user_authorization(request):
     """Authorize a request token, binding it to a single record.
-    
+
     A request token *must* be bound to a record before it is approved.
     """
-    
     try:
         token = ReqToken.objects.get(token = request.REQUEST['oauth_token'])
     except ReqToken.DoesNotExist:
+        logging.debug('indivo.views.pha: No request token')
         raise Http404
     
     # are we processing the form
@@ -90,22 +91,26 @@ def user_authorization(request):
     if request.method == "POST" or (token.record and token.record.has_pha(token.pha)):
         # get the record from the token
         record = token.record
-        
+
         # are we dealing with a record already
         if not (record and record.has_pha(token.pha)):
-            record = Record.objects.get(id = request.POST['record_id'])
+            try:
+                record = Record.objects.get(id = request.POST.get('record_id', ''))
+            except Record.DoesNotExist as e:
+                logging.debug('indivo.views.pha: record with id %s does not exist' % request.POST.get('record_id'))
+                raise Http404
         
             # allowed to administer the record? Needed if the record doesn't have the PHA yet
             if not record.can_admin(request.principal):
                 raise Exception("cannot administer this record")
-        
+
         from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
         request_token = OAUTH_SERVER.authorize_request_token(token.token, record = record, account = request.principal)
-        
+
         # where to redirect to + parameters
         redirect_url = request_token.oauth_callback or request_token.pha.callback_url
         redirect_url += "?oauth_token=%s&oauth_verifier=%s" % (request_token.token, request_token.verifier)
-        
+
         # redirect to the request token's callback, or if null the PHA's default callback
         return HttpResponseRedirect(redirect_url)
     else:
@@ -118,7 +123,9 @@ def user_authorization(request):
 
 def session_create(request):
     from indivo.accesscontrol import auth
+    
     user = None
+    username = None
     password = None
     if request.POST.has_key('username'):
         username = request.POST['username']
@@ -128,7 +135,7 @@ def session_create(request):
     if request.POST.has_key('password'):
         password = request.POST['password']
         user = auth.authenticate(request, username, password)
-    
+
     if not password and request.POST.has_key('system'):
         system = request.POST['system']
         try:
@@ -136,17 +143,18 @@ def session_create(request):
             user = auth.authenticate(request, username, None, system)
         except AuthSystem.DoesNotExist:
             raise PermissionDenied()
-    
+
     if not user:
-        raise PermissionDenied()
-    
+        return HttpResponseBadRequest('Wrong username/password')
+
     if user.is_active:
         # auth worked, created a session based token
         from indivo.accesscontrol.oauth_servers import SESSION_OAUTH_SERVER
         token = SESSION_OAUTH_SERVER.generate_and_preauthorize_access_token(request.principal, user=user)
     else:
+        logging.debug('This user is not active')
         raise PermissionDenied()
-    
+
     return HttpResponse(str(token), mimetype='text/plain')
 
 
