@@ -11,13 +11,13 @@ class IntegrationTests(InternalTests):
         self.enableAccessControl()
 
         # Add the integration test apps
-        self.createUserApp(TEST_USERAPPS[1])
-        self.createMachineApp(TEST_UIAPPS[0])
-        self.createMachineApp(TEST_ADMINAPPS[0])
+        self.createUserApp(TEST_USERAPPS, 1)
+        self.createMachineApp(TEST_UIAPPS, 0)
+        self.createMachineApp(TEST_ADMINAPPS, 0)
 
         # Add the integration test accounts
-        self.createAccount(TEST_ACCOUNTS[0])
-        self.createAccount(TEST_ACCOUNTS[1])
+        self.createAccount(TEST_ACCOUNTS, 0)
+        self.createAccount(TEST_ACCOUNTS, 1)
 
     def tearDown(self):
         super(IntegrationTests, self).tearDown()

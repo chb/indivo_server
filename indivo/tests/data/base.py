@@ -1,132 +1,219 @@
+import copy
+
+__all__ = [
+    'TestDataContext',
+    'TestModel',
+    'TestDataItem',
+    'scope',
+    'ForeignKey',
+    'ManyToManyKey',
+]
+
+class TestDataContext(object):
+    MARKED = 'marked'
+
+    def __init__(self):
+        self.subcontexts = [{}]
+
+    def tdi_id(self, tdi):
+        """ Get a unique id for the test_data. This is composed of two things:
+            the actual id() of the list that it came from, and the index in that
+            list. If we have a lazy item, we'll have to de-ref it here. """
+        if tdi.lazy:
+            tdi._get_data_list()
+        return '%s_%s'%(str(id(tdi.data_list)),
+                        str(tdi.index))        
+
+    def del_model(self, test_data_id, subcontext_id):
+        subcontext = self.subcontexts[subcontext_id]
+        if subcontext.has_key(test_data_id):
+            del subcontext[test_data_id]
+        else:
+            raise ValueError('No such model')
+
+    def _add_subcontext(self):
+        # DISABLED, FOR NOW
+        # self.subcontexts.append({})
+        return len(self.subcontexts) - 1
+
+    def _add_model(self, test_data_item, subcontext_id, **overrides):
+        
+        test_model_id = self.tdi_id(test_data_item)
+
+        # Look for the desired model in our subcontext
+        subcontext = self.subcontexts[subcontext_id]
+
+        # First time we've ever seen this model: Mark for processing
+        if not subcontext.has_key(test_model_id):
+            subcontext[test_model_id] = self.MARKED
+            
+        # We've seen this model before, but it hasn't been fully saved yet
+        # Ideally, we would handle this behavior in a sophisticated way
+        # (i.e. add ourself to a queue for later processing).
+        # But this is just test data, after all, and these chains can only 
+        # occur if the test data is created with circular foreignkey references,
+        # so let's just complain.
+        elif subcontext[test_model_id] == self.MARKED:
+            raise Exception('Circular references in test data: can\'t save test items.')
+    
+        # We've seen this model before, and it has been fully saved: just return it.
+        else:
+            return subcontext[test_model_id]
+
+        # create the model, with info that points to this specific subcontext
+        raw_data_dict = copy.deepcopy(test_data_item.raw_data)
+        raw_data_dict.update(identifier=test_model_id, context=self, subcontext_id=subcontext_id)
+        raw_data_dict.update(overrides)
+        test_model = test_data_item.tm_subclass(**raw_data_dict)
+
+        # register it with our subcontext, now that processing is done
+        subcontext[test_model_id] = test_model
+        return test_model
+
+    def add_key(self, key, from_instance):
+        subcontext_id = from_instance.subcontext_id
+        try:
+            ret = []
+            for test_data_item in key.to:
+                ret.append(self._add_model(test_data_item, subcontext_id))
+            return ret
+        except TypeError:
+            return self._add_model(key.to, subcontext_id)
+
+    def add_model(self, test_data_item, **overrides):
+        subcontext_id = self._add_subcontext()
+        return self._add_model(test_data_item, subcontext_id, **overrides)
+
 class TestModel(object):
     model_fields = [] # A list of field names needed to construct a Django Model
     model_class = None # The Django Model Subclass to construct
 
-    def __getattribute__(self, item):
-        """Lookup foreign keys"""
-        ret = super(TestModel, self).__getattribute__(item)
-        if isinstance(ret, Key):
-            ret = getattr(ret, Key.TO)
-        return ret
+    def __init__(self, identifier, context, subcontext_id, **subclass_args):
+        self.identifier = identifier
+        self.context = context
+        self.subcontext_id = subcontext_id
+        self._setupargs(**subclass_args)
+        self.marked_for_save = False
+
+    def _setupargs(self, **subclass_args):
+        """ Should be overriden by subclasses to take initialization args 
+            and set up the subclass model. """
+        raise NotImplementedError
+
+    def update(self, field_dict, **fields):
+        field_dict.update(fields)
+        for k, v in field_dict.iteritems():
+            setattr(self, k, v)
 
     def __setattr__(self, item, value):
-        """Update our django_object whenever our fields get updated. Don't update foreignKeys until save."""
-        if hasattr(self, 'django_obj') and item in self.model_fields and not isinstance(value, Key):
-            setattr(self.django_obj, item, value)
+        """Update our django_object whenever our fields get updated. Follow foreignKeys. """
+
+        # setup foreign keys
+        self_attr_val, django_obj_attr_val = self._foreign_key_check(value)
+
+        # update the django object
+        if hasattr(self, 'django_obj') and item in self.model_fields:
+            setattr(self.django_obj, item, django_obj_attr_val)
             self.dirty = True
-        elif isinstance(value, Key):
-            self.dirty = True
-        return super(TestModel, self).__setattr__(item, value)
+
+        return super(TestModel, self).__setattr__(item, self_attr_val)
+
+    def _foreign_key_check(self, field):
+        if isinstance(field, ForeignKey):
+            tm = self.context.add_key(field, self)
+            return (tm, tm.save())
+        elif isinstance(field, TestModel):
+            return (field, field.save())
+        elif isinstance(field, ManyToManyKey):
+            tms = self.context.add_key(field, self)
+            return (tms, [tm.save() for tm in tms])
+        elif isinstance(field, list) and field and isinstance(field[0], TestModel):
+            return (field, [tm.save() for tm in field])
+        return (field, field)
 
     def build_django_obj(self):
-        model_args = {}
-        for f in self.model_fields:
-            field_val = self.__dict__[f]
-            if not isinstance(field_val, Key):
-                model_args[f] = field_val
-                
+        # handle foreign keys
+        model_args = dict([(f, self._foreign_key_check(getattr(self, f))[1]) for f in self.model_fields])
         self.django_obj = self.model_class(**model_args)
-
-    def update(self, attr_dict, **other_attrs):
-        attr_dict.update(other_attrs)
-        for attr, val in attr_dict.iteritems():
-            setattr(self, attr, val)
 
     def save(self):
 
         # Make sure we've built the object to save
-        if not hasattr(self, 'django_obj') or not self.django_obj:
+        dobj_p = getattr(self, 'django_obj', False)
+        if not dobj_p:
             self.build_django_obj()
 
-        # Have we ever saved before?
-        resave = self.django_obj.pk
-
-        # Is our object currently represented in the DB?
-        in_db = self.model_class.objects.filter(pk=self.django_obj.pk).exists()
-
-        # Save if our object is dirty, or if the DB obj was yanked out from under us (i.e., by a tearDown method)
-        if not hasattr(self, 'dirty') or self.dirty or (resave and not in_db):
-            
-            # If we aren't in the database, make sure we get a new pk on save
-            if not in_db:
-                self.django_obj.pk = ''
-
-            # Mark as not dirty, so foreign keys don't recurse forever
+        # Save our django object
+        dirty_p = getattr(self, 'dirty', True)
+        if dirty_p:
+            self.django_obj.save()
             self.dirty = False
 
-            # Save our foreign keys first, and add them to our django_obj
-            for attrname, attrval in self.__dict__.iteritems():
-                if isinstance(attrval, Key):
-                    attrval.save()
-                    setattr(self.django_obj, attrname, attrval.as_django())
+        return self.django_obj
 
-            # Save our django object
-            self.django_obj.save()
+class TestDataItem(object):
+    def __init__(self, index, module_name=None, list_name=None, data_list=None, lazy=False):
+        self.index = index
+        self.lazy = lazy
+        if lazy:
+            self.module_name = module_name
+            self.list_name = list_name
+            self.data_list = None            
+        else:
+            self.data_list = data_list
+
+    def _get_data_list(self):
+        self.data_list = getattr(__import__(self.module_name, globals(), locals(), [self.list_name], -1), self.list_name)
+
+    @property
+    def tm_subclass(self):
+        if self.data_list is None:
+            self._get_data_list()
+        return self.data_list.model_class
+
+    @property
+    def raw_data(self):
+        if self.data_list is None:
+            self._get_data_list()
+        return self.data_list[self.index]
+
+def scope(raw_list, tm_subclass):
+
+    class TestModelScopedList(list):
+        def __init__(self, tm_subclass, *args, **kwargs):
+            self.model_class = tm_subclass
+            return super(TestModelScopedList, self).__init__(*args, **kwargs)
+
+        def __add__(self, other):
+            """ Allow concatenation of multiple scoped lists with the same tm_subclass. """
+            other_model_class = getattr(other, 'model_class', None)
+            if other_model_class and other_model_class == self.model_class:
+                return TestModelScopedList(self.model_class, super(TestModelScopedList, self).__add__(other))
+            else:
+                raise TypeError('Can only concatenate TestModelScopedLists with the same TestModel subclasses')
+
+    return TestModelScopedList(tm_subclass, raw_list)
 
 class Key(object):
-    TO = 'to'
-    INDEX_ARG = 'index_arg'
-
     def __init__(self, module_name, list_name, index_arg):
         self.module_name = module_name
         self.list_name = list_name
-        setattr(self, self.INDEX_ARG, index_arg)
+        self.index_arg = index_arg
 
-    def __getattr__(self, item):
-        if item == self.TO:
-            model_list = self._import_to_list()
-            to = self.process_model_list(model_list)
-            setattr(self, self.TO, to)
-            return to
-        else:
-            to = getattr(self, self.TO)
-            return getattr(to, item)
-
-    def _import_to_list(self):
-        m = __import__(self.module_name, globals(), locals(), [self.list_name], -1)
-        return getattr(m, self.list_name)
-
-    def as_django(self):
-        """ Should return the django_objects underlying the test_objects linked to by the Key"""
-        pass
-
-    def process_model_list(self, model_list):
-        """ Should Return the test_object{s} linked to by the Key, given a list of models and 
-            the self.INDEX_ARG. """
-        pass
-    
-    def save(self):
-        """ Should call save on each model in self.TO """
-        pass
+    @property
+    def to(self):
+        """ Should return the raw TestDataIdentifier(s) pointed to by the key. """
+        raise NotImplementedError
 
 class ForeignKey(Key):
-    def process_model_list(self, model_list):
-        return model_list[getattr(self, self.INDEX_ARG)]
 
-    def save(self):
-        getattr(self, self.TO).save()
-
-    def as_django(self):
-        to = getattr(self, self.TO)
-        if not hasattr(to, 'django_obj'):
-            to.build_django_obj()
-        return to.django_obj
+    @property
+    def to(self):
+        return TestDataItem(self.index_arg, module_name=self.module_name, list_name=self.list_name, lazy=True)
 
 class ManyToManyKey(Key):
-    def process_model_list(self, model_list):
-        return [model_list[i] for i in getattr(self, self.INDEX_ARG)]
-
-    def save(self):
-        for model in getattr(self, self.TO):
-            model.save()
-
-    def as_django(self):
-        ret = []
-        for model in getattr(self, self.TO):
-            if not hasattr(model, 'django_obj'):
-                model.build_django_obj()
-            ret.append(model.django_obj)
-        return ret
-
-def raw_data_to_objs(data_list, target_object):
-    return [target_object(**raw_data) for raw_data in data_list]
+    
+    @property
+    def to(self):
+        return [TestDataItem(i, module_name=self.module_name, 
+                             list_name=self.list_name, lazy=True) for i in self.index_arg]

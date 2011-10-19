@@ -10,8 +10,8 @@ class OauthInternalTests(InternalTests):
         # This might not be sufficient: oauth might require reqTokens or Shares to be setup...
         # Should we even be testing oauth calls with accesscontrol disabled?
         super(OauthInternalTests,self).setUp(self)
-        self.createAccount(TEST_ACCOUNTS[4])
-        self.createUserApp(TEST_USERAPPS[0])
+        self.createAccount(TEST_ACCOUNTS, 4)
+        self.createUserApp(TEST_USERAPPS, 0)
 
     def tearDown(self):
         super(OauthInternalTests,self).tearDown(self)

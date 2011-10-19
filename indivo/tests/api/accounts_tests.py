@@ -2,8 +2,7 @@ import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from django.utils.http import urlencode
-from indivo.tests.data.account import TEST_ACCOUNTS
-from indivo.tests.data.message import TEST_MESSAGES, TEST_ATTACHMENTS
+from indivo.tests.data import *
 
 class AccountInternalTests(InternalTests):  
 
@@ -11,15 +10,15 @@ class AccountInternalTests(InternalTests):
         super(AccountInternalTests,self).setUp()
 
         # create an account
-        self.account = self.createAccount(TEST_ACCOUNTS[4])
+        self.account = self.createAccount(TEST_ACCOUNTS, 4)
 
-        # hold on to one of the records we just created for the account
-        self.record = Record.objects.all()[0]
+        # create a record for the account
+        self.record = self.createRecord(TEST_RECORDS, 0, owner=self.account)
 
         # create a message, with an attachment
-        self.message = self.createMessage(TEST_MESSAGES[2], about_record=self.record, account=self.account,
+        self.message = self.createMessage(TEST_MESSAGES, 2, about_record=self.record, account=self.account,
                                           sender=self.account, recipient=self.account)
-        self.attachment = self.createAttachment(TEST_ATTACHMENTS[0], attachment_num=1)
+        self.attachment = self.createAttachment(TEST_ATTACHMENTS, 0, attachment_num=1, message=self.message)
     
     def tearDown(self):
         super(AccountInternalTests,self).tearDown()
@@ -34,7 +33,7 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)        
         
     def test_change_password(self):
-        response = self.client.post('/accounts/%s/authsystems/password/change'%(self.account.email), urlencode({'old':TEST_ACCOUNTS[4].password,'new':"newpassword"}),'application/x-www-form-urlencoded')
+        response = self.client.post('/accounts/%s/authsystems/password/change'%(self.account.email), urlencode({'old':TEST_ACCOUNTS[4]['password'],'new':"newpassword"}),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
         
     def test_set_password(self): 
@@ -76,9 +75,9 @@ class AccountInternalTests(InternalTests):
 
     def test_send_message_to_account(self):
         msg = TEST_MESSAGES[0]
-        data = {'message_id': msg.external_identifier,
-                'body':msg.body,
-                'severity':msg.severity,
+        data = {'message_id': msg['message_id'],
+                'body':msg['body'],
+                'severity':msg['severity'],
                 }
         response = self.client.post('/accounts/%s/inbox/'%(self.account.email), urlencode(data),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
@@ -88,7 +87,7 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_init_account(self):
-        new_acct = self.createUninitializedAccount(TEST_ACCOUNTS[0])
+        new_acct = self.createUninitializedAccount(TEST_ACCOUNTS, 0)
         url = '/accounts/%s/initialize/%s'%(new_acct.email,new_acct.primary_secret)
         response = self.client.post(url, urlencode({'secondary_secret':new_acct.secondary_secret}), 'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)

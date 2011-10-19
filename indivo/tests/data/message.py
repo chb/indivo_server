@@ -1,14 +1,14 @@
 from indivo.models import Message, MessageAttachment
 from indivo.models.messaging import DocParser
-from base import TestModel, raw_data_to_objs, ForeignKey
+from base import *
 
 class TestMessage(TestModel):
     model_fields = ['sender', 'recipient', 'external_identifier', 'account', 'about_record',
                     'severity', 'subject', 'body_type', 'body', 'num_attachments']
     model_class = Message
     
-    def __init__(self, body='NO BODY', sender=None, recipient=None, message_id=None, account=None, about_record=None,
-                 severity='low', subject='NO SUBJECT', body_type='plaintext', num_attachments=0):
+    def _setupargs(self, body='NO BODY', sender=None, recipient=None, message_id=None, account=None, about_record=None,
+                   severity='low', subject='NO SUBJECT', body_type='plaintext', num_attachments=0):
         self.sender=sender
         self.recipient=recipient
         self.external_identifier = message_id
@@ -24,8 +24,8 @@ class TestMessageAttachment(TestModel):
     model_fields = ['message', 'attachment_num', 'content', 'size', 'type']
     model_class = MessageAttachment
     
-    def __init__(self, attachment_num=1, message=None, content='<?xml version="1.0" ?><body></body>', 
-                 size=None, type=None):
+    def _setupargs(self, attachment_num=1, message=None, content='<?xml version="1.0" ?><body></body>', 
+                   size=None, type=None):
         self.message = message
         self.attachment_num = attachment_num
         self.content = content
@@ -63,6 +63,7 @@ _TEST_MESSAGES = [
      'about_record': ForeignKey('record', 'TEST_RECORDS', 0),
      },
     ]
+TEST_MESSAGES = scope(_TEST_MESSAGES, TestMessage)
 
 _TEST_ATTACHMENTS = [
     {'message': ForeignKey('message', 'TEST_MESSAGES', 2),
@@ -70,6 +71,4 @@ _TEST_ATTACHMENTS = [
      'content':'<?xml version="1.0" ?><body></body>',
      },
     ]
-
-TEST_MESSAGES = raw_data_to_objs(_TEST_MESSAGES, TestMessage)
-TEST_ATTACHMENTS = raw_data_to_objs(_TEST_ATTACHMENTS, TestMessageAttachment)
+TEST_ATTACHMENTS = scope(_TEST_ATTACHMENTS, TestMessageAttachment)

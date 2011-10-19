@@ -4,13 +4,13 @@ from django.db import models
 from django.utils.http import urlencode
 
 from indivo.models import *
-from indivo.tests.data.reports import TEST_REPORTS
-from indivo.tests.data.record import TEST_RECORDS
+from indivo.tests.data import *
+
 import urls
 import re
 from xml.dom import minidom
 
-class InternalTests(django.test.TestCase):
+class IndivoTests(object):
     dependencies_loaded = False
     dependencies = {DocumentSchema:('document_schemas',['type']),
                     AuthSystem:('auth_systems', ['short_name', 'internal_p']),
@@ -69,38 +69,12 @@ class InternalTests(django.test.TestCase):
 
         self.dependencies_loaded = True
 
-    def createDocument(self, test_document, **overrides):
-        return self.saveTestObj(test_document, overrides)
-
     def addAppToRecord(self, **kwargs):
         share = PHAShare.objects.create(**kwargs)
         return share
 
-    def createCarenet(self, test_carenet, **overrides):
-        return self.saveTestObj(test_carenet, overrides)
-
-    def createUserApp(self, test_userapp, **overrides):
-        return self.saveTestObj(test_userapp, overrides)
-    
-    def createMachineApp(self, test_machineapp, **overrides):
-        return self.saveTestObj(test_machineapp, overrides)
-
-    def createRecord(self, test_record, **overrides):
-        record = self.saveTestObj(test_record, overrides)
-        record.create_default_carenets()
-        return record
-
-    def createAccount(self, test_account, **overrides):
-        account = self.createUninitializedAccount(test_account, **overrides)
-        account.set_username_and_password(username = test_account.username, 
-                                          password = test_account.password)
-        return account
-    
-    def createUninitializedAccount(self, test_account, **overrides):
-        account = self.saveTestObj(test_account, overrides)
-        for test_record in test_account.records:
-            self.createRecord(test_record, owner=account)
-        return account
+    def shareRecordFull(self, record, account):
+        return AccountFullShare.objects.create(record=record, with_account=account)
 
     def addDocToCarenet(self, doc, carenet):
         cd = CarenetDocument.objects.create(carenet=carenet, document=doc)
@@ -118,44 +92,73 @@ class InternalTests(django.test.TestCase):
             share = self.addAppToRecord(record=carenet.record, with_pha=pha)
 
         return CarenetPHA.objects.create(carenet=carenet, pha=pha)
-        
-    def createMessage(self, test_message, **overrides):
-        return self.saveTestObj(test_message, overrides)
 
-    def saveTestObj(self, test_obj, overrides_dict):
-        test_obj.update(overrides_dict)
-        test_obj.save()
-        return test_obj.django_obj
+    def createDocument(self, test_document_list, index, **overrides):
+        return self.createTestItem(test_document_list, index, overrides)
 
-    def createAttachment(self, test_attachment, **overrides):
-        return self.saveTestObj(test_attachment, overrides)
+    def createCarenet(self, test_carenet_list, index, **overrides):
+        return self.createTestItem(test_carenet_list, index, overrides)
+
+    def createUserApp(self, test_userapp_list, index, **overrides):
+        return self.createTestItem(test_userapp_list, index, overrides)
+    
+    def createMachineApp(self, test_machineapp_list, index, **overrides):
+        return self.createTestItem(test_machineapp_list, index, overrides)
+
+    def createRecord(self, test_record_list, index, **overrides):
+        record = self.createTestItem(test_record_list, index, overrides)
+        record.create_default_carenets()
+        return record
+
+    def createAccount(self, test_account_list, index, **overrides):
+        account = self.createUninitializedAccount(test_account_list, index, **overrides)
+        account.set_username_and_password(username = test_account_list[index]['username'], 
+                                          password = test_account_list[index]['password'])
+        return account
+    
+    def createUninitializedAccount(self, test_account_list, index, **overrides):
+        return self.createTestItem(test_account_list, index, overrides)
+
+    def createMessage(self, test_message_list, index, **overrides):
+        return self.createTestItem(test_message_list, index, overrides)
+
+    def createAttachment(self, test_attachment_list, index, **overrides):
+        return self.createTestItem(test_attachment_list, index, overrides)
 
     def loadTestReports(self, **overrides):
-        for report in TEST_REPORTS:
-            self.saveTestObj(report, overrides)
+        for i in range(len(TEST_REPORTS)):
+            self.createTestItem(TEST_REPORTS, i, overrides)
+
+    def createTestItem(self, test_item_list, index, overrides_dict={}):
+        tdi = TestDataItem(index, data_list=test_item_list)
+        try:
+            scoped_test_model = self.test_data_context.add_model(tdi, **overrides_dict)
+            model_obj = scoped_test_model.save()
+        except Exception:
+            
+            # remove the failed item from our context
+            self.test_data_context.del_model(scoped_test_model.identifier, 
+                                             scoped_test_model.subcontext_id)
+            raise
+
+        return model_obj
 
     def setUp(self):
+        self.test_data_context = TestDataContext()
         self.disableAccessControl()
         self.loadModelDependencies()
 
     def tearDown(self):
+        pass
 
-        # Delete all models from the DB: Blanket cleanup
-        for m in models.get_models():
+class InternalTests(IndivoTests, django.test.TestCase):
+    """ subclass of Django's TestCase with access to useful utils 
+        specific to Indivo tests (model creation, access control overrides, etc.).
+        Doesn't allow transaction management in tests. """
+    pass
 
-            # Don't mess with non-indivo models
-            if m.__module__.startswith('django') or \
-                    m.__module__.startswith('south') or \
-                    m.__module__.startswith('codingsystems'):
-                continue
-            
-            # Don't delete basic dependencies
-            elif self.dependencies.has_key(m):
-                continue
-
-            # Don't delete abstract models: this will be taken care by subclasses
-            elif m.Meta.abstract:
-                continue
-
-            else:
-                m.objects.all().delete()
+class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
+    """ subclass of Django's TransactionTestCase with access to useful utils 
+        specific to Indivo tests (model creation, access control overrides, etc.).
+        Allows transaction management in tests. """
+    pass
