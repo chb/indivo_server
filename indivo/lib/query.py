@@ -40,6 +40,17 @@ TIME_INCRS = {
 OUTPUT_TEMPLATE = 'reports/report'
 AGGREGATE_TEMPLATE = 'reports/aggregate.xml'
 
+RELATED_LIST = [
+    'document',
+    'document__creator',
+    'document__creator__account',
+    'document__creator__pha',
+    'document__type',
+    'document__suppressed_by',
+    'document__suppressed_by__account',
+    'document__status',
+    ]
+
 class FactQuery(object):
     def __init__(self, model, model_filters,
                  group_by, date_group, aggregate_by,
@@ -73,7 +84,14 @@ class FactQuery(object):
 
         if self.aggregate_by:
             item_template = AGGREGATE_TEMPLATE
-        template_args = {'fobjs': self.results,
+            
+        # if we can, iterate efficiently over our results
+        if hasattr(self.results, 'iterator'):
+            results = self.results.iterator()
+        else:
+            results = self.results
+
+        template_args = {'fobjs': results,
                          'trc': self.trc,
                          'group_by': self.group_by, 
                          'date_group': self.date_group, 
@@ -101,6 +119,9 @@ class FactQuery(object):
 
         # This is okay, Django evaluates lazily
         results = self.model.objects.all()
+
+        # Apply select_related for performance here
+        results = results.select_related(*RELATED_LIST)
 
         # 1. Apply filter operators (but not limit/offset).
         results = self._apply_filters(results)
@@ -175,7 +196,7 @@ class FactQuery(object):
 
         if filter_args:
             results = results.filter(**filter_args)
-    
+
         # Results look like:
         # [obj1, obj2, ...] For every Fact object we haven't filtered out
         return results
