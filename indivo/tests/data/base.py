@@ -1,4 +1,4 @@
-import copy
+import copy, random, string
 
 __all__ = [
     'TestDataContext',
@@ -36,7 +36,10 @@ class TestDataContext(object):
         # self.subcontexts.append({})
         return len(self.subcontexts) - 1
 
-    def _add_model(self, test_data_item, subcontext_id, **overrides):
+    def _generate_random_string(self, length=5):
+        return "".join([random.choice(string.printable[0:62]) for i in range(length)])
+
+    def _add_model(self, test_data_item, subcontext_id, force_create=False, **overrides):
         
         test_model_id = self.tdi_id(test_data_item)
 
@@ -56,9 +59,18 @@ class TestDataContext(object):
         elif subcontext[test_model_id] == self.MARKED:
             raise Exception('Circular references in test data: can\'t save test items.')
     
-        # We've seen this model before, and it has been fully saved: just return it.
-        else:
+        # We've seen this model before, and it has been fully saved: just return it, unless
+        # We've been explicitly told not to.
+        elif not force_create:
             return subcontext[test_model_id]
+
+        # We want to create 2 of the same model. Extend the model's id to make it unique.
+        # NOTE: any reference to the same index of the same list will return the first
+        # instance of the model, not this one. This one must be found using the identifier
+        # passed into the TestModel constructor.
+        else:
+            test_model_id = '%s%s'%(test_model_id, self._generate_random_string())
+            subcontext[test_model_id] = self.MARKED
 
         # create the model, with info that points to this specific subcontext
         raw_data_dict = copy.deepcopy(test_data_item.raw_data)

@@ -68,7 +68,20 @@ _TEST_USERAPPS = [
     ]
 TEST_USERAPPS = scope(_TEST_USERAPPS, TestUserApp)
 
-_TEST_AUTONOMOUS_APPS = []
+_TEST_AUTONOMOUS_APPS = [
+    {'name' : 'myAutonomousApp', 
+     'email' : 'myAutonomousApp@testapps.indivo.org', 
+     'consumer_key' : 'myautonomousapp', 
+     'secret' : 'myautonomousapp', 
+     'has_ui' : True, 
+     'frameable' : True, 
+     'is_autonomous' : True, 
+     'autonomous_reason' : 'Because I am the independent type.', 
+     'start_url_template' : 'http://myautonomousapp.com/start', 
+     'callback_url' : 'http://myapp.com/afterauth', 
+     'description' : 'ITS MY AUTONOMOUS APP',
+     },
+    ]
 TEST_AUTONOMOUS_APPS = scope(_TEST_AUTONOMOUS_APPS, TestUserApp)
 
 _TEST_ADMINAPPS = [
@@ -76,6 +89,12 @@ _TEST_ADMINAPPS = [
      'email' : 'stemapnea@apps.indivo.org', 
      'consumer_key' : 'stemapnea@apps.indivo.org', 
      'secret' : 'neuronagility', 
+     'app_type' : 'admin',
+     },
+    {'name' : 'Admin Test App2', 
+     'email' : 'stemapnea2@apps.indivo.org', 
+     'consumer_key' : 'stemapnea2@apps.indivo.org', 
+     'secret' : 'neuronagility2', 
      'app_type' : 'admin',
      },
     ]
@@ -86,6 +105,12 @@ _TEST_UIAPPS = [
      'email' : 'chrome@apps.indivo.org',
      'consumer_key' : 'chrome',
      'secret' : 'chrome', 
+     'app_type' : 'chrome',
+     },
+    {'name' : 'OtherChrome', 
+     'email' : 'ochrome@apps.indivo.org',
+     'consumer_key' : 'ochrome',
+     'secret' : 'ochrome', 
      'app_type' : 'chrome',
      },
     ]

@@ -1,4 +1,4 @@
-from indivo.tests.internal_tests import TransactionInternalTests
+from indivo.tests.internal_tests import InternalTests, enable_transactions
 from indivo.tests.data.account import TEST_ACCOUNTS
 from indivo.tests.data.record import TEST_RECORDS
 from indivo.models.accounts import UNINITIALIZED, ACTIVE, DISABLED, RETIRED
@@ -6,7 +6,7 @@ from indivo.models import Record, AccountAuthSystem, Account
 from django.db import IntegrityError, transaction
 import string
 
-class AccountModelUnitTests(TransactionInternalTests):
+class AccountModelUnitTests(InternalTests):
     def setUp(self):
         super(AccountModelUnitTests,self).setUp()
         
@@ -29,7 +29,7 @@ class AccountModelUnitTests(TransactionInternalTests):
     def tearDown(self):
         super(AccountModelUnitTests,self).tearDown()
 
-    @transaction.commit_manually
+    @enable_transactions
     def test_construction(self):
         test_account_list = TEST_ACCOUNTS
         test_account_index = 3
@@ -41,7 +41,6 @@ class AccountModelUnitTests(TransactionInternalTests):
         except IntegrityError:
             transaction.rollback()
         else:
-            transaction.commit()
             self.fail('Created Account with no full_name')
         
         # should fail without a contact_email
@@ -51,7 +50,6 @@ class AccountModelUnitTests(TransactionInternalTests):
         except IntegrityError:
             transaction.rollback()
         else:
-            transaction.commit()
             self.fail('Created Account with no contact_email')
  
         # should save normally with proper data            
@@ -60,11 +58,9 @@ class AccountModelUnitTests(TransactionInternalTests):
         except IntegrityError as e:
             transaction.rollback()
             self.fail(str(e))
-        else:
-            transaction.commit()
         
         # Make sure it saved to the DB properly
-        self.assertEqual(a, Account.objects.get(id=a.id))
+        self.assertEqual(a, Account.objects.get(pk=a.pk))
 
     def test_retired(self):
         self.account.set_state("retired")

@@ -3,12 +3,13 @@ from base import *
 import hashlib
 
 class TestDocument(TestModel):
-    model_fields = ['content', 'record', 'pha', 'label', 'creator', 'external_id', 'size', 'digest']
+    model_fields = ['content', 'record', 'pha', 'label', 'creator', 'external_id', 'mime_type']
     model_class = Document
 
     def _setupargs(self, content, record=None, pha_spec=False, 
-                 pha=None, label='testing', creator=None, external_id=None):
+                 pha=None, label='testing', creator=None, external_id=None, mime_type='application/xml'):
         self.content = content
+        self.mime_type = mime_type
         self.record = record
         self.pha = pha
         self.local_external_id = external_id
@@ -22,11 +23,6 @@ class TestDocument(TestModel):
 
         self.label = label
         self.creator = creator
-        self.size = len(self.content)
-
-        md = hashlib.sha256()
-        md.update(self.content)
-        self.digest = md.hexdigest()
 
     def save(self):
         """ Special case: original_id might be a pointer to self, which ForeignKey doesn't support. """
@@ -108,8 +104,8 @@ _TEST_R_DOCS = [
      'record': None, 
      'creator': ForeignKey('app', 'TEST_USERAPPS', 0),
      },
-    {'label':'rdoc11',
-     'content':"<Document id='HELLOWORLD10' xmlns='http://indivo.org/vocab#'></Document>",
+    {'label':'rdoc11', # The crazy one
+     'content':"<CrazyDocument id='HELLOWORLD10' xmlns='http://indivo.org/vocab#'></CrazyDocument>",
      'record': None, 
      'creator': ForeignKey('app', 'TEST_USERAPPS', 0),
      },
@@ -130,7 +126,7 @@ _TEST_RA_DOCS = [
      'record': None, 
      'pha': ForeignKey('app', 'TEST_USERAPPS',0),
      'creator': ForeignKey('app', 'TEST_USERAPPS', 0),
-     'external_id':'external_rdoc4',
+     'external_id':'external_radoc2',
      'pha_spec':True
      },
 ]
@@ -148,7 +144,7 @@ _TEST_A_DOCS = [
      'content':"<Document id='HELLOWORLD02' xmlns='http://indivo.org/vocab#'></Document>",
      'pha': ForeignKey('app', 'TEST_USERAPPS',0),
      'creator': ForeignKey('app', 'TEST_USERAPPS', 0),
-     'external_id':'external_rdoc4',
+     'external_id':'external_adoc2',
      'pha_spec':True
      },
 ]

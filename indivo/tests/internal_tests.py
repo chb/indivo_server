@@ -1,14 +1,17 @@
 import django.test
 from django.conf import settings
-from django.db import models
-from django.utils.http import urlencode
+from django.test.testcases import disable_transaction_methods, restore_transaction_methods
 
 from indivo.models import *
 from indivo.tests.data import *
 
-import urls
-import re
+import functools
+import os
+import os.path
+import shutil
 from xml.dom import minidom
+
+ORIGINAL_MEDIA_ROOT = settings.MEDIA_ROOT
 
 class IndivoTests(object):
     dependencies_loaded = False
@@ -69,19 +72,19 @@ class IndivoTests(object):
 
         self.dependencies_loaded = True
 
-    def addAppToRecord(self, **kwargs):
-        share = PHAShare.objects.create(**kwargs)
+    def addAppToRecord(self, record, with_pha, carenet=None):
+        share = PHAShare.objects.create(record=record, with_pha=with_pha, carenet=carenet)
         return share
 
     def shareRecordFull(self, record, account):
         return AccountFullShare.objects.create(record=record, with_account=account)
 
-    def addDocToCarenet(self, doc, carenet):
-        cd = CarenetDocument.objects.create(carenet=carenet, document=doc)
+    def addDocToCarenet(self, doc, carenet, share_p=True):
+        cd = CarenetDocument.objects.create(carenet=carenet, document=doc, share_p=share_p)
         return cd
 
-    def addAccountToCarenet(self, account, carenet):
-        ca = CarenetAccount.objects.create(account=account, carenet=carenet)
+    def addAccountToCarenet(self, account, carenet, can_write=False):
+        ca = CarenetAccount.objects.create(account=account, carenet=carenet, can_write=can_write)
         return ca
     
     def addAppToCarenet(self, pha, carenet):
@@ -92,6 +95,9 @@ class IndivoTests(object):
             share = self.addAppToRecord(record=carenet.record, with_pha=pha)
 
         return CarenetPHA.objects.create(carenet=carenet, pha=pha)
+
+    def relateDocs(self, doc_a, doc_b, rel_type):
+        return DocumentRels.objects.create(document_0=doc_a, document_1=doc_b, relationship=rel_type)
 
     def createDocument(self, test_document_list, index, **overrides):
         return self.createTestItem(test_document_list, index, overrides)
@@ -125,14 +131,17 @@ class IndivoTests(object):
     def createAttachment(self, test_attachment_list, index, **overrides):
         return self.createTestItem(test_attachment_list, index, overrides)
 
+    def createAuthSystem(self, test_authsystem_list, index, **overrides):
+        return self.createTestItem(test_authsystem_list, index, overrides)
+
     def loadTestReports(self, **overrides):
         for i in range(len(TEST_REPORTS)):
             self.createTestItem(TEST_REPORTS, i, overrides)
 
     def createTestItem(self, test_item_list, index, overrides_dict={}):
         tdi = TestDataItem(index, data_list=test_item_list)
+        scoped_test_model = self.test_data_context.add_model(tdi, **overrides_dict)
         try:
-            scoped_test_model = self.test_data_context.add_model(tdi, **overrides_dict)
             model_obj = scoped_test_model.save()
         except Exception:
             
@@ -148,8 +157,22 @@ class IndivoTests(object):
         self.disableAccessControl()
         self.loadModelDependencies()
 
+        # Redirect settings.MEDIA_ROOT, so flat files are saved separately
+        # from existing files
+        self.old_media_root = ORIGINAL_MEDIA_ROOT
+        new_path = os.path.join(self.old_media_root, 'test_files')
+        if not os.path.exists(new_path):
+            os.mkdir(new_path)
+        settings.MEDIA_ROOT = new_path
+
     def tearDown(self):
-        pass
+        
+        # clear out any test files we created
+        for subtree in os.listdir(settings.MEDIA_ROOT):
+            shutil.rmtree(os.path.join(settings.MEDIA_ROOT, subtree))
+
+        # reset settings.MEDIA_ROOT
+        settings.MEDIA_ROOT = self.old_media_root
 
 class InternalTests(IndivoTests, django.test.TestCase):
     """ subclass of Django's TestCase with access to useful utils 
@@ -159,6 +182,38 @@ class InternalTests(IndivoTests, django.test.TestCase):
 
 class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
     """ subclass of Django's TransactionTestCase with access to useful utils 
-        specific to Indivo tests (model creation, access control overrides, etc.).
-        Allows transaction management in tests. """
+    specific to Indivo tests (model creation, access control overrides, etc.).
+    Allows transaction management in tests. 
+
+    WARNING: Transaction Tests are VERY slow. Only use this if you really need
+    to test transactions. If you just need to deal with IntegrityErrors by
+    calling rollback, see enable_transactions below. """
     pass
+
+def enable_transactions(func):
+    """ Hackish decorator that re-enables transaction management in tests
+        from subclasses of django.test.TestCase (where transaction 
+        management is disabled by default). We're doing this instead of 
+        subclassing django.test.TransactionTestCase because TransactionTestCase 
+        is prohibitively slow.
+
+        WARNING: DO NOT COMMIT, as this will break Django's DB resets
+        between tests. This class should only be used for tests that
+        require periodic rollbacks. 
+
+        WARNING: DO NOT CALL TRANSACTION-MANAGED CODE in tests with this decorator,
+        as they will probably call commit. This includes the @commit-on-success 
+        style decorators.
+
+        WARNING: If you use this decorator, you are responsible for making sure
+        that the DB is clean afterwards. django.test.TestCase will call one
+        final rollback after your test method, and if the database isn't clean
+        after that call, you're in trouble. """
+
+    def _enable_transactions(*args, **kwargs):
+        restore_transaction_methods()
+        ret = func(*args, **kwargs)
+        disable_transaction_methods()
+        return ret
+
+    return functools.update_wrapper(_enable_transactions, func)

@@ -7,24 +7,6 @@ from django.conf import settings
 
 from base import Object, Principal, INDIVO_APP_LABEL
 
-from xml.dom import minidom
-
-# a couple of utility functions for docs (based on document_processing.py, but without the processing)
-class DocParser(object):
-    def __init__(self, doc_content):
-        self.content = doc_content
-        self._parse()
-
-    def _parse(self):
-        self.dom = minidom.parseString(self.content)
-
-        if self.dom.documentElement.namespaceURI:
-          self.xml_type = self.dom.documentElement.namespaceURI + self.dom.documentElement.localName
-        else:
-          self.xml_type = self.dom.documentElement.localName
-
-        
-
 class Message(Object):
     account = models.ForeignKey('Account')
 
@@ -80,13 +62,16 @@ class Message(Object):
         if int(attachment_num) > self.num_attachments:
             raise Exception("attachment num is too high")
         
-        doc_utils = DocParser(content)
+        mime_type='application/xml' # Only handle XML attachments for now
+
+        from indivo.document_processing.document_processing import DocumentProcessing
+        doc_utils = DocumentProcessing(content, mime_type)
 
         attachment = MessageAttachment.objects.create(
             message = self,
             content = content,
-            size = len(content),
-            type = doc_utils.xml_type,
+            size = doc_utils.get_document_size(),
+            type = doc_utils.get_type(),
             attachment_num = attachment_num)
 
         return attachment
@@ -139,6 +124,7 @@ class MessageAttachment(Object):
         # FIXME: this import shows that we should move the _document_create function to models from views.
         from indivo.views.documents.document import _document_create
         self.saved_to_document = _document_create(creator = account, content = self.content,
-                                                  pha = None, record = record, external_id = external_id)
+                                                  pha = None, record = record, external_id = external_id,
+                                                  mime_type = 'application/xml')
         self.save()
                                                   

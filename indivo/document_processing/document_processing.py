@@ -27,9 +27,6 @@ from idp_objs.procedure             import IDP_Procedure
 from idp_objs.simple_clinical_note  import IDP_SimpleClinicalNote
 from idp_objs.vitals                import IDP_Vitals
 
-DOM = 'dom'
-OCON = 'ocon'
-
 DP_DOBJ_PROCESS   = 'process'
 DP_DOBJ_POST_DATA = 'post_data'
 DOC_CLASS_REL     = { 
@@ -62,23 +59,27 @@ class DocumentProcessing:
     else:
       return "%s%s" % (DEFAULT_PREFIX, schema)
 
-  def __init__(self, doc, mime_type):
+  def __init__(self, content, mime_type):
+
     # changed this from heuristic to declared mime type (Ben 1/07/2011)
     # if mime_type is null, we assume it's XML
     self.is_binary      = (mime_type and mime_type != 'application/xml' and mime_type != 'text/xml')
 
-    # SZ: Assigned twice so that it is initially set
-    self.doc            = self.set_doc(doc)
+    self.content = content
+    if not self.is_binary:
+      self.content_dom = self.get_dom(self.get_clean_xml(content))
+      self.root_node_name = self.get_root_node_name()
+    else:
+      self.content_dom = None
+      self.root_node_name = None
 
-    self.content        = self.doc[OCON]
+    self.transformed_doc = None
+    self.transformed_dom = None
 
     # SZ: This should be abstracted out
     self.doctype        = None
     self.doc_schema     = None
     self.doc_class_rel  = DOC_CLASS_REL
-
-    if not self.is_binary:
-      self.root_node_name = self.get_root_node_name()
 
   def process(self):
     if not self.is_binary:
@@ -87,28 +88,20 @@ class DocumentProcessing:
       if p and p.has_key(self.f_objs_str):
         self.f_objs = p[self.f_objs_str]
 
-  def set_doc(self, doc):
-    ret = {}
-    ret[OCON] = doc
-    if not self.is_binary:
-      ret[DOM]  = self.get_dom(self.get_clean_xml(doc))
-    self.doc  = ret
-    return ret
-
   def get_document_digest(self):
     if self.is_binary:
-      return hashlib.sha1(self.doc[OCON]).hexdigest()
+      return hashlib.sha1(self.content).hexdigest()
     else:
       md = hashlib.sha256()
-      md.update(self.doc[OCON])
+      md.update(self.content)
       return md.hexdigest()
 
   def get_document_size(self):
     if self.is_binary:
-      file = ContentFile(self.doc[OCON])
+      file = ContentFile(self.content)
       return file.size
     else:
-      return len(self.doc[OCON])
+      return len(self.content)
 
   def get_stylesheet(self):
     ext = '.xsl'
@@ -161,16 +154,6 @@ class DocumentProcessing:
 
   def apply_stylesheet(self, xml_doc, xsl_doc):
     try:
-      #style = libxslt.parseStylesheetDoc(libxml2.parseDoc(xsl_doc))
-      #doc = libxml2.parseDoc(xml_doc)
-      #result = style.applyStylesheet(doc, None)
-      #result_str = result.serialize()
-
-      # Clean up
-      #style.freeStylesheet()
-      #doc.freeDoc()
-      #result.freeDoc()
-  
       style = etree.XSLT(etree.XML(xsl_doc))
       doc = etree.XML(xml_doc)
       result = style(doc)
@@ -186,7 +169,7 @@ class DocumentProcessing:
 
     # Make sure we have a valid XML string at all
     if settings.VALIDATE_XML_SYNTAX:
-      self.validate_xml_syntax(self.doc[OCON])
+      self.validate_xml_syntax(self.content)
 
     # Is this document registered in document schema?
     # Is this document registered in doc_class_rel?
@@ -201,7 +184,7 @@ class DocumentProcessing:
       if settings.VALIDATE_XML:
         schema = self.get_schema_file()
         if schema:
-          self.validate_xml(self.doc[OCON], schema)
+          self.validate_xml(self.content, schema)
 
       # Get the object that corresponds to the incoming xml node name
       dp_data_obj = globals()[self.doc_class_rel[doc_schema.type]['class']]()
@@ -209,15 +192,16 @@ class DocumentProcessing:
       # Retrieve a stylesheet, if there is one
       stylesheet = self.get_stylesheet()
       if stylesheet:
-        self.set_doc(self.apply_stylesheet(self.doc[OCON], stylesheet))
+        self.transformed_doc = self.apply_stylesheet(self.content, stylesheet)
+        self.transformed_dom = self.get_dom(self.transformed_doc)
 
       # Test for a process method
       # If dp_data_obj has a process method then use it
       # else use document_processing standard
       if hasattr(dp_data_obj, DP_DOBJ_PROCESS):
-        doc_data = dp_data_obj.process(self.root_node_name, self.doc)
+        doc_data = dp_data_obj.process(self.root_node_name, self.transformed_dom)
       else:
-        doc_data = self.parse_standard_facts_doc(self.doc)
+        doc_data = self.parse_standard_facts_doc(self.root_node_name, self.transformed_dom)
 
       # If dp_data_obj has the post_data method
       # then post it and set and return the fact obj
@@ -244,9 +228,8 @@ class DocumentProcessing:
           raise e
     return False
 
-  def parse_standard_facts_doc(self, doc):
+  def parse_standard_facts_doc(self, root_node_name, xmldom):
     retval_facts = []
-    xmldom = doc[DOM]
 
     # if there is a DOM, use etree find
     if xmldom is not None:
@@ -270,25 +253,25 @@ class DocumentProcessing:
     get the namespace and remove it from the full tag,
     which is formatted as {ns}tag
     """
-    if self.doc[DOM] is not None:
+    if self.content_dom is not None:
       ns = self.get_root_node_ns()
-      return self.doc[DOM].tag.replace("{%s}" % ns, "")
+      return self.content_dom.tag.replace("{%s}" % ns, "")
 
   def get_root_node_ns(self):
     """
     get the URI of the namespace, by mapping the prefix
     with the NS map.
     """
-    if self.doc[DOM] is not None:
-      nsmap = self.doc[DOM].nsmap
-      if nsmap.has_key(self.doc[DOM].prefix):
-        return nsmap[self.doc[DOM].prefix]
+    if self.content_dom is not None:
+      nsmap = self.content_dom.nsmap
+      if nsmap.has_key(self.content_dom.prefix):
+        return nsmap[self.content_dom.prefix]
       else:
         return ""
 
   def get_type(self):
     if not self.doctype:
-      if self.doc[DOM] is not None:
+      if self.content_dom is not None:
         self.doctype = "%s%s" % (self.get_root_node_ns(), self.get_root_node_name())
     return self.doctype
 
@@ -296,11 +279,9 @@ class DocumentProcessing:
     if self.is_binary:
       return None
     if not self.doc_schema:
-      try:
-        if self.get_type():
-          self.doc_schema = DocumentSchema.objects.get(type=self.doctype)
-      except DocumentSchema.DoesNotExist:
-        pass
+      if self.get_type():
+        self.doc_schema, created_p = DocumentSchema.objects.get_or_create(type=self.doctype, 
+                                                                          defaults={'internal_p':False})
     return self.doc_schema
 
   def get_dom(self, doc):
