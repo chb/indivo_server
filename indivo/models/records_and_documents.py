@@ -357,14 +357,9 @@ class Document(Object):
         Fact.objects.filter(document = self.replaces).delete()
 
       # Update document info based on processing
-      if doc.is_binary:
-        self.content = None
       self.type = self.type if self.type else doc.get_document_schema()
       self.size = self.size if self.size else doc.get_document_size()
       self.digest = self.digest if self.digest else doc.get_document_digest()
-
-      # Mark document as processed
-      self.processed = True
 
     # Oracle is incompatible with multi-column unique constraints where
     # one column might be null (i.e., UNIQUE(record, external_id)).
@@ -378,8 +373,26 @@ class Document(Object):
 
     super(Document,self).save(*args, **kwargs)
 
-    # Do we need to rewrite this to the DB after changes?
+    # Will we need to rewrite this to the DB after changes?
     save_again = False
+
+    # Now that we have an id, we can handle any document-processing stuff that requires an id
+    if not self.processed:
+      
+      # save our content file if we were binary
+      if doc.is_binary:
+        cf = ContentFile(self.content)
+        self.content_file.save(self.id, cf, save=False) # Don't force a save now, as we will resave later
+        self.content = None
+
+      # We can also mark the document we are replacing as replaced by us
+      if self.replaces:
+        self.replaces.replaced_by = self
+        self.replaces.save()
+
+      # Mark document as processed
+      self.processed = True
+      save_again = True
 
     # If we set a temporary external_id, set it to mirror the internal id
     if self.external_id.startswith('TEMP-EXTID'):

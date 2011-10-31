@@ -10,8 +10,6 @@ from indivo.lib import utils
 from indivo.views.base import *
 from indivo.document_processing.document_utils import DocumentUtils
 from indivo.document_processing.document_processing import DocumentProcessing
-from django.core.files.base import ContentFile
-
 
 from django.db.models import Count
 
@@ -101,16 +99,6 @@ def _document_create(creator, content, pha, record,
     # create the document
     new_doc = Document.objects.create(**doc_args)
 
-    # Save the binary file
-    if DocumentProcessing(content, mime_type).is_binary:
-      file = ContentFile(content)
-      new_doc.content_file.save(new_doc.id, file)    
-
-    # Mark old doc as replaced
-    if replaces_document:
-      replaces_document.replaced_by = new_doc
-      replaces_document.save()
-    
   # return new doc if we have it, otherwise updated old doc
   return new_doc or replaces_document
 
