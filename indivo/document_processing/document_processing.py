@@ -67,6 +67,11 @@ class DocumentProcessing:
 
     self.content = content
     if not self.is_binary:
+      
+      # Validate basic XML Syntax, if required
+      if settings.VALIDATE_XML_SYNTAX:
+        self.validate_xml_syntax(self.content)
+
       self.content_dom = self.get_dom(self.get_clean_xml(content))
       self.root_node_name = self.get_root_node_name()
     else:
@@ -166,10 +171,6 @@ class DocumentProcessing:
 
   def _process(self):
     """ Process the incoming doc """
-
-    # Make sure we have a valid XML string at all
-    if settings.VALIDATE_XML_SYNTAX:
-      self.validate_xml_syntax(self.content)
 
     # Is this document registered in document schema?
     # Is this document registered in doc_class_rel?
