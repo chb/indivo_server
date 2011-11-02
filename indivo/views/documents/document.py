@@ -12,6 +12,7 @@ from indivo.document_processing.document_utils import DocumentUtils
 from indivo.document_processing.document_processing import DocumentProcessing
 
 from django.db.models import Count
+from django.db import IntegrityError, transaction
 
 
 PHA, RECORD, CREATOR, MIME_TYPE, EXTERNAL_ID, ORIGINAL_ID, CONTENT, DIGEST, SIZE, TYPE, REPLACES, STATUS  = (
@@ -106,7 +107,7 @@ def __local_document_create(request, record, pha, external_id, existing_doc):
   """
   This function only serves document_create and document_create_or_update
   The pha argument is null for medical data, non-null for app-specific
-  The external_id is expected to be already adjusted
+  The external_id is expected to be already adjusted.
   """
   try:
     doc = _document_create(record              = record, 
@@ -137,15 +138,16 @@ def document_create(request, record, pha=None, document_id=None, external_id=Non
                                  existing_doc=None)
 
 @commit_on_200
+@handle_integrity_error('Duplicate external id. Each document requires a unique external id')
 def document_create_by_ext_id(request, record, pha, external_id):
   """
   Create a document with the given external_id
   Same as document_create: this function exists
   to preserve the 1:1 mapping from functions to views
   """
-  return __local_document_create(request, record, pha=None,
-                                 external_id=Document.prepare_external_id(external_id, pha),
-                                 existing_doc=None)
+  return  __local_document_create(request, record, pha=None,
+                                  external_id=Document.prepare_external_id(external_id, pha),
+                                  existing_doc=None)
 
 @commit_on_200
 def app_document_create_or_update(request, pha, document_id):

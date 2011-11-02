@@ -212,8 +212,13 @@ def enable_transactions(func):
 
     def _enable_transactions(*args, **kwargs):
         restore_transaction_methods()
-        ret = func(*args, **kwargs)
-        disable_transaction_methods()
+        try:
+            ret = func(*args, **kwargs)
+        except:
+            raise
+        finally:
+            disable_transaction_methods()
+
         return ret
 
     return functools.update_wrapper(_enable_transactions, func)

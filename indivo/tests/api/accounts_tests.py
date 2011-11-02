@@ -1,25 +1,55 @@
 import django.test
 from indivo.models import *
-from indivo.tests.internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests, TransactionInternalTests
 from django.utils.http import urlencode
 from indivo.tests.data import *
+
+def accountStateSetUp(test_cases_instance):
+    _self = test_cases_instance
+    super(_self.__class__, _self).setUp()
+
+    # create an account
+    _self.account = _self.createAccount(TEST_ACCOUNTS, 4)
+
+    # create a record for the account
+    _self.record = _self.createRecord(TEST_RECORDS, 0, owner=_self.account)
+
+    # create a message, with an attachment
+    _self.message = _self.createMessage(TEST_MESSAGES, 2, about_record=_self.record, account=_self.account,
+                                        sender=_self.account, recipient=_self.account)
+    _self.attachment = _self.createAttachment(TEST_ATTACHMENTS, 0, attachment_num=1, message=_self.message)
+
+class TransactionAccountInternalTests(TransactionInternalTests):
+    
+    def setUp(self):
+        return accountStateSetUp(self)
+    
+    def tearDown(self):
+        super(TransactionAccountInternalTests,self).tearDown()
+
+    def test_duplicate_message_ids(self):
+        msg = TEST_MESSAGES[0]
+        data = {'message_id': msg['message_id'],
+                'body':msg['body'],
+                'severity':msg['severity'],
+                }
+
+        # Send a message
+        response = self.client.post('/accounts/%s/inbox/'%(self.account.email), 
+                                    urlencode(data),'application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 200)
+
+        # Send it again, with the same message_id. Should break
+        response = self.client.post('/accounts/%s/inbox/'%(self.account.email), 
+                                    urlencode(data),'application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 400)
+
 
 class AccountInternalTests(InternalTests):  
 
     def setUp(self):
-        super(AccountInternalTests,self).setUp()
+        return accountStateSetUp(self)
 
-        # create an account
-        self.account = self.createAccount(TEST_ACCOUNTS, 4)
-
-        # create a record for the account
-        self.record = self.createRecord(TEST_RECORDS, 0, owner=self.account)
-
-        # create a message, with an attachment
-        self.message = self.createMessage(TEST_MESSAGES, 2, about_record=self.record, account=self.account,
-                                          sender=self.account, recipient=self.account)
-        self.attachment = self.createAttachment(TEST_ATTACHMENTS, 0, attachment_num=1, message=self.message)
-    
     def tearDown(self):
         super(AccountInternalTests,self).tearDown()
 

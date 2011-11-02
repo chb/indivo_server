@@ -1,6 +1,6 @@
-from accounts_tests import AccountInternalTests
+from accounts_tests import AccountInternalTests, TransactionAccountInternalTests
 from apps_tests import PHAInternalTests
 from carenets_tests import CarenetInternalTests
 from oauth_tests import OauthInternalTests
-from records_tests import RecordInternalTests
+from records_tests import RecordInternalTests, TransactionRecordInternalTests
 from reporting_tests import ReportingInternalTests

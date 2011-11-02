@@ -1,5 +1,5 @@
 from indivo.models import *
-from indivo.tests.internal_tests import InternalTests
+from indivo.tests.internal_tests import InternalTests, TransactionInternalTests
 from indivo.tests.data import *
 
 from django.utils.http import urlencode
@@ -12,56 +12,116 @@ REL = 'annotation'
 STATUS = {'status':'void', 'reason':'because I CAN'}
 LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
 
+
+def recordStateSetUp(test_cases_instance):
+    _self = test_cases_instance
+    super(_self.__class__, _self).setUp()
+    
+    # reset our state
+    _self.ras_docs = []
+    _self.rs_docs = []
+    
+    # Create an Account
+    _self.account = _self.createAccount(TEST_ACCOUNTS, 4)
+    
+    # Create a record for the account
+    _self.record = _self.createRecord(TEST_RECORDS, 0, owner=_self.account)
+
+    # Create an App
+    _self.pha = _self.createUserApp(TEST_USERAPPS, 0)
+
+    # Add the app to a record
+    share_args = {'record': _self.record,
+                  'with_pha': _self.pha}
+    _self.addAppToRecord(**share_args)
+
+    # Create a record-app-specific doc
+    _self.ras_docs.append(_self.createDocument(TEST_RA_DOCS, 0, record=_self.record, pha=_self.pha))
+
+    # Create a record-specific doc
+    _self.rs_docs.append(_self.createDocument(TEST_R_DOCS, 6, record = _self.record))
+
+    # Create a record-specific doc with an external id
+    _self.rs_docs.append(_self.createDocument(TEST_R_DOCS, 0, record=_self.record))
+
+    # Create a contact and demographics doc
+    _self.rs_docs.append(_self.createDocument(TEST_CONTACTS, 0, record=_self.record))
+
+    _self.rs_docs.append(_self.createDocument(TEST_DEMOGRAPHICS, 0, record=_self.record))
+
+    # Set our record's special docs
+    _self.record.demographics = _self.rs_docs[3]
+    _self.record.contact = _self.rs_docs[2]
+    _self.record.save()
+
+    # The message we will send (not yet in the DB)
+    _self.message = TEST_MESSAGES[2]
+
+    # An attachment to attach (not yet in the DB)
+    _self.attachment = TEST_ATTACHMENTS[0]
+
+
+class TransactionRecordInternalTests(TransactionInternalTests):
+
+    ras_docs = []
+    rs_docs = []
+
+    def setUp(self):
+        return recordStateSetUp(self)
+
+    def tearDown(self):
+        return super(TransactionRecordInternalTests,self).tearDown()
+    
+    def test_duplicate_ext_ids(self):
+
+        # Test doc creation w/ duplicate ext_ids
+        record_id = self.record.id
+        ext_id = TEST_R_DOCS[1]['external_id']
+        pha_email = self.pha.email
+        url = '/records/%s/documents/external/%s/%s'%(record_id, pha_email, ext_id)
+        response = self.client.put(url, data=TEST_R_DOCS[1]['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 200)
+
+        # Try twice with the same ext_id, expect 400
+        response = self.client.put(url, data=TEST_R_DOCS[1]['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)
+
+        #Test record_send_message w/ duplicate ext_ids
+        record_id = self.record.id
+        msg = self.message
+        data = {'subject':msg['subject'],
+                'body':msg['body'],
+                'body_type':msg['body_type'],
+                'num_attachments':msg['num_attachments'],
+                'severity':msg['severity']}
+
+        # Send a message
+        url = '/records/%s/inbox/%s'%(record_id, msg['message_id'])
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 200)
+
+        # Attach to the message
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], self.attachment['attachment_num'])
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 200)
+
+        # Attach again to the same attachment_num, should break
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], self.attachment['attachment_num'])
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)        
+        
+        # Send message again to the same message_id, should break
+        url = '/records/%s/inbox/%s'%(record_id, msg['message_id'])
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 400)
+
+
 class RecordInternalTests(InternalTests):
     ras_docs = []
     rs_docs = []
 
-
     def setUp(self):
-        super(RecordInternalTests,self).setUp()
-
-        # reset our state
-        self.ras_docs = []
-        self.rs_docs = []
-
-        # Create an Account
-        self.account = self.createAccount(TEST_ACCOUNTS, 4)
-
-        # Create a record for the account
-        self.record = self.createRecord(TEST_RECORDS, 0, owner=self.account)
-
-        # Create an App
-        self.pha = self.createUserApp(TEST_USERAPPS, 0)
-
-        #Add the app to a record
-        share_args = {'record': self.record,
-                      'with_pha': self.pha}
-        self.addAppToRecord(**share_args)
-
-        #Create a record-app-specific doc
-        self.ras_docs.append(self.createDocument(TEST_RA_DOCS, 0, record=self.record, pha=self.pha))
-
-        #Create a record-specific doc
-        self.rs_docs.append(self.createDocument(TEST_R_DOCS, 6, record = self.record))
-
-        #Create a record-specific doc with an external id
-        self.rs_docs.append(self.createDocument(TEST_R_DOCS, 0, record=self.record))
-
-        # Create a contact and demographics doc
-        self.rs_docs.append(self.createDocument(TEST_CONTACTS, 0, record=self.record))
-
-        self.rs_docs.append(self.createDocument(TEST_DEMOGRAPHICS, 0, record=self.record))
-
-        # Set our record's special docs
-        self.record.demographics = self.rs_docs[3]
-        self.record.contact = self.rs_docs[2]
-        self.record.save()
-
-        # The message we will send (not yet in the DB)
-        self.message = TEST_MESSAGES[2]
-
-        # An attachment to attach (not yet in the DB)
-        self.attachment = TEST_ATTACHMENTS[0]
+        return recordStateSetUp(self)
 
     def tearDown(self):
         super(RecordInternalTests,self).tearDown()
