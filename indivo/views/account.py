@@ -179,15 +179,8 @@ def account_authsystem_add(request, account):
         return DONE
 
 
-def account_forgot_password(request):
-    contact_email = request.GET.get('contact_email', None)
-    if contact_email:
-        try:
-            account = Account.objects.get(contact_email = contact_email)
-        except Account.DoesNotExist:
-            raise PermissionDenied()
-        except:
-            raise PermissionDenied()
+def account_forgot_password(request, account):
+
     if account.state != UNINITIALIZED_STATE:
         account.reset()
     else:

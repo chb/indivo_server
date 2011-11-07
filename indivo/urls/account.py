@@ -5,8 +5,11 @@ from indivo.lib.utils import MethodDispatcher
 
 urlpatterns = patterns('',
 
+    # forgotten password: Combines a reset and a secret-resend into one call
+    (r'^forgot-password$', MethodDispatcher({'POST':account_forgot_password})),
+
     # reset
-    (r'^reset$', account_reset),
+    (r'^reset$', MethodDispatcher({'POST':account_reset})),
 
     # set state
     (r'^set-state$', MethodDispatcher({'POST' : account_set_state})),
@@ -36,16 +39,16 @@ urlpatterns = patterns('',
                 'GET' : account_check_secrets})),
 
     # URL to resend the login URL
-    (r'^secret-resend$', account_resend_secret),
+    (r'^secret-resend$', MethodDispatcher({'POST':account_resend_secret})),
 
     # secret
-    (r'^secret$', account_secret),
+    (r'^secret$', MethodDispatcher({'GET':account_secret})),
 
     # primary secret (very limited call)
-    (r'^primary-secret$', account_primary_secret),
+    (r'^primary-secret$', MethodDispatcher({'GET':account_primary_secret})),
 
     # record list
-    (r'^records/$', record_list),
+    (r'^records/$', MethodDispatcher({'GET':record_list})),
 
     # send a message or read the inbox
     (r'^inbox/$', MethodDispatcher({
@@ -65,7 +68,7 @@ urlpatterns = patterns('',
                 'POST': account_inbox_message_attachment_accept})),
 
     # healthfeed
-    (r'^notifications/$', account_notifications),
+    (r'^notifications/$', MethodDispatcher({'GET':account_notifications})),
 
     (r'^permissions/$', MethodDispatcher({
                 'GET' : account_permissions

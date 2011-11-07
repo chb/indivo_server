@@ -75,7 +75,7 @@ def test_account_admin_calls(client, account_id):
     the following calls should be doable only by an admin app on an account
     only an admin app can add auth system, set password, initialize account, and send the secret
     """
-    
+
     assert_403(client.add_auth_system(account_id= account_id, data={'system':'password', 'username':'foo', 'password': 'bar'}))
 
     assert_403(client.account_set_password(account_id= account_id, data={'password': 'foo'}))
@@ -91,7 +91,7 @@ def test_account_admin_calls(client, account_id):
 
     assert_403(client.check_account_secrets(account_id = account_id, primary_secret='foo'))
 
-    assert_403(client.account_forgot_password(data = {'contact_email':  'foo@foo.com'}))
+    assert_403(client.account_forgot_password(account_id = account_id))
 
     assert_403(client.account_search(data = {'contact_email':  'foo@foo.com'}))
 

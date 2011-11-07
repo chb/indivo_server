@@ -1046,24 +1046,32 @@ DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/secret-resend
 Resetting an Account
 ^^^^^^^^^^^^^^^^^^^^
 
-If a password is forgotten, the solution is to reset the account, which will 
-prevent logins until the new initialization URL is clicked, and the new password 
-is entered.
+If a password is forgotten, the solution is to reset the account and email the 
+user as with their initialization email. This will prevent logins until the new 
+initialization URL is clicked, and the new password is entered.
 
-DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/reset
+This could be accomplished with separate calls to 
 
-.. 
-   :http:post:`/accounts/{ACCOUNT_ID}/reset`
+DON'T EXIST!!
 
-This call sets the state of an account back to ``uninitialized``, and resets the 
-secret URL. The initialize URL should then be resent as per the previous API call.
+..
+   :http:post:`/accounts/{ACCOUNT_ID}/reset`, which sets the account state to
+   ``uninitialized`` and resets the account secrets, and
+   :http:post:`/accounts/{ACCOUNT_ID}/secret-resend`, but for efficiency's sake 
+   there exists a combined call:
+
+:http:post:`/accounts/{ACCOUNT_ID}/forgot-password`
+
+which does both of the above.
 
 Note that this call resets both the primary and secondary secrets. The user will 
 need to be given this secondary secret in a channel other than email. If a
 User Interface Application performed this reset, then the secondary secret should 
 display on screen while the primary secret is automatically sent by email. The 
-user interface can obtain the secondary secret (which is short) by calling 
-:http:get:`/accounts/{ACCOUNT_ID}`.
+user interface could obtain the secondary secret (which is short) by calling 
+:http:get:`/accounts/{ACCOUNT_ID}/secret`, but the call to 
+:http:post:`/accounts/{ACCOUNT_ID}/forgot-password` returns the secondary secret
+to avoid the extra call.
 
 Iniitalizing an Account
 ^^^^^^^^^^^^^^^^^^^^^^^

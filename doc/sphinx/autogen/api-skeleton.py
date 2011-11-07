@@ -5,23 +5,9 @@ from django.views.static import serve
 
 
 CALLS=[{
-"method":"GET",
+"method":"POST",
     "path":"/accounts/",
     "view_func":account_create,
-    "access_doc":"Any admin app.",
-    "url_params":{
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"ADD A DESCRIPTION OF THE CALL HERE",
-
-},
-{
-"method":"GET",
-    "path":"/accounts/forgot-password",
-    "view_func":account_forgot_password,
     "access_doc":"Any admin app.",
     "url_params":{
         },
@@ -129,6 +115,21 @@ CALLS=[{
     "url_params":{
         'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
         'PRIMARY_SECRET':'A confirmation string sent securely to the patient from Indivo',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"ADD A DESCRIPTION OF THE CALL HERE",
+
+},
+{
+"method":"POST",
+    "path":"/accounts/{ACCOUNT_EMAIL}/forgot-password",
+    "view_func":account_forgot_password,
+    "access_doc":"Any admin app.",
+    "url_params":{
+        'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
         },
     "query_opts":{
         },
@@ -308,7 +309,7 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"POST",
     "path":"/accounts/{ACCOUNT_EMAIL}/reset",
     "view_func":account_reset,
     "access_doc":"Any admin app.",
@@ -338,7 +339,7 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"POST",
     "path":"/accounts/{ACCOUNT_EMAIL}/secret-resend",
     "view_func":account_resend_secret,
     "access_doc":"Any admin app.",
@@ -746,8 +747,8 @@ CALLS=[{
     "view_func":carenet_document,
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -762,8 +763,8 @@ CALLS=[{
     "view_func":carenet_document_meta,
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -1743,8 +1744,8 @@ CALLS=[{
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1760,8 +1761,8 @@ CALLS=[{
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1777,8 +1778,8 @@ CALLS=[{
     "access_doc":"A principal in full control of the record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1874,8 +1875,8 @@ CALLS=[{
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -1891,8 +1892,8 @@ CALLS=[{
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -1908,10 +1909,10 @@ CALLS=[{
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'EXTERNAL_ID':'The external identifier of the desired resource',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
         'PHA_EMAIL':'The email identifier of the Indivo user app',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -1927,10 +1928,10 @@ CALLS=[{
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'EXTERNAL_ID':'The external identifier of the desired resource',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
         'PHA_EMAIL':'The email identifier of the Indivo user app',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },

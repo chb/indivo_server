@@ -54,7 +54,12 @@ class AccountInternalTests(InternalTests):
         super(AccountInternalTests,self).tearDown()
 
     def test_forgot_password(self):
-        response = self.client.get("/accounts/forgot-password?contact_email=%s"%(self.account.contact_email))
+        url = '/accounts/%s/forgot-password'%(self.account.email)
+
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        response = self.client.post(url)
         self.assertEquals(response.status_code, 200)
 
     def test_create_accounts(self):
@@ -139,7 +144,12 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_account_reset(self):
-        response = self.client.get('/accounts/%s/reset'%(self.account.email))
+        url = '/accounts/%s/reset'%(self.account.email)
+
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        response = self.client.post(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_secret(self):
@@ -147,7 +157,12 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_resend_secret(self):
-        response = self.client.get('/accounts/%s/secret-resend'%(self.account.email))
+        url = '/accounts/%s/secret-resend'%(self.account.email)
+
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+        
+        response = self.client.post(url)
         self.assertEquals(response.status_code, 200)
 
     def test_set_account_state(self):

@@ -152,6 +152,12 @@ class IndivoTests(object):
 
         return model_obj
 
+    def check_unsupported_http_methods(self, invalid_methods, url):
+        for method_name in invalid_methods:
+            method_func = getattr(self.client, method_name)
+            response = method_func(url)
+            self.assertEquals(response.status_code, 405)
+
     def setUp(self):
         self.test_data_context = TestDataContext()
         self.disableAccessControl()
