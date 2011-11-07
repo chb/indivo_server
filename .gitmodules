@@ -1,12 +1,12 @@
 [submodule "oauth"]
 	path = oauth
-	url = git@github.com:chb/oauth_py.git
+	url = git://github.com/chb/oauth_py.git
 [submodule "codingsystems"]
 	path = codingsystems
-	url = git@github.com:chb/indivo_codingsystems.git
+	url = git://github.com/chb/indivo_codingsystems.git		
 [submodule "schemas/doc_schemas"]
 	path = schemas/doc_schemas
-	url = git@github.com:chb/indivo_schemas.git
+	url = git://github.com/chb/indivo_schemas.git	
 [submodule "indivo/tests/client"]
 	path = indivo/tests/client
-	url = git@github.com:chb/indivo_client_py.git
+	url = git://github.com/chb/indivo_client_py.git

@@ -9,14 +9,14 @@ def document_set_status(request, record, document_id):
     raise Http404
 
   status_str, reason_str = 'status', 'reason'
-  if not (request.POST.has_key(status_str) and \
-          request.POST.has_key(reason_str) and \
-          document.set_status(request, 
-                              request.POST[status_str], 
-                              request.POST[reason_str])):
+  try:
+    document.set_status(request.principal, 
+                        request.POST[status_str],
+                        request.POST[reason_str])
+  except:
     return HttpResponseBadRequest()
-  return DONE
 
+  return DONE
 
 def document_status_history(request, record, document_id):
   document = _get_document(record=record, document_id=document_id)

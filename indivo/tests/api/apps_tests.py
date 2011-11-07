@@ -1,9 +1,7 @@
 import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
-from indivo.tests.data.account import TEST_ACCOUNTS
-from indivo.tests.data.app import TEST_USERAPPS
-from indivo.tests.data.document import TEST_A_DOCS
+from indivo.tests.data import *
 
 class PHAInternalTests(InternalTests):
 
@@ -11,16 +9,16 @@ class PHAInternalTests(InternalTests):
         super(PHAInternalTests,self).setUp()
 
         # create app
-        self.app = self.createUserApp(TEST_USERAPPS[0])
+        self.app = self.createUserApp(TEST_USERAPPS, 0)
 
         # create account
-        self.account = self.createAccount(TEST_ACCOUNTS[4])
+        self.account = self.createAccount(TEST_ACCOUNTS, 4)
         
         # create app specific externally referenced doc
-        self.external_doc = self.createDocument(TEST_A_DOCS[1], pha=self.app)
+        self.external_doc = self.createDocument(TEST_A_DOCS, 1, pha=self.app)
 
         # create app specific doc
-        self.doc = self.createDocument(TEST_A_DOCS[0], pha=self.app)
+        self.doc = self.createDocument(TEST_A_DOCS, 0, pha=self.app)
 
     def tearDown(self):
         super(PHAInternalTests,self).tearDown()
@@ -38,7 +36,7 @@ class PHAInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_external_document_meta(self):
-        response = self.client.get('/apps/%s/documents/external/%s/meta'%(self.app.email,TEST_A_DOCS[1].local_external_id))
+        response = self.client.get('/apps/%s/documents/external/%s/meta'%(self.app.email,TEST_A_DOCS[1]['external_id']))
         self.assertEquals(response.status_code, 200)            
 
     def test_put_external_document(self):

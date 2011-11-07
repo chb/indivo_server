@@ -158,11 +158,6 @@ class MachineApp(OAuthApp):
     except:
       return False
 
-
-  @classmethod
-  def from_consumer(cls, consumer):
-    return cls.objects.get(consumer=consumer)
-
 ##
 ## session tokens
 ##

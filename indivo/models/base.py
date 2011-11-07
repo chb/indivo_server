@@ -77,12 +77,10 @@ class Principal(Object):
     FIXME: this should be better optimized
     """
     if self.type == 'Account':
-      from indivo.models import Account
-      return Account.objects.get(id = self.id).full_name
+      return self.account.full_name
 
     if self.type == 'PHA':
-      from indivo.models import PHA
-      return PHA.objects.get(id = self.id).name
+      return self.pha.name
 
     return ''
     

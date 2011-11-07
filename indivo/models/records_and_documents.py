@@ -135,6 +135,7 @@ class Record(Object):
 class DocumentSchema(Object):
   type = models.CharField(max_length = 500)
   stylesheet = models.ForeignKey('Document', null=True, related_name='stylesheet')
+  internal_p = models.BooleanField(default=True)
   
   CONTACTS = None
 
@@ -258,40 +259,34 @@ class Document(Object):
     self.latest_created_at    = created_at
     self.latest_creator_email = creator_email
 
-  def set_status(self, request, status, reason):
+  def set_status(self, principal, status, reason):
 
     # For more explanation on proxied_by_email and effective_principal_email
     # Please see middlewares/audit.py
-    try:
-      proxied_by_email          = None
-      effective_principal_email = None
-      if request.principal:
-        effective_principal_email = request.principal.effective_principal.email
+    effective_principal_email = principal.effective_principal.email
 
-        proxied_by = request.principal.proxied_by
-        if proxied_by:
-          proxied_by_email = proxied_by.email
+    if principal.proxied_by:
+      proxied_by_email = principal.proxied_by.email
+    else:
+      proxied_by_email = None
 
-      if status and reason:
-        status_name = StatusName.objects.get(name=status)
-        self.status_id = status_name.id
-        self.save()
+    if status and reason:
+      status_name = StatusName.objects.get(name=status)
+      self.status = status_name
+      self.save()
 
-      # Everytime set_status is called we'll record it in DocumentStatusHistory
-      # The status and reason is the new status and new reason
-      # not the old status and old reason
-      # of the given doc which is 'self'
+    # Everytime set_status is called we'll record it in DocumentStatusHistory
+    # The status and reason is the new status and new reason
+    # not the old status and old reason
+    # of the given doc which is 'self'
 
-      # Save document status history
-      DocumentStatusHistory.objects.create( document              = self.id,
-                                            record                = self.record.id,
-                                            status_id             = status_name.id,
-                                            reason                = reason,
-                                            proxied_by_principal  = proxied_by_email,
-                                            effective_principal   = effective_principal_email)
-      return True
-    except:
-      return False
+    # Save document status history
+    DocumentStatusHistory.objects.create( document              = self.id,
+                                          record                = self.record.id,
+                                          status                = status_name,
+                                          reason                = reason,
+                                          proxied_by_principal  = proxied_by_email,
+                                          effective_principal   = effective_principal_email)
 
 
   #tags = models.ManyToManyField(RecordTag, null = True, blank=True)
@@ -315,18 +310,25 @@ class Document(Object):
     Replace the content of the current document with new content and mime_type
     """
     if self.replaced_by:
-      raise Exception("cannot replace a document that is already replaced")
+      raise ValueError("cannot replace a document that is already replaced")
 
     from indivo.document_processing.document_processing import DocumentProcessing
     new_doc = DocumentProcessing(new_content, new_mime_type)
     if not new_doc.is_binary:
-      self.type = new_doc.get_document_schema()
-      self.digest = new_doc.get_document_digest()
-      self.size = new_doc.get_document_size()
+      # set content and mime_type
       self.content = new_doc.content
+      self.mime_type = new_mime_type
+      
+      # empty out derived fields so that doc processing will repopulate them
+      self.type = None
+      self.size = None
+      self.digest = None
+
     else:
       # Why aren't we doing anything for binaries?
       pass
+
+    self.processed = False # We have changed the content, which now needs processing
     self.save()
     return True
 
@@ -355,14 +357,9 @@ class Document(Object):
         Fact.objects.filter(document = self.replaces).delete()
 
       # Update document info based on processing
-      if doc.is_binary:
-        self.content = None
       self.type = self.type if self.type else doc.get_document_schema()
       self.size = self.size if self.size else doc.get_document_size()
       self.digest = self.digest if self.digest else doc.get_document_digest()
-
-      # Mark document as processed
-      self.processed = True
 
     # Oracle is incompatible with multi-column unique constraints where
     # one column might be null (i.e., UNIQUE(record, external_id)).
@@ -376,8 +373,26 @@ class Document(Object):
 
     super(Document,self).save(*args, **kwargs)
 
-    # Do we need to rewrite this to the DB after changes?
+    # Will we need to rewrite this to the DB after changes?
     save_again = False
+
+    # Now that we have an id, we can handle any document-processing stuff that requires an id
+    if not self.processed:
+      
+      # save our content file if we were binary
+      if doc.is_binary:
+        cf = ContentFile(self.content)
+        self.content_file.save(self.id, cf, save=False) # Don't force a save now, as we will resave later
+        self.content = None
+
+      # We can also mark the document we are replacing as replaced by us
+      if self.replaces:
+        self.replaces.replaced_by = self
+        self.replaces.save()
+
+      # Mark document as processed
+      self.processed = True
+      save_again = True
 
     # If we set a temporary external_id, set it to mirror the internal id
     if self.external_id.startswith('TEMP-EXTID'):

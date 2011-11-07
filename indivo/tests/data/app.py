@@ -1,5 +1,5 @@
 from indivo.models import PHA, MachineApp, DocumentSchema
-from base import TestModel, raw_data_to_objs
+from base import *
 
 class TestUserApp(TestModel):
     model_fields = ['name', 'email', 'consumer_key', 'secret', 'has_ui',
@@ -8,7 +8,7 @@ class TestUserApp(TestModel):
                     'schema']
     model_class = PHA
     
-    def __init__(self, name, email, consumer_key, secret, has_ui=True,
+    def _setupargs(self, name, email, consumer_key, secret, has_ui=True,
                  frameable=True, is_autonomous=False, autonomous_reason='', 
                  start_url_template='http://start', 
                  callback_url='http://afterauth',
@@ -33,7 +33,7 @@ class TestMachineApp(TestModel):
     model_fields = ['name', 'email', 'consumer_key', 'secret', 'app_type']
     model_class = MachineApp
     
-    def __init__(self, name, email, consumer_key, secret, app_type='admin'):
+    def _setupargs(self, name, email, consumer_key, secret, app_type='admin'):
         self.name = name
         self.email = email
         self.consumer_key = consumer_key
@@ -59,9 +59,30 @@ _TEST_USERAPPS = [
      'secret' : 'norepinephrine', 
      'description' : 'USER TEST APP',
      },
+    {'name' : 'User Test App2', 
+     'email' : 'stephanie2@apps.indivo.org', 
+     'consumer_key' : 'stephanie2@apps.indivo.org', 
+     'secret' : 'norepinephrine2', 
+     'description' : 'USER TEST APP 2',
+     },
     ]
+TEST_USERAPPS = scope(_TEST_USERAPPS, TestUserApp)
 
-_TEST_AUTONOMOUS_APPS = []
+_TEST_AUTONOMOUS_APPS = [
+    {'name' : 'myAutonomousApp', 
+     'email' : 'myAutonomousApp@testapps.indivo.org', 
+     'consumer_key' : 'myautonomousapp', 
+     'secret' : 'myautonomousapp', 
+     'has_ui' : True, 
+     'frameable' : True, 
+     'is_autonomous' : True, 
+     'autonomous_reason' : 'Because I am the independent type.', 
+     'start_url_template' : 'http://myautonomousapp.com/start', 
+     'callback_url' : 'http://myapp.com/afterauth', 
+     'description' : 'ITS MY AUTONOMOUS APP',
+     },
+    ]
+TEST_AUTONOMOUS_APPS = scope(_TEST_AUTONOMOUS_APPS, TestUserApp)
 
 _TEST_ADMINAPPS = [
     {'name' : 'Admin Test App', 
@@ -70,7 +91,14 @@ _TEST_ADMINAPPS = [
      'secret' : 'neuronagility', 
      'app_type' : 'admin',
      },
+    {'name' : 'Admin Test App2', 
+     'email' : 'stemapnea2@apps.indivo.org', 
+     'consumer_key' : 'stemapnea2@apps.indivo.org', 
+     'secret' : 'neuronagility2', 
+     'app_type' : 'admin',
+     },
     ]
+TEST_ADMINAPPS = scope(_TEST_ADMINAPPS, TestMachineApp)
 
 _TEST_UIAPPS = [
     {'name' : 'Chrome', 
@@ -79,9 +107,11 @@ _TEST_UIAPPS = [
      'secret' : 'chrome', 
      'app_type' : 'chrome',
      },
+    {'name' : 'OtherChrome', 
+     'email' : 'ochrome@apps.indivo.org',
+     'consumer_key' : 'ochrome',
+     'secret' : 'ochrome', 
+     'app_type' : 'chrome',
+     },
     ]
-
-TEST_USERAPPS = raw_data_to_objs(_TEST_USERAPPS, TestUserApp)
-TEST_AUTONOMOUS_APPS = raw_data_to_objs(_TEST_AUTONOMOUS_APPS, TestUserApp)
-TEST_ADMINAPPS = raw_data_to_objs(_TEST_ADMINAPPS, TestMachineApp)
-TEST_UIAPPS = raw_data_to_objs(_TEST_UIAPPS, TestMachineApp)
+TEST_UIAPPS = scope(_TEST_UIAPPS, TestMachineApp)
