@@ -136,6 +136,10 @@ class CarenetInternalTests(InternalTests):
     def test_get_carenet_record(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/record'%(c_id)
+        
+        bad_methods = ['post', 'put','delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -170,18 +174,30 @@ class CarenetInternalTests(InternalTests):
     def test_get_carenet_allergies(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/allergies/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_equipment(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/equipment/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_immunizations(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/immunizations/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -189,30 +205,50 @@ class CarenetInternalTests(InternalTests):
         c_id = self.shared_carenet.id
         lab_code = LAB_CODE
         url = '/carenets/%s/reports/minimal/measurements/%s/'%(c_id, lab_code)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_medications(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/medications/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_problems(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/problems/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_procedures(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/procedures/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_vitals(self):
         c_id = self.shared_carenet.id
         url = '/carenets/%s/reports/minimal/vitals/'%(c_id)
+
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
