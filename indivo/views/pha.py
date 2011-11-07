@@ -234,36 +234,8 @@ def get_long_lived_token(request):
   return HttpResponse(long_lived_token.to_string(), mimetype='text/plain')  
 
 ##
-## PHA app storage
+## PHA app storage: see views/documents/document.py
 ##
-
-def app_document_update(request, pha, document_id):
-  """for 1:1 mapping from URLs to views. Calls pha_document_update"""
-  return pha_document_update(request, pha, document_id)
-
-def record_app_document_update(request, pha, document_id, record):
-  """for 1:1 mapping from URLs to views. Calls pha_document_update"""
-  return pha_document_update(request, pha, document_id, record=record)
-
-def pha_document_update(request, pha, document_id, record=None):
-  try:
-    doc = _get_document(record=record, pha=pha, document_id=document_id)
-  except Document.DoesNotExist:
-    raise Http404
-
-  doc.content = request.raw_post_data
-  doc.save()
-
-  return render_template('document', {'doc': doc, 'pha': pha, 'record' :record}, type="xml")
-
-# pha_document replaced by document
-
-# pha_document_meta replaced by document_meta
-
-# pha_document_meta_update replaced by document_meta_update
-
-# pha_document_label replaced by document_label
-
 
 ##
 ## signing URLs

@@ -336,7 +336,6 @@ def load_access_rules():
            record_app_specific_document,
            record_app_document_create,
            record_app_document_create_or_update_ext,
-           record_app_document_update,
            record_app_document_label,
            record_app_document_delete]
   AccessRule('Record App Doc Access', record_app_doc_access, views)
@@ -354,7 +353,6 @@ def load_access_rules():
            app_document_create,
            app_document_create_or_update,
            app_document_create_or_update_ext,
-           app_document_update,
            app_document_label,
            app_document_delete]
   AccessRule('App Doc Access', app_doc_access, views)

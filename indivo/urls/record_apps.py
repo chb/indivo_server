@@ -25,9 +25,6 @@ urlpatterns = patterns('',
                 'GET': record_app_specific_document,
                 'DELETE': record_app_document_delete})),
 
-  # update
-  (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)/update$', record_app_document_update),
-  
   # One app-specific document's metadata
   (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)/meta$', 
       MethodDispatcher({'GET': record_app_document_meta})),

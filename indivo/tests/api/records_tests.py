@@ -215,14 +215,6 @@ class RecordInternalTests(InternalTests):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-    def test_update_record_app_specific_doc(self):
-        record_id = self.record.id
-        pha_email = self.pha.email
-        doc_id = self.ras_docs[0].id
-        url = '/records/%s/apps/%s/documents/%s/update'%(record_id, pha_email, doc_id)
-        response = self.client.post(url, data=TEST_RA_DOCS[1]['content'], content_type='text/xml')
-        self.assertEquals(response.status_code, 200)
-
     def test_list_record_app_specific_docs(self):
         record_id = self.record.id
         pha_email = self.pha.email

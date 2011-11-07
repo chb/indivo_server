@@ -43,8 +43,14 @@ class PHAInternalTests(InternalTests):
         response = self.client.put('/apps/%s/documents/external/%s'%(self.app.email, 'some_ext_id'))
         self.assertEquals(response.status_code, 200)
 
-    def test_get_document_label(self):
-        response = self.client.get('/apps/%s/documents/%s/label'%(self.app.email,self.doc.id))
+    def test_put_document_label(self):
+        url = '/apps/%s/documents/%s/label'%(self.app.email,self.doc.id)
+        newlabel = self.doc.label.upper()
+
+        bad_methods = ['get','post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        response = self.client.put(url, data=newlabel, content_type='text/plain')
         self.assertEquals(response.status_code, 200)            
 
     def test_get_document_meta(self):
@@ -62,10 +68,6 @@ class PHAInternalTests(InternalTests):
     def test_delete_document(self):
         response = self.client.delete('/apps/%s/documents/%s'%(self.app.email, self.doc.id))
         self.assertEquals(response.status_code, 200)
-
-    def test_put_document(self):
-        response = self.client.get('/apps/%s/documents/%s/update'%(self.app.email,self.doc.id))
-        self.assertEquals(response.status_code, 200)            
 
     def test_list_document(self):
         response = self.client.get('/apps/%s/documents/'%(self.app.email))        
