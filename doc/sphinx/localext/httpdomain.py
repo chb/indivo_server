@@ -18,16 +18,15 @@ import re
 
 from docutils import nodes
 from docutils.parsers.rst.roles import set_classes
-from docutils.statemachine import StringList
 
 from sphinx import addnodes
 from sphinx.roles import XRefRole
 from sphinx.domains import Domain, ObjType, Index
 from sphinx.directives import ObjectDescription
 from sphinx.util.nodes import make_refnode
-from sphinx.util.docfields import Field, GroupedField, TypedField, DocFieldTransformer
+from sphinx.util.docfields import Field, GroupedField, TypedField
 
-from autogen.api_parser import APIDict, APIUtils
+from autogen.api_parser import APIUtils
 
 
 HTTP_STATUS_CODES = {
@@ -87,8 +86,6 @@ HTTP_STATUS_CODES = {
 http_sig_param_re = re.compile(r'\((?:(?P<type>[^:)]+):)?(?P<name>[\w_]+)\)',
                                re.VERBOSE)
 
-auto_api_source = '/home/danielhaas/code/github/indivo_server/doc/sphinx/source/api.rst'
-
 def http_resource_anchor(method, path):
     path = re.sub(r'[<>:/]', '-', path)
     return method.lower() + '-' + APIUtils.normalize_url(path)
@@ -122,48 +119,6 @@ class HTTPResource(ObjectDescription):
     ]
 
     method = NotImplemented
-
-
-    def run(self):
-        # 1. python manage.py generate_docs builds the API skeleton in autogen/api.py
-        # 2. User fills out autogen/api.py w/ call descriptions, etc.
-        # 3. We detect HTML signature here, using the httpdomain syntax
-        # 4. We hit api.py for information about the referenced call
-        # 5. We dynamically modify the doctree to contain that info
-        # 6. We let httpdomain do the rendering work
-
-        # Run the directive without touching anything
-        indexnode, resultnode = super(HTTPResource, self).run()
-
-        # Pull in the Indivo API
-        callname = self.names[0]
-        title = callname[0]
-
-        user_api = APIDict()
-        try:
-            call = user_api[title]
-        except KeyError:
-            raise ValueError('unrecognized API call: %s'%title)
-
-        call_rest = call.to_ReST()
-
-        # Generate the ReST block we want to add
-        starting_offset = self.content_offset
-        block = StringList()
-        for i,line in enumerate(call_rest.split('\n')[1:]): # Top line is signature, which we already have
-            block.extend(StringList(initlist=[line.strip()], items=[(auto_api_source, starting_offset+i)]))
-
-        # Parse the block into a doctree node
-        new_content = addnodes.desc_content()
-        self.state.nested_parse(block, 0, new_content)
-
-        # Update the node to recognize the httpdomain Fields
-        DocFieldTransformer(self).transform_all(new_content)
-
-        # Append our new content to the tree and return
-#        resultnode.append(new_content)
-        return [indexnode, resultnode]
-
 
     def handle_signature(self, sig, signode):
         method = self.method.upper() + ' '
