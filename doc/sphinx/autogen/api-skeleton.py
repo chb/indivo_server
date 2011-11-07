@@ -4,7 +4,7 @@ from codingsystems.views import *
 from django.views.static import serve
 
 
-CALLS =[{
+CALLS=[{
 "method":"GET",
     "path":"/accounts/",
     "view_func":account_create,
@@ -15,7 +15,7 @@ CALLS =[{
         },
     "data_fields":{
         },
-    "description":"Get all the accounts! Just kidding, create one.",
+    "description":"ADD A DESCRIPTION OF THE CALL HERE",
 
 },
 {
@@ -127,12 +127,10 @@ CALLS =[{
     "view_func":account_check_secrets,
     "access_doc":"Any admin app.",
     "url_params":{
-        'PRIMARY_SECRET':'A confirmation string sent securely to the patient from Indivo',
         'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
-        'OTHER_PARAM':'',
+        'PRIMARY_SECRET':'A confirmation string sent securely to the patient from Indivo',
         },
     "query_opts":{
-        'offset':'See :ref:`query-operators`',
         },
     "data_fields":{
         },

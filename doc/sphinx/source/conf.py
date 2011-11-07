@@ -96,10 +96,29 @@ html_theme = 'default'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+#    'rightsidebar':True,
+#    'externalrefs': False,
+    'footerbgcolor':'#1E3467',
+    'footertextcolor':'#9EADCF',
+    'sidebarbgcolor':'#294FAB',
+    'sidebartextcolor':'#9EADCF',
+    'sidebarlinkcolor':'#1E3467',
+    'relbarbgcolor':'#1E3467',
+    'relbartextcolor':'#9EADCF',
+    'relbarlinkcolor':'#8CA0CF',
+    'bgcolor': '#FEFCF7',
+#    'textcolor':'black',
+#    'linkcolor':'#1E3467',
+#    'visitedlinkcolor':'#596E9D',
+    'headbgcolor':'#BFC4CE',
+    'headtextcolor':'#1E3467',
+    'headlinkcolor':'#1E3467',
+    }
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
+html_theme_path = [".theme"]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

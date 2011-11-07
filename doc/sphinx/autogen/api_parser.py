@@ -18,8 +18,10 @@ import indivo
 import re
 
 API_ROOTDIR = 'indivo_server'
-API_FP = 'doc/sphinx/autogen/api'
+API_FP = 'doc/sphinx/autogen/api-skeleton'
 API_EXT = '.py'
+API_REFERENCE_FP = 'doc/sphinx/source/api-reference'
+API_REFERENCE_EXT = '.rst'
 API_CALLS_DICT = 'CALLS'
 
 class APIDict(object):
@@ -31,6 +33,8 @@ class APIDict(object):
     api_rootdir = API_ROOTDIR
     api_fp = API_FP
     api_ext = API_EXT
+    api_ref_fp = API_REFERENCE_FP
+    api_ref_ext = API_REFERENCE_EXT
     calls_dict = API_CALLS_DICT
 
     def __init__(self, read_file=True):
@@ -62,24 +66,53 @@ class APIDict(object):
                          url_params=call['url_params'], query_opts=call['query_opts'], 
                          data_fields=call['data_fields'], description=call['description'])
             self.apicache[c_obj.title] = c_obj # don't use our __setitem__: userfile shouldn't dirty the our cache
-        
+ 
+    def _write_to_file(self, pre_call_text, call_separator, post_call_text, 
+                       call_render_func, output_path):
+        calls = call_separator.join([getattr(c, call_render_func)() 
+                                     for c in sorted(self.values(), key=attrgetter('path', 'method'))])
+
+        out = '%s%s%s'%(pre_call_text, calls, post_call_text)
+        f = open(output_path, 'w')
+        f.write(out)
+        f.close()
+       
     def _write_api(self):
         '''
         Write the current state of the API to the API file
         '''
         full_fp = '%s/%s%s'%(settings.APP_HOME,self.api_fp, self.api_ext)
-        f = open(full_fp, 'w')
-
-        calls = ',\n'.join([c.to_python() for c in sorted(self.values(), key=attrgetter('path', 'method'))])
+        separator = ',\n'
+        render_func = 'to_python'
         imports = '''
 from indivo.views import *
 from codingsystems.views import *
 from django.views.static import serve
 '''
-        out = "%s\n\nCALLS =[%s]"%(imports,calls)
-        f.write(out)
-        f.close()
-    
+        pre = '%s\n\nCALLS=['%(imports)
+        post = ']'
+
+        self._write_to_file(pre, separator, post, render_func, full_fp)
+
+    def write_ReST_reference(self):
+        '''
+        Write the current state of the API to a ReST document
+        '''
+        header = '''
+API Reference
+=============
+
+This page contains a full list of valid Indivo API calls, generated from the code.
+For a more detailed walkthrough of individual calls, see :doc:`api`
+'''
+        full_fp = '%s/%s%s'%(settings.APP_HOME, self.api_ref_fp, self.api_ref_ext)
+#        render_func = 'to_ReST_directive'
+        render_func = 'to_ReST'
+        separator = '\n\n--------\n\n'
+        pre = '%s\n\n--------\n\n'%(header)
+        post=''
+        self._write_to_file(pre, separator, post, render_func, full_fp)
+
     def get(self, key, default=None):
         try:
             return self.__getitem__(key)
@@ -87,9 +120,10 @@ from django.views.static import serve
             return default
 
     def __getitem__(self, key):
-        return self.apicache[key]
+        return self.apicache[APIUtils.normalize_title(key)]
 
-    def __setitem__(self, key, val):
+    def __setitem__(self, _key, val):
+        key = APIUtils.normalize_title(_key)
         oldval = self.get(key, None)
         self.apicache[key] = val
         self.dirty = oldval != val
@@ -193,7 +227,7 @@ class Call(object):
                  url_params={}, query_opts={}, data_fields={}, description=''):
         self.path = path
         self.method = method
-        self.title = '%s %s'%(method, path)
+        self.title = APIUtils.normalize_title('%s %s'%(method, path))
         self.view_func = view_func
         self.access_rule = self._get_access_rule()
         self.access_doc = self.access_rule.rule.__doc__ if self.access_rule else ''
@@ -261,6 +295,12 @@ class Call(object):
                                                         url_params, query_opts, data_fields, description]))
         return out
 
+    def to_ReST_directive(self):
+        # Output will look lik
+        #
+        # .. http:get:: /records/{RECORD_ID}
+        return ".. http:%s:: %s"%(self.method.lower(), self.path)
+
     def to_ReST(self):
         # Output will look like 
         #
@@ -276,7 +316,7 @@ class Call(object):
         #    :param RECORD_ID: the Indivo record identifier
         
 
-        directive = ".. http:%s:: %s"%(self.method.lower(), self.path)
+        directive = self.to_ReST_directive()
         short_name = ":shortname: %s"%self.view_func.__name__
         access_doc = ":accesscontrol: %s"%self.access_doc
         url_params = [":parameter %s: %s"%(p, self.url_params[p]) for p in self.url_params.keys()]
@@ -328,12 +368,11 @@ class CallParser(object):
                     
             # leaf node
             else:
-                path, url_params = self.parse_url_params(parent_path + entry.regex.pattern[1:-1])
+                path, url_params = APIUtils.parse_url_params(parent_path + entry.regex.pattern[1:-1])
 
                 # build up url_params for the Call constructor
                 params = {}
                 for param in url_params:
-#                    desc = URL_PARAM_DESC.get(param[1], '')
                     params[param[1]] = ''
 
                 if isinstance(entry.callback, indivo.lib.utils.MethodDispatcher):
@@ -345,8 +384,20 @@ class CallParser(object):
                     call = Call(path, method, entry.callback, url_params=params)
                     self.register(call)
 
-    def _get_url_params(self, url):
+class APIUtils(object):
+
+    @classmethod
+    def _find_params(cls, url):
         params = []
+
+        # API documentation format:
+        # try matching things in {}
+        for pattern in re.finditer('{(.*?)}', url):
+            match = pattern.group(0)
+            param = pattern.group(1).upper()
+            params.append((match, param))
+
+        # Django urlconf format:
         # match things inside <> that are in the context of (?P< your match >..) 
         for pattern in re.finditer( '\(\?P<(.*?)>.*?\)', url):
             match = pattern.group(0)
@@ -355,8 +406,26 @@ class CallParser(object):
 
         return params
 
-    def parse_url_params(self, url):
-        params = self._get_url_params(url)
+    @classmethod
+    def normalize_title(cls, title):
+        method, url = title.split(' ')
+        return '%s %s'%(cls.normalize_method(method),
+                        cls.normalize_url(url))
+
+    @classmethod
+    def normalize_method(cls, method):
+        return method.upper()
+                      
+    @classmethod
+    def normalize_url(cls, url):
+        params = cls._find_params(url)
+        for i, param in enumerate(params):
+            url = url.replace(param[0], '{%d}'%i)
+        return url
+
+    @classmethod
+    def parse_url_params(cls, url):
+        params = cls._find_params(url)
         for param in params:
             url = url.replace(param[0], '{%s}'%param[1])
         return url, params

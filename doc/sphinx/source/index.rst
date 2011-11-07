@@ -27,9 +27,10 @@ Contents:
    Localization <localization>
    Data Pipeline <data-pipeline>
 
+   api-reference
+
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

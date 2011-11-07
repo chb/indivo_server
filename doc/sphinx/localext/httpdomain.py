@@ -27,7 +27,7 @@ from sphinx.directives import ObjectDescription
 from sphinx.util.nodes import make_refnode
 from sphinx.util.docfields import Field, GroupedField, TypedField, DocFieldTransformer
 
-from autogen.api_parser import APIDict
+from autogen.api_parser import APIDict, APIUtils
 
 
 HTTP_STATUS_CODES = {
@@ -91,7 +91,7 @@ auto_api_source = '/home/danielhaas/code/github/indivo_server/doc/sphinx/source/
 
 def http_resource_anchor(method, path):
     path = re.sub(r'[<>:/]', '-', path)
-    return method.lower() + '-' + path
+    return method.lower() + '-' + APIUtils.normalize_url(path)
 
 
 class HTTPResource(ObjectDescription):
@@ -161,7 +161,7 @@ class HTTPResource(ObjectDescription):
         DocFieldTransformer(self).transform_all(new_content)
 
         # Append our new content to the tree and return
-        resultnode.append(new_content)
+#        resultnode.append(new_content)
         return [indexnode, resultnode]
 
 
@@ -196,6 +196,7 @@ class HTTPResource(ObjectDescription):
         return False
 
     def add_target_and_index(self, name_cls, sig, signode):
+        sig = APIUtils.normalize_url(sig)
         signode['ids'].append(http_resource_anchor(*name_cls[1:]))
         self.env.domaindata['http'][self.method][sig] = (self.env.docname, '')
 
@@ -318,14 +319,14 @@ class HTTPXRefRole(XRefRole):
             pass
         if not has_explicit_title:
             title = self.method.upper() + ' ' + title
-        return title, target
+        return title, APIUtils.normalize_url(target)
 
 
 class HTTPIndex(Index):
 
-    name = 'routingtable'
-    localname = 'HTTP Routing Table'
-    shortname = 'routing table'
+    name = 'apicalls'
+    localname = 'API Call Lookup Table'
+    shortname = 'api calls'
 
     def generate(self, docnames=None):
         content = {}
@@ -338,7 +339,8 @@ class HTTPIndex(Index):
                     first_letter = letter[0]
                 entries = content.setdefault('/' + first_letter, [])
                 entries.append([
-                    method.upper() + ' ' + path, 0, info[0],
+                    method.upper() + ' ' + path, 
+                    0, info[0],
                     http_resource_anchor(method, path), '', '', info[1]
                 ])
         content = content.items()
@@ -406,8 +408,9 @@ class HTTPDomain(Domain):
                 if info[0] == docname:
                     del routes[path]
 
-    def resolve_xref(self, env, fromdocname, builder, typ, target,
+    def resolve_xref(self, env, fromdocname, builder, typ, _target,
                      node, contnode):
+        target = APIUtils.normalize_url(_target)
         try:
             info = self.data[str(typ)][target]
         except KeyError:
