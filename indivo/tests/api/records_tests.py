@@ -142,6 +142,9 @@ class RecordInternalTests(InternalTests):
     def test_list_record_apps(self):
         record_id = self.record.id
         url = '/records/%s/apps/'%(record_id) 
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # Make sure apps are correct!
@@ -204,6 +207,9 @@ class RecordInternalTests(InternalTests):
         pha_email = self.pha.email
         doc_id = self.ras_docs[0].id
         url = '/records/%s/apps/%s/documents/%s/label'%(record_id, pha_email, doc_id)
+        bad_methods = ['get', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.put(url, data=TEST_RA_DOCS[0]['label'], content_type='text/plain')
         self.assertEquals(response.status_code, 200)
 
@@ -233,6 +239,9 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         pha_email = self.pha.email
         url = '/records/%s/apps/%s/setup'%(record_id, pha_email)
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.post(url, data=TEST_R_DOCS[1]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
     
