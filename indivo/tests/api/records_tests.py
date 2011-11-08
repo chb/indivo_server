@@ -338,7 +338,9 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         ext_id = TEST_R_DOCS[0]['external_id']
         pha_email = self.pha.email
+        bad_methods = ['get', 'post', 'delete']
         url= '/records/%s/documents/external/%s/%s/label'%(record_id, pha_email, ext_id)
+        self.check_unsupported_http_methods(bad_methods, url)
         response = self.client.put(url, data=TEST_R_DOCS[0]['label'], content_type='text/plain')
         self.assertEquals(response.status_code, 200)
 
@@ -445,7 +447,9 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         doc_id = self.rs_docs[0].id
         url = '/records/%s/documents/%s/label'%(record_id, doc_id)
-        response = self.client.post(url, data=TEST_R_DOCS[1]['label'], content_type='text/xml')
+        bad_methods = ['get', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+        response = self.client.put(url, data=TEST_R_DOCS[1]['label'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         
     def test_get_record_specific_doc_meta(self):
@@ -513,6 +517,9 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         doc_id = self.rs_docs[0].id
         url = '/records/%s/documents/%s/versions/'%(record_id, doc_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # CREATE VERSIONS ON DOC
