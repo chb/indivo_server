@@ -16,8 +16,16 @@ SIMPLE_CLINICAL_NOTE_FILTERS = {
 
 SIMPLE_CLINICAL_NOTE_TEMPLATE = 'reports/simple_clinical_note.xml'
 
+def simple_clinical_notes_list(*args, **kwargs):
+  """For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list"""
+  return _simple_clinical_notes_list(*args, **kwargs)
+
+def carenet_simple_clinical_notes_list(*args, **kwargs):
+  """For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list"""
+  return _simple_clinical_notes_list(*args, **kwargs)
+
 @marsloader(query_api_support=True)
-def simple_clinical_notes_list(request, group_by, date_group, aggregate_by,
+def _simple_clinical_notes_list(request, group_by, date_group, aggregate_by,
                               limit, offset, order_by,
                               status, date_range, filters,
                               record=None, carenet=None):

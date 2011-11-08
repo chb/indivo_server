@@ -6,7 +6,7 @@ from indivo.lib.utils import MethodDispatcher
 urlpatterns = patterns('',
 
     #sharing
-    (r'^(?P<document_id>[^/]+)/nevershare', MethodDispatcher({
+    (r'^(?P<document_id>[^/]+)/nevershare$', MethodDispatcher({
                 'PUT' : document_set_nevershare,
                 'DELETE': document_remove_nevershare})),
     (r'^(?P<document_id>[^/]+)/carenets/$', MethodDispatcher({

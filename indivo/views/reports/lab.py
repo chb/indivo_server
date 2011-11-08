@@ -16,8 +16,16 @@ LAB_FILTERS = {
 
 LAB_TEMPLATE = 'reports/lab.xml'
 
+def lab_list(*args, **kwargs):
+  """For 1:1 mapping of URLs to views. Calls _lab_list"""
+  return _lab_list(*args, **kwargs)
+
+def carenet_lab_list(*args, **kwargs):
+  """For 1:1 mapping of URLs to views. Calls _lab_list"""
+  return _lab_list(*args, **kwargs)
+
 @marsloader(query_api_support=True)
-def lab_list(request, group_by, date_group, aggregate_by,
+def _lab_list(request, group_by, date_group, aggregate_by,
              limit, offset, order_by,
              status, date_range, filters,
              record=None, carenet=None):

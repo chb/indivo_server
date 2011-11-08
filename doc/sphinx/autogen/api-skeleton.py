@@ -731,8 +731,8 @@ CALLS=[{
     "view_func":carenet_document,
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -747,8 +747,8 @@ CALLS=[{
     "view_func":carenet_document_meta,
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -834,6 +834,21 @@ CALLS=[{
 },
 {
 "method":"GET",
+    "path":"/carenets/{CARENET_ID}/reports/minimal/labs/",
+    "view_func":carenet_lab_list,
+    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
+    "url_params":{
+        'CARENET_ID':'The id string associated with the Indivo carenet',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"ADD A DESCRIPTION OF THE CALL HERE",
+
+},
+{
+"method":"GET",
     "path":"/carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/",
     "view_func":carenet_measurement_list,
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
@@ -882,6 +897,21 @@ CALLS=[{
 "method":"GET",
     "path":"/carenets/{CARENET_ID}/reports/minimal/procedures/",
     "view_func":carenet_procedure_list,
+    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
+    "url_params":{
+        'CARENET_ID':'The id string associated with the Indivo carenet',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"ADD A DESCRIPTION OF THE CALL HERE",
+
+},
+{
+"method":"GET",
+    "path":"/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/",
+    "view_func":carenet_simple_clinical_notes_list,
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
         'CARENET_ID':'The id string associated with the Indivo carenet',
@@ -1278,7 +1308,7 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"PUT",
     "path":"/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label",
     "view_func":record_app_document_label,
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
@@ -1312,7 +1342,7 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"POST",
     "path":"/records/{RECORD_ID}/apps/{PHA_EMAIL}/setup",
     "view_func":record_pha_setup,
     "access_doc":"Any admin app.",
@@ -1545,7 +1575,7 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"PUT",
     "path":"/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/label",
     "view_func":record_document_label_ext,
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
@@ -1683,8 +1713,8 @@ CALLS=[{
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1700,8 +1730,8 @@ CALLS=[{
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1717,8 +1747,8 @@ CALLS=[{
     "access_doc":"A principal in full control of the record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1728,7 +1758,7 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"PUT",
     "path":"/records/{RECORD_ID}/documents/{DOCUMENT_ID}/label",
     "view_func":record_document_label,
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
@@ -1777,7 +1807,7 @@ CALLS=[{
 },
 {
 "method":"DELETE",
-    "path":"/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershar",
+    "path":"/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare",
     "view_func":document_remove_nevershare,
     "access_doc":"A principal in full control of the record.",
     "url_params":{
@@ -1793,7 +1823,7 @@ CALLS=[{
 },
 {
 "method":"PUT",
-    "path":"/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershar",
+    "path":"/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare",
     "view_func":document_set_nevershare,
     "access_doc":"A principal in full control of the record.",
     "url_params":{
@@ -1814,8 +1844,8 @@ CALLS=[{
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -1831,8 +1861,8 @@ CALLS=[{
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -1848,10 +1878,10 @@ CALLS=[{
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'EXTERNAL_ID':'The external identifier of the desired resource',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
         'PHA_EMAIL':'The email identifier of the Indivo user app',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -1867,10 +1897,10 @@ CALLS=[{
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'EXTERNAL_ID':'The external identifier of the desired resource',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
         'PHA_EMAIL':'The email identifier of the Indivo user app',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
@@ -2224,7 +2254,7 @@ CALLS=[{
 "method":"GET",
     "path":"/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/",
     "view_func":simple_clinical_notes_list,
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         },

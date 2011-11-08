@@ -547,8 +547,8 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
    :shortname: carenet_document
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
 
 
 --------
@@ -559,8 +559,8 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
    :shortname: carenet_document_meta
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
 
 
 --------
@@ -620,6 +620,17 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
+.. http:get:: /carenets/{CARENET_ID}/reports/minimal/labs/
+
+   ADD A DESCRIPTION OF THE CALL HERE
+
+   :shortname: carenet_lab_list
+   :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
+
+
+--------
+
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/
 
    ADD A DESCRIPTION OF THE CALL HERE
@@ -659,6 +670,17 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    ADD A DESCRIPTION OF THE CALL HERE
 
    :shortname: carenet_procedure_list
+   :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
+
+
+--------
+
+.. http:get:: /carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/
+
+   ADD A DESCRIPTION OF THE CALL HERE
+
+   :shortname: carenet_simple_clinical_notes_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
    :parameter CARENET_ID: The id string associated with the Indivo carenet
 
@@ -949,7 +971,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label
+.. http:put:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -975,7 +997,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/setup
+.. http:post:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/setup
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -1148,7 +1170,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/label
+.. http:put:: /records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/label
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -1255,8 +1277,8 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: carenet_document_delete
    :accesscontrol: A principal in full control of the carenet's record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
@@ -1268,8 +1290,8 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: carenet_document_placement
    :accesscontrol: A principal in full control of the carenet's record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
@@ -1281,13 +1303,13 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: autoshare_revert
    :accesscontrol: A principal in full control of the record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/label
+.. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/label
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -1323,7 +1345,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:delete:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershar
+.. http:delete:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -1335,7 +1357,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershar
+.. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -1354,8 +1376,8 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: get_documents_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
@@ -1367,8 +1389,8 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: document_create_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
@@ -1380,10 +1402,10 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter EXTERNAL_ID: The external identifier of the desired resource
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter EXTERNAL_ID: The external identifier of the desired resource
    :parameter PHA_EMAIL: The email identifier of the Indivo user app
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
@@ -1395,10 +1417,10 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter EXTERNAL_ID: The external identifier of the desired resource
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter EXTERNAL_ID: The external identifier of the desired resource
    :parameter PHA_EMAIL: The email identifier of the Indivo user app
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
 
 
 --------
@@ -1661,7 +1683,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
    ADD A DESCRIPTION OF THE CALL HERE
 
    :shortname: simple_clinical_notes_list
-   :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
+   :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
 
 

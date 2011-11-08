@@ -297,20 +297,10 @@ by External ID
 
 :http:get:`/records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/meta`
 
-DOESN'T EXIST!!! /carenets/{CARENET_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/meta
-
-.. 
- :http:get:`/carenets/{CARENET_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/meta`
-
 Document Versions
 ^^^^^^^^^^^^^^^^^
 
 :http:get:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/versions/`
-
-DOESN'T EXIST!!! /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/versions/
-
-..
-  http:get:: /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/versions/
 
 ::
 
@@ -341,18 +331,15 @@ by External ID
 ADD_FORM_DATA
 
 Medical data cannot be replaced wholesale, only versioned. Thus, this call will 
-fail (with a 409 conflict error code) if a document already exists in the given 
-record with given external ID and app ID.
+fail (with a :http:statuscode:`409` error code) if a document already exists in 
+the given record with given external ID and app ID.
 
 Document Metadata Update
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Only the label on a document can be updated.
 
-DOESN'T EXIST!! /records/{RECORD_ID}/documents/{DOCUMENT_ID}/label
-
-.. 
-  http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/label
+:http:put:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/label`
 
 ADD_FORM_DATA{new_document_label}
 
@@ -363,10 +350,7 @@ ADD_FORM_DATA{new_document_label}
 by External ID
 """"""""""""""
 
-DOESN'T EXIST!! /records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/label
-
-.. 
-  http:put:: /records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/label
+:http:put:`/records/{RECORD_ID}/documents/external/{APP_ID}/{EXTERNAL_ID}/label`
 
 ADD_FORM_DATA {new_document_label}
 
@@ -398,8 +382,8 @@ by external ID
 ADD_FORM_DATA {indivo_document_content}
 
 Medical data cannot be replaced wholesale, only versioned. Thus, this call will 
-fail (with a 409 conflict error code) if a document already exists in the given 
-record with given external ID and app ID.
+fail (with a :http:statuscode:`409` error code) if a document already exists 
+in the given record with given external ID and app ID.
 
 Document Removal and Archival
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -459,11 +443,6 @@ statuses, in reverse chronological order, can be obtained using the API call:
 
 :http:get:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/status-history`
 
-DOESN'T EXIST!!! /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/status-history
-
-.. 
-  http:get:: /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/status-history
-
 :: 
   
   <DocumentStatusHistory document_id="{document_id}">
@@ -512,8 +491,8 @@ by external ID
 ADD POST DATA: {INDIVO DOCUMENT CONTENT}
 
 Medical data cannot be replaced wholesale, only versioned. Thus, this call will 
-fail (with a 409 conflict error code) if a document already exists in the given 
-record with given external ID and app ID.
+fail (with a :http:statuscode:`409` error code) if a document already exists in 
+the given record with given external ID and app ID.
 
 retrieving related documents
 """"""""""""""""""""""""""""
@@ -523,11 +502,6 @@ calls return all interpretations (that are of type ``{REL_TYPE}``) of that
 document.
 
 :http:get:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/`
-
-DOESN'T EXIST!!: /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/
-
-.. 
-   :http:get:`/carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/`
 
 ::
 
@@ -575,10 +549,7 @@ A user can accept an attachment from a message into their medical record.
 Send a Message to an Account
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/inbox/{MESSAGE_ID}
-
-.. 
-   :http:put:`/accounts/{ACCOUNT_ID}/inbox/{MESSAGE_ID}`
+:http:post:`/accounts/{ACCOUNT_ID}/inbox/`
 
 ADD_QUERY_PARAMS: subject={subject}&body={body}&severity={severity}
 
@@ -587,10 +558,7 @@ Severity need not be included. If it is included, it can be low, medium, or high
 Send a Message to a Record
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /records/{RECORD_ID}/inbox/{MESSAGE_ID}
-
-.. 
-   :http:put:`/records/{RECORD_ID}/inbox/{MESSAGE_ID}`
+:http:post:`/records/{RECORD_ID}/inbox/{MESSAGE_ID}`
 
 ADD_QUERY_PARAMS: subject={subject}&body={body}&severity={severity}&num_attachments={num_attachments}
 
@@ -600,10 +568,7 @@ message isn't delivered until all of its attachments are uploaded).
 
 Upload attachments with:
 
-DOESN'T EXIST!! /records/{RECORD_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}
-
-.. 
-   :http:put:`/records/{RECORD_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}`
+:http:post:`/records/{RECORD_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}`
 
 ADD_POST_DATA: {INDIVO_DOCUMENT}
 
@@ -678,46 +643,9 @@ existed beforehand.
 Application-Specific Document Label Update
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /apps/{APP_ID}/documents/{DOCUMENT_ID}/label
-
-.. 
-   :http:put:`/apps/{APP_ID}/documents/{DOCUMENT_ID}/label`
+:http:put:`/apps/{APP_ID}/documents/{DOCUMENT_ID}/label`
 
 ADD_POST_DATA: {document_label}
-
-Application Inbox
-^^^^^^^^^^^^^^^^^
-
-A list of messages destined for the application:
-
-DOESN'T EXIST!! /apps/{APP_ID}/inbox/
-
-.. 
-   :http:get:`/apps/{APP_ID}/inbox/`
-
-A single message:
-
-DOESN'T EXIST!! /apps/{APP_ID}/inbox/{MESSAGE_ID}
-
-.. 
-   :http:get:`/apps/{APP_ID}/inbox/{MESSAGE_ID}`
-
-::
-
-  <Message>
-    <from id="ben@indivohealth.org" />
-    <record id="8cnd-xdfd-342d-dfdf-34343" />
-    <subject>{subject}</subject>
-    <body>{body}</body>
-    <attachment num="1" type="SurveyAnswers" resource="/apps/{app_id}/inbox/{message_id}/attachments/1" />
-  </Message>
-
-A way to retrieve attachments:
-
-DOESN'T EXIST!! /apps/{APP_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}
-
-.. 
-   :http:get:`/apps/{APP_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}`
 
 Record-Application-Specific Storage
 -----------------------------------
@@ -776,10 +704,7 @@ ADD_POST_DATA: {INDIVO_DOCUMENT_CONTENT}
 Record-Application-Specific Document Label Update
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}/label
-
-.. 
-   :http:put:`/records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}/label`
+:http:put:`/records/{RECORD_ID}/apps/{APP_ID}/documents/{DOCUMENT_ID}/label`
 
 ADD_POST_DATA: {document_label}
 
@@ -862,20 +787,14 @@ Labs
 
 :http:get:`/records/{RECORD_ID}/reports/minimal/labs/`
 
-DOESN'T EXIST!! /carenets/{CARENET_ID}/reports/minimal/labs/
-
-.. 
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/labs/`
+:http:get:`/carenets/{CARENET_ID}/reports/minimal/labs/`
 
 Simple Clinical Note
 ^^^^^^^^^^^^^^^^^^^^
 
 :http:get:`/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/`
 
-DOESN'T EXIST!! /carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/
-
-.. 
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/`
+:http:get:`/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/`
 
 Coding Systems
 --------------
@@ -982,10 +901,7 @@ ADD_QUERY_STRING: ?fullname={fullname}&contact_email={contact_email}
 Account Creation and Maintenance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /accounts/
-
-.. 
-   :http:post:`/accounts/`
+:http:post:`/accounts/`
 
 ADD_FORM_DATA:
 account_id={account_id}&contact_email={contact_email}&full_name={full_name}&
@@ -1035,10 +951,7 @@ Resending Initialization URL
 The email sent to initialize an account may get lost. This API call resends the 
 email.
 
-DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/secret-resend
-
-.. 
-   :http:post:`/accounts/{ACCOUNT_ID}/secret-resend`
+:http:post:`/accounts/{ACCOUNT_ID}/secret-resend`
 
 Resetting an Account
 ^^^^^^^^^^^^^^^^^^^^
@@ -1088,10 +1001,7 @@ is:
 
 * The Indivo UI App initializes the account:
 
-  DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/initialize
-
-  .. 
-     :http:post:`/accounts/{ACCOUNT_ID}/initialize`
+  :http:post:`/accounts/{ACCOUNT_ID}/initialize`
 
   ADD_POST_DATA:primary_secret={primary_secret}&secondary_secret={secondary_secret}
 
@@ -1172,10 +1082,7 @@ ADD_POST_DATA:{ACCOUNT_ID}
 Prime a Record with a User App
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /records/{RECORD_ID}/apps/{APP_ID}/setup
-
-.. 
-   :http:post:`/records/{RECORD_ID}/apps/{APP_ID}/setup`
+:http:post:`/records/{RECORD_ID}/apps/{APP_ID}/setup`
 
 ADD_POST_DATA: {SETUP_DOCUMENT}
 
@@ -1195,10 +1102,7 @@ backend Indivo server.
 Create a Session
 ^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /oauth/internal/session_create
-
-.. 
-   :http:post:`/oauth/internal/session_create`
+:http:post:`/oauth/internal/session_create`
 
 ADD_POST_DATA: username={username}&password={password}
 ADD_DESCRIPTION: Start a session for a user.
@@ -1216,10 +1120,7 @@ Before a request token can be viewed at all, it has to be claimed by a user. Thi
 ensures that a request token can't be partially used by one user and completed by 
 another.
 
-DOESN'T EXIST!! /oauth/internal/request_tokens/{REQUEST_TOKEN}/claim
-
-.. 
-   :http:post:`/oauth/internal/request_tokens/{REQUEST_TOKEN}/claim`
+:http:post:`/oauth/internal/request_tokens/{REQUEST_TOKEN}/claim`
 
 The session-based chrome authentication will indicate to the backend which Account 
 to associate with this request token. Once this call has been made for a request 
@@ -1294,15 +1195,12 @@ Approve a Request Token
 If a user approves an app addition, then the Chrome UI server needs to let the 
 backend know.
 
-DOESN'T EXIST!! /oauth/internal/request_tokens/{REQUEST_TOKEN}/approve
-
-.. 
-   :http:post:`/oauth/internal/request_tokens/{REQUEST_TOKEN}/approve`
+:http:post:`/oauth/internal/request_tokens/{REQUEST_TOKEN}/approve`
 
 ADD_POST_DATA: record_id={indivo_record_id}
 
-This call, if it succeeds with a 200, will return the location to which the user's 
-browser should be redirected::
+This call, if it succeeds with a :http:statuscode:`200`, will return the location 
+to which the user's browser should be redirected::
 
   location={url_to_redirect_to}
 
@@ -1319,32 +1217,18 @@ interface) must be able to check an account's status to provide the initializati
 screen.
 
 Retrieving the account information can be done using a call to 
-:http:get:`/accounts/{ACCOUNT_ID}` from above. Checking the primary secret can be 
-done using:
+:http:get:`/accounts/{ACCOUNT_ID}` from above. Checking the primary and secondary
+secrets can be done using:
 
-DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/check-primary-secret/{PRIMARY_SECRET}
+:http:get:`/accounts/{ACCOUNT_ID}/check-secrets/{PRIMARY_SECRET}`
 
-.. 
-   :http:get:`/accounts/{ACCOUNT_ID}/check-primary-secret/{PRIMARY_SECRET}`
-
-This will return::
-
-  <result>true</result>
-
-or ::
-
-  <result>false</result>
+This will return a :http:statuscode:`200` if the secrets matched, and a 
+:http:statuscode:`403` otherwise.
 
 Then, to initialize the account, the Chrome app makes a call to 
-DOESN'T EXIST!! /accounts/{ACCOUNT_ID}/initialize
+:http:post:`/accounts/{ACCOUNT_ID}/initialize/{PRIMARY_SECRET}`
 
-.. 
-   :http:post:`/accounts/{ACCOUNT_ID}/initialize`
-
-ADD_QUERY_PARAMS: primary_secret={primary_secret]&
-secondary_secret={secondary_secret}&password={password}
-
-This call will return the account info XML with the new account status of "ok".
+ADD_POST_DATA: secondary_secret={secondary_secret}
 
 Verifying Signed URLs
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1580,17 +1464,11 @@ Never Share
 A user should be able to ask that a document be "never shared". This flag prevents 
 any sharing, no matter what the auto-share rules may be.
 
-DOESN'T EXIST!! /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare
-
-.. 
-   :http:put:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare`
+:http:put:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare`
 
 And the nevershare flag can be removed easily:
 
-DOESN'T EXIST!! /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare
-
-.. 
-   :http:delete:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare`
+:http:delete:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare`
 
 Get Auto-Sharing Preferences
 """"""""""""""""""""""""""""
@@ -1846,10 +1724,7 @@ and returns results in the style of Medical Reports.
 All subsequent calls are deprecated, but maintained (for now) for backwards 
 compatibility.
 
-DOESN'T EXIST!! /records/{RECORD_ID}/audits
-
-.. 
-   :http:get:`/records/{RECORD_ID}/audits`
+:http:get:`/records/{RECORD_ID}/audits/`
 
 .. deprecated:: 1.0.0
 
@@ -1857,10 +1732,7 @@ DOESN'T EXIST!! /records/{RECORD_ID}/audits
 
   <Audits></Audits>
 
-DOESN'T EXIST!! /records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}
-
-.. 
-   :http:get:`/records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}`
+:http:get:`/records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}/`
 
 .. deprecated:: 1.0.0
 
@@ -1868,10 +1740,7 @@ DOESN'T EXIST!! /records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}
 
    <Audits></Audits>
 
-DOESN'T EXIST!! /records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}/functions/{FUNCTION_NAME}
-
-.. 
-   :http:get:`/records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}/functions/{FUNCTION_NAME}`
+:http:get:`/records/{RECORD_ID}/audits/documents/{DOCUMENT_ID}/functions/{FUNCTION_NAME}/`
 
 .. deprecated:: 1.0.0
 
