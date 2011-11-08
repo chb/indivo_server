@@ -251,6 +251,9 @@ class RecordInternalTests(InternalTests):
         doc_id = self.ras_docs[0].id
         func_name = AUDIT_FUNC_NAME
         url = '/records/%s/audits/documents/%s/functions/%s/'%(record_id, doc_id, func_name)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -259,6 +262,9 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         doc_id = self.ras_docs[0].id
         url = '/records/%s/audits/documents/%s/'%(record_id, doc_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -266,6 +272,20 @@ class RecordInternalTests(InternalTests):
         # Need to create Audit logs
         record_id = self.record.id
         url = '/records/%s/audits/'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_record_audit_query(self):
+        # Need to create Audit logs
+        record_id = self.record.id
+        doc_id = self.ras_docs[0].id
+        url = '/records/%s/audits/query/?document_id=%s'%(record_id, doc_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 

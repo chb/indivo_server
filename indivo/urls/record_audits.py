@@ -6,10 +6,12 @@ from indivo.lib.utils import MethodDispatcher
 urlpatterns = patterns('',
 
   # Old style audit views, supported for backwards compatibility
-  (r'^$', audit_record_view), 
-  (r'^documents/(?P<document_id>[^/]+)/$', audit_document_view), 
-  (r'^documents/(?P<document_id>[^/]+)/functions/(?P<function_name>[^/]+)/$', audit_function_view),
+  (r'^$', MethodDispatcher({'GET':audit_record_view})), 
+  (r'^documents/(?P<document_id>[^/]+)/$', 
+   MethodDispatcher({'GET':audit_document_view})), 
+  (r'^documents/(?P<document_id>[^/]+)/functions/(?P<function_name>[^/]+)/$', 
+   MethodDispatcher({'GET':audit_function_view})),
 
   # Audit Using the Query API Interface
-  (r'^query/$', audit_query)
+  (r'^query/$', MethodDispatcher({'GET':audit_query}))
 )
