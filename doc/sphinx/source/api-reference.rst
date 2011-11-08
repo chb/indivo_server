@@ -1501,7 +1501,18 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/notify
+.. http:post:: /records/{RECORD_ID}/notifications/
+
+   ADD A DESCRIPTION OF THE CALL HERE
+
+   :shortname: record_notify
+   :accesscontrol: Any admin app, or a user app with access to the record.
+   :parameter RECORD_ID: The id string associated with the Indivo record
+
+
+--------
+
+.. http:post:: /records/{RECORD_ID}/notify
 
    ADD A DESCRIPTION OF THE CALL HERE
 
@@ -1540,17 +1551,6 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
    :shortname: record_set_owner
    :accesscontrol: Any admin app.
-   :parameter RECORD_ID: The id string associated with the Indivo record
-
-
---------
-
-.. http:get:: /records/{RECORD_ID}/password_reset
-
-   ADD A DESCRIPTION OF THE CALL HERE
-
-   :shortname: record_password_reset
-   :accesscontrol: 
    :parameter RECORD_ID: The id string associated with the Indivo record
 
 
@@ -1712,7 +1712,19 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}/delete
+.. http:delete:: /records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}
+
+   ADD A DESCRIPTION OF THE CALL HERE
+
+   :shortname: record_share_delete
+   :accesscontrol: The owner of the record, or any admin app.
+   :parameter RECORD_ID: The id string associated with the Indivo record
+   :parameter OTHER_ACCOUNT_ID: The email identifier of the Indivo account to share with
+
+
+--------
+
+.. http:post:: /records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}/delete
 
    ADD A DESCRIPTION OF THE CALL HERE
 

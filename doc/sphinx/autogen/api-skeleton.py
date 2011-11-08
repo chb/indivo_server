@@ -2010,7 +2010,22 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"POST",
+    "path":"/records/{RECORD_ID}/notifications/",
+    "view_func":record_notify,
+    "access_doc":"Any admin app, or a user app with access to the record.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"ADD A DESCRIPTION OF THE CALL HERE",
+
+},
+{
+"method":"POST",
     "path":"/records/{RECORD_ID}/notify",
     "view_func":record_notify,
     "access_doc":"Any admin app, or a user app with access to the record.",
@@ -2059,21 +2074,6 @@ CALLS=[{
     "path":"/records/{RECORD_ID}/owner",
     "view_func":record_set_owner,
     "access_doc":"Any admin app.",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"ADD A DESCRIPTION OF THE CALL HERE",
-
-},
-{
-"method":"GET",
-    "path":"/records/{RECORD_ID}/password_reset",
-    "view_func":record_password_reset,
-    "access_doc":"",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         },
@@ -2297,7 +2297,23 @@ CALLS=[{
 
 },
 {
-"method":"GET",
+"method":"DELETE",
+    "path":"/records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}",
+    "view_func":record_share_delete,
+    "access_doc":"The owner of the record, or any admin app.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'OTHER_ACCOUNT_ID':'The email identifier of the Indivo account to share with',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"ADD A DESCRIPTION OF THE CALL HERE",
+
+},
+{
+"method":"POST",
     "path":"/records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}/delete",
     "view_func":record_share_delete,
     "access_doc":"The owner of the record, or any admin app.",

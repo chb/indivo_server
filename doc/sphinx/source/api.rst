@@ -613,10 +613,7 @@ of the attachment. It cannot be larger than ``num_attachments`` that was declare
 Send a Notification to a Record
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-DOESN'T EXIST!! /records/{RECORD_ID}/notify
-
-.. 
-   :http:post:`/records/{RECORD_ID}/notify`
+:http:post:`/records/{RECORD_ID}/notifications/`
 
 ADD_FORM_DATA: content={notification_content}&app_url={relative_url}&document_id={document_id}
 
@@ -1525,13 +1522,8 @@ ADD_POST_DATA: account_id={account_id}&role_label={role_label}
 The role_label is currently nothing more than that: a label. The label will come 
 back in the XML for ``<Shares>``
 
-A share can then be removed using:
-
-DOESN'T EXIST! /records/{RECORD_ID}/shares/{ACCOUNT_ID}/delete
-ALSO WTF!!! Why isn't this delete??
-
-.. 
-   :http:post:`/records/{RECORD_ID}/shares/{ACCOUNT_ID}/delete`
+A share can then be removed using 
+:http:delete:`/records/{RECORD_ID}/shares/{ACCOUNT_ID}`
 
 Place a document in a carenet
 """""""""""""""""""""""""""""

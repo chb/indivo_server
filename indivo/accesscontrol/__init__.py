@@ -34,7 +34,6 @@ def load_access_rules():
 
   # These view functions will always throw 403, as they are either not used in the API or unimplemented:
   # inactive_views = [get_id,
-  #                   record_password_reset,
   #                   documents_delete,
   #                   record_inbox,
   #                   carenet_app_permissions] 

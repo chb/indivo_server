@@ -561,7 +561,22 @@ class RecordInternalTests(InternalTests):
 
     def test_record_notify(self):
         record_id = self.record.id
+
+        # Test Deprecated Call
         url = '/records/%s/notify'%(record_id)
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        data = {'content':TEST_R_DOCS[1]['content'],
+                'document_id':self.rs_docs[1].id}
+        response =self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 200)
+
+        # Test Modern Call
+        url = '/records/%s/notifications/'%(record_id)
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         data = {'content':TEST_R_DOCS[1]['content'],
                 'document_id':self.rs_docs[1].id}
         response =self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
@@ -606,9 +621,25 @@ class RecordInternalTests(InternalTests):
     def test_remove_record_share(self):
         record_id = self.record.id
         other_account_id = self.account.email
+
+        # Test deprecated call
         url = '/records/%s/shares/%s/delete'%(record_id, other_account_id)
+
+        bad_methods = ['get', 'put', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 200)
+
+        # Test modern call
+        url = '/records/%s/shares/%s'%(record_id, other_account_id)
+
+        bad_methods = ['get', 'put', 'post']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.delete(url)
         self.assertEquals(response.status_code, 200)
+
         # CREATE SHARES
 
     def test_get_record_ccr(self):

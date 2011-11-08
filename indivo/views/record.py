@@ -188,12 +188,6 @@ def _record_create(request, principal_email=None, external_id=None):
 
   return render_template('record', {'record' : record}, type='xml')
 
-
-def record_password_reset(request, record):
-  # look up the associated user
-  pass
-
-
 @transaction.commit_on_success
 def record_pha_setup(request, record, pha):
   """Set up a PHA in a record ahead of time
