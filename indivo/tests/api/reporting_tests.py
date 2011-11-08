@@ -30,6 +30,8 @@ class ReportingInternalTests(InternalTests):
     def test_get_vitals(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/vitals/?group_by=category&aggregate_by=min*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -44,6 +46,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_simple_clinical_notes(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/simple-clinical-notes/?group_by=specialty&aggregate_by=count*provider_name&date_range=date_of_visit*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -58,6 +63,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_procedures(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/procedures/?group_by=procedure_name&aggregate_by=count*procedure_name&date_range=date_performed*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -72,6 +80,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_problems(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/problems/?group_by=problem_name&aggregate_by=count*problem_name&date_range=date_onset*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -86,6 +97,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_medications(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/medications/?group_by=medication_brand_name&aggregate_by=count*medication_name&date_range=date_started*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -100,6 +114,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_measurements(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/measurements/HBA1C/?group_by=lab_code&aggregate_by=avg*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -114,6 +131,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_immunizations(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/immunizations/?group_by=vaccine_type&aggregate_by=count*date_administered&date_range=date_administered*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -128,6 +148,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_labs(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/labs/?group_by=lab_type&aggregate_by=count*lab_test_name&date_range=date_measured*2010-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # should see {['lab_type': u'1,25-Dihydroxy Vitamin D', 'aggregation': 1}]
@@ -150,6 +173,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_allergies(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/allergies/?group_by=allergen_type&aggregate_by=count*allergen_name&date_range=date_diagnosed*2004-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -164,6 +190,9 @@ class ReportingInternalTests(InternalTests):
     def test_get_equipment(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/equipment/?group_by=equipment_vendor&aggregate_by=count*equipment_name&date_range=date_started*2004-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -197,6 +226,9 @@ class ReportingInternalTests(InternalTests):
 
 
         url = '/records/%s/audits/query/?date_range=request_date*2010-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         # Should see 2 entries
         self.assertEquals(response.status_code, 200)
