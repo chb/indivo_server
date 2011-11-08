@@ -120,8 +120,25 @@ Workflow is as follows:
             # generate the api reference
             APIDict().write_ReST_reference()
 
-            # build the docs
+            # Use sphinx-apidoc to autogenerate code docs
+            exclude_paths = [
+                settings.APP_HOME + '/doc/',
+                settings.APP_HOME + '/codingsystems/data/',
+                settings.APP_HOME + '/codingsystems/migrations/',
+                settings.APP_HOME + '/indivo/migrations/',
+                ]
+
+            output_dir = 'source/autocode'
+            source_dir = settings.APP_HOME
+            
+            cmd = 'sphinx-apidoc -o %s %s %s'%(output_dir, 
+                                               source_dir, 
+                                               ' '.join(exclude_paths))
+
             os.chdir(settings.APP_HOME+'/doc/sphinx')
+            ret = os.system(cmd)
+
+            # Build the Docs
             ret = os.system('make html')
 
         else:
