@@ -38,11 +38,7 @@ def load_access_rules():
   #                   documents_delete,
   #                   record_inbox,
   #                   carenet_app_permissions] 
-
   
-  # NO PERMISSIONS IN OLD SYSTEM
-  views = [user_authorization] 
-
   # Top-level views
   def basic_access(principal, **unused_args):
     """Any principal in Indivo."""

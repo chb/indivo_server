@@ -29,7 +29,8 @@ We require all changes suggested by the oAuth 1.0a revision:
 In addition, we implement the following constraints:
 
 * As per the oAuth recommended approach, all oAuth token setup and exchange calls use the ``POST`` method. The 
-  Indivo server will respond with a 404 Not Found error code to any GET request against its OAuth protocol URLs.
+  Indivo server will respond with a 405 Method Not Allowed error code to any GET request against its OAuth 
+  protocol URLs.
 
 * The ``oauth_version`` parameter is mandatory. Every PHA request should include the ``oauth_version`` parameter. 
   The only supported value in Indivo at this point is ``oauth_version=1.0``.
@@ -38,7 +39,14 @@ In addition, we implement the following constraints:
 
   * Request Token URL: ``https://INDIVO_SERVER/oauth/request_token``
 
-  * User Authorization URL: ``https://INDIVO_SERVER/oauth/authorize?oauth_token={token}``
+  * User Authorization URL: Since there is a UI component to enabling User Authorization
+    (i.e., we have to obtain their consent), Indivo_Server does not explicitly offer a
+    User Authorization URL via its API. Individual UI apps can (with a valid user session)
+    authorize tokens on behalf of users with a call to 
+    :http:post:`internal/request_tokens/{TOKEN}/approve`, but each individual UI-app 
+    implementation will provide a different app-facing User Authorization URL. We 
+    recommend using ``https://UI_SERVER/oauth/authorize?oauth_token={token}``, which is
+    the URL used by our reference UI-app implementation.
 
   * Access Token URL: ``https://INDIVO_SERVER/oauth/access_token``
 
@@ -71,7 +79,7 @@ the PHA agree on:
 * A ``start_url_template`` for the PHA, e.g. 
   ``http://acme.com/indivoapp?record_id={indivo_record_id}&document_id={document_id}``.
 
-* A ``callback_url`` for the PHA, e.g. ``http://acme.com/success_after_indivo``>, which should expect to receive query 
+* A ``callback_url`` for the PHA, e.g. ``http://acme.com/success_after_indivo``, which should expect to receive query 
   parameters ``oauth_token`` and ``oauth_verifier``.
 
 * Whether the PHA has a web user interface (certain applications that synchronize data have no UI), and whether that 
@@ -150,10 +158,10 @@ Authorize the Request Token
 """""""""""""""""""""""""""
 
 Once it has obtained a request token, with the user's browser still waiting for a response, the PHA responds by redirecting 
-the user's browser to the User Authorization URL on the Indivo Server, indicated in the request token response above, or by 
+the user's browser to the User Authorization URL on an Indivo UI app, indicated in the request token response above, or by 
 default::
 
-  https://INDIVO_SERVER/oauth/authorize?oauth_token=<REQUEST_TOKEN>
+  https://UI_SERVER/oauth/authorize?oauth_token=<REQUEST_TOKEN>
 
 with the ``request_token`` as a URL query parameter named ``oauth_token``. Note how this URL is not a signed OAuth 
 request. This step is simply a redirection of the user's browser to her Indivo account in order to prompt for and obtain 

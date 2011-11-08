@@ -74,44 +74,6 @@ def exchange_token(request):
 
     return HttpResponse(access_token.to_string(), mimetype='text/plain')
 
-def user_authorization(request):
-  """Authorize a request token, binding it to a single record.
-
-  A request token *must* be bound to a record before it is approved.
-  """
-
-  try:
-    token = ReqToken.objects.get(token = request.REQUEST['oauth_token'])
-  except ReqToken.DoesNotExist:
-    raise Http404
-
-  # are we processing the form
-  # OR, is this app already authorized
-  if request.method == "POST" or (token.record and token.record.has_pha(token.pha)):
-    # get the record from the token
-    record = token.record
-
-    # are we dealing with a record already
-    if not (record and record.has_pha(token.pha)):
-      record = Record.objects.get(id = request.POST['record_id'])
-    
-      # allowed to administer the record? Needed if the record doesn't have the PHA yet
-      if not record.can_admin(request.principal):
-        raise Exception("cannot administer this record")
-
-    from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
-    request_token = OAUTH_SERVER.authorize_request_token(token.token, record = record, account = request.principal)
-
-    # where to redirect to + parameters
-    redirect_url = request_token.oauth_callback or request_token.pha.callback_url
-    redirect_url += "?oauth_token=%s&oauth_verifier=%s" % (request_token.token, request_token.verifier)
-
-    # redirect to the request token's callback, or if null the PHA's default callback
-    return HttpResponseRedirect(redirect_url)
-  else:
-    records = request.principal.records_administered.all()
-    return render_template('authorize', {'token' : token, 'records': records})
-
 ##
 ## OAuth internal calls
 ##
