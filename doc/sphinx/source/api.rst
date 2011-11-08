@@ -961,14 +961,10 @@ user as with their initialization email. This will prevent logins until the new
 initialization URL is clicked, and the new password is entered.
 
 This could be accomplished with separate calls to 
-
-DON'T EXIST!!
-
-..
-   :http:post:`/accounts/{ACCOUNT_ID}/reset`, which sets the account state to
-   ``uninitialized`` and resets the account secrets, and
-   :http:post:`/accounts/{ACCOUNT_ID}/secret-resend`, but for efficiency's sake 
-   there exists a combined call:
+:http:post:`/accounts/{ACCOUNT_ID}/reset`, which sets the account state to
+``uninitialized`` and resets the account secrets, and
+:http:post:`/accounts/{ACCOUNT_ID}/secret-resend`, but for efficiency's sake 
+there exists a combined call:
 
 :http:post:`/accounts/{ACCOUNT_ID}/forgot-password`
 
@@ -1001,9 +997,9 @@ is:
 
 * The Indivo UI App initializes the account:
 
-  :http:post:`/accounts/{ACCOUNT_ID}/initialize`
+  :http:post:`/accounts/{ACCOUNT_ID}/initialize/{PRIMARY_SECRET}`
 
-  ADD_POST_DATA:primary_secret={primary_secret}&secondary_secret={secondary_secret}
+  ADD_POST_DATA:secondary_secret={secondary_secret}
 
 * The Indivo UI app sets the password to the new value provided by the user using 
 
