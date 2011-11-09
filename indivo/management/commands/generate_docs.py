@@ -37,14 +37,17 @@ Workflow is as follows:
   into the skeleton file.
 '''
 
-    userfields = ['query_opts', 'data_fields', 'description']
-    cpfields = ['method', 'path', 'view_func', 'url_params']
+    userfields = ['query_opts', 'data_fields', 'description', 'return_desc', 
+                  'return_ex']
+    cpfields = ['method', 'path', 'view_func_name', 'url_params', 'access_doc']
     
     defaults_map = {
         'url_params': URL_PARAM_DESC,
         'query_opts': QUERY_PARAM_DESC,
         'data_fields': DATA_FIELD_DESC,
         'description': TEXT_FIELD_DESC,
+        'return_desc': TEXT_FIELD_DESC,
+        'return_ex': TEXT_FIELD_DESC,
         }
 
     def handle(self, *args, **options):
@@ -71,7 +74,7 @@ Workflow is as follows:
             cp_only = cp_set - user_set
             user_only = user_set - cp_set
 
-            diffstr = 'Added/Deleted calls:\n'
+            diffstr = 'Changed calls:\n'
 
             # Calls in both versions
             for title in intersection:
@@ -80,23 +83,33 @@ Workflow is as follows:
                 cp_call = cp_api[title] 
                 new_call = Call()
                 resolver = CallResolver(cp_call, user_call)
+                mod = False
 
                 # computerized fields: choose codebase version, default to user if codebase didn't have it.
                 resolver.prefer_cp()
                 for field in self.cpfields:
+                    oldval = getattr(user_call, field, None)
                     defaults = self.defaults_map.get(field, None)
                     newval = resolver.resolve(field, defaults)
                     setattr(new_call, field, newval)
+                    if oldval != newval:
+                        mod = True
 
                 # user fields: choose user version, default to codebase if user hasn't entered it.
                 resolver.prefer_user()
                 for field in self.userfields:
+                    oldval = getattr(user_call, field, None)
                     defaults = self.defaults_map.get(field, None)
                     newval = resolver.resolve(field, defaults)
                     setattr(new_call, field, newval)
+                    if oldval != newval:
+                        mod = True
 
-                # Note: we can't track which calls were modified, since we don't have a copy of the previous version.
-                # api.py is the closest we come, but the user could have scribbled all over that.
+                # Note: a 'modified' call is one that has had computerized values
+                # written over whatever existed in api-skeleton.py.
+                if mod:
+                    diffstr += 'MOD: %s\n'%title
+
                 new_api.update({title:new_call})
 
             # Calls in just the cp version are new: add them to the userfile
@@ -123,9 +136,10 @@ Workflow is as follows:
             # Use sphinx-apidoc to autogenerate code docs
             exclude_paths = [
                 settings.APP_HOME + '/doc/',
-                settings.APP_HOME + '/codingsystems/data/',
                 settings.APP_HOME + '/codingsystems/migrations/',
+                settings.APP_HOME + '/codingsystems/urls/',
                 settings.APP_HOME + '/indivo/migrations/',
+                settings.APP_HOME + '/indivo/urls/',
                 ]
 
             output_dir = 'source/autocode'

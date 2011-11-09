@@ -116,6 +116,10 @@ class HTTPResource(ObjectDescription):
               rolename='shortname',
               has_arg=False,
               names=('shortname', 'sn', 'view_func')),
+        Field('returns', label='Returns',
+              rolename='returns',
+              has_arg=False,
+              names=('returns', 'ret', 'retval')),
     ]
 
     method = NotImplemented

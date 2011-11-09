@@ -62,11 +62,12 @@ class APIDict(object):
                              (importstr,self.calls_dict))
 
         for call in calls:
-            c_obj = Call(call['path'], call['method'], call['view_func'],
+            c_obj = Call(call['path'], call['method'], call['view_func'], call['access_doc'],
                          url_params=call['url_params'], query_opts=call['query_opts'], 
-                         data_fields=call['data_fields'], description=call['description'])
-            self.apicache[c_obj.title] = c_obj # don't use our __setitem__: userfile shouldn't dirty the our cache
- 
+                         data_fields=call['data_fields'], description=call['description'],
+                         return_desc = call['return_desc'], return_ex = call['return_ex'])
+            self.apicache[c_obj.title] = c_obj # don't use our __setitem__: userfile shouldn't dirty the cache
+
     def _write_to_file(self, pre_call_text, call_separator, post_call_text, 
                        call_render_func, output_path):
         calls = call_separator.join([getattr(c, call_render_func)() 
@@ -84,11 +85,7 @@ class APIDict(object):
         full_fp = '%s/%s%s'%(settings.APP_HOME,self.api_fp, self.api_ext)
         separator = ',\n'
         render_func = 'to_python'
-        imports = '''
-from indivo.views import *
-from codingsystems.views import *
-from django.views.static import serve
-'''
+        imports = ''
         pre = '%s\n\nCALLS=['%(imports)
         post = ']'
 
@@ -106,7 +103,6 @@ This page contains a full list of valid Indivo API calls, generated from the cod
 For a more detailed walkthrough of individual calls, see :doc:`api`
 '''
         full_fp = '%s/%s%s'%(settings.APP_HOME, self.api_ref_fp, self.api_ref_ext)
-#        render_func = 'to_ReST_directive'
         render_func = 'to_ReST'
         separator = '\n\n--------\n\n'
         pre = '%s\n\n--------\n\n'%(header)
@@ -218,23 +214,28 @@ class Call(object):
 
     def __setattr__(self, name, value):
         object.__setattr__(self, name, value)
-        if name == 'view_func' and value:
+        if name == 'view_func_name':
+            self.view_func = self._get_view_func()
+        if name == 'view_func':
             self.access_rule = self._get_access_rule()
-        if name == 'access_rule' and value:
-            self.access_doc = self.access_rule.rule.__doc__
+        if name == 'access_rule':
+            self.access_doc = self._get_access_doc()
 
-    def __init__(self, path=None, method=None, view_func=None,
-                 url_params={}, query_opts={}, data_fields={}, description=''):
+    def __init__(self, path=None, method=None, view_func_name='',
+                 access_doc='', url_params={}, query_opts={}, data_fields={}, 
+                 description='', return_desc='', return_ex=''):
         self.path = path
         self.method = method
         self.title = APIUtils.normalize_title('%s %s'%(method, path))
-        self.view_func = view_func
-        self.access_rule = self._get_access_rule()
-        self.access_doc = self.access_rule.rule.__doc__ if self.access_rule else ''
+        self.view_func_name = view_func_name
+        if access_doc:
+            self.access_doc = access_doc
         self.url_params = url_params
         self.query_opts = query_opts
         self.data_fields = data_fields
         self.description = description
+        self.return_desc = return_desc
+        self.return_ex = return_ex
 
     def _print_dict(self, d):
         lines = []
@@ -242,6 +243,18 @@ class Call(object):
             lines.append("%s'%s':'%s',\n"%(self._indent(8), key, value))
         out = '{\n%s%s}'%(''.join(lines), self._indent(8))
         return out
+
+    def _get_default(self, default_dict, key):
+        ret = None
+        if default_dict.has_key(key):
+            if callable(default_dict[key]):
+                try:
+                    ret = default_dict[key](self)
+                except:
+                    pass
+            else:
+                ret = default_dict[key]
+        return ret
 
     def set_defaults(self, default_maps):
         ''' Replace blank attributes of the Call with default values provided in `default_maps` '''
@@ -253,12 +266,12 @@ class Call(object):
                 if isinstance(fieldval, dict):
                     for k in fieldval.keys():
                         if default_map.has_key(k) and not fieldval[k]:
-                            fieldval[k] = default_map[k]
+                            fieldval[k] = self._get_default(default_map,k)
 
                 # The attribute is a string, look for the attribute itself in the map
                 else:
                     if default_map.has_key(fieldname) and not fieldval:
-                        setattr(self, fieldname, default_map[fieldname])
+                        setattr(self, fieldname, self._get_default(default_map,fieldname))
             
     def to_python(self):
         ''' 
@@ -271,29 +284,48 @@ class Call(object):
           'url_params': {
                           'RECORD_ID':'the Indivo record identifier',
                         },
-          'view_func': record, # THIS IS A FUNCTION REFERENCE, NOT A STRING
+          'view_func': 'record',
           'query_opts' : {
                           'offset': 'offset number. default is 0',
                          },
           'data_fields': {
                          },
-          'description':'Get basic record information'
+          'description':'Get basic record information',
+          'return_desc':'An XML snippet describing the Record',
+          'return_ex':'
+          <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
+            <contact document_id="83nvb-038xcc-98xcv-234234325235" />
+            <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
+          </Record>'
         }
         '''
         method = '"method":"%s",\n'%self.method
         path = '"path":"%s",\n'%self.path
-        view_func = '"view_func":%s,\n'%self.view_func.__name__ # don't quote it: this is a variable reference
+        view_func = '"view_func":"%s",\n'%self.view_func_name
         access_rule = '"access_doc":"%s",\n'%self.access_doc
         url_params = '"url_params":%s,\n'%self._print_dict(self.url_params)
         query_opts = '"query_opts":%s,\n'%self._print_dict(self.query_opts)
         data_fields = '"data_fields":%s,\n'%self._print_dict(self.data_fields)
-        description = '"description":"%s",\n'%self.description
+        return_desc = '"return_desc":"%s",\n'%self.return_desc
+        description = self._print_quoted_field('description', self.description)
+        return_ex = self._print_quoted_field('return_ex', self.return_ex)
+
         indent = 4
         
         out = "{\n%s\n}"%( 
-                             self._indent(indent).join([method, path, view_func, access_rule, 
-                                                        url_params, query_opts, data_fields, description]))
+            self._indent(indent).join([
+                    '', method, path, view_func, access_rule, 
+                    url_params, query_opts, data_fields, description,
+                    return_desc, return_ex]))
         return out
+
+    def _print_quoted_field(self, key, val):
+        ret = val if val else ''
+        if not ret.startswith('\n'):
+            ret = '\n'+ret
+        if not ret.endswith('\n'):
+            ret = ret+'\n'
+        return '"%s":\'\'\'%s\'\'\',\n'%(key, ret)
 
     def to_ReST_directive(self):
         # Output will look lik
@@ -314,24 +346,44 @@ class Call(object):
         #    :query offset: offset number. default is 0
         #    :query limit: limit number. default is 30
         #    :param RECORD_ID: the Indivo record identifier
-        
+        #    :returns: XML describing the record
+        #
+        # ::
+        #
+        #    <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
+        #      <contact document_id="83nvb-038xcc-98xcv-234234325235" />
+        #      <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
+        #    </Record>
+        #
 
         directive = self.to_ReST_directive()
-        short_name = ":shortname: %s"%self.view_func.__name__
+        short_name = ":shortname: %s"%self.view_func_name
         access_doc = ":accesscontrol: %s"%self.access_doc
         url_params = [":parameter %s: %s"%(p, self.url_params[p]) for p in self.url_params.keys()]
         query_opts = [":queryparameter %s: %s"%(q, self.query_opts[q]) for q in self.query_opts.keys()]
         data_fields = [":formparameter %s: %s"%(d, self.data_fields[d]) for d in self.data_fields.keys()]
+        returns = ":returns: %s"%self.return_desc
         indent = 3
         
-        out = '%s\n%s\n%s%s%s%s%s'%(self._list_to_ReST([directive], 0),
-                                  self._list_to_ReST([self.description], indent),
-                                  self._list_to_ReST([short_name], indent), 
-                                  self._list_to_ReST([access_doc], indent),
-                                  self._list_to_ReST(url_params, indent),
-                                  self._list_to_ReST(query_opts, indent),
-                                  self._list_to_ReST(data_fields, indent)
-                                )
+        out = '%s\n%s\n%s%s%s%s%s%s'%(
+            self._list_to_ReST([directive], 0),
+            self._list_to_ReST(self.description.strip().split('\n'), indent),
+            self._list_to_ReST([short_name], indent), 
+            self._list_to_ReST([access_doc], indent),
+            self._list_to_ReST(url_params, indent),
+            self._list_to_ReST(query_opts, indent),
+            self._list_to_ReST(data_fields, indent),
+            self._list_to_ReST([returns], indent),
+            )
+
+        if self.return_ex.strip():
+            ret_ex = self.return_ex
+            out += '\nExample Return Value::\n'
+            if not ret_ex.startswith('\n'):
+                ret_ex = '\n' + ret_ex
+            for line in ret_ex.split('\n'):
+                out += self._indent(indent) + line + '\n'
+
         return out
 
     def _indent(self, indent):
@@ -346,6 +398,36 @@ class Call(object):
     def _get_access_rule(self):
         return AccessRule.lookup(self.view_func) if self.view_func else None
 
+    def _get_access_doc(self):
+        if self.access_rule and self.access_rule.rule.__doc__:
+            return self.access_rule.rule.__doc__
+        return ''
+
+    def _get_view_func(self):
+        view_func = None
+        if self.view_func_name:
+            vfn = self.view_func_name
+            try:
+                # Is it an Indivo view?
+                view_func = getattr(__import__('indivo.views', 
+                                               fromlist=[vfn]), 
+                                    vfn)
+            except AttributeError:
+                try:
+                    # Is it a codingsystems view?
+                    view_func = getattr(__import__('codingsystems.views', 
+                                                   fromlist=[vfn]), 
+                                        vfn)
+                except AttributeError:
+                    try:
+                        # Is it a Django static view?
+                        view_func = getattr(__import__('django.views.static', 
+                                                       fromlist=[vfn]), 
+                                            vfn)
+                    except AttributeError:
+                        pass
+        return view_func
+    
 class CallParser(object):
     def __init__(self, urls):
         self.urllist = urls
@@ -377,11 +459,11 @@ class CallParser(object):
 
                 if isinstance(entry.callback, indivo.lib.utils.MethodDispatcher):
                     for method, view_func in entry.callback.methods.iteritems():
-                        call = Call(path, method, view_func=view_func, url_params=params)
+                        call = Call(path, method, view_func_name=view_func.__name__, url_params=params)
                         self.register(call)
                 else:
                     method = 'GET'
-                    call = Call(path, method, entry.callback, url_params=params)
+                    call = Call(path, method, entry.callback.__name__, url_params=params)
                     self.register(call)
 
 class APIUtils(object):
