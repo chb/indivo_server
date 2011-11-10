@@ -62,10 +62,7 @@ class APIDict(object):
                              (importstr,self.calls_dict))
 
         for call in calls:
-            c_obj = Call(call['path'], call['method'], call['view_func'], call['access_doc'],
-                         url_params=call['url_params'], query_opts=call['query_opts'], 
-                         data_fields=call['data_fields'], description=call['description'],
-                         return_desc = call['return_desc'], return_ex = call['return_ex'])
+            c_obj = Call(**call)
             self.apicache[c_obj.title] = c_obj # don't use our __setitem__: userfile shouldn't dirty the cache
 
     def _write_to_file(self, pre_call_text, call_separator, post_call_text, 
@@ -202,9 +199,6 @@ class CallResolver(object):
         if not retval and defaults and defaults.has_key(default_key):
             retval = defaults[default_key]
         
-        if retval == None:
-            retval = ''
-            
         return retval
 
 class Call(object):
@@ -223,7 +217,8 @@ class Call(object):
 
     def __init__(self, path=None, method=None, view_func_name='',
                  access_doc='', url_params={}, query_opts={}, data_fields={}, 
-                 description='', return_desc='', return_ex=''):
+                 description='', return_desc='', return_ex='', deprecated=None,
+                 added=None, changed=None):
         self.path = path
         self.method = method
         self.title = APIUtils.normalize_title('%s %s'%(method, path))
@@ -236,6 +231,9 @@ class Call(object):
         self.description = description
         self.return_desc = return_desc
         self.return_ex = return_ex
+        self.deprecated = deprecated
+        self.added = added
+        self.changed = changed
 
     def _print_dict(self, d):
         lines = []
@@ -272,6 +270,15 @@ class Call(object):
                 else:
                     if default_map.has_key(fieldname) and not fieldval:
                         setattr(self, fieldname, self._get_default(default_map,fieldname))
+
+    def _print_tuple(self, tuple, varname):
+        key = '"%s": '%varname
+        if tuple:
+            value = str(tuple)
+        else:
+            value = 'None'
+
+        return '%s%s,\n'%(key, value)
             
     def to_python(self):
         ''' 
@@ -284,7 +291,7 @@ class Call(object):
           'url_params': {
                           'RECORD_ID':'the Indivo record identifier',
                         },
-          'view_func': 'record',
+          'view_func_name': 'record',
           'query_opts' : {
                           'offset': 'offset number. default is 0',
                          },
@@ -296,12 +303,15 @@ class Call(object):
           <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
             <contact document_id="83nvb-038xcc-98xcv-234234325235" />
             <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
-          </Record>'
+          </Record>',
+          'deprecated': ('0.9.3', 'Use :http:get:`/records/{RECORD_ID}/get`.'),
+          'added':('0.9.3', ''),
+          'changed':('1.0.0', 'Added *offset* to query params'),
         }
         '''
         method = '"method":"%s",\n'%self.method
         path = '"path":"%s",\n'%self.path
-        view_func = '"view_func":"%s",\n'%self.view_func_name
+        view_func = '"view_func_name":"%s",\n'%self.view_func_name
         access_rule = '"access_doc":"%s",\n'%self.access_doc
         url_params = '"url_params":%s,\n'%self._print_dict(self.url_params)
         query_opts = '"query_opts":%s,\n'%self._print_dict(self.query_opts)
@@ -309,14 +319,16 @@ class Call(object):
         return_desc = '"return_desc":"%s",\n'%self.return_desc
         description = self._print_quoted_field('description', self.description)
         return_ex = self._print_quoted_field('return_ex', self.return_ex)
-
+        deprecated = self._print_tuple(self.deprecated, 'deprecated')
+        added = self._print_tuple(self.added, 'added')
+        changed = self._print_tuple(self.changed, 'changed')
         indent = 4
         
         out = "{\n%s\n}"%( 
             self._indent(indent).join([
                     '', method, path, view_func, access_rule, 
                     url_params, query_opts, data_fields, description,
-                    return_desc, return_ex]))
+                    return_desc, return_ex, deprecated, added, changed]))
         return out
 
     def _print_quoted_field(self, key, val):
@@ -355,6 +367,14 @@ class Call(object):
         #      <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
         #    </Record>
         #
+        # .. versionadded:: 0.9.3
+        #    
+        # .. versionchanged:: 1.0.0
+        #    Added *offset* to query parameters
+        #
+        # .. deprecated:: 0.9.3
+        #    Use :http:get:`/records/{RECORD_ID}/get` instead.
+        # 
 
         directive = self.to_ReST_directive()
         short_name = ":shortname: %s"%self.view_func_name
@@ -384,7 +404,20 @@ class Call(object):
             for line in ret_ex.split('\n'):
                 out += self._indent(indent) + line + '\n'
 
+        if self.added:
+            out += self._change_directive('versionadded', self.added[0],
+                                          self.added[1])
+        if self.changed:
+            out += self._change_directive('versionchanged', self.changed[0],
+                                          self.changed[1])
+        if self.deprecated:
+            out += self._change_directive('deprecated', self.deprecated[0],
+                                          self.deprecated[1])
         return out
+
+    def _change_directive(self, directive_name, version, explanation):
+        exp_str = '%s%s\n'%(self._indent(3), explanation) if explanation else ''
+        return '\n.. %s:: %s\n%s'%(directive_name, version, exp_str)
 
     def _indent(self, indent):
         return " "*indent

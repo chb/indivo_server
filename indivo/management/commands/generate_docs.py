@@ -38,7 +38,7 @@ Workflow is as follows:
 '''
 
     userfields = ['query_opts', 'data_fields', 'description', 'return_desc', 
-                  'return_ex']
+                  'return_ex', 'deprecated', 'added', 'changed']
     cpfields = ['method', 'path', 'view_func_name', 'url_params', 'access_doc']
     
     defaults_map = {
