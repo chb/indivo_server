@@ -1187,7 +1187,10 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/allergies/
 
-   For 1:1 mapping of URLs to views. Calls _allergy_list
+   List the allergy data for a given carenet.
+   
+     For 1:1 mapping of URLs to views. Just calls
+     :py:meth:`~indivo_server.indivo.views.reports.allergy._allergy_list`.
 
    :shortname: carenet_allergy_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -2892,7 +2895,10 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/allergies/
 
-   For 1:1 mapping of URLs to views. Calls _allergy_list
+   List the allergy data for a given record.
+   
+     For 1:1 mapping of URLs to views. Just calls
+     :py:meth:`~indivo_server.indivo.views.reports.allergy._allergy_list`.
 
    :shortname: allergy_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record

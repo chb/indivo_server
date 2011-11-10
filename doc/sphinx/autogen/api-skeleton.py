@@ -1451,7 +1451,12 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _allergy_list
+ List the allergy data for a given carenet.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo_server.indivo.views.reports.allergy._allergy_list`.
+
+  
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3537,7 +3542,12 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _allergy_list
+ List the allergy data for a given record.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo_server.indivo.views.reports.allergy._allergy_list`.
+
+  
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''

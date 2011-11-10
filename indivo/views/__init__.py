@@ -1,4 +1,5 @@
 """ Indivo Views.
+
 The Django views that implement all Indivo API functionality,
 including API calls related to:
 
