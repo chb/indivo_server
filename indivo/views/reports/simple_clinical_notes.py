@@ -1,6 +1,12 @@
 """
-Indivo Views -- Simple Clinical Notes
+.. module:: views.reports.simple_clinical_notes
+   :synopsis: Indivo view implementations for the simple_clinical_notes report.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
+
 
 from django.http import HttpResponseBadRequest, HttpResponse
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
@@ -17,11 +23,23 @@ SIMPLE_CLINICAL_NOTE_FILTERS = {
 SIMPLE_CLINICAL_NOTE_TEMPLATE = 'reports/simple_clinical_note.xml'
 
 def simple_clinical_notes_list(*args, **kwargs):
-  """For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list"""
+  """ List the simple_clinical_notes data for a given record.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo_server.indivo.views.reports.simple_clinical_notes._simple_clinical_notes_list`.
+
+  """
+
   return _simple_clinical_notes_list(*args, **kwargs)
 
 def carenet_simple_clinical_notes_list(*args, **kwargs):
-  """For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list"""
+  """ List the simple_clinical_notes data for a given carenet.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo_server.indivo.views.reports.simple_clinical_notes._simple_clinical_notes_list`.
+
+  """
+
   return _simple_clinical_notes_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
@@ -29,6 +47,15 @@ def _simple_clinical_notes_list(request, group_by, date_group, aggregate_by,
                               limit, offset, order_by,
                               status, date_range, filters,
                               record=None, carenet=None):
+  """ List the simple_clinical_notes objects matching the passed query parameters.
+  
+  See :doc:`/query-api` for a listing of valid parameters.
+
+  Will return :http:statuscode:`200` with a list of simple clinical notes on 
+  success, :http:statuscode:`400` if any invalid query parameters were passed.
+
+  """  
+  
   q = FactQuery(SimpleClinicalNote, SIMPLE_CLINICAL_NOTE_FILTERS,
                 group_by, date_group, aggregate_by,
                 limit, offset, order_by,

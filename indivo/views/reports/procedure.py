@@ -1,5 +1,10 @@
 """
-Indivo Views -- Procedure
+.. module:: views.reports.procedure
+   :synopsis: Indivo view implementations for the procedure report.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -16,11 +21,23 @@ PROCEDURE_FILTERS = {
 PROCEDURE_TEMPLATE = 'reports/procedure.xml'
 
 def procedure_list(*args, **kwargs):
-  """For 1:1 mapping of URLs to views: calls _procedure_list"""
+  """ List the procedure data for a given record.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo_server.indivo.views.reports.procedure._procedure_list`.
+
+  """
+
   return _procedure_list(*args, **kwargs)
 
 def carenet_procedure_list(*args, **kwargs):
-  """For 1:1 mapping of URLs to views: calls _procedure_list"""
+  """ List the procedure data for a given carenet.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo_server.indivo.views.reports.procedure._procedure_list`.
+
+  """
+  
   return _procedure_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
@@ -28,6 +45,14 @@ def _procedure_list(request, group_by, date_group, aggregate_by,
                     limit, offset, order_by,
                     status, date_range, filters,
                     record=None, carenet=None):
+  """ List the procedure objects matching the passed query parameters.
+  
+  See :doc:`/query-api` for a listing of valid parameters.
+
+  Will return :http:statuscode:`200` with a list of procedures on success,
+  :http:statuscode:`400` if any invalid query parameters were passed.
+
+  """
 
   q = FactQuery(Procedure, PROCEDURE_FILTERS,
                 group_by, date_group, aggregate_by,

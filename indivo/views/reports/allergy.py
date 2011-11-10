@@ -55,7 +55,6 @@ def _allergy_list(request, group_by, date_group, aggregate_by,
 
   """
 
-
   q = FactQuery(Allergy, ALLERGY_FILTERS,
                group_by, date_group, aggregate_by,
                limit, offset, order_by,

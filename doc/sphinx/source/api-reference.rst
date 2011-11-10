@@ -912,7 +912,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/equipment/
 
-   For 1:1 mapping of URLs to views. Calls _equipment_list
+   List the equipment data for a given carenet.
 
    :shortname: carenet_equipment_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -929,7 +929,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/immunizations/
 
-   For 1:1 mapping of URLs to views: calls _immunization_list
+   List the immunization data for a given carenet.
 
    :shortname: carenet_immunization_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -946,7 +946,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/labs/
 
-   For 1:1 mapping of URLs to views. Calls _lab_list
+   List the lab data for a given carenet.
 
    :shortname: carenet_lab_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -963,7 +963,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/
 
-   For 1:1 mapping of URLs to views: calls _measurement_list
+   List the measurement data for a given carenet.
 
    :shortname: carenet_measurement_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -981,7 +981,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/medications/
 
-   For 1:1 mapping of URLs to views: calls _medication_list
+   List the medication data for a given carenet.
 
    :shortname: carenet_medication_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -998,7 +998,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/problems/
 
-   For 1:1 mapping of URLs to views: calls _problem_list
+   List the problem data for a given carenet.
 
    :shortname: carenet_problem_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -1015,7 +1015,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/procedures/
 
-   For 1:1 mapping of URLs to views: calls _procedure_list
+   List the procedure data for a given carenet.
 
    :shortname: carenet_procedure_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -1032,7 +1032,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/
 
-   For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list
+   List the simple_clinical_notes data for a given carenet.
 
    :shortname: carenet_simple_clinical_notes_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -1049,7 +1049,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/vitals/
 
-   For 1:1 mapping from URLs to views: calls _vitals_list
+   List the vitals data for a given carenet.
 
    :shortname: carenet_vitals_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -1066,7 +1066,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/reports/minimal/vitals/{CATEGORY}
 
-   For 1:1 mapping from URLs to views: calls _vitals_list
+   List the vitals data for a given carenet.
 
    :shortname: carenet_vitals_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -2357,7 +2357,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/experimental/ccr
 
-   
+   Export patient data as a Continuity of Care Record (CCR) document.
 
    :shortname: report_ccr
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2391,7 +2391,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/equipment/
 
-   For 1:1 mapping of URLs to views. Calls _equipment_list
+   List the equipment data for a given record.
 
    :shortname: equipment_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2408,7 +2408,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/immunizations/
 
-   For 1:1 mapping of URLs to views: calls _immunization_list
+   List the immunization data for a given record.
 
    :shortname: immunization_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2425,7 +2425,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/labs/
 
-   For 1:1 mapping of URLs to views. Calls _lab_list
+   List the lab data for a given record.
 
    :shortname: lab_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2442,7 +2442,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/measurements/{LAB_CODE}/
 
-   For 1:1 mapping of URLs to views: calls _measurement_list
+   List the measurement data for a given record.
 
    :shortname: measurement_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2460,7 +2460,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/medications/
 
-   For 1:1 mapping of URLs to views: calls _medication_list
+   List the medication data for a given record.
 
    :shortname: medication_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2477,7 +2477,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/problems/
 
-   For 1:1 mapping of URLs to views: calls _problem_list
+   List the problem data for a given record.
 
    :shortname: problem_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2494,7 +2494,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/procedures/
 
-   For 1:1 mapping of URLs to views: calls _procedure_list
+   List the procedure data for a given record.
 
    :shortname: procedure_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2511,7 +2511,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/simple-clinical-notes/
 
-   For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list
+   List the simple_clinical_notes data for a given record.
 
    :shortname: simple_clinical_notes_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2528,7 +2528,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/vitals/
 
-   For 1:1 mapping from URLs to views: calls _vitals_list
+   List the vitals data for a given record.
 
    :shortname: vitals_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2545,7 +2545,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/reports/minimal/vitals/{CATEGORY}/
 
-   For 1:1 mapping from URLs to views: calls _vitals_list
+   List the vitals data for a given record.
 
    :shortname: vitals_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record

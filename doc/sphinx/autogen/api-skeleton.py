@@ -1274,7 +1274,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _equipment_list
+ List the equipment data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1298,7 +1298,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _immunization_list
+ List the immunization data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1322,7 +1322,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _lab_list
+ List the lab data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1347,7 +1347,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
- For 1:1 mapping of URLs to views: calls _measurement_list 
+ List the measurement data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1371,7 +1371,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _medication_list
+ List the medication data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1395,7 +1395,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _problem_list
+ List the problem data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1419,7 +1419,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _procedure_list
+ List the procedure data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1443,7 +1443,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list
+ List the simple_clinical_notes data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1467,7 +1467,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from URLs to views: calls _vitals_list
+ List the vitals data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1492,7 +1492,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from URLs to views: calls _vitals_list
+ List the vitals data for a given carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3265,6 +3265,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Export patient data as a Continuity of Care Record (CCR) document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3312,7 +3313,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _equipment_list
+ List the equipment data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3336,7 +3337,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _immunization_list
+ List the immunization data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3360,7 +3361,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _lab_list
+ List the lab data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3385,7 +3386,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
- For 1:1 mapping of URLs to views: calls _measurement_list 
+ List the measurement data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3409,7 +3410,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _medication_list
+ List the medication data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3433,7 +3434,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _problem_list
+ List the problem data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3457,7 +3458,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views: calls _procedure_list
+ List the procedure data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3481,7 +3482,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _simple_clinical_notes_list
+ List the simple_clinical_notes data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3505,7 +3506,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from URLs to views: calls _vitals_list
+ List the vitals data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3530,7 +3531,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from URLs to views: calls _vitals_list
+ List the vitals data for a given record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''

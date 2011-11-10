@@ -1,5 +1,10 @@
 """
-some report utilities
+.. module:: views.reports.reportutils
+   :synopsis: Utilities used by reporting calls
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 import functools
@@ -11,8 +16,12 @@ ORDER_BY_MAPPINGS = {
 ORDER_BY = 'order_by'
 
 def report_orderby_update(order_by):
-    """
-    update the order_by given the mappings above
+    """ Update the order_by clause for a reporting call.
+
+    Looks up and applies mappings from ORDER_BY_MAPPINGS, above.
+
+    Returns a revised order_by string.
+
     """
     if not order_by:
         return None
@@ -30,8 +39,9 @@ def report_orderby_update(order_by):
 ## using inspect in our code, there's no good reason to do this.
 ##
 def report_orderby(func):
-    """
-    adjust the order_by parameter to be appropriately massaged
+    """ Decorator to automatically apply :py:meth:`~indivo_server.indivo.views.reports.reportutils.report_orderby_update` where required.
+
+    Adjusts the order_by parameter to be appropriately massaged
     to pull order_by from the right join table
     """
     

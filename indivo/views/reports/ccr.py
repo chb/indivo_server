@@ -1,5 +1,10 @@
 """
-Indivo Report - CCR
+.. module:: views.reports.ccr
+   :synopsis: Indivo view implementations for the CCR report.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from django.http import HttpResponseBadRequest
@@ -13,6 +18,13 @@ import datetime
 
 
 def report_ccr(request, record=None, carenet=None):
+  """ Export patient data as a Continuity of Care Record (CCR) document.
+  
+  Will return :http:statuscode:`200` with a CCR on success, 
+  :http:statuscode:`400` if neither a record or carenet was passed.
+
+  """
+
   if carenet:
     record = carenet.record
   if not record:
