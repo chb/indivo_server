@@ -1,5 +1,10 @@
 """
-Indivo Views -- Record
+.. module: views.record
+   :synopsis: Indivo view implementations for record-related calls.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 #import libxml2
@@ -15,9 +20,15 @@ ACTIVE_STATE = 'active'
 
 @marsloader()
 def record_list(request, account, status, limit=None, offset=None, order_by=None):
+  """ List all available records for an account.
+
+  This includes records that *account* owns, records that have been fully shared
+  with *account*, and records that are shared with *account* via carenets.
+
+  Will return :http:statuscode:`200` with a list of records on success.
+
   """
-  A list of records available for a given account
-  """
+
   records = account.records_owned_by.all()
   full_shares = account.fullshares_to.all()
   carenet_shares = account.carenetaccount_set.all()
@@ -25,6 +36,13 @@ def record_list(request, account, status, limit=None, offset=None, order_by=None
 
 
 def record_get_owner(request, record):
+  """ Get the owner of a record.
+
+  Will always return :http:statuscode:`200`. The response body will contain the
+  owner's email address, or the empty string if the record is unowned.
+  
+  """
+
   owner_email = ""
   if record.owner:
     owner_email = record.owner.email
@@ -32,6 +50,16 @@ def record_get_owner(request, record):
 
 
 def record_set_owner(request, record):
+  """ Set the owner of a record.
+
+  request.POST must contain the email address of the new owner.
+
+  Will return :http:statuscode:`200` with information about the new
+  owner on success, :http:statuscode:`400` if request.POST is empty
+  or the passed email address doesn't correspond to an existing principal.
+  
+  """
+
   try:
     record.owner = Principal.objects.get(email=request.raw_post_data)
     record.save()
@@ -42,10 +70,30 @@ def record_set_owner(request, record):
     
 
 def record(request, record):
+  """ Get information about an individual record.
+
+  Will return :http:statuscode:`200` with information about the record on
+  success.
+
+  """
+
   return render_template('record', {'record': record})
 
 
 def record_phas(request, record):
+  """ List userapps bound to a given record.
+
+  request.GET may optionally contain:
+
+  * *type*: An XML schema namespace. If specified, only apps which
+    explicitly declare themselves as supporting that namespace will
+    be returned.
+
+  Will return :http:statuscode:`200` with the list of matching apps
+  on success.
+
+  """
+
   phas = record.phas
 
   # are we filtering by schema?
@@ -62,6 +110,13 @@ def record_phas(request, record):
 
 
 def record_pha(request, record, pha):
+  """ Get information about a given userapp bound to a record.
+
+  Will return :http:statuscode:`200` with information about the app on success,
+  :http:statuscode:`404` if the app isn't actually bound to the record.
+
+  """
+
   try:
     pha = record.pha_shares.get(with_pha__email = pha.email).with_pha
   except PHAShare.DoesNotExist:
@@ -71,6 +126,26 @@ def record_pha(request, record, pha):
 
 
 def record_notify(request, record):
+  """ Send a notification about a record to all accounts authorized to be notified.
+
+  Notifications should be short alerts, as compared to full inbox messages, and
+  may only be formatted as plaintext.
+
+  request.POST must contain:
+
+  * *content*: The plaintext content of the notifications
+
+  request.POST may contain:
+
+  * *document_id*: The document to which this notification pertains.
+
+  * *app_url*: A callback url to the app for more information.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`400` if 
+  *content* wasn't passed.
+
+  """
+
   CONTENT = 'content'
   if request.POST.has_key(CONTENT):
     content = request.POST[CONTENT]
@@ -85,7 +160,14 @@ def record_notify(request, record):
 
 
 def record_shares(request, record):
-  """ List the shares of a record"""
+  """ List the shares of a record.
+
+  This includes shares with apps (phashares) and full shares with accounts
+  (fullshares).
+  
+  Will return :http:statuscode:`200` with a list of shares on success.
+
+  """
 
   pha_shares = record.pha_shares.all()
   full_shares = record.fullshares.all()
@@ -93,9 +175,25 @@ def record_shares(request, record):
 
 
 def record_share_add(request, record):
-  """
-  Add a share
-  FIXME: add label
+  """ Fully share a record with another account.
+
+  A full share gives the recipient account full access to all data and apps 
+  on the record, and adds the recipient to the list of accounts who are alerted
+  when the record gets a new alert or notification.
+
+  request.POST must contain:
+
+  * *account_id*: the email address of the recipient account.
+
+  request.POST may contain:
+
+  * *role_label*: A label for the share (usually the relationship between the
+    record owner and the recipient account, i.e. 'Guardian')
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`400` if
+  *account_id* was not passed, and :http:statuscode:`404` if the passed
+  *account_id* does not correspond to an existing Account.
+
   """
 
   ACCOUNT_ID = 'account_id'
@@ -115,7 +213,12 @@ def record_share_add(request, record):
 
 
 def record_share_delete(request, record, other_account_id):
-  """Remove a share"""
+  """ Undo a full record share with an account.
+  
+  Will return :http:statuscode:`200` on success, :http:statuscode:`404` if
+  *other_account_id* doesn't correspond to an existing Account.
+
+  """
 
   try:
     shares = AccountFullShare.objects.filter(record = record, with_account = Account.objects.get(email=other_account_id.lower().strip()))
@@ -128,17 +231,51 @@ def record_share_delete(request, record, other_account_id):
 
 @transaction.commit_on_success
 def record_create(request, principal_email=None, external_id=None):
-  """For 1:1 mapping of URLs to views: calls _record_create"""
+  """ Create a new record.
+
+  For 1:1 mapping of URLs to views: just calls 
+  :py:meth:`~indivo_server.indivo.views.record._record_create`.
+
+  """
+  
   return _record_create(request, principal_email, external_id)
 
 @transaction.commit_on_success
 def record_create_ext(request, principal_email=None, external_id=None):
-  """For 1:1 mapping of URLs to views: calls _record_create"""
+  """ Create a new record with an associated external id.
+
+  For 1:1 mapping of URLs to views: just calls 
+  :py:meth:`~indivo_server.indivo.views.record._record_create`.
+
+  """
+
   return _record_create(request, principal_email, external_id)
 
 def _record_create(request, principal_email=None, external_id=None):
-  """
-  Create an Indivo record
+  """ Create an Indivo record.
+
+  request.POST must contain raw XML that is a valid Indivo Contact
+  document (see :doc:`/schemas/contact-schema`).
+  
+  This call will create a new record containing the following 
+  information:
+
+  * *creator*: Corresponds to ``request.principal``.
+
+  * *label*: The full name of the new record, specified in the
+    contact document.
+
+  * *owner*: Corresponds to ``request.principal``.
+
+  * *external_id* An external identifier for the record, if 
+    passed in.
+
+  Additionally, this call will create a Contact document for the record.
+
+  Will return :http:statuscode:`200` with information about the record on
+  success, :http:statuscode:`400` if the contact data in request.POST was
+  empty or invalid XML.
+  
   """
 
   # If the xml data is not valid return an HttpResponseBadRequest Obj
@@ -190,11 +327,21 @@ def _record_create(request, principal_email=None, external_id=None):
 
 @transaction.commit_on_success
 def record_pha_setup(request, record, pha):
-  """Set up a PHA in a record ahead of time
+  """ Bind an app to a record without user authorization.
 
-  FIXME: eventually, when there are permission restrictions on a PHA, make sure that
-  any permission restrictions on the current PHA are transitioned accordingly
+  This call should be used to set up new records with apps required
+  for this instance of Indivo to run (i.e. syncer apps that connect to 
+  data sources). It can only be made by admins, since it skips the
+  normal app authorization process.
+
+  Will return :http:statuscode:`200` with a valid access token for the
+  app bound to the record on success.
+  
   """
+
+  # TODO: eventually, when there are permission restrictions on a PHA, 
+  # make sure that any permission restrictions on the current PHA are 
+  # transitioned accordingly.
 
   content = request.raw_post_data
 

@@ -28,6 +28,12 @@ sys.path.insert(0, os.path.abspath('../../..')) # indivo_server
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'localext.httpdomain']
 
+# autodoc config
+autodoc_default_flags = ['members', 
+                         'undoc-members', 
+                         'private-members', 
+                         'show-inheritance',]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
 

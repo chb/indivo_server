@@ -571,7 +571,12 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/records/
 
-   A list of records available for a given account
+   List all available records for an account.
+   
+     This includes records that *account* owns, records that have been fully shared
+     with *account*, and records that are shared with *account* via carenets.
+   
+     Will return :http:statuscode:`200` with a list of records on success.
 
    :shortname: record_list
    :accesscontrol: The Account owner.
@@ -1593,7 +1598,10 @@ Example Return Value::
 
 .. http:post:: /records/
 
-   For 1:1 mapping of URLs to views: calls _record_create
+   Create a new record.
+   
+     For 1:1 mapping of URLs to views: just calls 
+     :py:meth:`~indivo_server.indivo.views.record._record_create`.
 
    :shortname: record_create
    :accesscontrol: Any admin app.
@@ -1609,7 +1617,10 @@ Example Return Value::
 
 .. http:put:: /records/external/{PRINCIPAL_EMAIL}/{EXTERNAL_ID}
 
-   For 1:1 mapping of URLs to views: calls _record_create
+   Create a new record with an associated external id.
+   
+     For 1:1 mapping of URLs to views: just calls 
+     :py:meth:`~indivo_server.indivo.views.record._record_create`.
 
    :shortname: record_create_ext
    :accesscontrol: An admin app with an id matching the principal_email in the URL.
@@ -1627,7 +1638,10 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}
 
+   Get information about an individual record.
    
+     Will return :http:statuscode:`200` with information about the record on
+     success.
 
    :shortname: record
    :accesscontrol: A principal in full control of the record, the admin app that created the record, or a user app with access to the record.
@@ -1644,7 +1658,16 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/apps/
 
+   List userapps bound to a given record.
    
+     request.GET may optionally contain:
+   
+     * *type*: An XML schema namespace. If specified, only apps which
+       explicitly declare themselves as supporting that namespace will
+       be returned.
+   
+     Will return :http:statuscode:`200` with the list of matching apps
+     on success.
 
    :shortname: record_phas
    :accesscontrol: A principal in full control of the record, or any admin app.
@@ -1685,7 +1708,10 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}
 
+   Get information about a given userapp bound to a record.
    
+     Will return :http:statuscode:`200` with information about the app on success,
+     :http:statuscode:`404` if the app isn't actually bound to the record.
 
    :shortname: record_pha
    :accesscontrol: A principal in full control of the record, or any admin app.
@@ -1873,10 +1899,15 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/setup
 
-   Set up a PHA in a record ahead of time
+   Bind an app to a record without user authorization.
    
-     FIXME: eventually, when there are permission restrictions on a PHA, make sure that
-     any permission restrictions on the current PHA are transitioned accordingly
+     This call should be used to set up new records with apps required
+     for this instance of Indivo to run (i.e. syncer apps that connect to 
+     data sources). It can only be made by admins, since it skips the
+     normal app authorization process.
+   
+     Will return :http:statuscode:`200` with a valid access token for the
+     app bound to the record on success.
 
    :shortname: record_pha_setup
    :accesscontrol: Any admin app.
@@ -2712,7 +2743,23 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/notifications/
 
+   Send a notification about a record to all accounts authorized to be notified.
    
+     Notifications should be short alerts, as compared to full inbox messages, and
+     may only be formatted as plaintext.
+   
+     request.POST must contain:
+   
+     * *content*: The plaintext content of the notifications
+   
+     request.POST may contain:
+   
+     * *document_id*: The document to which this notification pertains.
+   
+     * *app_url*: A callback url to the app for more information.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`400` if 
+     *content* wasn't passed.
 
    :shortname: record_notify
    :accesscontrol: Any admin app, or a user app with access to the record.
@@ -2729,7 +2776,23 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/notify
 
+   Send a notification about a record to all accounts authorized to be notified.
    
+     Notifications should be short alerts, as compared to full inbox messages, and
+     may only be formatted as plaintext.
+   
+     request.POST must contain:
+   
+     * *content*: The plaintext content of the notifications
+   
+     request.POST may contain:
+   
+     * *document_id*: The document to which this notification pertains.
+   
+     * *app_url*: A callback url to the app for more information.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`400` if 
+     *content* wasn't passed.
 
    :shortname: record_notify
    :accesscontrol: Any admin app, or a user app with access to the record.
@@ -2746,7 +2809,10 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/owner
 
+   Get the owner of a record.
    
+     Will always return :http:statuscode:`200`. The response body will contain the
+     owner's email address, or the empty string if the record is unowned.
 
    :shortname: record_get_owner
    :accesscontrol: A principal in full control of the record, or any admin app.
@@ -2763,7 +2829,13 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/owner
 
+   Set the owner of a record.
    
+     request.POST must contain the email address of the new owner.
+   
+     Will return :http:statuscode:`200` with information about the new
+     owner on success, :http:statuscode:`400` if request.POST is empty
+     or the passed email address doesn't correspond to an existing principal.
 
    :shortname: record_set_owner
    :accesscontrol: Any admin app.
@@ -2780,7 +2852,13 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/owner
 
+   Set the owner of a record.
    
+     request.POST must contain the email address of the new owner.
+   
+     Will return :http:statuscode:`200` with information about the new
+     owner on success, :http:statuscode:`400` if request.POST is empty
+     or the passed email address doesn't correspond to an existing principal.
 
    :shortname: record_set_owner
    :accesscontrol: Any admin app.
@@ -3003,7 +3081,12 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/shares/
 
-   List the shares of a record
+   List the shares of a record.
+   
+     This includes shares with apps (phashares) and full shares with accounts
+     (fullshares).
+     
+     Will return :http:statuscode:`200` with a list of shares on success.
 
    :shortname: record_shares
    :accesscontrol: The owner of the record, or any admin app.
@@ -3020,8 +3103,24 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/shares/
 
-   Add a share
-     FIXME: add label
+   Fully share a record with another account.
+   
+     A full share gives the recipient account full access to all data and apps 
+     on the record, and adds the recipient to the list of accounts who are alerted
+     when the record gets a new alert or notification.
+   
+     request.POST must contain:
+   
+     * *account_id*: the email address of the recipient account.
+   
+     request.POST may contain:
+   
+     * *role_label*: A label for the share (usually the relationship between the
+       record owner and the recipient account, i.e. 'Guardian')
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`400` if
+     *account_id* was not passed, and :http:statuscode:`404` if the passed
+     *account_id* does not correspond to an existing Account.
 
    :shortname: record_share_add
    :accesscontrol: The owner of the record, or any admin app.
@@ -3038,7 +3137,10 @@ Example Return Value::
 
 .. http:delete:: /records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}
 
-   Remove a share
+   Undo a full record share with an account.
+     
+     Will return :http:statuscode:`200` on success, :http:statuscode:`404` if
+     *other_account_id* doesn't correspond to an existing Account.
 
    :shortname: record_share_delete
    :accesscontrol: The owner of the record, or any admin app.
@@ -3056,7 +3158,10 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}/delete
 
-   Remove a share
+   Undo a full record share with an account.
+     
+     Will return :http:statuscode:`200` on success, :http:statuscode:`404` if
+     *other_account_id* doesn't correspond to an existing Account.
 
    :shortname: record_share_delete
    :accesscontrol: The owner of the record, or any admin app.
