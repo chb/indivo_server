@@ -10,6 +10,10 @@ including API calls related to:
 * records
 * reporting
 * sharing
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from ..version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE

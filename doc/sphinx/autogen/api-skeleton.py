@@ -226,7 +226,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     :py:meth:`~indivo_server.indivo.views.account.account_password_change`
     in that it does not require validation of the old password. This
     function is therefore admin-facing, whereas 
-    :py:meth:`~indivo_server.indivo.views.account.acount_password_change` 
+    :py:meth:`~indivo_server.indivo.views.account.account_password_change` 
     is user-facing.
 
     request.POST must contain:
@@ -2130,6 +2130,15 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Return audits of calls touching *record*.
+
+  Will return :http:statuscode:`200` with matching audits on succes, 
+  :http:statuscode:`404` if *record* doesn't exist.
+
+  .. deprecated:: 0.9.3
+     Use :py:meth:`~indivo_server.indivo.views.audit.audit_query` instead.
+
+  
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2151,6 +2160,15 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Return audits of calls touching *record* and *document_id*.
+
+  Will return :http:statuscode:`200` with matching audits on succes, 
+  :http:statuscode:`404` if *record* or *document_id* don't exist.
+
+  .. deprecated:: 0.9.3
+     Use :py:meth:`~indivo_server.indivo.views.audit.audit_query` instead.
+
+  
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2173,6 +2191,15 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Return audits of calls to *function_name* touching *record* and *document_id*.
+
+  Will return :http:statuscode:`200` with matching audits on succes, 
+  :http:statuscode:`404` if *record* or *document_id* don't exist.
+
+  .. deprecated:: 0.9.3
+     Use :py:meth:`~indivo_server.indivo.views.audit.audit_query` instead.
+
+  
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2193,7 +2220,16 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Select Audit Objects via the Query API Interface
+ Select Audit Objects via the Query API Interface.
+
+  Accepts any argument specified by the :doc:`query-api`, and filters
+  available audit objects by the arguments.
+
+  Will return :http:statuscode:`200` with XML containing individual or
+  aggregated audit records on succes, :http:statuscode:`400` if any of 
+  the arguments to the query interface are invalid.
+
+  
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''

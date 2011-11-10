@@ -1,4 +1,11 @@
-"""Account-related Indivo view implementations."""
+""" 
+.. module:: views.account
+   :synopsis: Account-related Indivo view implementations.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
+"""
 
 from base import *
 import urllib
