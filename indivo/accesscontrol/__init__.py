@@ -140,12 +140,6 @@ def load_access_rules():
   views = [exchange_token]
   AccessRule('Reqtoken For Oauth', reqtoken_for_oauth, views)
 
-  def accesstoken_for_oauth(principal, **unused_args):
-    """A request signed by an AccessToken."""
-    return principal.isType('AccessToken')
-  views = [get_long_lived_token] # IS THIS OUTDATED?
-  AccessRule('Accesstoken For Oauth', accesstoken_for_oauth, views)
-
   def token_approval_admin(principal, reqtoken, **unused_args):
     """A principal in the carenet to which the request token is restricted (if the token is restricted), or a principal with full control over the record (if the token is not restricted)."""
     carenet_reqtoken = False

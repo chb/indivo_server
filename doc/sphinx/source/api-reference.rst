@@ -686,7 +686,9 @@ Example Return Value::
 
 .. http:get:: /apps/
 
-   A list of the PHAs as JSON
+   List all available userapps.
+   
+     Will return :http:statuscode:`200` with an XML list of apps on success.
 
    :shortname: all_phas
    :accesscontrol: Any principal in Indivo.
@@ -702,7 +704,13 @@ Example Return Value::
 
 .. http:delete:: /apps/{PHA_EMAIL}
 
+   Delete a userapp from Indivo.
    
+     This call removes the app entirely from indivo, so it will never be
+     accessible again. To remove an app just from a single record, see
+     :py:meth:`~indivo_server.indivo.views.pha.pha_record_delete`.
+   
+     Will return :http:statuscode:`200` on success.
 
    :shortname: pha_delete
    :accesscontrol: The user app itself.
@@ -719,7 +727,10 @@ Example Return Value::
 
 .. http:get:: /apps/{PHA_EMAIL}
 
+   Return a description of a single userapp.
    
+     Will return :http:statuscode:`200` with an XML description of the app 
+     on success.
 
    :shortname: pha
    :accesscontrol: Any principal in Indivo.
@@ -1393,7 +1404,13 @@ Example Return Value::
 
 .. http:post:: /oauth/access_token
 
+   Exchange a request token for a valid access token.
    
+     This call requires that the request be signed with a valid oauth request
+     token that has previously been authorized.
+   
+     Will return :http:statuscode:`200` with the access token on success,
+     :http:statuscode:`403` if the oauth signature is missing or invalid.
 
    :shortname: exchange_token
    :accesscontrol: A request signed by a RequestToken.
@@ -1409,7 +1426,16 @@ Example Return Value::
 
 .. http:post:: /oauth/internal/request_tokens/{REQTOKEN_ID}/approve
 
+   Indicate a user's consent to bind an app to a record or carenet.
    
+     request.POST must contain **EITHER**:
+     
+     * *record_id*: The record to bind to.
+   
+     * *carenet_id*: The carenet to bind to.
+   
+     Will return :http:statuscode:`200` with a redirect url to the app on success,
+     :http:statuscode:`403` if *record_id*/*carenet_id* don't match *reqtoken*.
 
    :shortname: request_token_approve
    :accesscontrol: A principal in the carenet to which the request token is restricted (if the token is restricted), or a principal with full control over the record (if the token is not restricted).
@@ -1426,7 +1452,13 @@ Example Return Value::
 
 .. http:post:: /oauth/internal/request_tokens/{REQTOKEN_ID}/claim
 
+   Claim a request token on behalf of an account.
    
+     After this call, no one but ``request.principal`` will be able to
+     approve *reqtoken*.
+   
+     Will return :http:statuscode:`200` with the email of the claiming principal
+     on success, :http:statuscode:`403` if the token has already been claimed.
 
    :shortname: request_token_claim
    :accesscontrol: Any Account.
@@ -1443,7 +1475,17 @@ Example Return Value::
 
 .. http:get:: /oauth/internal/request_tokens/{REQTOKEN_ID}/info
 
-   get info about the request token
+   Get information about a request token.
+   
+     Information includes: 
+   
+     * the record/carenet it is bound to
+     
+     * Whether the bound record/carenet has been authorized before
+     
+     * Information about the app for which the token was generated.
+   
+     Will return :http:statuscode:`200` with the info on success.
 
    :shortname: request_token_info
    :accesscontrol: Any Account.
@@ -1460,7 +1502,23 @@ Example Return Value::
 
 .. http:post:: /oauth/internal/session_create
 
+   Authenticate a user and register a web session for them.
    
+     request.POST must contain:
+   
+     * *username*: the username of the user to authenticate.
+   
+     request.POST may contain **EITHER**:
+     
+     * *password*: the password to use with *username* against the
+       internal password auth system.
+   
+     * *system*: An external auth system to authenticate the user
+       with.
+   
+     Will return :http:statuscode:`200` with a valid session token 
+     on success, :http:statuscode:`403` if the passed credentials were
+     invalid or it the passed *system* doesn't exist.
 
    :shortname: session_create
    :accesscontrol: Any Indivo UI app.
@@ -1476,13 +1534,24 @@ Example Return Value::
 
 .. http:get:: /oauth/internal/surl-verify
 
-   Verifies a signed URL
+   Verify a signed URL.
      
-     The URL should contain a bunch of GET parameters, including
-     - surl_timestamp
-     - surl_token
-     - surl_sig
-     which are used to verify the rest of the URL
+     The URL must contain the following GET parameters:
+     
+     * *surl_timestamp*: when the url was generated. Must be within the past hour,
+       to avoid permitting old surls.
+   
+     * *surl_token* The access token used to sign the url.
+   
+     * *surl_sig* The computed signature (base-64 encoded sha1) of the url.
+   
+     Will always return :http:statuscode:`200`. The response body will be one of:
+     
+     * ``<result>ok</result>``: The surl was valid.
+   
+     * ``<result>old</result>``: The surl was too old.
+   
+     * ``<result>mismatch</result>``: The surl's signature was invalid.
 
    :shortname: surl_verify
    :accesscontrol: Any Account.
@@ -1498,7 +1567,17 @@ Example Return Value::
 
 .. http:post:: /oauth/request_token
 
-   the request-token request URL
+   Get a new request token, bound to a record or carenet if desired.
+   
+       request.POST may contain **EITHER**:
+   
+       * *indivo_record_id*: The record to which to bind the request token.
+       
+       * *indivo_carenet_id*: The carenet to which to bind the request token.
+   
+       Will return :http:statuscode:`200` with the request token on success,
+       :http:statuscode:`403` if the oauth signature on the request was missing
+       of faulty.
 
    :shortname: request_token
    :accesscontrol: Any user app.
@@ -1582,7 +1661,13 @@ Example Return Value::
 
 .. http:delete:: /records/{RECORD_ID}/apps/{PHA_EMAIL}
 
+   Remove a userapp from a record.
    
+     This is accomplished by deleting the app from all carenets belonging to
+     the record, then removing the Shares between the record and the app.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`404` if
+     either the record or the app don't exist.
 
    :shortname: pha_record_delete
    :accesscontrol: Any admin app, or a principal in full control of the record.

@@ -1,5 +1,10 @@
 """
-Indivo views -- PHAs
+.. module:: views.pha
+   :synopsis: Indivo view implementations for userapp-related calls.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 import urllib, urlparse
@@ -13,15 +18,36 @@ from indivo.lib import iso8601
 import base64, hmac, datetime
 
 def all_phas(request):
-  """A list of the PHAs as JSON"""
+  """ List all available userapps.
+
+  Will return :http:statuscode:`200` with an XML list of apps on success.
+
+  """
 
   phas = PHA.objects.all()
   return render_template('phas', {'phas': phas}, type="xml")
   
 def pha(request, pha):
+  """ Return a description of a single userapp.
+
+  Will return :http:statuscode:`200` with an XML description of the app 
+  on success.
+  
+  """
+
   return render_template('pha', {'pha' : pha}, type="xml")
 
 def pha_record_delete(request, record, pha):
+  """ Remove a userapp from a record.
+
+  This is accomplished by deleting the app from all carenets belonging to
+  the record, then removing the Shares between the record and the app.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`404` if
+  either the record or the app don't exist.
+
+  """
+
   try:
     # delete all the carenet placements of the app
     CarenetPHA.objects.filter(carenet__record = record, pha=pha).delete()
@@ -34,6 +60,16 @@ def pha_record_delete(request, record, pha):
 
 
 def pha_delete(request, pha):
+  """ Delete a userapp from Indivo.
+
+  This call removes the app entirely from indivo, so it will never be
+  accessible again. To remove an app just from a single record, see
+  :py:meth:`~indivo_server.indivo.views.pha.pha_record_delete`.
+
+  Will return :http:statuscode:`200` on success.
+
+  """
+
   try:
     pha.delete()
   except:
@@ -45,9 +81,20 @@ def pha_delete(request, pha):
 ##
 
 def request_token(request):
+    """ Get a new request token, bound to a record or carenet if desired.
+
+    request.POST may contain **EITHER**:
+
+    * *indivo_record_id*: The record to which to bind the request token.
+    
+    * *indivo_carenet_id*: The carenet to which to bind the request token.
+
+    Will return :http:statuscode:`200` with the request token on success,
+    :http:statuscode:`403` if the oauth signature on the request was missing
+    of faulty.
+
     """
-    the request-token request URL
-    """
+
     # ask the oauth server to generate a request token given the HTTP request
     try:
       # we already have the oauth_request in context, so we don't get it again
@@ -62,23 +109,53 @@ def request_token(request):
 
 
 def exchange_token(request):
-    # ask the oauth server to exchange a request token into an access token
-    # this will check proper oauth for this action
+  """ Exchange a request token for a valid access token.
 
-    try:
-      from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
-      access_token = OAUTH_SERVER.exchange_request_token(request.oauth_request)
-      # an exception can be raised if there is a bad signature (or no signature) in the request
-    except:
-      raise PermissionDenied()
+  This call requires that the request be signed with a valid oauth request
+  token that has previously been authorized.
 
-    return HttpResponse(access_token.to_string(), mimetype='text/plain')
+  Will return :http:statuscode:`200` with the access token on success,
+  :http:statuscode:`403` if the oauth signature is missing or invalid.
+
+  """
+
+  # ask the oauth server to exchange a request token into an access token
+  # this will check proper oauth for this action
+
+  try:
+    from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
+    access_token = OAUTH_SERVER.exchange_request_token(request.oauth_request)
+    # an exception can be raised if there is a bad signature (or no signature) in the request
+  except:
+    raise PermissionDenied()
+  
+  return HttpResponse(access_token.to_string(), mimetype='text/plain')
 
 ##
 ## OAuth internal calls
 ##
 
 def session_create(request):
+  """ Authenticate a user and register a web session for them.
+
+  request.POST must contain:
+
+  * *username*: the username of the user to authenticate.
+
+  request.POST may contain **EITHER**:
+  
+  * *password*: the password to use with *username* against the
+    internal password auth system.
+
+  * *system*: An external auth system to authenticate the user
+    with.
+
+  Will return :http:statuscode:`200` with a valid session token 
+  on success, :http:statuscode:`403` if the passed credentials were
+  invalid or it the passed *system* doesn't exist.
+  
+  """
+
   from indivo.accesscontrol import auth
   password = None
   if request.POST.has_key('username'):
@@ -109,6 +186,16 @@ def session_create(request):
 
 
 def request_token_claim(request, reqtoken):
+  """ Claim a request token on behalf of an account.
+
+  After this call, no one but ``request.principal`` will be able to
+  approve *reqtoken*.
+
+  Will return :http:statuscode:`200` with the email of the claiming principal
+  on success, :http:statuscode:`403` if the token has already been claimed.
+
+  """
+
   # already claimed by someone other than me?
   if reqtoken.authorized_by != None and reqtoken.authorized_by != request.principal:
     raise PermissionDenied()
@@ -120,9 +207,20 @@ def request_token_claim(request, reqtoken):
 
 
 def request_token_info(request, reqtoken):
+  """ Get information about a request token.
+
+  Information includes: 
+
+  * the record/carenet it is bound to
+  
+  * Whether the bound record/carenet has been authorized before
+  
+  * Information about the app for which the token was generated.
+
+  Will return :http:statuscode:`200` with the info on success.
+  
   """
-  get info about the request token
-  """
+
   share = None
 
   try:
@@ -142,6 +240,19 @@ def request_token_info(request, reqtoken):
 
 
 def request_token_approve(request, reqtoken):
+  """ Indicate a user's consent to bind an app to a record or carenet.
+
+  request.POST must contain **EITHER**:
+  
+  * *record_id*: The record to bind to.
+
+  * *carenet_id*: The carenet to bind to.
+
+  Will return :http:statuscode:`200` with a redirect url to the app on success,
+  :http:statuscode:`403` if *record_id*/*carenet_id* don't match *reqtoken*.
+
+  """
+
   record_id = request.POST.get('record_id', None)
   carenet_id = request.POST.get('carenet_id', None)
   
@@ -175,26 +286,6 @@ def request_token_approve(request, reqtoken):
   # redirect to the request token's callback, or if null the PHA's default callback
   return HttpResponse(urllib.urlencode({'location': redirect_url}))
 
-def get_long_lived_token(request):
-  # FIXME: deprecate this for now
-  raise PermissionDenied
-
-  if request.method != "POST":
-    # FIXME probably 405
-    raise Http404
-  
-  # check if current principal is capable of generating a long-lived token
-  # may move this to accesscontrol, but this is a bit of an odd call
-  principal = request.principal
-
-  if not principal.share.offline:
-    raise PermissionDenied
-
-  new_token, new_secret = oauth.generate_token_and_secret()
-  long_lived_token = principal.share.new_access_token(new_token, new_secret, account = None)
-  
-  return HttpResponse(long_lived_token.to_string(), mimetype='text/plain')  
-
 ##
 ## PHA app storage: see views/documents/document.py
 ##
@@ -203,13 +294,25 @@ def get_long_lived_token(request):
 ## signing URLs
 ##
 def surl_verify(request):
-  """Verifies a signed URL
+  """ Verify a signed URL.
   
-  The URL should contain a bunch of GET parameters, including
-  - surl_timestamp
-  - surl_token
-  - surl_sig
-  which are used to verify the rest of the URL
+  The URL must contain the following GET parameters:
+  
+  * *surl_timestamp*: when the url was generated. Must be within the past hour,
+    to avoid permitting old surls.
+
+  * *surl_token* The access token used to sign the url.
+
+  * *surl_sig* The computed signature (base-64 encoded sha1) of the url.
+
+  Will always return :http:statuscode:`200`. The response body will be one of:
+  
+  * ``<result>ok</result>``: The surl was valid.
+
+  * ``<result>old</result>``: The surl was too old.
+
+  * ``<result>mismatch</result>``: The surl's signature was invalid.
+  
   """
 
   OK = HttpResponse("<result>ok</result>", mimetype="application/xml")
