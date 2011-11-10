@@ -1,5 +1,10 @@
 """
-Indivo Views -- Base
+.. module:: views.base
+   :synopsis: Base includes for Indivo views.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest

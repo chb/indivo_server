@@ -13,7 +13,7 @@
 {% endif %}
 
   {% for attachment in message.messageattachment_set.all %}
-  <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.type}}" saved_to_doc_id="{{attachment.saved_to_document_id}}" />
+  <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.size}}" saved_to_doc_id="{{attachment.saved_to_document_id}}" />
   {% endfor %}
 </Message>
 {% endspaceless %}

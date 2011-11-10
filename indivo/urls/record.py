@@ -40,8 +40,6 @@ urlpatterns = patterns('',
     (r'^/notifications/$', MethodDispatcher({'POST':record_notify})),
 
     # message record
-    (r'^/inbox/$', MethodDispatcher({
-                'GET': record_inbox})),
     (r'^/inbox/(?P<message_id>[^/]+)$', MethodDispatcher({
                 'POST': record_send_message})),
     (r'^/inbox/(?P<message_id>[^/]+)/attachments/(?P<attachment_num>[^/]+)$', MethodDispatcher({

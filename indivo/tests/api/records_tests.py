@@ -568,13 +568,6 @@ class RecordInternalTests(InternalTests):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-    def test_get_record_inbox(self):
-        record_id = self.record.id
-        url = '/records/%s/inbox/'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # CREATE MESSAGES FOR INBOX
-
     def test_record_send_message(self):
         # Test send and attach together to avoid setup
         record_id = self.record.id

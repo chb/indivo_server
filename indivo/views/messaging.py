@@ -1,5 +1,10 @@
 """
-Indivo Views -- Messaging
+.. module:: views.messaging
+   :synopsis: Indivo view implementations for messaging-related calls.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from base import *
@@ -11,6 +16,8 @@ from indivo.lib import mdx_linkexpander
 from django.db import IntegrityError
 
 def _get_subject(request):
+  """Extract a message subject from request.POST."""
+
   subject = []
   subject.append(request.POST.get('subject', "[no subject]"))
   return ''.join(subject)
@@ -18,9 +25,29 @@ def _get_subject(request):
 @transaction.commit_on_success
 @handle_integrity_error('Duplicate external id. Each message requires a unique message_id')
 def account_send_message(request, account):
+  """ Send a message to an account.
+
+  Account messages have no attachments for now, as we wouldn't know
+  which record to store them on.
+
+  request.POST may contain any of:
+
+  * *message_id*: An external identifier for the message, used for later
+    retrieval. Defaults to ``None``.
+
+  * *body*: The message body. Defaults to ``[no body]``.
+
+  * *severity*: The importance of the message. Options are ``low``, ``medium``,
+    ``high``. Defaults to ``low``.
+
+  After delivering the message to Indivo's inbox, this call will send an email to 
+  the account's contact address, alerting them that a new message has arrived.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`400` if the
+  passed *message_id* is a duplicate.
+  
   """
-  account messages have no attachments for now
-  """
+
   Message.objects.create( 
     account             = account, 
     sender              = request.principal, 
@@ -36,6 +63,33 @@ def account_send_message(request, account):
 @transaction.commit_on_success
 @handle_integrity_error('Duplicate external id. Each message requires a unique message_id')
 def record_send_message(request, record, message_id):
+  """ Send a message to a record.
+
+  request.POST may contain any of:
+
+  * *body*: The message body. Defaults to ``[no body]``.
+
+  * *body_type*: The formatting of the message body. Options are ``plaintext``,
+    ``markdown``. Defaults to ``markdown``.
+
+  * *num_attachments*: The number of attachments this message requires. Attachments
+    are uploaded with calls to 
+    :py:meth:`~indivo_server.indivo.views.messaging.record_message_attach`, and 
+    the message will not be delivered until all attachments have been uploaded.
+    Defaults to 0.
+
+  * *severity*: The importance of the message. Options are ``low``, ``medium``,
+    ``high``. Defaults to ``low``.
+
+  After delivering the message to the Indivo inbox of all accounts authorized to
+  view messages for the passed *record*, this call will send an email to each 
+  account's contact address, alerting them that a new message has arrived.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`400` if the
+  passed *message_id* is a duplicate.
+  
+  """
+
   record.send_message(
     external_identifier = message_id, 
     sender              = request.principal.effective_principal,
@@ -50,6 +104,19 @@ def record_send_message(request, record, message_id):
 @transaction.commit_on_success
 @handle_integrity_error('Duplicate attachment number. Each attachment number must be unique and 1-indexed')
 def record_message_attach(request, record, message_id, attachment_num):
+  """ Attach a document to an Indivo message.
+
+  Only XML documents are accepted for now. Since Message objects are duplicated
+  for each recipient account, this call may attach the document to multiple
+  Message objects.
+
+  request.POST must contain the raw XML attachment data.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`400` if the
+  attachment with number *attachment_num* has already been uploaded.
+
+  """
+
   # there may be more than one message here
   messages = Message.objects.filter(about_record = record, external_identifier = message_id)
   
@@ -59,13 +126,20 @@ def record_message_attach(request, record, message_id, attachment_num):
   return DONE
 
 @marsloader()
-def record_inbox(request, record, limit, offset, status, order_by):
-  messages = record.get_messages().order_by(order_by)
-  return render_template('messages', {'messages' : messages})
-
-
-@marsloader()
 def account_inbox(request, account, limit, offset, status, order_by):
+  """ List messages in an account's inbox.
+
+  Messages will be ordered by *order_by* and paged by *limit* and
+  *offset*. request.GET may additionally contain:
+
+  * *include_archive*: Adds messages that have been archived (which are
+    normally omitted) to the listing. Any value will be interpreted as ``True``. 
+    Defaults to ``False``, as if it weren't passed.
+
+  Will return :http:statuscode:`200` with a list of messages on success.
+
+  """
+
   messages = account.message_as_recipient.order_by(order_by)
 
   if not request.GET.get('include_archive', False):
@@ -75,6 +149,24 @@ def account_inbox(request, account, limit, offset, status, order_by):
 
 
 def account_inbox_message(request, account, message_id):
+  """ Retrieve an individual message from an account's inbox.
+
+  This call additionally filters message content based on its
+  body-type. For example, markdown content is scrubbed of 
+  extraneous HTML, then converted to HTML content. Also, this
+  call marks the message as read.
+
+  *message_id* should be the external identifier of the message
+  as created by 
+  :py:meth:`~indivo_server.indivo.views.messaging.account_send_message` or
+  :py:meth:`~indivo_server.indivo.views.messaging.record_send_message`.
+
+  Will return :http:statuscode:`200` with XML describing the message
+  (id, sender, dates received, read, and archived, subject, body,
+  severity, etc.) on success.
+
+  """
+
   message = account.message_as_recipient.get(id = message_id)
 
   # if message not read, mark it read
@@ -94,6 +186,15 @@ def account_inbox_message(request, account, message_id):
 
 
 def account_inbox_message_attachment_accept(request, account, message_id, attachment_num):
+  """ Accept a message attachment into the record it corresponds to.
+
+  This call is triggered when a user views a message with an attachment, and 
+  chooses to add the attachment contents into their record.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`410` if the 
+  attachment has already been saved.
+
+  """
   message = account.message_as_recipient.get(id = message_id)
   
   # this might fail, if the document doesn't validate
@@ -105,9 +206,17 @@ def account_inbox_message_attachment_accept(request, account, message_id, attach
     return DONE
 
 def account_message_archive(request, account, message_id):
+  """ Archive a message.
+
+  This call sets a message's archival date as now, unless it's already set. 
+  This means that future calls to 
+  :py:meth:`~indivo_server.indivo.views.messaging.account_inbox` will not
+  display this message by default.
+  
+  Will return :http:statuscode:`200` on success.
+
   """
-  set a message's archival date as now, unless it's already set
-  """
+
   message = account.message_as_recipient.get(id = message_id)
   if not message.archived_at:
     message.archived_at = datetime.datetime.utcnow()
@@ -117,5 +226,13 @@ def account_message_archive(request, account, message_id):
 
 @marsloader()
 def account_notifications(request, account, limit, offset, status, order_by):
+  """ List an account's notifications.
+
+  Orders by *order_by*, pages by *limit* and *offset*.
+  
+  Will return :http:statuscode:`200` with a list of notifications on success.
+
+  """
+
   notifications = Notification.objects.filter(account = account).order_by(order_by)
   return render_template('notifications', {'notifications' : notifications})

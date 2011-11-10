@@ -303,7 +303,16 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/inbox/
 
+   List messages in an account's inbox.
    
+     Messages will be ordered by *order_by* and paged by *limit* and
+     *offset*. request.GET may additionally contain:
+   
+     * *include_archive*: Adds messages that have been archived (which are
+       normally omitted) to the listing. Any value will be interpreted as ``True``. 
+       Defaults to ``False``, as if it weren't passed.
+   
+     Will return :http:statuscode:`200` with a list of messages on success.
 
    :shortname: account_inbox
    :accesscontrol: The Account owner.
@@ -320,7 +329,26 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/inbox/
 
-   account messages have no attachments for now
+   Send a message to an account.
+   
+     Account messages have no attachments for now, as we wouldn't know
+     which record to store them on.
+   
+     request.POST may contain any of:
+   
+     * *message_id*: An external identifier for the message, used for later
+       retrieval. Defaults to ``None``.
+   
+     * *body*: The message body. Defaults to ``[no body]``.
+   
+     * *severity*: The importance of the message. Options are ``low``, ``medium``,
+       ``high``. Defaults to ``low``.
+   
+     After delivering the message to Indivo's inbox, this call will send an email to 
+     the account's contact address, alerting them that a new message has arrived.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`400` if the
+     passed *message_id* is a duplicate.
 
    :shortname: account_send_message
    :accesscontrol: Any admin app.
@@ -337,7 +365,21 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/inbox/{MESSAGE_ID}
 
+   Retrieve an individual message from an account's inbox.
    
+     This call additionally filters message content based on its
+     body-type. For example, markdown content is scrubbed of 
+     extraneous HTML, then converted to HTML content. Also, this
+     call marks the message as read.
+   
+     *message_id* should be the external identifier of the message
+     as created by 
+     :py:meth:`~indivo_server.indivo.views.messaging.account_send_message` or
+     :py:meth:`~indivo_server.indivo.views.messaging.record_send_message`.
+   
+     Will return :http:statuscode:`200` with XML describing the message
+     (id, sender, dates received, read, and archived, subject, body,
+     severity, etc.) on success.
 
    :shortname: account_inbox_message
    :accesscontrol: The Account owner.
@@ -355,7 +397,14 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/inbox/{MESSAGE_ID}/archive
 
-   set a message's archival date as now, unless it's already set
+   Archive a message.
+   
+     This call sets a message's archival date as now, unless it's already set. 
+     This means that future calls to 
+     :py:meth:`~indivo_server.indivo.views.messaging.account_inbox` will not
+     display this message by default.
+     
+     Will return :http:statuscode:`200` on success.
 
    :shortname: account_message_archive
    :accesscontrol: The Account owner.
@@ -373,7 +422,13 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}/accept
 
+   Accept a message attachment into the record it corresponds to.
    
+     This call is triggered when a user views a message with an attachment, and 
+     chooses to add the attachment contents into their record.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`410` if the 
+     attachment has already been saved.
 
    :shortname: account_inbox_message_attachment_accept
    :accesscontrol: The Account owner.
@@ -453,7 +508,11 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/notifications/
 
+   List an account's notifications.
    
+     Orders by *order_by*, pages by *limit* and *offset*.
+     
+     Will return :http:statuscode:`200` with a list of notifications on success.
 
    :shortname: account_notifications
    :accesscontrol: The Account owner.
@@ -1824,7 +1883,7 @@ Example Return Value::
 
    Select Audit Objects via the Query API Interface.
    
-     Accepts any argument specified by the :doc:`query-api`, and filters
+     Accepts any argument specified by the :doc:`/query-api`, and filters
      available audit objects by the arguments.
    
      Will return :http:statuscode:`200` with XML containing individual or
@@ -2497,26 +2556,32 @@ Example Return Value::
 
 --------
 
-.. http:get:: /records/{RECORD_ID}/inbox/
-
-   
-
-   :shortname: record_inbox
-   :accesscontrol: 
-   :parameter RECORD_ID: The id string associated with the Indivo record
-   :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
-
-Example Return Value::
-   
-   GIVE AN EXAMPLE OF A RETURN VALUE
-   
-
-
---------
-
 .. http:post:: /records/{RECORD_ID}/inbox/{MESSAGE_ID}
 
+   Send a message to a record.
    
+     request.POST may contain any of:
+   
+     * *body*: The message body. Defaults to ``[no body]``.
+   
+     * *body_type*: The formatting of the message body. Options are ``plaintext``,
+       ``markdown``. Defaults to ``markdown``.
+   
+     * *num_attachments*: The number of attachments this message requires. Attachments
+       are uploaded with calls to 
+       :py:meth:`~indivo_server.indivo.views.messaging.record_message_attach`, and 
+       the message will not be delivered until all attachments have been uploaded.
+       Defaults to 0.
+   
+     * *severity*: The importance of the message. Options are ``low``, ``medium``,
+       ``high``. Defaults to ``low``.
+   
+     After delivering the message to the Indivo inbox of all accounts authorized to
+     view messages for the passed *record*, this call will send an email to each 
+     account's contact address, alerting them that a new message has arrived.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`400` if the
+     passed *message_id* is a duplicate.
 
    :shortname: record_send_message
    :accesscontrol: Any admin app, or a user app with access to the record.
@@ -2534,7 +2599,16 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}
 
+   Attach a document to an Indivo message.
    
+     Only XML documents are accepted for now. Since Message objects are duplicated
+     for each recipient account, this call may attach the document to multiple
+     Message objects.
+   
+     request.POST must contain the raw XML attachment data.
+   
+     Will return :http:statuscode:`200` on success, :http:statuscode:`400` if the
+     attachment with number *attachment_num* has already been uploaded.
 
    :shortname: record_message_attach
    :accesscontrol: Any admin app, or a user app with access to the record.
