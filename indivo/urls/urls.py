@@ -25,9 +25,6 @@ urlpatterns = patterns('',
      MethodDispatcher({'PUT'  : record_create_ext})),
     (r'^records/(?P<record_id>[^/]+)', include('indivo.urls.record')),
     
-    # Current identity
-    (r'^id$', MethodDispatcher({'GET':get_id})),
-
     # PHAs
     (r'^apps/$', MethodDispatcher({'GET':all_phas})),
     (r'^apps/(?P<pha_email>[^/]+)$', 

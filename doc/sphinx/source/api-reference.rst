@@ -10,11 +10,37 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
 
 .. http:post:: /accounts/
 
-   **Create an account**
+   Create a new account.
    
-   * first, stir the pot
+       request.POST holds the creation arguments. 
    
-   * second, get the account!
+       Required Parameters:
+   
+       * *account_id*: an identifier for the new address. Must be formatted
+         as an email address.
+   
+       Optional Parameters:
+   
+       * *full_name*: The full name to associate with the account. Defaults
+         to the empty string.
+   
+       * *contact_email*: A valid email at which the account holder can 
+         be reached. Defaults to the *account_id* parameter.
+   
+       * *primary_secret_p*: ``0`` or ``1``. Whether or not to associate 
+         a primary secret with the account. Defaults to ``0``.
+   
+       * *secondary_secret_p*: ``0`` or ``1``. Whether or not to associate
+         a secondary secret with the account. Defaults to ``1``.
+   
+       After creating the new account, this call generates secrets for it,
+       and then emails the user (at *contact_email*) with their activation
+       link, which contains the primary secret.
+   
+       This call will return :http:statuscode:`200` with info about the new
+       account on success, :http:statuscode:`400` if *account_id* isn't 
+       provided or isn't a valid email address, or if an account already
+       exists with an id matching *account_id*.
 
    :shortname: account_create
    :accesscontrol: Any admin app.
@@ -30,7 +56,21 @@ Example Return Value::
 
 .. http:get:: /accounts/search
 
-   Search accounts
+   Search for accounts by name or email.
+   
+       request.GET must contain the query parameters, any of:
+       
+       * *fullname*: The full name of the account
+       
+       * *contact_email*: The contact email for the account.
+   
+       This call returns only accounts matching all passed 
+       query parameters exactly: there is no partial matching
+       or text-search.
+   
+       Will return :http:statuscode:`200` with XML describing
+       matching accounts on success, :http:statuscode:`400` if
+       no query parameters are passed.
 
    :shortname: account_search
    :accesscontrol: Any admin app.
@@ -46,7 +86,14 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}
 
+   Display information about an account.
    
+       Return information includes the account's secondary-secret,
+       full name, contact email, login counts, state, and auth 
+       systems.
+   
+       Will return :http:statuscode:`200` on success, with account info
+       XML.
 
    :shortname: account_info
    :accesscontrol: Any admin app, or the Account owner.
@@ -63,7 +110,40 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/authsystems/
 
+   Add a new method of authentication to an account.
    
+       Accounts cannot be logged into unless there exists a
+       mechanism for authenticating them. Indivo supports one
+       built-in mechanism, password auth, but is extensible with
+       other mechanisms (i.e., LDAP, etc.). If an external mechanism 
+       is used, a UI app is responsible for user authentication, and 
+       this call merely registers with indivo server the fact that 
+       the UI can handle auth. If password auth is used, this call 
+       additionally registers the password with indivo server.
+       Thus, this call can be used to add internal or external auth 
+       systems.
+   
+       request.POST must contain:
+   
+       * *system*: The identifier (a short slug) associated with the
+         desired auth system. ``password`` identifies the internal
+         password system, and external auth systems will define their
+         own identifiers.
+   
+       * *username*: The username that this account will use to 
+         authenticate against the new authsystem
+         
+       * *password*: The password to pair with the username.
+         **ONLY REQUIRED IF THE AUTH SYSTEM IS THE INTERNAL
+         PASSWORD SYSTEM**.
+   
+       Will return :http:statuscode:`200` on success, 
+       :http:statuscode:`403` if the indicated auth system doesn't exist,
+       and :http:statuscode:`400` if the POST data didn't contain a system
+       and a username (and a password if system was ``password``), or if
+       the account is already registered for the given authsystem, or a 
+       different account is already registered for the given authsystem with
+       the same username.
 
    :shortname: account_authsystem_add
    :accesscontrol: Any admin app.
@@ -80,7 +160,17 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/authsystems/password/change
 
+   Change a account's password.
    
+       request.POST must contain:
+       
+       * *old*: The existing account password.
+       * *new*: The desired new password.
+   
+       Will return :http:statuscode:`200` on success,
+       :http:statuscode:`403` if the old password didn't
+       validate, :http:statuscode:`400` if the POST data
+       didn't contain both an old password and a new one.
 
    :shortname: account_password_change
    :accesscontrol: The Account owner.
@@ -97,7 +187,21 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/authsystems/password/set
 
+   Force the password of an account to a given value.
    
+       This differs from 
+       :py:meth:`~indivo_server.indivo.views.account.account_password_change`
+       in that it does not require validation of the old password. This
+       function is therefore admin-facing, whereas 
+       :py:meth:`~indivo_server.indivo.views.account.acount_password_change` 
+       is user-facing.
+   
+       request.POST must contain:
+       
+       * *password*: The new password to set.
+   
+       Will return :http:statuscode:`200` on success, :http:statuscode:`400`
+       if the passed POST data didn't contain a new password.
 
    :shortname: account_password_set
    :accesscontrol: Any admin app.
@@ -114,7 +218,15 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/authsystems/password/set-username
 
+   Force the username of an account to a given value.
    
+       request.POST must contain:
+   
+       * *username*: The new username to set.
+   
+       Will return :http:statuscode:`200` on success, 
+       :http:statuscode:`400` if the POST data doesn't conatain
+       a new username.
 
    :shortname: account_username_set
    :accesscontrol: Any admin app, or the Account owner.
@@ -131,7 +243,18 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/check-secrets/{PRIMARY_SECRET}
 
+   Validate an account's primary and secondary secrets.
    
+       If the secondary secret is to be validated, request.GET must
+       contain:
+   
+       * *secondary_secret*: The account's secondary secret.
+   
+       This call will validate the prmary secret, and the secondary
+       secret if passed.
+   
+       Will return :http:statuscode:`200` on success, 
+       :http:statuscode:`403` if either validation fails.
 
    :shortname: account_check_secrets
    :accesscontrol: Any admin app.
@@ -149,7 +272,21 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/forgot-password
 
+   Resets an account if the user has forgotten its password.
    
+       This is a convenience call which encapsulates
+       :py:meth:`~indivo_server.indivo.views.account.account_reset`, 
+       :py:meth:`~indivo_server.indivo.views.account.account_resend_secret`, and
+       :py:meth:`~indivo_server.indivo.views.account.account_secret`. In summary,
+       it resets the account to an uninitialized state, emails
+       the user with a new primary-secret, and returns the
+       secondary secret for display.
+   
+       Will return :http:statuscode:`200` with the secondary secret
+       on success, :http:statuscode:`400` if the account hasn't yet
+       been initialized and couldn't possibly need a reset. If the
+       account has no associated secondary secret, the return XML
+       will be empty.
 
    :shortname: account_forgot_password
    :accesscontrol: Any admin app.
@@ -255,7 +392,19 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/info-set
 
+   Set basic information about an account.
    
+       request.POST can contain any of:
+   
+       * *contact_email*: A new contact email for the account.
+   
+       * *full_name*: A new full name for the account.
+   
+       Each passed parameter will be updated for the account.
+   
+       Will return :http:statuscode:`200` on success, 
+       :http:statuscode:`400` if the POST data contains none of
+       the settable parameters.
 
    :shortname: account_info_set
    :accesscontrol: Any admin app, or the Account owner.
@@ -272,7 +421,21 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/initialize/{PRIMARY_SECRET}
 
+   Initialize an account, activating it.
    
+       After validating primary and secondary secrets, changes the 
+       account's state from ``uninitialized`` to ``active`` and sends
+       a welcome email to the user.
+   
+       If the account has an associated secondary secret, request.POST 
+       must contain:
+   
+       * *secondary_secret*: The secondary_secret generated for the account.
+   
+       Will return :http:statuscode:`200` on success, :http:statuscode:`403`
+       if the account has already been initialized or if either of the account
+       secrets didn't validate, and :http:statuscode:`400` if a secondary secret
+       was required, but didn't appear in the POST data.
 
    :shortname: account_initialize
    :accesscontrol: Any Indivo UI app.
@@ -324,7 +487,15 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/primary-secret
 
+   Display an account's primary secret.
    
+       This is an admin-facing call, and should be used sparingly,
+       as we would like to avoid sending primary-secrets over the
+       wire. If possible, use 
+       :py:meth:`~indivo_server.indivo.views.account.account_check_secrets`
+       instead.
+   
+       Will return :http:statuscode:`200` with the primary secret on success.
 
    :shortname: account_primary_secret
    :accesscontrol: Any admin app.
@@ -358,7 +529,11 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/reset
 
+   Reset an account to an ``uninitialized`` state.
    
+       Just calls into :py:meth:`~indivo_server.indivo.models.accounts.Account.reset`.
+   
+       Will return :http:statuscode:`200` on success.
 
    :shortname: account_reset
    :accesscontrol: Any admin app.
@@ -375,7 +550,11 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/secret
 
+   Return the secondary secret of an account.
    
+       Will always return :http:statuscode:`200`. If the account 
+       has no associated secondary secret, the return XML will
+       be empty.
 
    :shortname: account_secret
    :accesscontrol: Any admin app.
@@ -392,7 +571,9 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/secret-resend
 
+   Sends an account user their primary secret in case they lost it.
    
+       Will return :http:statuscode:`200` on success.
 
    :shortname: account_resend_secret
    :accesscontrol: Any admin app.
@@ -409,7 +590,27 @@ Example Return Value::
 
 .. http:post:: /accounts/{ACCOUNT_EMAIL}/set-state
 
-   set the state of the account (active/disabled/retired)
+   Set the state of an account. 
+   
+       request.POST must contain:
+       
+       * *state*: The desired new state of the account.
+   
+       Options are: 
+       
+       * ``active``: The account is ready for use.
+       
+       * ``disabled``: The account has been disabled,
+         and cannot be logged into.
+         
+       * ``retired``: The account has been permanently
+         disabled, and will never allow login again.
+         Retired accounts cannot be set to any other 
+         state.
+   
+       Will return :http:statuscode:`200` on success,
+       :http:statuscode:`403` if the account has been
+       retired.
 
    :shortname: account_set_state
    :accesscontrol: Any admin app.
@@ -843,8 +1044,8 @@ Example Return Value::
 
    :shortname: carenet_document
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -861,8 +1062,8 @@ Example Return Value::
 
    :shortname: carenet_document_meta
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -1121,22 +1322,6 @@ Example Return Value::
    :shortname: coding_system_query
    :accesscontrol: 
    :parameter SYSTEM_SHORT_NAME: 
-   :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
-
-Example Return Value::
-   
-   GIVE AN EXAMPLE OF A RETURN VALUE
-   
-
-
---------
-
-.. http:get:: /id
-
-   
-
-   :shortname: get_id
-   :accesscontrol: 
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -1973,8 +2158,8 @@ Example Return Value::
    :shortname: carenet_document_delete
    :accesscontrol: A principal in full control of the carenet's record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -1992,8 +2177,8 @@ Example Return Value::
    :shortname: carenet_document_placement
    :accesscontrol: A principal in full control of the carenet's record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2011,8 +2196,8 @@ Example Return Value::
    :shortname: autoshare_revert
    :accesscontrol: A principal in full control of the record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2122,8 +2307,8 @@ Example Return Value::
    :shortname: get_documents_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2141,8 +2326,8 @@ Example Return Value::
    :shortname: document_create_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2160,10 +2345,10 @@ Example Return Value::
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
    :parameter EXTERNAL_ID: The external identifier of the desired resource
-   :parameter PHA_EMAIL: The email identifier of the Indivo user app
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter PHA_EMAIL: The email identifier of the Indivo user app
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2181,10 +2366,10 @@ Example Return Value::
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
    :parameter EXTERNAL_ID: The external identifier of the desired resource
-   :parameter PHA_EMAIL: The email identifier of the Indivo user app
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter PHA_EMAIL: The email identifier of the Indivo user app
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2732,7 +2917,7 @@ Example Return Value::
 
 .. http:get:: /version
 
-   
+   Return the current version of Indivo.
 
    :shortname: get_version
    :accesscontrol: Any principal in Indivo.

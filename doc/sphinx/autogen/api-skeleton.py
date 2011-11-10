@@ -12,12 +12,39 @@ CALLS=[{
     "data_fields":{
         },
     "description":'''
-**Create an account**
+ Create a new account.
 
-* first, stir the pot
+    request.POST holds the creation arguments. 
 
-* second, get the account!
+    Required Parameters:
 
+    * *account_id*: an identifier for the new address. Must be formatted
+      as an email address.
+
+    Optional Parameters:
+
+    * *full_name*: The full name to associate with the account. Defaults
+      to the empty string.
+
+    * *contact_email*: A valid email at which the account holder can 
+      be reached. Defaults to the *account_id* parameter.
+
+    * *primary_secret_p*: ``0`` or ``1``. Whether or not to associate 
+      a primary secret with the account. Defaults to ``0``.
+
+    * *secondary_secret_p*: ``0`` or ``1``. Whether or not to associate
+      a secondary secret with the account. Defaults to ``1``.
+
+    After creating the new account, this call generates secrets for it,
+    and then emails the user (at *contact_email*) with their activation
+    link, which contains the primary secret.
+
+    This call will return :http:statuscode:`200` with info about the new
+    account on success, :http:statuscode:`400` if *account_id* isn't 
+    provided or isn't a valid email address, or if an account already
+    exists with an id matching *account_id*.
+      
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -37,7 +64,23 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Search accounts
+ Search for accounts by name or email.
+
+    request.GET must contain the query parameters, any of:
+    
+    * *fullname*: The full name of the account
+    
+    * *contact_email*: The contact email for the account.
+
+    This call returns only accounts matching all passed 
+    query parameters exactly: there is no partial matching
+    or text-search.
+
+    Will return :http:statuscode:`200` with XML describing
+    matching accounts on success, :http:statuscode:`400` if
+    no query parameters are passed.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -58,6 +101,16 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Display information about an account.
+
+    Return information includes the account's secondary-secret,
+    full name, contact email, login counts, state, and auth 
+    systems.
+
+    Will return :http:statuscode:`200` on success, with account info
+    XML.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -78,6 +131,42 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Add a new method of authentication to an account.
+
+    Accounts cannot be logged into unless there exists a
+    mechanism for authenticating them. Indivo supports one
+    built-in mechanism, password auth, but is extensible with
+    other mechanisms (i.e., LDAP, etc.). If an external mechanism 
+    is used, a UI app is responsible for user authentication, and 
+    this call merely registers with indivo server the fact that 
+    the UI can handle auth. If password auth is used, this call 
+    additionally registers the password with indivo server.
+    Thus, this call can be used to add internal or external auth 
+    systems.
+
+    request.POST must contain:
+
+    * *system*: The identifier (a short slug) associated with the
+      desired auth system. ``password`` identifies the internal
+      password system, and external auth systems will define their
+      own identifiers.
+
+    * *username*: The username that this account will use to 
+      authenticate against the new authsystem
+      
+    * *password*: The password to pair with the username.
+      **ONLY REQUIRED IF THE AUTH SYSTEM IS THE INTERNAL
+      PASSWORD SYSTEM**.
+
+    Will return :http:statuscode:`200` on success, 
+    :http:statuscode:`403` if the indicated auth system doesn't exist,
+    and :http:statuscode:`400` if the POST data didn't contain a system
+    and a username (and a password if system was ``password``), or if
+    the account is already registered for the given authsystem, or a 
+    different account is already registered for the given authsystem with
+    the same username.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -98,6 +187,19 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Change a account's password.
+
+    request.POST must contain:
+    
+    * *old*: The existing account password.
+    * *new*: The desired new password.
+
+    Will return :http:statuscode:`200` on success,
+    :http:statuscode:`403` if the old password didn't
+    validate, :http:statuscode:`400` if the POST data
+    didn't contain both an old password and a new one.
+    
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -118,6 +220,23 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Force the password of an account to a given value.
+
+    This differs from 
+    :py:meth:`~indivo_server.indivo.views.account.account_password_change`
+    in that it does not require validation of the old password. This
+    function is therefore admin-facing, whereas 
+    :py:meth:`~indivo_server.indivo.views.account.acount_password_change` 
+    is user-facing.
+
+    request.POST must contain:
+    
+    * *password*: The new password to set.
+
+    Will return :http:statuscode:`200` on success, :http:statuscode:`400`
+    if the passed POST data didn't contain a new password.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -138,6 +257,17 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Force the username of an account to a given value.
+
+    request.POST must contain:
+
+    * *username*: The new username to set.
+
+    Will return :http:statuscode:`200` on success, 
+    :http:statuscode:`400` if the POST data doesn't conatain
+    a new username.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -159,6 +289,20 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Validate an account's primary and secondary secrets.
+
+    If the secondary secret is to be validated, request.GET must
+    contain:
+
+    * *secondary_secret*: The account's secondary secret.
+
+    This call will validate the prmary secret, and the secondary
+    secret if passed.
+
+    Will return :http:statuscode:`200` on success, 
+    :http:statuscode:`403` if either validation fails.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -179,6 +323,23 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Resets an account if the user has forgotten its password.
+
+    This is a convenience call which encapsulates
+    :py:meth:`~indivo_server.indivo.views.account.account_reset`, 
+    :py:meth:`~indivo_server.indivo.views.account.account_resend_secret`, and
+    :py:meth:`~indivo_server.indivo.views.account.account_secret`. In summary,
+    it resets the account to an uninitialized state, emails
+    the user with a new primary-secret, and returns the
+    secondary secret for display.
+
+    Will return :http:statuscode:`200` with the secondary secret
+    on success, :http:statuscode:`400` if the account hasn't yet
+    been initialized and couldn't possibly need a reset. If the
+    account has no associated secondary secret, the return XML
+    will be empty.
+    
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -307,6 +468,21 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Set basic information about an account.
+
+    request.POST can contain any of:
+
+    * *contact_email*: A new contact email for the account.
+
+    * *full_name*: A new full name for the account.
+
+    Each passed parameter will be updated for the account.
+
+    Will return :http:statuscode:`200` on success, 
+    :http:statuscode:`400` if the POST data contains none of
+    the settable parameters.
+    
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -328,6 +504,23 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Initialize an account, activating it.
+
+    After validating primary and secondary secrets, changes the 
+    account's state from ``uninitialized`` to ``active`` and sends
+    a welcome email to the user.
+
+    If the account has an associated secondary secret, request.POST 
+    must contain:
+
+    * *secondary_secret*: The secondary_secret generated for the account.
+
+    Will return :http:statuscode:`200` on success, :http:statuscode:`403`
+    if the account has already been initialized or if either of the account
+    secrets didn't validate, and :http:statuscode:`400` if a secondary secret
+    was required, but didn't appear in the POST data.
+    
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -389,6 +582,17 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Display an account's primary secret.
+
+    This is an admin-facing call, and should be used sparingly,
+    as we would like to avoid sending primary-secrets over the
+    wire. If possible, use 
+    :py:meth:`~indivo_server.indivo.views.account.account_check_secrets`
+    instead.
+
+    Will return :http:statuscode:`200` with the primary secret on success.
+    
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -431,6 +635,13 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Reset an account to an ``uninitialized`` state.
+
+    Just calls into :py:meth:`~indivo_server.indivo.models.accounts.Account.reset`.
+
+    Will return :http:statuscode:`200` on success.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -451,6 +662,13 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Return the secondary secret of an account.
+
+    Will always return :http:statuscode:`200`. If the account 
+    has no associated secondary secret, the return XML will
+    be empty.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -471,6 +689,11 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Sends an account user their primary secret in case they lost it.
+
+    Will return :http:statuscode:`200` on success.
+
+    
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -491,7 +714,28 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-    set the state of the account (active/disabled/retired)
+ Set the state of an account. 
+
+    request.POST must contain:
+    
+    * *state*: The desired new state of the account.
+
+    Options are: 
+    
+    * ``active``: The account is ready for use.
+    
+    * ``disabled``: The account has been disabled,
+      and cannot be logged into.
+      
+    * ``retired``: The account has been permanently
+      disabled, and will never allow login again.
+      Retired accounts cannot be set to any other 
+      state.
+
+    Will return :http:statuscode:`200` on success,
+    :http:statuscode:`403` if the account has been
+    retired.
+
     
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
@@ -1010,8 +1254,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "view_func":"carenet_document",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1036,8 +1280,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "view_func":"carenet_document_meta",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
@@ -1355,25 +1599,6 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"",
     "url_params":{
         'SYSTEM_SHORT_NAME':'',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":'''
-''',
-    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
-    "return_ex":'''
-GIVE AN EXAMPLE OF A RETURN VALUE
-''',
-
-},
-{
-    "method":"GET",
-    "path":"/id",
-    "view_func":"get_id",
-    "access_doc":"",
-    "url_params":{
         },
     "query_opts":{
         },
@@ -2388,8 +2613,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -2411,8 +2636,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -2435,8 +2660,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A principal in full control of the record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -2568,8 +2793,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -2594,8 +2819,8 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
@@ -2617,10 +2842,10 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'EXTERNAL_ID':'The external identifier of the desired resource',
-        'PHA_EMAIL':'The email identifier of the Indivo user app',
         'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
         },
     "query_opts":{
         },
@@ -2642,10 +2867,10 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'EXTERNAL_ID':'The external identifier of the desired resource',
-        'PHA_EMAIL':'The email identifier of the Indivo user app',
         'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
         },
     "query_opts":{
         },
@@ -3318,6 +3543,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Return the current version of Indivo.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
