@@ -1,5 +1,10 @@
 """
-Indivo views -- Sharing
+.. module:: views.sharing.shares_carenet
+   :synopsis: Indivo view implementations related to carenet management
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from indivo.views.base import *
@@ -11,10 +16,18 @@ NAME = 'name'
 
 @transaction.commit_on_success
 def carenet_create(request, record):
+    """ Create a new carenet for a record.
+  
+    request.POST must contain:
+    
+    * *name*: the label for the new carenet.
+
+    Will return :http:statuscode:`200` with XML describing the new
+    carenet on success, :http:statuscode:`400` if *name* wasn't passed
+    or if a carenet named *name* already exists on this record.
+    
     """
-    POST to /records/{record_id}/carenets/
-    Must have a 'name' key/value pair and the name must not yet be used by this record
-    """
+
     if request.POST.has_key(NAME):
         carenet_name = request.POST[NAME]
         try:
@@ -27,17 +40,40 @@ def carenet_create(request, record):
 
 
 def carenet_list(request, record):
+    """ List all carenets for a record.
+
+    Will return :http:statuscode:`200` with a list of carenets on success.
+
+    """
     carenets = Carenet.objects.filter(record=record)
     return render_template('carenets', {'carenets':carenets, 'record':record}, type="xml")
 
 
 def carenet_delete(request, carenet):
+    """ Delete a carenet.
+
+    Will return :http:statuscode:`200` on success.
+
+    """
+
     carenet.delete()
     return DONE
 
 
 @transaction.commit_on_success
 def carenet_rename(request, carenet):
+    """ Change a carenet's name.
+
+    request.POST must contain:
+    
+    * *name*: The new name for the carenet.
+    
+    Will return :http:statuscode:`200` with XML describing the renamed
+    carenet on success, :http:statuscode:`400` if *name* wasn't passed
+    or if a carenet named *name* already exists on this record.
+
+    """
+
     if request.POST.has_key(NAME):
         try:
             carenet.name = request.POST[NAME]

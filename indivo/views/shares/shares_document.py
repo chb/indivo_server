@@ -1,5 +1,10 @@
 """
-Indivo views -- Sharing
+.. module:: views.sharing.shares_document
+   :synopsis: Indivo view implementations related to sharing documents
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 import indivo.views
@@ -14,8 +19,12 @@ from indivo.models import Document
 
 @transaction.commit_on_success
 def carenet_document_placement(request, record, carenet, document_id):
-  """
-  Place a document into a given carenet
+  """ Place a document into a given carenet.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`404` if
+  *document_id* doesn't exist or if *document_id* has a nevershare set
+  on it.
+
   """
   document = _get_document(document_id=document_id, record=record)
 
@@ -28,7 +37,21 @@ def carenet_document_placement(request, record, carenet, document_id):
 
 
 def carenet_document_delete(request, carenet, record, document_id):
-  """Delete a document into a given carenet"""
+  """ Unshare a document from a given carenet.
+
+  If there is an autoshare of *document_id*'s type into *carenet*, this 
+  call creates an exception for *document_id* in *carenet*. If *document_id*
+  was shared individually into *carenet*, this call removes it. If *document_id*
+  is not shared in *carenet* at all, this call does nothing immediately.
+  
+  In all cases, this call exempts *document_id* from any future autoshares into
+  this carenet.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`404` if 
+  *document_id* doesn't exist or if *document_id* or *carenet* don't belong
+  to *record*.
+
+  """
 
   document = _get_document(document_id=document_id, record=record)
 
@@ -47,19 +70,30 @@ def carenet_document_delete(request, carenet, record, document_id):
 
 
 def carenet_record(request, carenet):
-  """Basic record information within a carenet
+  """ Get basic information about the record to which a carenet belongs.
 
-  For now, just the record label
+  For now, info is the record id, label, creation time, creator, contact,
+  and demographics.
+
+  Will return :http:statuscode:`200` with XML about the record on success.
+
   """
   return render_template('record', {'record': carenet.record})
 
 
 @marsloader()
 def carenet_document_list(request, carenet, limit, offset, status, order_by):
-  """List documents from a given carenet
+  """List documents from a given carenet.
 
-    Return both documents in the given carenet and 
-    documents with the same types as in the record's autoshare
+  request.GET may contain:
+  
+  * *type*: The document schema type to filter on.
+
+  Returns both documents in the given carenet and documents with the same types 
+  as in the record's autoshare, filtered by *type* if passed.
+
+  Will return :http:statuscode:`200` with a document list on success,
+  :http:statuscode:`404` if *type* doesn't exist.
 
   """
   
@@ -82,10 +116,14 @@ def carenet_document_list(request, carenet, limit, offset, status, order_by):
 
 
 def carenet_document(request, carenet, document_id):
-  """Return a document given a record and carenet id
+  """Return a document from a carenet.
 
-    Return the document if it is in the given carenet or 
-    its type is in the record's autoshare
+  Will only return the document if it exists within the carenet.
+  
+  Will return :http:statuscode:`200` with the document content on success,
+  :http:statuscode:`404` if *document_id* is invalid or if the indicated
+  document is not shared in *carenet*.
+
   """
   
   document = _get_document(document_id=document_id, carenet=carenet)
@@ -98,10 +136,11 @@ def carenet_document(request, carenet, document_id):
     raise Http404
 
 def document_carenets(request, record, document_id):
-  """List all the carenets for a given document
+  """List all the carenets into which a document has been shared.
 
-    This view retrieves all the carenets in which  a given 
-    document has been placed
+  Will return :http:statuscode:`200` with a list of carenets on success,
+  :http:statuscode:`404` if *document_id* is invalid.
+  
   """
   document = _get_document(document_id=document_id, record=record)
   if not document:

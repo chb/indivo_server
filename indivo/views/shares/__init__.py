@@ -1,3 +1,12 @@
+""" Indivo Sharing Views.
+
+The views that implement sharing API calls.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
+"""
+
 from shares_account import *
 from shares_autoshare import *
 from shares_carenet import *
