@@ -340,41 +340,52 @@ class Call(object):
         return '"%s":\'\'\'%s\'\'\',\n'%(key, ret)
 
     def to_ReST_directive(self):
-        # Output will look lik
-        #
-        # .. http:get:: /records/{RECORD_ID}
+        """ Render a ReST directive line for the Call.
+
+        Output will look like:
+        
+        .. http:get:: /records/{RECORD_ID}
+        
+        """
+
         return ".. http:%s:: %s"%(self.method.lower(), self.path)
 
     def to_ReST(self):
-        # Output will look like 
-        #
-        # .. http:get:: /records/{RECORD_ID}
-        #
-        #    Get basic record information.
-        #
-        #    :shortname: record
-        #    :accesscontrol: The record owner, the admin app that created it, or an app with access to it
-        #    :query order_by: one of ``label``, ``created-at``
-        #    :query offset: offset number. default is 0
-        #    :query limit: limit number. default is 30
-        #    :param RECORD_ID: the Indivo record identifier
-        #    :returns: XML describing the record
-        #
-        # ::
-        #
-        #    <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
-        #      <contact document_id="83nvb-038xcc-98xcv-234234325235" />
-        #      <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
-        #    </Record>
-        #
-        # .. versionadded:: 0.9.3
-        #    
-        # .. versionchanged:: 1.0.0
-        #    Added *offset* to query parameters
-        #
-        # .. deprecated:: 0.9.3
-        #    Use :http:get:`/records/{RECORD_ID}/get` instead.
-        # 
+        """ Render the Call as a ReST block.
+         
+        Prints directive, description, parameters, an example output, 
+        and versions changed, added, or deprecated.
+
+        Output will look like: 
+
+        .. http:get:: /records/{RECORD_ID}
+        
+           Get basic record information.
+        
+           :shortname: record
+           :accesscontrol: The record owner, the admin app that created it, or an app with access to it
+           :query order_by: one of ``label``, ``created-at``
+           :query offset: offset number. default is 0
+           :query limit: limit number. default is 30
+           :param RECORD_ID: the Indivo record identifier
+           :returns: XML describing the record
+        
+        ::
+        
+           <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
+             <contact document_id="83nvb-038xcc-98xcv-234234325235" />
+             <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
+           </Record>
+        
+        .. versionadded:: 0.9.3
+           
+        .. versionchanged:: 1.0.0
+           Added *offset* to query parameters
+        
+        .. deprecated:: 0.9.3
+           Use :http:get:`/records/{RECORD_ID}/get` instead.
+        
+        """ 
 
         directive = self.to_ReST_directive()
         short_name = ":shortname: %s"%self.view_func_name
@@ -403,6 +414,10 @@ class Call(object):
                 ret_ex = '\n' + ret_ex
             for line in ret_ex.split('\n'):
                 out += self._indent(indent) + line + '\n'
+
+        if self.description.find('IMPLEMENTED') > -1:
+            todo_desc = "The API Call '%s' is not yet implemented."%self.title
+            out += '\n.. todo:: \n\n%s%s\n'%(self._indent(indent), todo_desc)
 
         if self.added:
             out += self._change_directive('versionadded', self.added[0],

@@ -153,7 +153,7 @@ Workflow is as follows:
             ret = os.system(cmd)
 
             # Build the Docs
-            ret = os.system('make html')
+            ret = os.system('make html SPHINXOPTS=-a')
 
         else:
             raise CommandError('Unexpected argument: %s. Expected 1 argument: "parse" or "build"'%args[0])            

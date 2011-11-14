@@ -303,7 +303,7 @@ Example Return Value::
 
 .. http:get:: /accounts/{ACCOUNT_EMAIL}/permissions/
 
-   Retrieve the permissions of a given account across all carenets
+   List the carenets that an account has access to.
 
    :shortname: account_permissions
    :accesscontrol: The Account owner.
@@ -632,7 +632,7 @@ Example Return Value::
 
 .. http:delete:: /carenets/{CARENET_ID}
 
-   
+   Delete a carenet.
 
    :shortname: carenet_delete
    :accesscontrol: A principal in full control of the carenet's record.
@@ -649,7 +649,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/accounts/
 
-   List the accounts of a given carenet
+   List the accounts in a carenet.
 
    :shortname: carenet_account_list
    :accesscontrol: A principal in the carenet, in full control of the carenet's record, or any admin app.
@@ -666,7 +666,7 @@ Example Return Value::
 
 .. http:post:: /carenets/{CARENET_ID}/accounts/
 
-   Link an account to a given carenet
+   Add an account to a carenet.
 
    :shortname: carenet_account_create
    :accesscontrol: A principal in full control of the carenet's record.
@@ -683,7 +683,7 @@ Example Return Value::
 
 .. http:delete:: /carenets/{CARENET_ID}/accounts/{ACCOUNT_ID}
 
-   Unlink an account from a given carenet
+   Remove an account from a carenet.
 
    :shortname: carenet_account_delete
    :accesscontrol: A principal in full control of the carenet's record.
@@ -701,7 +701,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/accounts/{ACCOUNT_ID}/permissions
 
-   Retrieve the permissions of a given account within a given carenet
+   List the permissions of an account within a carenet.
 
    :shortname: carenet_account_permissions
    :accesscontrol: A user app with access to the carenet and proxying the account, a principal in full control of the carenet's record, or any admin app.
@@ -719,7 +719,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/apps/
 
-   List Apps within a given carenet
+   List Apps within a given carenet.
 
    :shortname: carenet_apps_list
    :accesscontrol: A principal in the carenet, in full control of the carenet's record, or any admin app.
@@ -736,7 +736,7 @@ Example Return Value::
 
 .. http:delete:: /carenets/{CARENET_ID}/apps/{PHA_EMAIL}
 
-   
+   Remove an app from a given carenet.
 
    :shortname: carenet_apps_delete
    :accesscontrol: A principal in full control of the carenet's record.
@@ -754,7 +754,7 @@ Example Return Value::
 
 .. http:put:: /carenets/{CARENET_ID}/apps/{PHA_EMAIL}
 
-   
+   Add an app to a carenet
 
    :shortname: carenet_apps_create
    :accesscontrol: A principal in full control of the carenet's record.
@@ -772,7 +772,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/apps/{PHA_EMAIL}/permissions
 
-   Retrieve the permissions for an app within a carenet
+   Retrieve the permissions for an app within a carenet. NOT IMPLEMENTED.
 
    :shortname: carenet_app_permissions
    :accesscontrol: 
@@ -785,12 +785,16 @@ Example Return Value::
    GIVE AN EXAMPLE OF A RETURN VALUE
    
 
+.. todo:: 
+
+   The API Call 'GET /carenets/{0}/apps/{1}/permissions' is not yet implemented.
+
 
 --------
 
 .. http:get:: /carenets/{CARENET_ID}/documents/
 
-   List documents from a given carenet
+   List documents from a given carenet.
 
    :shortname: carenet_document_list
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -825,7 +829,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}
 
-   Return a document given a record and carenet id
+   Return a document from a carenet.
 
    :shortname: carenet_document
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -861,7 +865,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/record
 
-   Basic record information within a carenet
+   Get basic information about the record to which a carenet belongs.
 
    :shortname: carenet_record
    :accesscontrol: 
@@ -878,7 +882,7 @@ Example Return Value::
 
 .. http:post:: /carenets/{CARENET_ID}/rename
 
-   
+   Change a carenet's name.
 
    :shortname: carenet_rename
    :accesscontrol: A principal in full control of the carenet's record.
@@ -1594,7 +1598,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/autoshare/bytype/
 
-   
+   For a single record, list all carenets that a given doctype is autoshared with.
 
    :shortname: autoshare_list
    :accesscontrol: A principal in full control of the record.
@@ -1611,7 +1615,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/autoshare/bytype/all
 
-   
+   For a single record, list all doctypes autoshared into carenets.
 
    :shortname: autoshare_list_bytype_all
    :accesscontrol: A principal in full control of the record.
@@ -1628,7 +1632,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/autoshare/carenets/{CARENET_ID}/bytype/set
 
-   
+   Automatically share all documents of a certain type into a carenet.
 
    :shortname: autoshare_create
    :accesscontrol: A principal in full control of the record.
@@ -1646,7 +1650,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/autoshare/carenets/{CARENET_ID}/bytype/unset
 
-   
+   Remove an autoshare from a carenet.
 
    :shortname: autoshare_delete
    :accesscontrol: A principal in full control of the record.
@@ -1664,7 +1668,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/carenets/
 
-   
+   List all carenets for a record.
 
    :shortname: carenet_list
    :accesscontrol: A principal in full control of the record, or any admin app.
@@ -1681,7 +1685,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/carenets/
 
-   
+   Create a new carenet for a record.
 
    :shortname: carenet_create
    :accesscontrol: A principal in full control of the record, or any admin app.
@@ -1898,7 +1902,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/
 
-   List all the carenets for a given document
+   List all the carenets into which a document has been shared.
 
    :shortname: document_carenets
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -1916,7 +1920,7 @@ Example Return Value::
 
 .. http:delete:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}
 
-   Delete a document into a given carenet
+   Unshare a document from a given carenet.
 
    :shortname: carenet_document_delete
    :accesscontrol: A principal in full control of the carenet's record.
@@ -1935,7 +1939,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}
 
-   
+   Place a document into a given carenet.
 
    :shortname: carenet_document_placement
    :accesscontrol: A principal in full control of the carenet's record.
@@ -1954,7 +1958,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}/autoshare-revert
 
-   
+   Revert the document-sharing of a document in a carent to whatever rules are specified by autoshares. NOT IMPLEMENTED.
 
    :shortname: autoshare_revert
    :accesscontrol: A principal in full control of the record.
@@ -1967,6 +1971,10 @@ Example Return Value::
    
    GIVE AN EXAMPLE OF A RETURN VALUE
    
+
+.. todo:: 
+
+   The API Call 'POST /records/{0}/documents/{1}/carenets/{2}/autoshare-revert' is not yet implemented.
 
 
 --------
@@ -2027,7 +2035,7 @@ Example Return Value::
 
 .. http:delete:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare
 
-   
+   Remove the nevershare flag from a document.
 
    :shortname: document_remove_nevershare
    :accesscontrol: A principal in full control of the record.
@@ -2045,7 +2053,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/nevershare
 
-   
+   Flag a document to never be shared, anywhere.
 
    :shortname: document_set_nevershare
    :accesscontrol: A principal in full control of the record.

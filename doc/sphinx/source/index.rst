@@ -28,6 +28,7 @@ Contents:
    Data Pipeline <data-pipeline>
 
    api-reference
+   todos
 
 ..
    When the code is ready:
