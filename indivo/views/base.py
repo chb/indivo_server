@@ -13,7 +13,6 @@ from django.core import serializers
 from django.db import transaction
 
 from indivo.models import *
-#from indivo.accesscontrol.security import *
 from indivo.lib.view_decorators import marsloader, commit_on_200, handle_integrity_error
 
 import logging, datetime

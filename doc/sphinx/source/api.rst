@@ -135,6 +135,16 @@ the first call.
 An ``external_id`` is only valid within a particular PHA scope. Other PHAs cannot see the external_id of a given 
 document if they didn't create the document, and certainly cannot access the document by external_id.
 
+Some API calls which involve both creating documents and retrieving them, such as:
+
+:http:put:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/external/{APP_ID}/{EXTERNAL_ID}`
+
+For these calls, it can be confusing as to which document is referenced by an 
+external id. In such cases, the following rule resolves confusion:
+
+* The newly created document will always be assigned the passed ``external_id``.
+  The ``external_id`` will not be used to look up the existing document.
+
 Managing Records and Documents
 ------------------------------
 

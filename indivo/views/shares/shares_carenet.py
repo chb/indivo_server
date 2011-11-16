@@ -1,6 +1,6 @@
 """
 .. module:: views.sharing.shares_carenet
-   :synopsis: Indivo view implementations related to carenet management
+   :synopsis: Indivo view implementations related to carenet management.
 
 .. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
 .. moduleauthor:: Ben Adida <ben@adida.net>

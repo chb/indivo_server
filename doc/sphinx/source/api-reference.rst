@@ -472,7 +472,7 @@ Example Return Value::
 
 .. http:get:: /apps/{PHA_EMAIL}/documents/
 
-   For 1:1 mapping of URLs to views. Calls document_list
+   List app-specific documents.
 
    :shortname: app_document_list
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -489,7 +489,7 @@ Example Return Value::
 
 .. http:post:: /apps/{PHA_EMAIL}/documents/
 
-   For 1:1 mapping from views: calls document_create_or_update()
+   Create an app-specific Indivo document.
 
    :shortname: app_document_create
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -506,7 +506,7 @@ Example Return Value::
 
 .. http:put:: /apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}
 
-   For 1:1 mapping from views: calls document_create_or_update()
+   Create an app-specific Indivo document with an associated external id.
 
    :shortname: app_document_create_or_update_ext
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -524,7 +524,7 @@ Example Return Value::
 
 .. http:get:: /apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of an app-specific document identified by external id.
 
    :shortname: app_document_meta_ext
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -542,7 +542,7 @@ Example Return Value::
 
 .. http:delete:: /apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}
 
-   
+   Delete an app-specific document.
 
    :shortname: app_document_delete
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -560,7 +560,7 @@ Example Return Value::
 
 .. http:get:: /apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}
 
-   Retrive an app-specific document: calls document()
+   Retrive an app-specific document.
 
    :shortname: app_specific_document
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -578,7 +578,7 @@ Example Return Value::
 
 .. http:put:: /apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}
 
-   For 1:1 mapping from views: calls document_create_or_update()
+   Create or Overwrite an app-specific Indivo document.
 
    :shortname: app_document_create_or_update
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -596,7 +596,7 @@ Example Return Value::
 
 .. http:put:: /apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label
 
-   For a 1:1 mapping of URLs to views: calls document_label
+   Set the label of an app-specific document.
 
    :shortname: app_document_label
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -614,7 +614,7 @@ Example Return Value::
 
 .. http:get:: /apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of an app-specific document via a carenet.
 
    :shortname: app_document_meta
    :accesscontrol: A user app with an id matching the app email in the URL.
@@ -811,7 +811,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/documents/special/{SPECIAL_DOCUMENT}
 
-   Read a special document from a carenet
+   Read a special document from a carenet.
 
    :shortname: read_special_document_carenet
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or the admin app that created the carenet's record.
@@ -847,7 +847,7 @@ Example Return Value::
 
 .. http:get:: /carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of a record-specific document via a carenet.
 
    :shortname: carenet_document_meta
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
@@ -1340,7 +1340,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/
 
-   For 1:1 mapping of URLs to views. Calls document_list
+   List record-app-specific documents.
 
    :shortname: record_app_document_list
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1358,7 +1358,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/
 
-   For 1:1 mapping from views: calls document_create_or_update()
+   Create a record-app-specific Indivo document.
 
    :shortname: record_app_document_create
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1376,7 +1376,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}
 
-   For 1:1 mapping from views: calls document_create_or_update()
+   Create or Overwrite a record-app-specific Indivo document with an associated external id.
 
    :shortname: record_app_document_create_or_update_ext
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1395,7 +1395,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}
 
-   For 1:1 mapping from views: calls document_create_or_update()
+   Create or Overwrite a record-app-specific Indivo document with an associated external id.
 
    :shortname: record_app_document_create_or_update_ext
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1414,7 +1414,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of a record-app-specific document identified by external id.
 
    :shortname: record_app_document_meta_ext
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1433,7 +1433,7 @@ Example Return Value::
 
 .. http:delete:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}
 
-   
+   Delete a record-app-specific document.
 
    :shortname: record_app_document_delete
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1452,7 +1452,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}
 
-   Retrieve a record-app-specific document: calls document()
+   Retrieve a record-app-specific document.
 
    :shortname: record_app_specific_document
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1471,7 +1471,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label
 
-   For a 1:1 mapping of URLs to views: calls document_label
+   Set the label of a record-app-specific document.
 
    :shortname: record_app_document_label
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1490,7 +1490,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of a record-app-specific document.
 
    :shortname: record_app_document_meta
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1702,7 +1702,7 @@ Example Return Value::
 
 .. http:delete:: /records/{RECORD_ID}/documents/
 
-   
+   Delete all documents associated with a record.
 
    :shortname: documents_delete
    :accesscontrol: 
@@ -1719,7 +1719,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/
 
-   For 1:1 mapping of URLs to views. Calls document_list
+   List record-specific documents.
 
    :shortname: record_document_list
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -1736,7 +1736,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/
 
-   
+   Create a record-specific Indivo Document.
 
    :shortname: document_create
    :accesscontrol: A user app with access to the record, a principal in full control of the record, or the admin app that created the record.
@@ -1753,7 +1753,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}
 
-   
+   Create a record-specific Indivo Document with an associated external id.
 
    :shortname: document_create_by_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1772,7 +1772,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/label
 
-   For a 1:1 mapping of URLs to views: calls document_label
+   Set the label of a record-specific document, specified by external id.
 
    :shortname: record_document_label_ext
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1791,7 +1791,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of a record-specific document identified by external id.
 
    :shortname: record_document_meta_ext
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -1828,7 +1828,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}
 
-   Save a new special document
+   Create or update a special document on a record.
 
    :shortname: save_special_document
    :accesscontrol: A user app with access to the record, a principal in full control of the record, or the admin app that created the record.
@@ -1846,7 +1846,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}
 
-   Save a new special document
+   Create or update a special document on a record.
 
    :shortname: save_special_document
    :accesscontrol: A user app with access to the record, a principal in full control of the record, or the admin app that created the record.
@@ -1864,7 +1864,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID_0}/rels/{REL}/{DOCUMENT_ID_1}
 
-   
+   Create a new relationship between two existing documents.
 
    :shortname: document_rels
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -1884,7 +1884,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}
 
-   Retrieve a record-specific document: calls document()
+   Retrieve a record-specific document.
 
    :shortname: record_specific_document
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -1981,7 +1981,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/label
 
-   For a 1:1 mapping of URLs to views: calls document_label
+   Set the label of a record-specific document.
 
    :shortname: record_document_label
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -1999,7 +1999,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/meta
 
-   For 1:1 mapping of URLs to views. Calls _document_meta
+   Fetch the metadata of a record-specific document.
 
    :shortname: record_document_meta
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2017,7 +2017,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/meta
 
-   
+   Set metadata fields on a document. NOT IMPLEMENTED.
 
    :shortname: update_document_meta
    :accesscontrol: 
@@ -2029,6 +2029,10 @@ Example Return Value::
    
    GIVE AN EXAMPLE OF A RETURN VALUE
    
+
+.. todo:: 
+
+   The API Call 'PUT /records/{0}/documents/{1}/meta' is not yet implemented.
 
 
 --------
@@ -2071,7 +2075,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL}/
 
-   
+   Get all documents related to the passed document_id by a relation of the passed relation-type.
 
    :shortname: get_documents_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2090,7 +2094,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL}/
 
-   Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views
+   Create a document and relate it to an existing document.
 
    :shortname: document_create_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2109,7 +2113,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL}/external/{PHA_EMAIL}/{EXTERNAL_ID}
 
-   Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views
+   Create a document, assign it an external id, and relate it to an existing document.
 
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -2130,7 +2134,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL}/external/{PHA_EMAIL}/{EXTERNAL_ID}
 
-   Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views
+   Create a document, assign it an external id, and relate it to an existing document.
 
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -2151,7 +2155,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/replace
 
-   Version a document without external_id: just calls _document_version
+   Create a new version of a record-specific document.
 
    :shortname: document_version
    :accesscontrol: A user app with access to the record, a principal in full control of the record, or the admin app that created the record.
@@ -2169,7 +2173,7 @@ Example Return Value::
 
 .. http:put:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/replace/external/{PHA_EMAIL}/{EXTERNAL_ID}
 
-   Version a document with an external_id: just calls _document_version
+   Create a new version of a record-specific document and assign it an external id.
 
    :shortname: document_version_by_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
@@ -2189,7 +2193,7 @@ Example Return Value::
 
 .. http:post:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/set-status
 
-   
+   Set the status of a record-specific document.
 
    :shortname: document_set_status
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2207,7 +2211,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/status-history
 
-   
+   List all changes to a document's status over time.
 
    :shortname: document_status_history
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
@@ -2225,7 +2229,7 @@ Example Return Value::
 
 .. http:get:: /records/{RECORD_ID}/documents/{DOCUMENT_ID}/versions/
 
-   Retrieve the versions of a document
+   Retrieve the versions of a document.
 
    :shortname: document_versions
    :accesscontrol: A user app with access to the record, or a principal in full control of the record

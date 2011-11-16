@@ -664,7 +664,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls document_list
+ List app-specific documents.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -688,7 +688,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from views: calls document_create_or_update()
+ Create an app-specific Indivo document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -713,7 +713,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from views: calls document_create_or_update()
+ Create an app-specific Indivo document with an associated external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -738,7 +738,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of an app-specific document identified by external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -763,6 +763,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Delete an app-specific document. 
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -787,7 +788,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Retrive an app-specific document: calls document()
+ Retrive an app-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -812,7 +813,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from views: calls document_create_or_update()
+ Create or Overwrite an app-specific Indivo document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -837,7 +838,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For a 1:1 mapping of URLs to views: calls document_label
+ Set the label of an app-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -862,7 +863,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of an app-specific document via a carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1132,7 +1133,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Read a special document from a carenet
+ Read a special document from a carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1182,7 +1183,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of a record-specific document via a carenet.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1876,7 +1877,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls document_list
+ List record-app-specific documents.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1901,7 +1902,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from views: calls document_create_or_update()
+ Create a record-app-specific Indivo document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1927,7 +1928,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from views: calls document_create_or_update()
+ Create or Overwrite a record-app-specific Indivo document with an associated external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1953,7 +1954,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping from views: calls document_create_or_update()
+ Create or Overwrite a record-app-specific Indivo document with an associated external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -1979,7 +1980,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of a record-app-specific document identified by external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2005,6 +2006,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Delete a record-app-specific document. 
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2030,7 +2032,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Retrieve a record-app-specific document: calls document()
+ Retrieve a record-app-specific document. 
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2056,7 +2058,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For a 1:1 mapping of URLs to views: calls document_label
+ Set the label of a record-app-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2082,7 +2084,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of a record-app-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2376,6 +2378,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Delete all documents associated with a record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2399,7 +2402,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls document_list
+ List record-specific documents.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2423,6 +2426,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Create a record-specific Indivo Document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2448,6 +2452,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Create a record-specific Indivo Document with an associated external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2473,7 +2478,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For a 1:1 mapping of URLs to views: calls document_label
+ Set the label of a record-specific document, specified by external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2499,7 +2504,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of a record-specific document identified by external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2524,7 +2529,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Read a special document from a record.
+ Read a special document from a record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2549,7 +2554,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Save a new special document 
+ Create or update a special document on a record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2574,7 +2579,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Save a new special document 
+ Create or update a special document on a record.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2601,6 +2606,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Create a new relationship between two existing documents.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2625,7 +2631,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Retrieve a record-specific document: calls document()
+ Retrieve a record-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2753,7 +2759,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For a 1:1 mapping of URLs to views: calls document_label
+ Set the label of a record-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2778,7 +2784,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-For 1:1 mapping of URLs to views. Calls _document_meta
+ Fetch the metadata of a record-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2803,6 +2809,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Set metadata fields on a document. NOT IMPLEMENTED. 
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2878,6 +2885,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Get all documents related to the passed document_id by a relation of the passed relation-type.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2903,7 +2911,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views
+ Create a document and relate it to an existing document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2931,7 +2939,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views
+ Create a document, assign it an external id, and relate it to an existing document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2959,7 +2967,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views
+ Create a document, assign it an external id, and relate it to an existing document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -2984,7 +2992,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Version a document without external_id: just calls _document_version
+ Create a new version of a record-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3011,7 +3019,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Version a document with an external_id: just calls _document_version
+ Create a new version of a record-specific document and assign it an external id.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3036,6 +3044,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ Set the status of a record-specific document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3060,6 +3069,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
+ List all changes to a document's status over time.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
@@ -3084,7 +3094,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":'''
-Retrieve the versions of a document
+ Retrieve the versions of a document.
 ''',
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
