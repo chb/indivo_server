@@ -25,7 +25,7 @@ def allergy_list(*args, **kwargs):
   """ List the allergy data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.allergy._allergy_list`.
+  :py:meth:`~indivo.views.reports.allergy._allergy_list`.
 
   """
 
@@ -35,7 +35,7 @@ def carenet_allergy_list(*args, **kwargs):
   """ List the allergy data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.allergy._allergy_list`.
+  :py:meth:`~indivo.views.reports.allergy._allergy_list`.
 
   """
 

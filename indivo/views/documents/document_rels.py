@@ -22,7 +22,7 @@ def get_documents_by_rel(request, record, document_id, rel, limit, offset, statu
   * *request*: The incoming Django HttpRequest object.
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` that
+    :py:class:`~indivo.models.records_and_documents.Record` that
     the document is scoped to.
 
   * *document_id*: The internal document identifier for the source document.
@@ -30,7 +30,7 @@ def get_documents_by_rel(request, record, document_id, rel, limit, offset, statu
   * *rel*: The relationship type to filter related documents by (as a string).
 
   * *limit*, *offset*, *status*, *order_by*: Standard paging and filtering 
-    arguments. See :py:func:`~indivo_server.indivo.lib.view_decorators.marsloader`
+    arguments. See :py:func:`~indivo.lib.view_decorators.marsloader`
     or :doc:`/query-api`.
 
     .. Note:: 
@@ -38,7 +38,7 @@ def get_documents_by_rel(request, record, document_id, rel, limit, offset, statu
        Paging operators are not implemented for this call currently. Passing
        them into the function will have no effect on output.
 
-  * *pha*: The :py:class:`~indivo_server.indivo.models.apps.PHA` object that the
+  * *pha*: The :py:class:`~indivo.models.apps.PHA` object that the
     source document is scoped to, if applicable.
 
   **RETURNS:**
@@ -78,7 +78,7 @@ def document_rels(request, record, document_id_0, rel, document_id_1):
   * *request*: The incoming Django HttpRequest object.
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` that
+    :py:class:`~indivo.models.records_and_documents.Record` that
     the documents are scoped to.
 
   * *document_id_0*: The internal document identifier for the source document.
@@ -115,7 +115,7 @@ def document_rels(request, record, document_id_0, rel, document_id_1):
 def document_create_by_rel(request, record, document_id, rel):
   """ Create a document and relate it to an existing document.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document_rels._document_create_by_rel`.
+  Calls into :py:meth:`~indivo.views.documents.document_rels._document_create_by_rel`.
 
   """
 
@@ -125,7 +125,7 @@ def document_create_by_rel(request, record, document_id, rel):
 def document_create_by_rel_with_ext_id(request, record, document_id, rel, pha, external_id):
   """ Create a document, assign it an external id, and relate it to an existing document.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document_rels._document_create_by_rel`.
+  Calls into :py:meth:`~indivo.views.documents.document_rels._document_create_by_rel`.
 
   """
 
@@ -140,7 +140,7 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
     contain the raw content of the new document.
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` to
+    :py:class:`~indivo.models.records_and_documents.Record` to
     which to scope the new document, and to which the source document is scoped.
 
   * *document_id*: The internal document identifier for the source document.
@@ -148,7 +148,7 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
   * *rel*: The relationship type to establish between the source document and the
     new document (as a string).
 
-  * *pha*: The :py:class:`~indivo_server.indivo.models.apps.PHA` object that 
+  * *pha*: The :py:class:`~indivo.models.apps.PHA` object that 
     scopes the external_id, if present.
 
   * *external_id*: The external identifier to assign to the newly created document.

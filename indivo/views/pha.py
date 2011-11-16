@@ -64,7 +64,7 @@ def pha_delete(request, pha):
 
   This call removes the app entirely from indivo, so it will never be
   accessible again. To remove an app just from a single record, see
-  :py:meth:`~indivo_server.indivo.views.pha.pha_record_delete`.
+  :py:meth:`~indivo.views.pha.pha_record_delete`.
 
   Will return :http:statuscode:`200` on success.
 

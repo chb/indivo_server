@@ -81,7 +81,7 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
   :http:statuscode:`404` if *record* or *document_id* don't exist.
 
   .. deprecated:: 0.9.3
-     Use :py:meth:`~indivo_server.indivo.views.audit.audit_query` instead.
+     Use :py:meth:`~indivo.views.audit.audit_query` instead.
 
   """
 
@@ -110,7 +110,7 @@ def audit_record_view(request, record, limit, offset, order_by, status = None):
   :http:statuscode:`404` if *record* doesn't exist.
 
   .. deprecated:: 0.9.3
-     Use :py:meth:`~indivo_server.indivo.views.audit.audit_query` instead.
+     Use :py:meth:`~indivo.views.audit.audit_query` instead.
 
   """
 
@@ -137,7 +137,7 @@ def audit_document_view(request, record, document_id, limit, offset, order_by, s
   :http:statuscode:`404` if *record* or *document_id* don't exist.
 
   .. deprecated:: 0.9.3
-     Use :py:meth:`~indivo_server.indivo.views.audit.audit_query` instead.
+     Use :py:meth:`~indivo.views.audit.audit_query` instead.
 
   """
 

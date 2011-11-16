@@ -19,6 +19,14 @@ import sys, os
 sys.path.insert(0, os.path.abspath('..')) # indivo_server/doc/sphinx
 sys.path.insert(0, os.path.abspath('../../..')) # indivo_server
 
+
+# Enable Django environment for Sphinx
+import settings
+from django.core.management import setup_environ
+setup_environ(settings)
+
+
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

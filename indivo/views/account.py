@@ -46,7 +46,7 @@ def account_password_change(request, account):
 def account_reset(request, account):
     """ Reset an account to an ``uninitialized`` state.
 
-    Just calls into :py:meth:`~indivo_server.indivo.models.accounts.Account.reset`.
+    Just calls into :py:meth:`~indivo.models.accounts.Account.reset`.
 
     Will return :http:statuscode:`200` on success.
 
@@ -93,10 +93,10 @@ def account_password_set(request, account):
     """ Force the password of an account to a given value.
 
     This differs from 
-    :py:meth:`~indivo_server.indivo.views.account.account_password_change`
+    :py:meth:`~indivo.views.account.account_password_change`
     in that it does not require validation of the old password. This
     function is therefore admin-facing, whereas 
-    :py:meth:`~indivo_server.indivo.views.account.account_password_change` 
+    :py:meth:`~indivo.views.account.account_password_change` 
     is user-facing.
 
     request.POST must contain:
@@ -211,7 +211,7 @@ def account_primary_secret(request, account):
     This is an admin-facing call, and should be used sparingly,
     as we would like to avoid sending primary-secrets over the
     wire. If possible, use 
-    :py:meth:`~indivo_server.indivo.views.account.account_check_secrets`
+    :py:meth:`~indivo.views.account.account_check_secrets`
     instead.
 
     Will return :http:statuscode:`200` with the primary secret on success.
@@ -374,9 +374,9 @@ def account_forgot_password(request, account):
     """ Resets an account if the user has forgotten its password.
 
     This is a convenience call which encapsulates
-    :py:meth:`~indivo_server.indivo.views.account.account_reset`, 
-    :py:meth:`~indivo_server.indivo.views.account.account_resend_secret`, and
-    :py:meth:`~indivo_server.indivo.views.account.account_secret`. In summary,
+    :py:meth:`~indivo.views.account.account_reset`, 
+    :py:meth:`~indivo.views.account.account_resend_secret`, and
+    :py:meth:`~indivo.views.account.account_secret`. In summary,
     it resets the account to an uninitialized state, emails
     the user with a new primary-secret, and returns the
     secondary secret for display.

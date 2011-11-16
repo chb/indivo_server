@@ -27,7 +27,7 @@ def get_special_doc(record, carenet, special_document):
   **ARGUMENTS:**
 
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` from 
+    :py:class:`~indivo.models.records_and_documents.Record` from 
     which to fetch the special document.
 
     .. Note::
@@ -35,7 +35,7 @@ def get_special_doc(record, carenet, special_document):
        Either *record* or *carenet* must be non-empty.
 
   * *carenet*: The 
-    :py:class:`~indivo_server.indivo.models.shares.Carenet` from 
+    :py:class:`~indivo.models.shares.Carenet` from 
     which to fetch the special document.
 
     .. Note::
@@ -49,7 +49,7 @@ def get_special_doc(record, carenet, special_document):
   **RETURNS:**
 
   * The special document as a
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`
+    :py:class:`~indivo.models.records_and_documents.Document`
     instance, if the special document exists.
 
   * ``None``, if *record* or *carenet* hasn't been assigned a special
@@ -83,14 +83,14 @@ def set_special_doc(record, special_document, new_doc):
   **ARGUMENTS:**
 
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` to 
+    :py:class:`~indivo.models.records_and_documents.Record` to 
     update.
 
   * *special_document*: The type of special document to update. Options are 
     ``demographics`` or ``contact``.
 
   * *new_doc*: The
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document` to 
+    :py:class:`~indivo.models.records_and_documents.Document` to 
     point to.
 
   **RETURNS:**
@@ -113,7 +113,7 @@ def read_special_document(request, special_document, record):
   """ Read a special document from a record.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.special_documents._read_special_document`.
+  :py:meth:`~indivo.views.documents.special_documents._read_special_document`.
   
   """
 
@@ -123,7 +123,7 @@ def read_special_document_carenet(request, special_document, carenet):
   """ Read a special document from a carenet.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.special_documents._read_special_document`.
+  :py:meth:`~indivo.views.documents.special_documents._read_special_document`.
 
   """
 
@@ -133,7 +133,7 @@ def _read_special_document(request, special_document, record=None, carenet=None)
   """ Read a special document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.special_documents.get_special_doc`.
+  :py:meth:`~indivo.views.documents.special_documents.get_special_doc`.
 
   """
 
@@ -153,7 +153,7 @@ def save_special_document(request, record, special_document):
     consist of a raw string containing the new document content.
 
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` from 
+    :py:class:`~indivo.models.records_and_documents.Record` from 
     which to fetch the special document.
 
   * *special_document*: The type of special document to update. Options are 

@@ -26,7 +26,7 @@ def medication_list(*args, **kwargs):
   """ List the medication data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.medication._medication_list`.
+  :py:meth:`~indivo.views.reports.medication._medication_list`.
 
   """
 
@@ -36,7 +36,7 @@ def carenet_medication_list(*args, **kwargs):
   """ List the medication data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.medication._medication_list`.
+  :py:meth:`~indivo.views.reports.medication._medication_list`.
 
   """
 

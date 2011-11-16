@@ -26,7 +26,7 @@ def simple_clinical_notes_list(*args, **kwargs):
   """ List the simple_clinical_notes data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.simple_clinical_notes._simple_clinical_notes_list`.
+  :py:meth:`~indivo.views.reports.simple_clinical_notes._simple_clinical_notes_list`.
 
   """
 
@@ -36,7 +36,7 @@ def carenet_simple_clinical_notes_list(*args, **kwargs):
   """ List the simple_clinical_notes data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.simple_clinical_notes._simple_clinical_notes_list`.
+  :py:meth:`~indivo.views.reports.simple_clinical_notes._simple_clinical_notes_list`.
 
   """
 

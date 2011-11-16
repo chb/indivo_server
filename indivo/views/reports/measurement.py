@@ -26,7 +26,7 @@ def measurement_list(*args, **kwargs):
   """ List the measurement data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.measurement._measurement_list`.
+  :py:meth:`~indivo.views.reports.measurement._measurement_list`.
 
   """
 
@@ -36,7 +36,7 @@ def carenet_measurement_list(*args, **kwargs):
   """ List the measurement data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.measurement._measurement_list`.
+  :py:meth:`~indivo.views.reports.measurement._measurement_list`.
 
   """
 

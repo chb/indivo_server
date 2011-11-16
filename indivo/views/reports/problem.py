@@ -25,7 +25,7 @@ def problem_list(*args, **kwargs):
   """ List the problem data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.problem._problem_list`.
+  :py:meth:`~indivo.views.reports.problem._problem_list`.
 
   """
 
@@ -35,7 +35,7 @@ def carenet_problem_list(*args, **kwargs):
   """ List the problem data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.problem._problem_list`.
+  :py:meth:`~indivo.views.reports.problem._problem_list`.
 
   """
 

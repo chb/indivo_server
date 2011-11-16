@@ -24,7 +24,7 @@ def immunization_list(*args, **kwargs):
   """ List the immunization data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.immunization._immunization_list`.
+  :py:meth:`~indivo.views.reports.immunization._immunization_list`.
 
   """
 
@@ -34,7 +34,7 @@ def carenet_immunization_list(*args, **kwargs):
   """ List the immunization data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.immunization._immunization_list`.
+  :py:meth:`~indivo.views.reports.immunization._immunization_list`.
 
   """
 

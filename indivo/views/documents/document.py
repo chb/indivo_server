@@ -61,15 +61,15 @@ def _render_documents(docs, record, pha, tdc, format_type='xml'):
   **Arguments:**
   
   * *docs*: An iterable of 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`
+    :py:class:`~indivo.models.records_and_documents.Document`
     objects to be rendered.
 
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record`
+    :py:class:`~indivo.models.records_and_documents.Record`
     that every document in *docs* belongs to.
 
   * *pha*: The
-    :py:class:`~indivo_server.indivo.models.apps.PHA` that *docs* are 
+    :py:class:`~indivo.models.apps.PHA` that *docs* are 
     scoped to.
 
   * *tdc*: The total document count of objects to render (i.e., ``len(docs)``).
@@ -106,11 +106,11 @@ def _get_document(record=None, carenet=None, document_id=None, pha=None, externa
   **Arguments:**
   
   * *record*: if the document is record-specific, this
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record`
+    :py:class:`~indivo.models.records_and_documents.Record`
     instance refers to the document's record.
 
   * *carenet*: if the document is being found via a carenet, this
-    :py:class:`~indivo_server.indivo.models.share.Carenet`
+    :py:class:`~indivo.models.share.Carenet`
     instance refers to the carenet containing the document. 
 
     .. warning::
@@ -126,12 +126,12 @@ def _get_document(record=None, carenet=None, document_id=None, pha=None, externa
        or it cannot retrieve a unique document.
 
   * *pha*: if the document is application-specific, this
-    :py:class:`~indivo_server.indivo.models.apps.PHA` instance refers to the 
+    :py:class:`~indivo.models.apps.PHA` instance refers to the 
     application to which the document pertains.
 
   * *external_id*: the external identifier for the document, if available. The
     identifier should already have been prepared using
-    :py:meth:`~indivo_server.indivo.models.records_and_documents.Document.prepare_external_id`.
+    :py:meth:`~indivo.models.records_and_documents.Document.prepare_external_id`.
    
     .. note::
        
@@ -141,7 +141,7 @@ def _get_document(record=None, carenet=None, document_id=None, pha=None, externa
   **Returns:**
 
   * An instance of 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`,
+    :py:class:`~indivo.models.records_and_documents.Document`,
     on success.
 
   * None, if a document satisfying all passed arguments could not be found.
@@ -180,27 +180,27 @@ def _document_create(creator, content, pha, record,
 
   **Arguments:**
 
-  * *creator*: The :py:class:`~indivo_server.indivo.models.base.Principal`
+  * *creator*: The :py:class:`~indivo.models.base.Principal`
     instance that is responsible for creating the document.
 
   * *content*: The raw content (XML or binary) of the document to be created.
 
   * *pha*: if the document is application-specific, this
-    :py:class:`~indivo_server.indivo.models.apps.PHA` instance refers to the 
+    :py:class:`~indivo.models.apps.PHA` instance refers to the 
     application to which the document pertains.
   
   * *record*: if the document is record-specific, this
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record`
+    :py:class:`~indivo.models.records_and_documents.Record`
     instance refers to the document's record.
 
   * *replaces_document*: If the new document will overwrite (via in-place update
     or versioning) an existing document, this 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`
+    :py:class:`~indivo.models.records_and_documents.Document`
     instance references the old document to be overwritten.
 
   * *external_id*: the external identifier to assing to the new document, 
     if available. The identifier should already have been prepared using
-    :py:meth:`~indivo_server.indivo.models.records_and_documents.Document.prepare_external_id`.
+    :py:meth:`~indivo.models.records_and_documents.Document.prepare_external_id`.
 
   * *mime_type*: the mime type of the new document, i.e. 
     :mimetype:`application/xml`.
@@ -210,7 +210,7 @@ def _document_create(creator, content, pha, record,
   **Returns:**
 
   * A new instance of 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`,
+    :py:class:`~indivo.models.records_and_documents.Document`,
     on success. If the document was updated in place, and no new document was
     created, the old document is returned.
 
@@ -260,8 +260,8 @@ def __local_document_create(request, record, pha, external_id, existing_doc):
   """ Create a document, or update one in place.
 
   This function serves 
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create` and 
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create_or_update`,
+  :py:meth:`~indivo.views.documents.document.document_create` and 
+  :py:meth:`~indivo.views.documents.document.document_create_or_update`,
   which encompasses record- and/or app-specific documents.
 
   The external_id is expected to be already adjusted.
@@ -271,20 +271,20 @@ def __local_document_create(request, record, pha, external_id, existing_doc):
   * *request*: The incoming Django HttpRequest object.
 
   * *record*: if the document is record-specific, this
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record`
+    :py:class:`~indivo.models.records_and_documents.Record`
     instance refers to the document's record.
 
   * *pha*: if the document is application-specific, this
-    :py:class:`~indivo_server.indivo.models.apps.PHA` instance refers to the 
+    :py:class:`~indivo.models.apps.PHA` instance refers to the 
     application to which the document pertains.  
 
   * *external_id*: the external identifier to assing to the new document, 
     if available. The identifier should already have been prepared using
-    :py:meth:`~indivo_server.indivo.models.records_and_documents.Document.prepare_external_id`.
+    :py:meth:`~indivo.models.records_and_documents.Document.prepare_external_id`.
 
   * *existing_doc*: If the new document will overwrite (via in-place update
     or versioning) an existing document, this 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`
+    :py:class:`~indivo.models.records_and_documents.Document`
     instance references the old document to be overwritten.
 
   **Returns:**
@@ -330,7 +330,7 @@ def document_create(request, record):
   """ Create a record-specific Indivo Document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document.__local_document_create`.
+  :py:meth:`~indivo.views.documents.document.__local_document_create`.
 
   """
 
@@ -343,7 +343,7 @@ def document_create_by_ext_id(request, record, pha, external_id):
   """ Create a record-specific Indivo Document with an associated external id.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document.__local_document_create`.
+  :py:meth:`~indivo.views.documents.document.__local_document_create`.
 
   """
   return  __local_document_create(request, record, pha=None,
@@ -355,7 +355,7 @@ def app_document_create_or_update(request, pha, document_id):
   """ Create or Overwrite an app-specific Indivo document.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create_or_update`.
+  :py:meth:`~indivo.views.documents.document.document_create_or_update`.
 
   """
 
@@ -366,7 +366,7 @@ def app_document_create(request, pha):
   """ Create an app-specific Indivo document.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create_or_update`.
+  :py:meth:`~indivo.views.documents.document.document_create_or_update`.
 
   """
 
@@ -377,7 +377,7 @@ def app_document_create_or_update_ext(request, pha, external_id):
   """ Create an app-specific Indivo document with an associated external id.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create_or_update`.
+  :py:meth:`~indivo.views.documents.document.document_create_or_update`.
 
   """
 
@@ -388,7 +388,7 @@ def record_app_document_create(request, record, pha):
   """ Create a record-app-specific Indivo document.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create_or_update`.
+  :py:meth:`~indivo.views.documents.document.document_create_or_update`.
 
   """
 
@@ -399,7 +399,7 @@ def record_app_document_create_or_update_ext(request, record, pha, external_id):
   """ Create or Overwrite a record-app-specific Indivo document with an associated external id.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document.document_create_or_update`.
+  :py:meth:`~indivo.views.documents.document.document_create_or_update`.
 
   """
   return document_create_or_update(request, pha, record=record, external_id=external_id)
@@ -409,7 +409,7 @@ def document_create_or_update(request, pha, record=None, document_id=None, exter
 
   Prepares the external id, loads the existing document to overwrite, then
   calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document.__local_document_create`.
+  :py:meth:`~indivo.views.documents.document.__local_document_create`.
 
   """
 
@@ -430,7 +430,7 @@ def document_create_or_update(request, pha, record=None, document_id=None, exter
 def record_app_specific_document(request, record, pha, document_id):
   """ Retrieve a record-app-specific document. 
   
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document.document`.
+  Calls into :py:meth:`~indivo.views.documents.document.document`.
 
   """
   return document(request, document_id, record=record, pha=pha)
@@ -439,7 +439,7 @@ def record_app_specific_document(request, record, pha, document_id):
 def app_specific_document(request, pha, document_id):
   """ Retrive an app-specific document.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document.document`.
+  Calls into :py:meth:`~indivo.views.documents.document.document`.
 
   """
 
@@ -449,7 +449,7 @@ def app_specific_document(request, pha, document_id):
 def record_specific_document(request, record, document_id):
   """ Retrieve a record-specific document.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document.document`.
+  Calls into :py:meth:`~indivo.views.documents.document.document`.
 
   """
 
@@ -465,11 +465,11 @@ def document(request, document_id, record=None, pha=None):
   * *document_id*: the internal identifier of the document to retrieve.
 
   * *record*: if the document is record-specific, this
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record`
+    :py:class:`~indivo.models.records_and_documents.Record`
     instance refers to the document's record.
 
   * *pha*: if the document is application-specific, this
-    :py:class:`~indivo_server.indivo.models.apps.PHA` instance refers to the 
+    :py:class:`~indivo.models.apps.PHA` instance refers to the 
     application to which the document pertains.  
 
   **Returns:**
@@ -496,7 +496,7 @@ def _render_document(document):
   **Arguments:**
 
   * *document*: the
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Document`
+    :py:class:`~indivo.models.records_and_documents.Document`
     instance to render.
     
   **Returns:**
@@ -517,7 +517,7 @@ def _render_document(document):
 def app_document_list(request, pha, limit, offset, status, order_by='created_at'):
   """ List app-specific documents.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document.document_list`.
+  Calls into :py:meth:`~indivo.views.documents.document.document_list`.
 
   """
 
@@ -527,7 +527,7 @@ def app_document_list(request, pha, limit, offset, status, order_by='created_at'
 def record_document_list(request, record, limit, offset, status, order_by='created_at'):
   """ List record-specific documents.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document.document_list`.
+  Calls into :py:meth:`~indivo.views.documents.document.document_list`.
 
   """
 
@@ -537,7 +537,7 @@ def record_document_list(request, record, limit, offset, status, order_by='creat
 def record_app_document_list(request, record, pha, limit, offset, status, order_by='created_at'):
   """ List record-app-specific documents.
 
-  Calls into :py:meth:`~indivo_server.indivo.views.documents.document.document_list`.
+  Calls into :py:meth:`~indivo.views.documents.document.document_list`.
 
   """
 
@@ -556,15 +556,15 @@ def document_list(request, limit, offset, status, order_by='created_at', record=
 
 
   * *limit*, *offset*, *status*, *order_by*: Standard paging and filtering 
-    arguments. See :py:func:`~indivo_server.indivo.lib.view_decorators.marsloader`
+    arguments. See :py:func:`~indivo.lib.view_decorators.marsloader`
     or :doc:`/query-api`.
 
   * *record*: if desired documents are record-specific, this
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record`
+    :py:class:`~indivo.models.records_and_documents.Record`
     instance refers to the record to filter on.
 
   * *pha*: if the desired documents are application-specific, this
-    :py:class:`~indivo_server.indivo.models.apps.PHA` instance refers to the 
+    :py:class:`~indivo.models.apps.PHA` instance refers to the 
     app to filter on.
 
   **Returns:**

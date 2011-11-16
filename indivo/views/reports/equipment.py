@@ -26,7 +26,7 @@ def equipment_list(*args, **kwargs):
   """ List the equipment data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.equipment._equipment_list`.
+  :py:meth:`~indivo.views.reports.equipment._equipment_list`.
 
   """
 
@@ -37,7 +37,7 @@ def carenet_equipment_list(*args, **kwargs):
   """ List the equipment data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.equipment._equipment_list`.
+  :py:meth:`~indivo.views.reports.equipment._equipment_list`.
 
   """
 

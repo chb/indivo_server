@@ -16,7 +16,7 @@ def app_document_delete(request, pha, document_id):
   No restrictions, since this storage is managed by the app.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document_delete._document_delete`.
+  :py:meth:`~indivo.views.documents.document_delete._document_delete`.
 
   """
 
@@ -28,7 +28,7 @@ def record_app_document_delete(request, record, pha, document_id):
   No restrictions, since this storage is managed by the app.
 
   Calls into
-  :py:meth:`~indivo_server.indivo.views.documents.document_delete._document_delete`.
+  :py:meth:`~indivo.views.documents.document_delete._document_delete`.
 
   """
 
@@ -43,10 +43,10 @@ def _document_delete(document_id, pha=None, record=None):
   * *document_id*: The internal identifier of the document to delete.
   
   * *pha*: If the document to delete is scoped to an app, this
-    :py:class:`~indivo_server.indivo.models.apps.PHA` instance refers to the app.
+    :py:class:`~indivo.models.apps.PHA` instance refers to the app.
 
   * *record*: If the document to delete is scoped to a record, this
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` 
+    :py:class:`~indivo.models.records_and_documents.Record` 
     instance refers to the record.
   
   **RETURNS:**
@@ -75,7 +75,7 @@ def documents_delete(request, record):
   * *request*: The incoming Django HttpRequest object.
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` to
+    :py:class:`~indivo.models.records_and_documents.Record` to
     purge of documents.
 
   **RETURNS:**

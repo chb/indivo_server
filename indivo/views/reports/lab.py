@@ -25,7 +25,7 @@ def lab_list(*args, **kwargs):
   """ List the lab data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.lab._lab_list`.
+  :py:meth:`~indivo.views.reports.lab._lab_list`.
 
   """
 
@@ -35,7 +35,7 @@ def carenet_lab_list(*args, **kwargs):
   """ List the lab data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.lab._lab_list`.
+  :py:meth:`~indivo.views.reports.lab._lab_list`.
 
   """
 

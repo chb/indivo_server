@@ -25,7 +25,7 @@ def vitals_list(*args, **kwargs):
   """ List the vitals data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.vitals._vitals_list`.
+  :py:meth:`~indivo.views.reports.vitals._vitals_list`.
 
   """
 
@@ -35,7 +35,7 @@ def carenet_vitals_list(*args, **kwargs):
   """ List the vitals data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.vitals._vitals_list`.
+  :py:meth:`~indivo.views.reports.vitals._vitals_list`.
 
   """
 

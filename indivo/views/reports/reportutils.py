@@ -39,7 +39,7 @@ def report_orderby_update(order_by):
 ## using inspect in our code, there's no good reason to do this.
 ##
 def report_orderby(func):
-    """ Decorator to automatically apply :py:meth:`~indivo_server.indivo.views.reports.reportutils.report_orderby_update` where required.
+    """ Decorator to automatically apply :py:meth:`~indivo.views.reports.reportutils.report_orderby_update` where required.
 
     Adjusts the order_by parameter to be appropriately massaged
     to pull order_by from the right join table

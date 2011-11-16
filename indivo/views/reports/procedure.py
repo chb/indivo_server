@@ -24,7 +24,7 @@ def procedure_list(*args, **kwargs):
   """ List the procedure data for a given record.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.procedure._procedure_list`.
+  :py:meth:`~indivo.views.reports.procedure._procedure_list`.
 
   """
 
@@ -34,7 +34,7 @@ def carenet_procedure_list(*args, **kwargs):
   """ List the procedure data for a given carenet.
 
   For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo_server.indivo.views.reports.procedure._procedure_list`.
+  :py:meth:`~indivo.views.reports.procedure._procedure_list`.
 
   """
   

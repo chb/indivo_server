@@ -234,7 +234,7 @@ def record_create(request, principal_email=None, external_id=None):
   """ Create a new record.
 
   For 1:1 mapping of URLs to views: just calls 
-  :py:meth:`~indivo_server.indivo.views.record._record_create`.
+  :py:meth:`~indivo.views.record._record_create`.
 
   """
   
@@ -245,7 +245,7 @@ def record_create_ext(request, principal_email=None, external_id=None):
   """ Create a new record with an associated external id.
 
   For 1:1 mapping of URLs to views: just calls 
-  :py:meth:`~indivo_server.indivo.views.record._record_create`.
+  :py:meth:`~indivo.views.record._record_create`.
 
   """
 

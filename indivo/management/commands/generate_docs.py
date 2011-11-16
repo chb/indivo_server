@@ -135,15 +135,26 @@ Workflow is as follows:
 
             # Use sphinx-apidoc to autogenerate code docs
             exclude_paths = [
-                settings.APP_HOME + '/doc/',
-                settings.APP_HOME + '/codingsystems/migrations/',
-                settings.APP_HOME + '/codingsystems/urls/',
+
+                # Always exclude these
                 settings.APP_HOME + '/indivo/migrations/',
                 settings.APP_HOME + '/indivo/urls/',
+                settings.APP_HOME + '/indivo/templates/',
+                settings.APP_HOME + '/indivo/tests/',
+
+                # Excluded for now, add back in as they get documented
+                settings.APP_HOME + '/indivo/accesscontrol/',
+                settings.APP_HOME + '/indivo/document_processing/',
+                settings.APP_HOME + '/indivo/lib/',
+                settings.APP_HOME + '/indivo/management/',
+                settings.APP_HOME + '/indivo/middlewares/',
+                settings.APP_HOME + '/indivo/models/',
+                settings.APP_HOME + '/indivo/templatetags/',
+
                 ]
 
             output_dir = 'source/autocode'
-            source_dir = settings.APP_HOME
+            source_dir = settings.APP_HOME + '/indivo/'
             
             cmd = 'sphinx-apidoc -o %s %s %s'%(output_dir, 
                                                source_dir, 

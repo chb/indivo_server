@@ -74,7 +74,7 @@ def record_send_message(request, record, message_id):
 
   * *num_attachments*: The number of attachments this message requires. Attachments
     are uploaded with calls to 
-    :py:meth:`~indivo_server.indivo.views.messaging.record_message_attach`, and 
+    :py:meth:`~indivo.views.messaging.record_message_attach`, and 
     the message will not be delivered until all attachments have been uploaded.
     Defaults to 0.
 
@@ -158,8 +158,8 @@ def account_inbox_message(request, account, message_id):
 
   *message_id* should be the external identifier of the message
   as created by 
-  :py:meth:`~indivo_server.indivo.views.messaging.account_send_message` or
-  :py:meth:`~indivo_server.indivo.views.messaging.record_send_message`.
+  :py:meth:`~indivo.views.messaging.account_send_message` or
+  :py:meth:`~indivo.views.messaging.record_send_message`.
 
   Will return :http:statuscode:`200` with XML describing the message
   (id, sender, dates received, read, and archived, subject, body,
@@ -210,7 +210,7 @@ def account_message_archive(request, account, message_id):
 
   This call sets a message's archival date as now, unless it's already set. 
   This means that future calls to 
-  :py:meth:`~indivo_server.indivo.views.messaging.account_inbox` will not
+  :py:meth:`~indivo.views.messaging.account_inbox` will not
   display this message by default.
   
   Will return :http:statuscode:`200` on success.

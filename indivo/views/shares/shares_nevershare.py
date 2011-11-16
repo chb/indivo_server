@@ -18,11 +18,11 @@ def document_set_nevershare(request, record, document_id):
   """ Flag a document to never be shared, anywhere.
 
   This overrides autoshares and existing shares, and prevents
-  sharing the document in the future, until 
-  :py:meth:`~indivo_server.indivo.views.sharing.shares_nevershare.document_remove_nevershare`
+  sharing the document in the future, until
+  :py:meth:`~indivo.views.shares.shares_nevershare.document_remove_nevershare` 
   is called.
 
-  Will return :http:statuscode:`200` on success, :http:statuscode`404` if 
+  Will return :http:statuscode:`200` on success, :http:statuscode:`404` if 
   *document_id* is invalid.
 
   """

@@ -22,7 +22,7 @@ def carenet_document_meta(request, carenet, document_id):
   """ Fetch the metadata of a record-specific document via a carenet.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
 
@@ -34,7 +34,7 @@ def record_document_meta(request, record, document_id):
   """ Fetch the metadata of a record-specific document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
 
@@ -46,7 +46,7 @@ def record_document_meta_ext(request, record, pha, external_id):
   """ Fetch the metadata of a record-specific document identified by external id.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
 
@@ -57,7 +57,7 @@ def app_document_meta(request, pha, document_id):
   """ Fetch the metadata of an app-specific document via a carenet.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
   """For 1:1 mapping of URLs to views. Calls _document_meta"""
@@ -68,7 +68,7 @@ def app_document_meta_ext(request, pha, external_id):
   """ Fetch the metadata of an app-specific document identified by external id.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
 
@@ -79,7 +79,7 @@ def record_app_document_meta(request, record, pha, document_id):
   """ Fetch the metadata of a record-app-specific document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
 
@@ -91,7 +91,7 @@ def record_app_document_meta_ext(request, record, pha, external_id):
   """ Fetch the metadata of a record-app-specific document identified by external id.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_meta._document_meta`.
+  :py:meth:`~indivo.views.documents.document_meta._document_meta`.
 
   """
 
@@ -129,11 +129,11 @@ def _document_meta(record=None, carenet=None, document=None, pha=None, external_
   **ARGUMENTS:**
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` that
+    :py:class:`~indivo.models.records_and_documents.Record` that
     the document is scoped to, if applicable.
 
   * *carenet*: The 
-    :py:class:`~indivo_server.indivo.models.shares.Carenet` that
+    :py:class:`~indivo.models.shares.Carenet` that
     the document is shared into, if applicable.
 
   * *document*: The document to get metadata for, if it has been prefetched.
@@ -143,7 +143,7 @@ def _document_meta(record=None, carenet=None, document=None, pha=None, external_
        One of *external_id* or *document* MUST be passed to this function, 
        or it cannot retrieve a unique document.
 
-  * *pha*: The :py:class:`~indivo_server.indivo.models.apps.PHA` object that the
+  * *pha*: The :py:class:`~indivo.models.apps.PHA` object that the
     document is scoped to. Also serves to scope *external_id*, if present and
     *app_specific* is ``True``.
 

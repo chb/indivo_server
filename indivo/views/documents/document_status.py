@@ -20,12 +20,12 @@ def document_set_status(request, record, document_id):
     contain:
     
     * *status* The new status for the document. Must identify an existing
-      :py:class:`~indivo_server.indivo.models.status.StatusName` object.
+      :py:class:`~indivo.models.status.StatusName` object.
     
     * *reason* The reason for the status change
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` that
+    :py:class:`~indivo.models.records_and_documents.Record` that
     the document is scoped to.
 
   * *document_id*: The internal identifier of the document whose status is being
@@ -66,7 +66,7 @@ def document_status_history(request, record, document_id):
   * *request*: The incoming Django HttpRequest object.
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` that
+    :py:class:`~indivo.models.records_and_documents.Record` that
     the document is scoped to.
 
   * *document_id*: The internal identifier of the document for which to get 

@@ -14,7 +14,7 @@ def app_document_label(request, pha, document_id):
   """ Set the label of an app-specific document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_label._document_label`.
+  :py:meth:`~indivo.views.documents.document_label._document_label`.
 
   """
 
@@ -25,7 +25,7 @@ def record_app_document_label(request, record, pha, document_id):
   """ Set the label of a record-app-specific document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_label._document_label`.
+  :py:meth:`~indivo.views.documents.document_label._document_label`.
 
   """
 
@@ -36,7 +36,7 @@ def record_document_label(request, record, document_id):
   """ Set the label of a record-specific document.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_label._document_label`.
+  :py:meth:`~indivo.views.documents.document_label._document_label`.
 
   """
 
@@ -47,7 +47,7 @@ def record_document_label_ext(request, record, document=None, external_id=None, 
   """ Set the label of a record-specific document, specified by external id.
 
   Calls into 
-  :py:meth:`~indivo_server.indivo.views.documents.document_label._document_label`.
+  :py:meth:`~indivo.views.documents.document_label._document_label`.
 
   """
 
@@ -62,7 +62,7 @@ def _document_label(request, record=None, document_id=None, external_id=None, ph
     consist of a raw string containing the new label to assign.
   
   * *record*: The 
-    :py:class:`~indivo_server.indivo.models.records_and_documents.Record` that
+    :py:class:`~indivo.models.records_and_documents.Record` that
     the document is scoped to, if applicable.
 
   * *document_id*: The internal identifier of the document to re-label.
@@ -79,7 +79,7 @@ def _document_label(request, record=None, document_id=None, external_id=None, ph
        One of *external_id* or *document_id* MUST be passed to this function, 
        or it cannot retrieve a unique document.
 
-  * *pha*: The :py:class:`~indivo_server.indivo.models.apps.PHA` object that the
+  * *pha*: The :py:class:`~indivo.models.apps.PHA` object that the
     document is scoped to. Also serves to scope *external_id*, if present and
     *app_specific* is ``True``.
 
