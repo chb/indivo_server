@@ -160,17 +160,17 @@ class CallResolver(object):
     def prefer_cp(self):
         self.user_preferred = False
     
-    def resolve(self, field, defaults=None):
+    def resolve(self, field):
         '''
         Given an API call field, returns the value of that field
         that a merged call should use.
         '''
         if isinstance(getattr(self.cp_call, field, None), dict):
-            return self._resolve_dictfield(field, defaults)
+            return self._resolve_dictfield(field)
         else:
-            return self._resolve_textfield(field, defaults)
+            return self._resolve_textfield(field)
 
-    def _resolve_dictfield(self, field, defaults=None):
+    def _resolve_dictfield(self, field):
         cp_dict = getattr(self.cp_call, field)
         user_dict = getattr(self.user_call, field)
 
@@ -180,25 +180,22 @@ class CallResolver(object):
         for key in all_keys:
             cp_val = cp_dict.get(key, None)
             user_val = user_dict.get(key, None)
-            retdict[key] = self._resolve(cp_val, user_val, key, defaults)
+            retdict[key] = self._resolve(cp_val, user_val)
 
         return retdict
 
-    def _resolve_textfield(self, field, defaults=None):
+    def _resolve_textfield(self, field):
         cp_val = getattr(self.cp_call, field, None)
         user_val = getattr(self.user_call, field, None)
-        return self._resolve(cp_val, user_val, field, defaults)
+        return self._resolve(cp_val, user_val)
         
-    def _resolve(self, cp_val, user_val, default_key=None, defaults=None):
+    def _resolve(self, cp_val, user_val):
         
         if (self.user_preferred and user_val) or not cp_val:
             retval = user_val
         else:
             retval = cp_val
 
-        if not retval and defaults and defaults.has_key(default_key):
-            retval = defaults[default_key]
-        
         return retval
 
 class Call(object):
@@ -234,6 +231,12 @@ class Call(object):
         self.deprecated = deprecated
         self.added = added
         self.changed = changed
+
+    def get_docstring_summary(self):
+        if self.view_func and self.view_func.__doc__:
+            return self.view_func.__doc__.split('\n')[0].strip()
+        else:
+            return ''
 
     def _print_dict(self, d):
         lines = []
@@ -317,7 +320,7 @@ class Call(object):
         query_opts = '"query_opts":%s,\n'%self._print_dict(self.query_opts)
         data_fields = '"data_fields":%s,\n'%self._print_dict(self.data_fields)
         return_desc = '"return_desc":"%s",\n'%self.return_desc
-        description = self._print_quoted_field('description', self.description)
+        description = '"description":"%s",\n'%self.description
         return_ex = self._print_quoted_field('return_ex', self.return_ex)
         deprecated = self._print_tuple(self.deprecated, 'deprecated')
         added = self._print_tuple(self.added, 'added')
@@ -507,11 +510,15 @@ class CallParser(object):
 
                 if isinstance(entry.callback, indivo.lib.utils.MethodDispatcher):
                     for method, view_func in entry.callback.methods.iteritems():
-                        call = Call(path, method, view_func_name=view_func.__name__, url_params=params)
+                        call = Call(path, method, view_func_name=view_func.__name__, 
+                                    url_params=params)
+                        call.description = call.get_docstring_summary()
                         self.register(call)
                 else:
                     method = 'GET'
-                    call = Call(path, method, entry.callback.__name__, url_params=params)
+                    call = Call(path, method, entry.callback.__name__, 
+                                url_params=params)
+                    call.description = call.get_docstring_summary()
                     self.register(call)
 
 class APIUtils(object):

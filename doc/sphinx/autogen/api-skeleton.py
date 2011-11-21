@@ -11,9 +11,7 @@ CALLS=[{
         },
     "data_fields":{
         },
-    "description":'''
- Create a new account.
-''',
+    "description":"Create a new account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -34,9 +32,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Search for accounts by name or email.
-''',
+    "description":"Search for accounts by name or email.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -58,9 +54,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Display information about an account.
-''',
+    "description":"Display information about an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -82,9 +76,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Add a new method of authentication to an account.
-''',
+    "description":"Add a new method of authentication to an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -106,9 +98,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Change a account's password.
-''',
+    "description":"Change a account's password.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -130,9 +120,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Force the password of an account to a given value.
-''',
+    "description":"Force the password of an account to a given value.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -154,9 +142,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Force the username of an account to a given value.
-''',
+    "description":"Force the username of an account to a given value.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -179,9 +165,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Validate an account's primary and secondary secrets.
-''',
+    "description":"Validate an account's primary and secondary secrets.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -203,9 +187,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Resets an account if the user has forgotten its password.
-''',
+    "description":"Resets an account if the user has forgotten its password.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -227,9 +209,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List messages in an account's inbox.
-''',
+    "description":"List messages in an account's inbox.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -251,9 +231,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Send a message to an account.
-''',
+    "description":"Send a message to an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -276,9 +254,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Retrieve an individual message from an account's inbox.
-''',
+    "description":"Retrieve an individual message from an account's inbox.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -301,9 +277,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Archive a message.
-''',
+    "description":"Archive a message.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -327,9 +301,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Accept a message attachment into the record it corresponds to.
-''',
+    "description":"Accept a message attachment into the record it corresponds to.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -351,9 +323,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set basic information about an account.
-''',
+    "description":"Set basic information about an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -376,9 +346,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Initialize an account, activating it.
-''',
+    "description":"Initialize an account, activating it.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -400,9 +368,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List an account's notifications.
-''',
+    "description":"List an account's notifications.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -424,9 +390,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the carenets that an account has access to.
-''',
+    "description":"List the carenets that an account has access to.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -448,9 +412,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Display an account's primary secret.
-''',
+    "description":"Display an account's primary secret.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -472,9 +434,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List all available records for an account.
-''',
+    "description":"List all available records for an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -496,9 +456,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Reset an account to an ``uninitialized`` state.
-''',
+    "description":"Reset an account to an ``uninitialized`` state.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -520,9 +478,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Return the secondary secret of an account.
-''',
+    "description":"Return the secondary secret of an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -544,9 +500,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Sends an account user their primary secret in case they lost it.
-''',
+    "description":"Sends an account user their primary secret in case they lost it.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -568,9 +522,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the state of an account. 
-''',
+    "description":"Set the state of an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -591,9 +543,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List all available userapps.
-''',
+    "description":"List all available userapps.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -615,9 +565,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Delete a userapp from Indivo.
-''',
+    "description":"Delete a userapp from Indivo.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -639,9 +587,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Return a description of a single userapp.
-''',
+    "description":"Return a description of a single userapp.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -663,9 +609,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List app-specific documents.
-''',
+    "description":"List app-specific documents.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -687,9 +631,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create an app-specific Indivo document.
-''',
+    "description":"Create an app-specific Indivo document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -712,9 +654,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create an app-specific Indivo document with an associated external id.
-''',
+    "description":"Create an app-specific Indivo document with an associated external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -737,9 +677,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of an app-specific document identified by external id.
-''',
+    "description":"Fetch the metadata of an app-specific document identified by external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -762,9 +700,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Delete an app-specific document. 
-''',
+    "description":"Delete an app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -787,9 +723,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Retrive an app-specific document.
-''',
+    "description":"Retrive an app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -812,9 +746,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create or Overwrite an app-specific Indivo document.
-''',
+    "description":"Create or Overwrite an app-specific Indivo document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -837,9 +769,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the label of an app-specific document.
-''',
+    "description":"Set the label of an app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -862,9 +792,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of an app-specific document via a carenet.
-''',
+    "description":"Fetch the metadata of an app-specific document via a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -886,9 +814,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Delete a carenet.
-''',
+    "description":"Delete a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -910,9 +836,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the accounts in a carenet.
-''',
+    "description":"List the accounts in a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -934,9 +858,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Add an account to a carenet.
-''',
+    "description":"Add an account to a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -959,9 +881,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Remove an account from a carenet.
-''',
+    "description":"Remove an account from a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -984,9 +904,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the permissions of an account within a carenet.
-''',
+    "description":"List the permissions of an account within a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1008,9 +926,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List Apps within a given carenet.
-''',
+    "description":"List Apps within a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1033,9 +949,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Remove an app from a given carenet.
-''',
+    "description":"Remove an app from a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1058,9 +972,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Add an app to a carenet
-''',
+    "description":"Add an app to a carenet",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1083,9 +995,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Retrieve the permissions for an app within a carenet. NOT IMPLEMENTED.
-''',
+    "description":"Retrieve the permissions for an app within a carenet. NOT IMPLEMENTED.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1107,9 +1017,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
-List documents from a given carenet.
-''',
+    "description":"List documents from a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1132,9 +1040,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Read a special document from a carenet.
-''',
+    "description":"Read a special document from a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1150,16 +1056,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "view_func_name":"carenet_document",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
-Return a document from a carenet.
-''',
+    "description":"Return a document from a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1175,16 +1079,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "view_func_name":"carenet_document_meta",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DOCUMENT_ID':'The unique identifier of the Indivo document',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of a record-specific document via a carenet.
-''',
+    "description":"Fetch the metadata of a record-specific document via a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1206,9 +1108,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Get basic information about the record to which a carenet belongs.
-''',
+    "description":"Get basic information about the record to which a carenet belongs.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1230,9 +1130,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Change a carenet's name.
-''',
+    "description":"Change a carenet's name.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1254,9 +1152,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the allergy data for a given carenet.
-''',
+    "description":"List the allergy data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1278,9 +1174,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the equipment data for a given carenet.
-''',
+    "description":"List the equipment data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1302,9 +1196,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the immunization data for a given carenet.
-''',
+    "description":"List the immunization data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1326,9 +1218,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the lab data for a given carenet.
-''',
+    "description":"List the lab data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1351,9 +1241,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the measurement data for a given carenet.
-''',
+    "description":"List the measurement data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1375,9 +1263,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the medication data for a given carenet.
-''',
+    "description":"List the medication data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1399,9 +1285,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the problem data for a given carenet.
-''',
+    "description":"List the problem data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1423,9 +1307,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the procedure data for a given carenet.
-''',
+    "description":"List the procedure data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1447,9 +1329,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the simple_clinical_notes data for a given carenet.
-''',
+    "description":"List the simple_clinical_notes data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1471,9 +1351,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the vitals data for a given carenet.
-''',
+    "description":"List the vitals data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1496,9 +1374,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the vitals data for a given carenet.
-''',
+    "description":"List the vitals data for a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1519,8 +1395,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
-''',
+    "description":"",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1542,8 +1417,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
-''',
+    "description":"",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1564,9 +1438,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Exchange a request token for a valid access token.
-''',
+    "description":"Exchange a request token for a valid access token.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1588,9 +1460,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Indicate a user's consent to bind an app to a record or carenet.
-''',
+    "description":"Indicate a user's consent to bind an app to a record or carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1612,9 +1482,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Claim a request token on behalf of an account.
-''',
+    "description":"Claim a request token on behalf of an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1636,9 +1504,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Get information about a request token.
-''',
+    "description":"Get information about a request token.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1659,9 +1525,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Authenticate a user and register a web session for them.
-''',
+    "description":"Authenticate a user and register a web session for them.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1682,9 +1546,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Verify a signed URL.
-''',
+    "description":"Verify a signed URL.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1705,9 +1567,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Get a new request token, bound to a record or carenet if desired.
-''',
+    "description":"Get a new request token, bound to a record or carenet if desired.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1728,9 +1588,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a new record.
-''',
+    "description":"Create a new record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1753,9 +1611,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a new record with an associated external id.
-''',
+    "description":"Create a new record with an associated external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1777,9 +1633,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Get information about an individual record.
-''',
+    "description":"Get information about an individual record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1801,9 +1655,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List userapps bound to a given record.
-''',
+    "description":"List userapps bound to a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1826,9 +1678,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Remove a userapp from a record.
-''',
+    "description":"Remove a userapp from a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1851,9 +1701,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Get information about a given userapp bound to a record.
-''',
+    "description":"Get information about a given userapp bound to a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1876,9 +1724,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List record-app-specific documents.
-''',
+    "description":"List record-app-specific documents.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1901,9 +1747,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a record-app-specific Indivo document.
-''',
+    "description":"Create a record-app-specific Indivo document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1927,9 +1771,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create or Overwrite a record-app-specific Indivo document with an associated external id.
-''',
+    "description":"Create or Overwrite a record-app-specific Indivo document with an associated external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1953,9 +1795,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create or Overwrite a record-app-specific Indivo document with an associated external id.
-''',
+    "description":"Create or Overwrite a record-app-specific Indivo document with an associated external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -1979,9 +1819,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of a record-app-specific document identified by external id.
-''',
+    "description":"Fetch the metadata of a record-app-specific document identified by external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2005,9 +1843,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Delete a record-app-specific document. 
-''',
+    "description":"Delete a record-app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2031,9 +1867,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Retrieve a record-app-specific document. 
-''',
+    "description":"Retrieve a record-app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2057,9 +1891,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the label of a record-app-specific document.
-''',
+    "description":"Set the label of a record-app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2083,9 +1915,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of a record-app-specific document.
-''',
+    "description":"Fetch the metadata of a record-app-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2108,9 +1938,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Bind an app to a record without user authorization.
-''',
+    "description":"Bind an app to a record without user authorization.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2132,9 +1960,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Return audits of calls touching *record*.
-''',
+    "description":"Return audits of calls touching *record*.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2157,9 +1983,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Return audits of calls touching *record* and *document_id*.
-''',
+    "description":"Return audits of calls touching *record* and *document_id*.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2183,9 +2007,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Return audits of calls to *function_name* touching *record* and *document_id*.
-''',
+    "description":"Return audits of calls to *function_name* touching *record* and *document_id*.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2207,9 +2029,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Select Audit Objects via the Query API Interface.
-''',
+    "description":"Select Audit Objects via the Query API Interface.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2231,9 +2051,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- For a single record, list all carenets that a given doctype is autoshared with.
-''',
+    "description":"For a single record, list all carenets that a given doctype is autoshared with.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2255,9 +2073,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- For a single record, list all doctypes autoshared into carenets.
-''',
+    "description":"For a single record, list all doctypes autoshared into carenets.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2280,9 +2096,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Automatically share all documents of a certain type into a carenet.
-''',
+    "description":"Automatically share all documents of a certain type into a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2305,9 +2119,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Remove an autoshare from a carenet.
-''',
+    "description":"Remove an autoshare from a carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2329,9 +2141,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List all carenets for a record.
-''',
+    "description":"List all carenets for a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2353,9 +2163,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a new carenet for a record.
-''',
+    "description":"Create a new carenet for a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2377,9 +2185,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Delete all documents associated with a record.
-''',
+    "description":"Delete all documents associated with a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2401,9 +2207,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List record-specific documents.
-''',
+    "description":"List record-specific documents.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2425,9 +2229,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a record-specific Indivo Document.
-''',
+    "description":"Create a record-specific Indivo Document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2451,9 +2253,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a record-specific Indivo Document with an associated external id.
-''',
+    "description":"Create a record-specific Indivo Document with an associated external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2477,9 +2277,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the label of a record-specific document, specified by external id.
-''',
+    "description":"Set the label of a record-specific document, specified by external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2503,9 +2301,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of a record-specific document identified by external id.
-''',
+    "description":"Fetch the metadata of a record-specific document identified by external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2528,9 +2324,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Read a special document from a record.
-''',
+    "description":"Read a special document from a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2553,9 +2347,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create or update a special document on a record.
-''',
+    "description":"Create or update a special document on a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2578,9 +2370,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create or update a special document on a record.
-''',
+    "description":"Create or update a special document on a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2605,9 +2395,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a new relationship between two existing documents.
-''',
+    "description":"Create a new relationship between two existing documents.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2630,9 +2418,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Retrieve a record-specific document.
-''',
+    "description":"Retrieve a record-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2655,9 +2441,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
-List all the carenets into which a document has been shared.
-''',
+    "description":"List all the carenets into which a document has been shared.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2674,16 +2458,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Unshare a document from a given carenet.
-''',
+    "description":"Unshare a document from a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2700,16 +2482,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A principal in full control of the carenet's record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Place a document into a given carenet.
-''',
+    "description":"Place a document into a given carenet.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2726,16 +2506,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A principal in full control of the record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Revert the document-sharing of a document in a carent to whatever rules are specified by autoshares. NOT IMPLEMENTED.
-''',
+    "description":"Revert the document-sharing of a document in a carent to whatever rules are specified by autoshares. NOT IMPLEMENTED.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2758,9 +2536,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the label of a record-specific document.
-''',
+    "description":"Set the label of a record-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2783,9 +2559,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fetch the metadata of a record-specific document.
-''',
+    "description":"Fetch the metadata of a record-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2808,9 +2582,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set metadata fields on a document. NOT IMPLEMENTED. 
-''',
+    "description":"Set metadata fields on a document. NOT IMPLEMENTED.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2833,9 +2605,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Remove the nevershare flag from a document.
-''',
+    "description":"Remove the nevershare flag from a document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2858,9 +2628,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Flag a document to never be shared, anywhere.
-''',
+    "description":"Flag a document to never be shared, anywhere.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2877,16 +2645,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Get all documents related to the passed document_id by a relation of the passed relation-type.
-''',
+    "description":"Get all documents related to the passed document_id by a relation of the passed relation-type.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2903,16 +2669,14 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Create a document and relate it to an existing document.
-''',
+    "description":"Create a document and relate it to an existing document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2929,18 +2693,16 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'EXTERNAL_ID':'The external identifier of the desired resource',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
         'PHA_EMAIL':'The email identifier of the Indivo user app',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Create a document, assign it an external id, and relate it to an existing document.
-''',
+    "description":"Create a document, assign it an external id, and relate it to an existing document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2957,18 +2719,16 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'EXTERNAL_ID':'The external identifier of the desired resource',
-        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         'DOCUMENT_ID':'The unique identifier of the Indivo document',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
         'PHA_EMAIL':'The email identifier of the Indivo user app',
+        'REL':'The type of relationship between the documents, i.e. ``annotation``, ``interpretation``',
         },
     "query_opts":{
         },
     "data_fields":{
         },
-    "description":'''
- Create a document, assign it an external id, and relate it to an existing document.
-''',
+    "description":"Create a document, assign it an external id, and relate it to an existing document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -2991,9 +2751,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a new version of a record-specific document.
-''',
+    "description":"Create a new version of a record-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3018,9 +2776,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Create a new version of a record-specific document and assign it an external id.
-''',
+    "description":"Create a new version of a record-specific document and assign it an external id.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3043,9 +2799,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the status of a record-specific document.
-''',
+    "description":"Set the status of a record-specific document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3068,9 +2822,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List all changes to a document's status over time.
-''',
+    "description":"List all changes to a document's status over time.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3093,9 +2845,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Retrieve the versions of a document.
-''',
+    "description":"Retrieve the versions of a document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3118,9 +2868,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Send a message to a record.
-''',
+    "description":"Send a message to a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3144,9 +2892,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Attach a document to an Indivo message.
-''',
+    "description":"Attach a document to an Indivo message.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3168,9 +2914,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Send a notification about a record to all accounts authorized to be notified.
-''',
+    "description":"Send a notification about a record to all accounts authorized to be notified.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3192,9 +2936,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Send a notification about a record to all accounts authorized to be notified.
-''',
+    "description":"Send a notification about a record to all accounts authorized to be notified.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3216,9 +2958,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Get the owner of a record.
-''',
+    "description":"Get the owner of a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3240,9 +2980,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the owner of a record.
-''',
+    "description":"Set the owner of a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3264,9 +3002,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Set the owner of a record.
-''',
+    "description":"Set the owner of a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3288,9 +3024,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Export patient data as a Continuity of Care Record (CCR) document.
-''',
+    "description":"Export patient data as a Continuity of Care Record (CCR) document.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3312,9 +3046,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the allergy data for a given record.
-''',
+    "description":"List the allergy data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3336,9 +3068,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the equipment data for a given record.
-''',
+    "description":"List the equipment data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3360,9 +3090,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the immunization data for a given record.
-''',
+    "description":"List the immunization data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3384,9 +3112,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the lab data for a given record.
-''',
+    "description":"List the lab data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3409,9 +3135,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the measurement data for a given record.
-''',
+    "description":"List the measurement data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3433,9 +3157,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the medication data for a given record.
-''',
+    "description":"List the medication data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3457,9 +3179,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the problem data for a given record.
-''',
+    "description":"List the problem data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3481,9 +3201,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the procedure data for a given record.
-''',
+    "description":"List the procedure data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3505,9 +3223,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the simple_clinical_notes data for a given record.
-''',
+    "description":"List the simple_clinical_notes data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3529,9 +3245,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the vitals data for a given record.
-''',
+    "description":"List the vitals data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3554,9 +3268,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the vitals data for a given record.
-''',
+    "description":"List the vitals data for a given record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3578,9 +3290,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- List the shares of a record.
-''',
+    "description":"List the shares of a record.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3602,9 +3312,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Fully share a record with another account.
-''',
+    "description":"Fully share a record with another account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3627,9 +3335,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Undo a full record share with an account.
-''',
+    "description":"Undo a full record share with an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3652,9 +3358,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Undo a full record share with an account.
-''',
+    "description":"Undo a full record share with an account.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3676,8 +3380,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
-''',
+    "description":"",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE
@@ -3698,9 +3401,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "data_fields":{
         },
-    "description":'''
- Return the current version of Indivo.
-''',
+    "description":"Return the current version of Indivo.",
     "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
     "return_ex":'''
 GIVE AN EXAMPLE OF A RETURN VALUE

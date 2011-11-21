@@ -37,9 +37,10 @@ Workflow is as follows:
   into the skeleton file.
 '''
 
-    userfields = ['query_opts', 'data_fields', 'description', 'return_desc', 
+    userfields = ['query_opts', 'data_fields', 'return_desc', 
                   'return_ex', 'deprecated', 'added', 'changed']
-    cpfields = ['method', 'path', 'view_func_name', 'url_params', 'access_doc']
+    cpfields = ['method', 'path', 'view_func_name', 'url_params', 'access_doc',
+                'description']
     
     defaults_map = {
         'url_params': URL_PARAM_DESC,
@@ -89,8 +90,7 @@ Workflow is as follows:
                 resolver.prefer_cp()
                 for field in self.cpfields:
                     oldval = getattr(user_call, field, None)
-                    defaults = self.defaults_map.get(field, None)
-                    newval = resolver.resolve(field, defaults)
+                    newval = resolver.resolve(field)
                     setattr(new_call, field, newval)
                     if oldval != newval:
                         mod = True
@@ -99,8 +99,7 @@ Workflow is as follows:
                 resolver.prefer_user()
                 for field in self.userfields:
                     oldval = getattr(user_call, field, None)
-                    defaults = self.defaults_map.get(field, None)
-                    newval = resolver.resolve(field, defaults)
+                    newval = resolver.resolve(field)
                     setattr(new_call, field, newval)
                     if oldval != newval:
                         mod = True

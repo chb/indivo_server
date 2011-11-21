@@ -50,7 +50,7 @@ QUERY_PARAM_DESC = {'offset':'See :ref:`query-operators`',
 
 DATA_FIELD_DESC = {}
 
-TEXT_FIELD_DESC = {'description': lambda call: call.view_func.__doc__.split('\n')[0],
+TEXT_FIELD_DESC = {'description': lambda call: call.get_docstring_summary(),
                    'return_desc': 'DESCRIBE THE VALUES THAT THE CALL RETURNS',
                    'return_ex': 'GIVE AN EXAMPLE OF A RETURN VALUE',
                    }
