@@ -833,8 +833,8 @@ Example Return Value::
 
    :shortname: carenet_document
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -851,8 +851,8 @@ Example Return Value::
 
    :shortname: carenet_document_meta
    :accesscontrol: A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.
-   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :parameter DOCUMENT_ID: The unique identifier of the Indivo document
+   :parameter CARENET_ID: The id string associated with the Indivo carenet
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -1925,8 +1925,8 @@ Example Return Value::
    :shortname: carenet_document_delete
    :accesscontrol: A principal in full control of the carenet's record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -1944,8 +1944,8 @@ Example Return Value::
    :shortname: carenet_document_placement
    :accesscontrol: A principal in full control of the carenet's record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -1963,8 +1963,8 @@ Example Return Value::
    :shortname: autoshare_revert
    :accesscontrol: A principal in full control of the record.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter CARENET_ID: The id string associated with the Indivo carenet
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2080,8 +2080,8 @@ Example Return Value::
    :shortname: get_documents_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2099,8 +2099,8 @@ Example Return Value::
    :shortname: document_create_by_rel
    :accesscontrol: A user app with access to the record, or a principal in full control of the record
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2118,10 +2118,10 @@ Example Return Value::
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter EXTERNAL_ID: The external identifier of the desired resource
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter EXTERNAL_ID: The external identifier of the desired resource
    :parameter PHA_EMAIL: The email identifier of the Indivo user app
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::
@@ -2139,10 +2139,10 @@ Example Return Value::
    :shortname: document_create_by_rel_with_ext_id
    :accesscontrol: A user app with access to the record, with an id matching the app email in the URL.
    :parameter RECORD_ID: The id string associated with the Indivo record
-   :parameter EXTERNAL_ID: The external identifier of the desired resource
-   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :parameter REL: The type of relationship between the documents, i.e. ``annotation``, ``interpretation``
+   :parameter EXTERNAL_ID: The external identifier of the desired resource
    :parameter PHA_EMAIL: The email identifier of the Indivo user app
+   :parameter DOCUMENT_ID: The unique identifier of the Indivo document
    :returns: DESCRIBE THE VALUES THAT THE CALL RETURNS
 
 Example Return Value::

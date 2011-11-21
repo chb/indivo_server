@@ -29,9 +29,6 @@ Contents:
 
    api-reference
    todos
-
-..
-   When the code is ready:
    Auto-generated Documentation of the Indivo Codebase <autocode/modules>
 
 Indices and tables
