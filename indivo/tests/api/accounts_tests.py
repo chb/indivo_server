@@ -4,6 +4,9 @@ from indivo.tests.internal_tests import InternalTests, TransactionInternalTests
 from django.utils.http import urlencode
 from indivo.tests.data import *
 
+from lxml import etree
+from indivo.lib import iso8601
+
 def accountStateSetUp(test_cases_instance):
     _self = test_cases_instance
     super(_self.__class__, _self).setUp()
@@ -99,9 +102,32 @@ class AccountInternalTests(InternalTests):
         response = self.client.get('/accounts/%s/inbox/%s'%(self.account.email,self.message.id))
         self.assertEquals(response.status_code, 200)    
 
+        # Insure that dates are in the proper format
+        xml = etree.fromstring(response.content)
+        received_at = xml.findtext('received_at')
+        self.assertNotRaises(ValueError, self.validateIso8601, received_at)
+
+        read_at = xml.findtext('read_at')
+        self.assertNotRaises(ValueError, self.validateIso8601, read_at)
+
+        archived_at = xml.findtext('archived_at')
+        self.assertNotRaises(ValueError, self.validateIso8601, archived_at)
+
     def test_get_inbox(self):
         response = self.client.get('/accounts/%s/inbox/'%(self.account.email))
         self.assertEquals(response.status_code, 200)    
+
+        # Insure that dates are in the proper format
+        messages = etree.fromstring(response.content)
+        for message in messages.iterfind('Message'):
+            received_at = message.findtext('received_at')
+            self.assertNotRaises(ValueError, self.validateIso8601, received_at)
+
+            read_at = message.findtext('read_at')
+            self.assertNotRaises(ValueError, self.validateIso8601, read_at)
+
+            archived_at = message.findtext('archived_at')
+            self.assertNotRaises(ValueError, self.validateIso8601, archived_at)
 
     def test_send_message_to_account(self):
         msg = TEST_MESSAGES[0]

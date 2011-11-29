@@ -4,6 +4,7 @@ from django.test.testcases import disable_transaction_methods, restore_transacti
 
 from indivo.models import *
 from indivo.tests.data import *
+from indivo.lib import iso8601
 
 import functools
 import os
@@ -71,6 +72,23 @@ class IndivoTests(object):
                 loadDataSection(ds_info[0], ds_info[1], model)
 
         self.dependencies_loaded = True
+
+    def assertNotRaises(self, exception, call, *args, **kwargs):
+        if not hasattr(exception, '__iter__'):
+            exception = [exception]
+        try:
+            result = call(*args, **kwargs)
+        except Exception as e:
+            for exc in exception:
+                if isinstance(e, exc):
+                    raise self.failureException('Exception Raised: %s'%e.__class__.__name__)
+        return
+
+    def validateIso8601(self, datestring, accept_null = True):
+        if not datestring and accept_null:
+            return
+        else:
+            return iso8601.parse_utc_date(datestring)
 
     def addAppToRecord(self, record, with_pha, carenet=None):
         share = PHAShare.objects.create(record=record, with_pha=with_pha, carenet=carenet)
