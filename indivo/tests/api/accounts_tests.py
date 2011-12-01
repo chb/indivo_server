@@ -151,6 +151,12 @@ class AccountInternalTests(InternalTests):
     def test_get_notifications(self):
         response = self.client.get('/accounts/%s/notifications/'%(self.account.email))
         self.assertEquals(response.status_code, 200)    
+
+        # Insure that dates are in the proper format
+        notifications = etree.fromstring(response.content)
+        for n in notifications.iterfind('Notification'):
+            received_at = n.findtext('received_at')
+            self.assertNotRaises(ValueError, self.validateIso8601, received_at)
         
     def test_get_permissions(self):
         response = self.client.get('/accounts/%s/permissions/'%(self.account.email))
