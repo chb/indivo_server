@@ -133,7 +133,7 @@ def record_notify(request, record):
 
   request.POST must contain:
 
-  * *content*: The plaintext content of the notifications
+  * *content*: The plaintext content of the notification.
 
   request.POST may contain:
 
@@ -333,6 +333,9 @@ def record_pha_setup(request, record, pha):
   for this instance of Indivo to run (i.e. syncer apps that connect to 
   data sources). It can only be made by admins, since it skips the
   normal app authorization process.
+
+  ``request.POST`` may contain raw content that will be used
+  as a setup document for the record.
 
   Will return :http:statuscode:`200` with a valid access token for the
   app bound to the record on success.

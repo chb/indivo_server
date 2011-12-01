@@ -431,7 +431,7 @@ def account_secret(request, account):
 
 @transaction.commit_on_success
 def account_create(request):
-    """ Create a new account.
+    """ Create a new account, and send out initialization emails.
 
     request.POST holds the creation arguments. 
 

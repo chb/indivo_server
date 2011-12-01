@@ -104,6 +104,10 @@ Workflow is as follows:
                     if oldval != newval:
                         mod = True
 
+
+                # Set defaults for values that weren't in the cp_call or the user_call
+                mod = new_call.set_defaults(self.defaults_map)
+
                 # Note: a 'modified' call is one that has had computerized values
                 # written over whatever existed in api-skeleton.py.
                 if mod:
@@ -113,8 +117,9 @@ Workflow is as follows:
 
             # Calls in just the cp version are new: add them to the userfile
             for title in cp_only:
-                new_api.update({title:cp_api[title]})
-                new_api[title].set_defaults(self.defaults_map)
+                new_call = copy.copy(cp_api[title])
+                new_call.set_defaults(self.defaults_map)                
+                new_api.update({title:new_call})
                 diffstr += 'ADD: %s\n'%title
 
             # Calls in just the userfile are no longer valid: delete them from the userfile

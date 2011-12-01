@@ -35,6 +35,8 @@ def account_send_message(request, account):
   * *message_id*: An external identifier for the message, used for later
     retrieval. Defaults to ``None``.
 
+  * *subject*: The message subject. Defaults to ``[no subject]``.
+
   * *body*: The message body. Defaults to ``[no body]``.
 
   * *severity*: The importance of the message. Options are ``low``, ``medium``,
@@ -66,6 +68,8 @@ def record_send_message(request, record, message_id):
   """ Send a message to a record.
 
   request.POST may contain any of:
+
+  * *subject*: The message subject. Defaults to ``[no subject]``.
 
   * *body*: The message body. Defaults to ``[no body]``.
 

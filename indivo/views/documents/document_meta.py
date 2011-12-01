@@ -54,7 +54,7 @@ def record_document_meta_ext(request, record, pha, external_id):
 
 
 def app_document_meta(request, pha, document_id):
-  """ Fetch the metadata of an app-specific document via a carenet.
+  """ Fetch the metadata of an app-specific document.
 
   Calls into 
   :py:meth:`~indivo.views.documents.document_meta._document_meta`.

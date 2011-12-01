@@ -259,20 +259,27 @@ class Call(object):
 
     def set_defaults(self, default_maps):
         ''' Replace blank attributes of the Call with default values provided in `default_maps` '''
+        mod = False
         for fieldname, default_map in default_maps.iteritems():
             if hasattr(self, fieldname):
                 fieldval = getattr(self, fieldname, None)
-            
                 # The attribute is a dict, look for its keys in the map
                 if isinstance(fieldval, dict):
                     for k in fieldval.keys():
                         if default_map.has_key(k) and not fieldval[k]:
-                            fieldval[k] = self._get_default(default_map,k)
+                            newval = self._get_default(default_map, k)
+                            if newval:
+                                mod = True
+                            fieldval[k] = newval
 
                 # The attribute is a string, look for the attribute itself in the map
                 else:
                     if default_map.has_key(fieldname) and not fieldval:
-                        setattr(self, fieldname, self._get_default(default_map,fieldname))
+                        newval = self._get_default(default_map, fieldname)
+                        if newval:
+                            mod = True
+                        setattr(self, fieldname, newval)
+        return mod
 
     def _print_tuple(self, tuple, varname):
         key = '"%s": '%varname
@@ -395,7 +402,14 @@ class Call(object):
         access_doc = ":accesscontrol: %s"%self.access_doc
         url_params = [":parameter %s: %s"%(p, self.url_params[p]) for p in self.url_params.keys()]
         query_opts = [":queryparameter %s: %s"%(q, self.query_opts[q]) for q in self.query_opts.keys()]
-        data_fields = [":formparameter %s: %s"%(d, self.data_fields[d]) for d in self.data_fields.keys()]
+        
+        data_fields = []
+        for k,v in self.data_fields.iteritems():
+            if k == '':
+                data_fields = [":rawdata: %s"%v]
+                break
+            else:
+                data_fields.append(":formparameter %s: %s"%(k,v))
         returns = ":returns: %s"%self.return_desc
         indent = 3
         
@@ -452,7 +466,11 @@ class Call(object):
     def _get_access_doc(self):
         if self.access_rule and self.access_rule.rule.__doc__:
             return self.access_rule.rule.__doc__
-        return ''
+        else:
+            exc_pattern = settings.INDIVO_ACCESS_CONTROL_EXCEPTION 
+            if exc_pattern and self.path and re.match(exc_pattern, self.path):
+                return 'Anybody'
+        return 'Nobody'
 
     def _get_view_func(self):
         view_func = None
@@ -510,11 +528,14 @@ class CallParser(object):
 
                 if isinstance(entry.callback, indivo.lib.utils.MethodDispatcher):
                     for method, view_func in entry.callback.methods.iteritems():
-                        call = Call(path, method, view_func_name=view_func.__name__, 
-                                    url_params=params)
-                        call.description = call.get_docstring_summary()
-                        self.register(call)
-                else:
+                        
+                        # exclude calls to django views (i.e. static file serving)
+                        if not view_func.__module__.startswith('django'):
+                            call = Call(path, method, view_func_name=view_func.__name__, 
+                                        url_params=params)
+                            call.description = call.get_docstring_summary()
+                            self.register(call)
+                elif not entry.callback.__module__.startswith('django'):
                     method = 'GET'
                     call = Call(path, method, entry.callback.__name__, 
                                 url_params=params)

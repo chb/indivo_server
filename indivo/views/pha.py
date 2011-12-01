@@ -91,7 +91,7 @@ def request_token(request):
 
     Will return :http:statuscode:`200` with the request token on success,
     :http:statuscode:`403` if the oauth signature on the request was missing
-    of faulty.
+    or faulty.
 
     """
 
