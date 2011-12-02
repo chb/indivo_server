@@ -2,9 +2,9 @@
 {% load template_utils %}<?xml version="1.0" encoding="utf-8" ?>
 <Message id="{{message.id}}">
   <sender>{{message.sender.email}}</sender>
-  <received_at>{{message.received_at}}</received_at>
-  <read_at>{{message.read_at|check_empty}}</read_at>
-  <archived_at>{{message.archived_at|check_empty}}</archived_at>
+  <received_at>{{message.received_at|format_iso8601_datetime}}</received_at>
+  <read_at>{{message.read_at|format_iso8601_datetime}}</read_at>
+  <archived_at>{{message.archived_at|format_iso8601_datetime}}</archived_at>
   <subject>{{message.subject}}</subject>
   <body>{{message.body}}</body>
   <severity>{{message.severity}}</severity>
