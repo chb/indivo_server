@@ -43,7 +43,7 @@ In addition, we implement the following constraints:
     (i.e., we have to obtain their consent), Indivo_Server does not explicitly offer a
     User Authorization URL via its API. Individual UI apps can (with a valid user session)
     authorize tokens on behalf of users with a call to 
-    :http:post:`internal/request_tokens/{TOKEN}/approve`, but each individual UI-app 
+    :http:post:`/oauth/internal/request_tokens/{TOKEN}/approve`, but each individual UI-app 
     implementation will provide a different app-facing User Authorization URL. We 
     recommend using ``https://UI_SERVER/oauth/authorize?oauth_token={token}``, which is
     the URL used by our reference UI-app implementation.

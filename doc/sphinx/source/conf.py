@@ -103,8 +103,7 @@ exclude_patterns = []
 pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
-#modindex_common_prefix = []
-
+modindex_common_prefix = ['indivo.views.', 'views.']
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -122,7 +121,8 @@ html_theme_options = {
     'footertextcolor':'#9EADCF',
     'sidebarbgcolor':'#294FAB',
     'sidebartextcolor':'#9EADCF',
-    'sidebarlinkcolor':'#1E3467',
+#    'sidebarlinkcolor':'#1E3467',
+    'sidebarlinkcolor':'#DDDDEE',
     'relbarbgcolor':'#1E3467',
     'relbartextcolor':'#9EADCF',
     'relbarlinkcolor':'#8CA0CF',
@@ -140,7 +140,7 @@ html_theme_options = {
 html_theme_path = [".theme"]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
-# "<project> v<release> documentation".
+html_title = "%s v%s documentation"%(project, version)
 #html_title = None
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
