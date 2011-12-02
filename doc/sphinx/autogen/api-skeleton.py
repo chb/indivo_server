@@ -1144,7 +1144,7 @@ CALLS=[{
         'account_id':'An identifier for the account. Must be a valid email address.',
         },
     "description":"Add an account to a carenet.",
-    "return_desc":":http:statuscode;`200 Success`, :http:statuscode:`404` if the specified account or carenet don't exist, or :http:statuscode:`400` if an account_id isn't passed.",
+    "return_desc":":http:statuscode:`200 Success`, :http:statuscode:`404` if the specified account or carenet don't exist, or :http:statuscode:`400` if an account_id isn't passed.",
     "return_ex":'''
 <ok/>
 ''',
