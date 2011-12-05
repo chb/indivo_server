@@ -2,22 +2,16 @@
 Pull relevant info from the indivo_server codebase to generate a framework for Indivo documentation
 """
 
-# Add indivo_server to the sys path so that our script can find the codebase
-# and Django can find settings.py
-import sys, os
-os.chdir('../..')
-sys.path.append(os.getcwd())
-sys.path.append("%s/.."%os.getcwd())
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-
+# Assumption: Whoever calls us has access to the Django settings module
 from django.conf import settings
+
 from operator import attrgetter
 
 from indivo.accesscontrol.access_rule import AccessRule
 import indivo
 import re
 
-API_ROOTDIR = 'indivo_server'
+API_ROOTDIR = settings.APP_HOME
 API_FP = 'doc/sphinx/autogen/api-skeleton'
 API_EXT = '.py'
 API_REFERENCE_FP = 'doc/sphinx/source/api-reference'
@@ -52,7 +46,7 @@ class APIDict(object):
         '''
         calls = {}
         try:
-            importstr = ("%s/%s"%(self.api_rootdir, self.api_fp)).replace('/', '.')
+            importstr = ("%s"%self.api_fp).replace('/', '.')
             api = __import__(importstr, fromlist=[self.calls_dict])
             calls = getattr(api, self.calls_dict)
         except ImportError: # file doesn't exist yet

@@ -3,14 +3,14 @@ Pull relevant info from the indivo_server codebase to generate a framework for I
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from indivo_server.doc.sphinx.autogen.api_parser import APIDict, CallParser, CallResolver, Call
-from indivo_server.doc.sphinx.autogen.api_defaults import *
+from doc.sphinx.autogen.api_parser import APIDict, CallParser, CallResolver, Call
+from doc.sphinx.autogen.api_defaults import *
 from django.conf import settings
 import urls
 import os
 
 class Command(BaseCommand):
-    args = 'parse | build'
+    args = 'parse | build | prepare'
     help = '''\
 generate_docs: Generate a Framework for the Indivo API Documentation. 
 
@@ -35,6 +35,10 @@ Workflow is as follows:
   ``./manage.py generate_docs build`` as often as you like. If the code changes,
   make sure to re-run ``./manage.py generate_docs parse`` to pull those changes
   into the skeleton file.
+
+Additionally, for readthedocs.org support, the ``prepare`` argument will do all the
+prep work except the final call to build the docs.
+
 '''
 
     userfields = ['query_opts', 'data_fields', 'return_desc', 
@@ -51,9 +55,27 @@ Workflow is as follows:
         'return_ex': TEXT_FIELD_DESC,
         }
 
+    autocode_exclude_paths = [
+                
+        # Always exclude these
+        settings.APP_HOME + '/indivo/migrations/',
+        settings.APP_HOME + '/indivo/urls/',
+        settings.APP_HOME + '/indivo/templates/',
+        settings.APP_HOME + '/indivo/tests/',
+        
+        # Excluded for now, add back in as they get documented
+        settings.APP_HOME + '/indivo/accesscontrol/',
+        settings.APP_HOME + '/indivo/document_processing/',
+        settings.APP_HOME + '/indivo/lib/',
+        settings.APP_HOME + '/indivo/management/',
+        settings.APP_HOME + '/indivo/middlewares/',
+        settings.APP_HOME + '/indivo/models/',
+        settings.APP_HOME + '/indivo/templatetags/',
+        ]
+
     def handle(self, *args, **options):
         if len(args) != 1:
-            raise CommandError('Expected exactly 1 argument: "parse" or "build"')
+            raise CommandError('Expected exactly 1 argument: "parse", "build", or "prepare"')
 
         if args[0] == 'parse':
 
@@ -134,41 +156,48 @@ Workflow is as follows:
 
         elif args[0] == 'build':
             
-            # generate the api reference
-            APIDict().write_ReST_reference()
-
-            # Use sphinx-apidoc to autogenerate code docs
-            exclude_paths = [
-
-                # Always exclude these
-                settings.APP_HOME + '/indivo/migrations/',
-                settings.APP_HOME + '/indivo/urls/',
-                settings.APP_HOME + '/indivo/templates/',
-                settings.APP_HOME + '/indivo/tests/',
-
-                # Excluded for now, add back in as they get documented
-                settings.APP_HOME + '/indivo/accesscontrol/',
-                settings.APP_HOME + '/indivo/document_processing/',
-                settings.APP_HOME + '/indivo/lib/',
-                settings.APP_HOME + '/indivo/management/',
-                settings.APP_HOME + '/indivo/middlewares/',
-                settings.APP_HOME + '/indivo/models/',
-                settings.APP_HOME + '/indivo/templatetags/',
-
-                ]
-
-            output_dir = 'source/autocode'
-            source_dir = settings.APP_HOME + '/indivo/'
+            # Write the API Reference ReST doc
+            self.write_api_reference()
             
-            cmd = 'sphinx-apidoc -o %s %s %s'%(output_dir, 
-                                               source_dir, 
-                                               ' '.join(exclude_paths))
-
-            os.chdir(settings.APP_HOME+'/doc/sphinx')
-            ret = os.system(cmd)
+            # Use sphinx-apidoc to autogenerate code docs
+            self.build_autocode()
 
             # Build the Docs
-            ret = os.system('make html SPHINXOPTS=-a')
+            self.build_docs()
+
+        elif args[0] == 'prepare':
+            
+            # Write the API Reference ReST doc
+            self.write_api_reference()
+            
+            # Use sphinx-apidoc to autogenerate code docs
+            self.build_autocode()
+
+            # Don't Build the Docs
 
         else:
             raise CommandError('Unexpected argument: %s. Expected 1 argument: "parse" or "build"'%args[0])            
+
+    def write_api_reference(self):
+        APIDict().write_ReST_reference()
+
+    def build_autocode(self):
+        output_dir = 'source/autocode'
+        source_dir = settings.APP_HOME + '/indivo/'
+        
+        cmd = 'sphinx-apidoc -o %s %s %s'%(output_dir, 
+                                           source_dir, 
+                                           ' '.join(self.autocode_exclude_paths))
+        self.chdir_and_execute(settings.APP_HOME+'/doc/sphinx', cmd)
+
+    def build_docs(self):
+        cmd = 'make html SPHINXOPTS=-a'
+        self.chdir_and_execute(settings.APP_HOME+'/doc/sphinx', cmd)
+
+    def chdir_and_execute(self, dir, cmd):
+        """ Move to a directory, execute a shell command, then move back out. """
+        old_dir = os.getcwd()
+        os.chdir(dir)
+        ret = os.system(cmd)
+        os.chdir(old_dir)
+        return ret

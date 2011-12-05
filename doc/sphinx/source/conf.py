@@ -16,8 +16,36 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../') # indivo_server/doc/sphinx
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../../../') # indivo_server
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../')) # indivo_server/doc/sphinx
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../../')) # indivo_server/doc
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../../../')) # indivo_server
+
+# Make sure we can grab Django settings
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'    
+
+# Mock packages that we don't need so that code imports work
+# on systems without the packages
+mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension']
+class Mock(object):
+    def __init__(self, *args):
+        pass
+
+    def __getattr__(self, name):
+        return Mock()
+
+for mod_name in mocks:
+    sys.modules[mod_name] = Mock()
+
+# SPECIAL SETUP FOR READTHEDOCS.ORG
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+    
+    # Use a special rtd.org settings module
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings_rtfd'
+
+    # generate the autocode and the api-reference
+    from django.core.management import call_command
+    call_command('generate_docs', 'prepare')
 
 # -- General configuration -----------------------------------------------------
 
@@ -33,7 +61,6 @@ autodoc_default_flags = ['members',
                          'undoc-members', 
                          'private-members', 
                          'show-inheritance',]
-
 # todo config
 todo_include_todos = True
 

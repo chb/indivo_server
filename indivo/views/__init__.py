@@ -17,7 +17,7 @@ including API calls related to:
 
 """
 
-from ..version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE
+from version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE
 
 from account    import *
 from audit      import *

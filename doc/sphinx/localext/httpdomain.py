@@ -28,7 +28,6 @@ from sphinx.util.docfields import Field, GroupedField, TypedField
 
 from autogen.api_parser import APIUtils
 
-
 HTTP_STATUS_CODES = {
     100: 'Continue',
     101: 'Switching Protocols',
