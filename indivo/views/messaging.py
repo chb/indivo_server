@@ -74,7 +74,7 @@ def record_send_message(request, record, message_id):
   * *body*: The message body. Defaults to ``[no body]``.
 
   * *body_type*: The formatting of the message body. Options are ``plaintext``,
-    ``markdown``. Defaults to ``markdown``.
+    ``markdown``. Defaults to ``plaintext``.
 
   * *num_attachments*: The number of attachments this message requires. Attachments
     are uploaded with calls to 
