@@ -84,7 +84,7 @@ class APIDict(object):
         render_func = 'to_python'
         imports = ''
         pre = '%s\n\nCALLS=['%(imports)
-        post = ']'
+        post = ']\n'
 
         self._write_to_file(pre, separator, post, render_func, full_fp)
 
@@ -103,7 +103,7 @@ For a more detailed walkthrough of individual calls, see :doc:`api`
         render_func = 'to_ReST'
         separator = '\n\n--------\n\n'
         pre = '%s\n\n--------\n\n'%(header)
-        post=''
+        post='\n'
         self._write_to_file(pre, separator, post, render_func, full_fp)
 
     def get(self, key, default=None):
