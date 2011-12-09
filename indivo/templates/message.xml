@@ -3,8 +3,8 @@
 <Message id="{{message.id}}">
   <sender>{{message.sender.email}}</sender>
   <received_at>{{message.received_at|format_iso8601_datetime}}</received_at>
-  <read_at>{{message.read_at|format_iso8601_datetime}}</read_at>
-  <archived_at>{{message.archived_at|format_iso8601_datetime}}</archived_at>
+  {% if message.read_at %}<read_at>{{message.read_at|format_iso8601_datetime}}</read_at>{% endif %}
+  {% if message.archived_at %}<archived_at>{{message.archived_at|format_iso8601_datetime}}</archived_at>{% endif %}
   <subject>{{message.subject}}</subject>
   <body>{{message.body}}</body>
   <severity>{{message.severity}}</severity>
@@ -13,7 +13,8 @@
 {% endif %}
 
   {% for attachment in message.messageattachment_set.all %}
-  <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.size}}" saved_to_doc_id="{{attachment.saved_to_document_id}}" />
+  <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.size}}"
+	      {% if attachment.saved_to_document_id %}doc_id="{{attachment.saved_to_document_id}}"{% endif %} />
   {% endfor %}
 </Message>
 {% endspaceless %}

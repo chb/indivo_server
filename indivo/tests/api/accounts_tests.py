@@ -118,6 +118,23 @@ class AccountInternalTests(InternalTests):
         archived_at = xml.findtext('archived_at')
         self.assertNotRaises(ValueError, self.validateIso8601, archived_at)
 
+        # We should have gotten one attachemnt.
+        # Insure that we got didn't get a doc id, as the doc wasn't saved
+        attachments = xml.findall('attachment')
+        self.assertEqual(len(attachments), 1)
+        attachment_doc_id = attachments[0].get('doc_id')
+        self.assertEqual(attachment_doc_id, None)
+
+        # Now save the document and try again
+        # We should get a doc id
+        self.attachment.save_as_document(self.account)
+        response = self.client.get('/accounts/%s/inbox/%s'%(self.account.email, self.message.id))
+        self.assertEquals(response.status_code, 200)
+        xml = etree.fromstring(response.content)
+        attachment = xml.find('attachment')
+        attachment_doc_id = attachment.get('doc_id')
+        self.assertNotEqual(attachment_doc_id, None)
+
     def test_get_inbox(self):
         response = self.client.get('/accounts/%s/inbox/'%(self.account.email))
         self.assertEquals(response.status_code, 200)    
