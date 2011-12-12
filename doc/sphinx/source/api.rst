@@ -377,6 +377,12 @@ Messaging
 Notifications
 ^^^^^^^^^^^^^
 
+Notifications are intended to be a lightweight system for applications to alert
+users of activity in the application. This is especially relevant for apps that 
+use sharing functionality: an app might want to notify other users of the app 
+about a given user's activity in it. UI apps should display these notifications
+in a twitter-feed like interface (our reference UI call it the 'healthfeed').
+
 .. glossary::
 
    :http:post:`/records/{RECORD_ID}/notifications/`
@@ -1205,3 +1211,4 @@ compatibility.
 
    Data Usage Intent and Share Tracking
    ------------------------------------
+
