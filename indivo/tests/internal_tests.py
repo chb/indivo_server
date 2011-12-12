@@ -186,7 +186,7 @@ class IndivoTests(object):
         self.old_media_root = ORIGINAL_MEDIA_ROOT
         new_path = os.path.join(self.old_media_root, 'test_files')
         if not os.path.exists(new_path):
-            os.mkdir(new_path)
+            os.makedirs(new_path) # make dirs recursively, just in case MEDIA_ROOT hasn't been created yet.
         settings.MEDIA_ROOT = new_path
 
     def tearDown(self):
