@@ -15,4 +15,10 @@ class LazyUser(object):
 
 class Authentication(object):
   def process_request(self, request):
+
+    # django 1.3 fails to create a QueryDict for request.POST if we access
+    # request.raw_post_data first. So, we preemptively read request.POST
+    # before oauth libraries read request.raw_post_data ...
+    noclobber = request.POST
+
     request.principal, request.oauth_request = security.get_principal(request)
