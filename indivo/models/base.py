@@ -71,18 +71,69 @@ class Principal(Object):
     if not self.type or self.type == '':
       self.type = self.__class__.__name__
     super(Principal,self).save(*args, **kwargs)
+
+  def _get_subclasses(self):
+    """ Returns a dict of 'type_name':class key-value pairs for each subclass of Principal."""
+    return dict([(rel.var_name, rel.field.model) 
+                 for rel in self._meta.get_all_related_objects() 
+                 if isinstance(rel.field, models.OneToOneField) 
+                 and issubclass(rel.field.model, self.__class__)])
+
+  def get_subclass(self):
+    """ Return the instance of a subclass of this object of type ``self.type``. 
     
-  def name(self):
-    """
-    FIXME: this should be better optimized
-    """
-    if self.type == 'Account':
-      return self.account.full_name
+    Returns ``self`` if no such instance exists (i.e., we have no subclasses).
 
-    if self.type == 'PHA':
-      return self.pha.name
+    Normally, this is available through ``getattr(self, self.type.lower())``,
+    but sometimes that just gets us another principal object. We'll try the
+    above approach first, since it allows us to use select_related to be
+    more efficient, but if that fails, we'll have to use a call to
+    ``objects.get()``, which will always go to the DB. Because of this behavior,
+    this call should be used sparingly.
+    
+    """
 
-    return ''
+    # If we are already an instance of our lowest subclass, avoid extra computation
+    if self.__class__.__name__ == self.type:
+      return self
+
+    # First try to get at the child through Django's OneToOne attribute
+    # i.e. Principal.account or Principal.pha
+    try:
+      subclass_obj = getattr(self, self.type.lower().strip())
+      if subclass_obj.__class__.__name__ == self.type:
+        return subclass_obj
+    except:
+      
+      # This shouldn't happen, if Django is working properly and self.type is set correctly
+      pass
+
+    # Had trouble with the standard lookup, so select_related won't work.
+    # Just use subclass.objects.get(), which will go straight to the DB
+    try:
+      model_class = self._get_subclasses()[self.type.lower().strip()]
+    except KeyError:
+
+      # we're already an instance of the lowest subclass
+      return self
+
+    try:
+      return model_class.objects.get(id=self.id)
+    except model_class.DoesNotExist:
+
+      # Shouldn't happen: our subclass didn't exist
+      return self
+
+  def descriptor(self):
+
+    """ Get a name for the Principal instance.
+
+    Returns the email id if we don't have a name (i.e. accesstokens)
+
+    """
+
+    subclass_obj = self.get_subclass()    
+    return getattr(subclass_obj, 'full_name', None) or getattr(subclass_obj, 'name', None) or subclass_obj.email
     
   # Accesscontrol:
   # Default Role Implmentations (deny-by-default):

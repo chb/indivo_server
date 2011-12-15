@@ -4,13 +4,13 @@
   {% if doc.created_at %}
     <createdAt>{{ doc.created_at|format_iso8601_datetime }}</createdAt>
     <creator id="{{ doc.creator.email }}" type="{{ doc.creator.type }}">
-      <fullname>{{ doc.creator.name }}</fullname>
+      <fullname>{{ doc.creator.descriptor }}</fullname>
     </creator>
   {% endif %}
   {% if doc.suppressed_at %}
     <suppressedAt>{{ doc.suppressed_at|format_iso8601_datetime }}</suppresedAt>
     <suppressor id="{{ doc.suppressed_by.email }}" type="{{ doc.suppressed_by.type }}">
-      <fullname>{{ doc.suppressed_by.account.full_name }}</fullname>
+      <fullname>{{ doc.suppressed_by.descriptor }}</fullname>
     </suppressor>
   {% endif %}
   {% if doc.replaced_by_id %}

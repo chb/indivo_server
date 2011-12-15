@@ -4,6 +4,7 @@ from indivo.tests.data import *
 
 from django.utils.http import urlencode
 import hashlib, uuid
+from lxml import etree
 
 DOCUMENT_TYPE = 'Lab'
 AUDIT_FUNC_NAME = 'record_app_specific_document'
@@ -458,6 +459,17 @@ class RecordInternalTests(InternalTests):
         url = '/records/%s/documents/%s/meta'%(record_id, doc_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+
+        # Make sure metadata fields worked correctly
+        xml = etree.XML(response.content)
+
+        created_at = xml.findtext('createdAt')
+        self.assertNotRaises(ValueError, self.validateIso8601, created_at)
+
+        creator_name = xml.find('creator').findtext('fullname')
+        self.assertEqual(creator_name, self.rs_docs[0].creator.descriptor())
+
+        # TODO: Check remaining fields
 
     def test_update_record_specific_doc_meta(self):
         # Call does nothing.
