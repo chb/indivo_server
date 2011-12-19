@@ -6,6 +6,11 @@ from indivo.lib.sharing_utils import carenet_facts_filter
 from indivo.lib.utils import render_template
 from indivo.lib.iso8601 import parse_utc_date
 from django.db.models import Avg, Count, Max, Min, Sum
+from django.db import connection
+from django.db.backends import postgresql_psycopg2, mysql, oracle
+
+db_module, db_name = connection.settings_dict['ENGINE'].rsplit('.', 1)
+DB_ENGINE = getattr(__import__(db_module, fromlist=[db_name]), db_name)
 
 DATE = 'date'
 STRING = 'string'
@@ -26,16 +31,34 @@ AGG_OPS = {
 }
 
 TIME_INCRS = {
-  'hour': 'YYYY-MM-DD-HH24',
-  'day': 'YYYY-MM-DD',
-  'week': 'YYYY-WW',
-  'month': 'YYYY-MM',
-  'year': 'YYYY',
-  'hourofday': 'HH24',
-  'dayofweek': 'D',
-  'weekofyear': 'WW',
-  'monthofyear': 'MM'
-}
+    'hour': {postgresql_psycopg2:'YYYY-MM-DD-HH24',
+             oracle:'YYYY-MM-DD-HH24',
+             mysql:'%%Y-%%m-%%d-%%H',},
+    'day': {postgresql_psycopg2:'YYYY-MM-DD',
+            oracle:'YYYY-MM-DD',
+            mysql:'%%Y-%%m-%%d',},
+    'week': {postgresql_psycopg2:'YYYY-WW',
+             oracle:'YYYY-WW',
+             mysql:'%%Y-%%U',},
+    'month': {postgresql_psycopg2:'YYYY-MM',
+              oracle:'YYYY-MM',
+              mysql:'%%Y-%%m',},
+    'year': {postgresql_psycopg2:'YYYY',
+             oracle:'YYYY',
+             mysql:'%%Y',},
+    'hourofday': {postgresql_psycopg2:'HH24',
+                  oracle:'HH24',
+                  mysql:'%%H',},
+    'dayofweek': {postgresql_psycopg2:'D',
+                  oracle:'D',
+                  mysql:'%%w',},
+    'weekofyear': {postgresql_psycopg2:'WW',
+                   oracle:'WW',
+                   mysql:'%%U',},
+    'monthofyear': {postgresql_psycopg2:'MM',
+                    oracle:'MM',
+                    mysql:'%%m',},
+    }
 
 OUTPUT_TEMPLATE = 'reports/report'
 AGGREGATE_TEMPLATE = 'reports/aggregate.xml'
@@ -221,8 +244,11 @@ class FactQuery(object):
                 group_field = self.valid_filters[self.date_group['field']][0]
                 date_incr = self.date_group['time_incr']
                 if TIME_INCRS.has_key(date_incr):
-                    format_str = TIME_INCRS[date_incr]
-                    results = results.extra(select={date_incr:"to_char(%s, '%s')"%(group_field, format_str)})
+                    format_str = TIME_INCRS[date_incr][DB_ENGINE]
+                    format_func = 'date_format' if DB_ENGINE == mysql else 'to_char'
+                    results = results.extra(select={date_incr:"%s(%s, '%s')"%(format_func,
+                                                                              group_field, 
+                                                                              format_str)})
 
                     # From now on, we look at the date-formatted string only
                     group_field = date_incr
