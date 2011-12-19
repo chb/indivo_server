@@ -185,18 +185,16 @@ def session_create(request):
             raise PermissionDenied()
 
     if not user:
-        return HttpResponseBadRequest('Wrong username/password')
-    if not user:
         raise PermissionDenied()
 
     if user.is_active:
-            # auth worked, created a session based token
-            from indivo.accesscontrol.oauth_servers import SESSION_OAUTH_SERVER
-            token = SESSION_OAUTH_SERVER.generate_and_preauthorize_access_token(request.principal, user=user)
+        # auth worked, created a session based token
+        from indivo.accesscontrol.oauth_servers import SESSION_OAUTH_SERVER
+        token = SESSION_OAUTH_SERVER.generate_and_preauthorize_access_token(request.principal, user=user)
     else:
-            logging.debug('This user is not active')
-            raise PermissionDenied()
-
+        logging.debug('indivo.views.pha.session_create(): This user is not active')
+        raise PermissionDenied()
+    
     return HttpResponse(str(token), mimetype='text/plain')
 
 
