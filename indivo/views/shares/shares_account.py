@@ -1,16 +1,33 @@
 """
-Indivo views -- Sharing
+.. module:: views.sharing.shares_account
+   :synopsis: Indivo view implementations related to sharing with accounts.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from indivo.views.base import *
 from django.http import HttpResponseBadRequest
 from django.core.exceptions import PermissionDenied
 
-
-
 def carenet_account_create(request, carenet):
-  """Link an account to a given carenet
-  write=false or write=true"""
+  """ Add an account to a carenet.
+  
+  request.POST must contain:
+  
+  * *account_id*: The email of the account to share with.
+
+  * *write*: Whether or not the account can write to the 
+    carenet. Can be ``'true'`` or ``'false'``. This is currently
+    unused, as carenets are read-only, however it must be provided
+    anyways.
+
+  Will return :http:statuscode:`200` on success, :http:statuscode:`404`
+  if the specified *account_id* doesn't exist, or :http:statuscode:`400`
+  if either *account_id* or *write* is not in request.POST.
+
+  """
 
   ACCOUNT_ID = 'account_id'
   if request.POST.has_key(ACCOUNT_ID) and \
@@ -32,7 +49,11 @@ def carenet_account_create(request, carenet):
 
 
 def carenet_account_list(request, carenet):
-  """List the accounts of a given carenet"""
+  """ List the accounts in a carenet.
+  
+  Will return :http:statuscode:`200` with a list of accounts on success.
+
+  """
 
   carenet_accounts = CarenetAccount.objects.select_related().filter(carenet=carenet)
 
@@ -40,7 +61,11 @@ def carenet_account_list(request, carenet):
 
 
 def carenet_account_delete(request, account, carenet):
-  """Unlink an account from a given carenet"""
+  """ Remove an account from a carenet.
+  
+  Will return :http:statuscode:`200` on success.
+
+  """
 
   try:
     CarenetAccount.objects.get(
@@ -54,7 +79,15 @@ def carenet_account_delete(request, account, carenet):
 
 
 def carenet_account_permissions(request, carenet, account):
-  """Retrieve the permissions of a given account within a given carenet"""
+  """ List the permissions of an account within a carenet.
+  
+  Currently, carenets are read-only and accounts can access
+  all documents within a carenet, so this call returns static
+  XML indicating blanket access.
+
+  Will return :http:statuscode:`200` with the static XML on success.
+
+  """
 
   # For now, using a static template 
   # since an account has access to all documents within a carenet
@@ -62,7 +95,11 @@ def carenet_account_permissions(request, carenet, account):
 
 
 def account_permissions(request, account):
-  """Retrieve the permissions of a given account across all carenets"""
+  """ List the carenets that an account has access to.
+  
+  Will return :http:statuscode:`200` with a list of carenets on success.
+
+  """
 
   # Since we want to preserve uniqueness we map the carenet accounts list to a dict
   carenets = {}

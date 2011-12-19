@@ -5,9 +5,12 @@ from indivo.lib.utils import MethodDispatcher
 
 urlpatterns = patterns(
     '',
-    (r'^$',                             MethodDispatcher({'GET' : carenet_document_list })), 
-    (r'^(?P<document_id>[^/]+)/meta$',  MethodDispatcher({'GET' : carenet_document_meta})),
-    (r'^(?P<document_id>[^/]+)$',       MethodDispatcher({'GET' : carenet_document })), 
+    (r'^$',                             
+     MethodDispatcher({'GET' : carenet_document_list })), 
+    (r'^(?P<document_id>[^/]+)/meta$',  
+     MethodDispatcher({'GET' : carenet_document_meta})),
+    (r'^(?P<document_id>[^/]+)$',       
+     MethodDispatcher({'GET' : carenet_document })), 
 
     # special documents
     (r'^special/(?P<special_document>[^/]+)$', MethodDispatcher(

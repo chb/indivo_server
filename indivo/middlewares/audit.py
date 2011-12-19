@@ -31,15 +31,6 @@ class AuditWrapper(object):
   Audit...
   """
 
-  # DH 04-25-2011: Not sure what this was for--let's try getting rid of it.
-  #def process_request(self, request):
-  #  if not request.principal:
-  #    try:
-  #      request.principal, request.oauth_request = security.get_principal(request)
-  #    except:
-        # to get around an annoying bug for now, when auth fails
-  #      pass
-
   def __init__(self):
     # get Audit related settings
     self.audit_level = settings.AUDIT_LEVEL
@@ -71,7 +62,7 @@ class AuditWrapper(object):
 
     if hasattr(view_func, 'resolve'):
       view_func = view_func.resolve(request)
-    basic['view_func'] = view_func.func_name
+    basic['view_func'] = view_func.func_name if view_func else ''
 
     # Principal Info
     if request.principal:

@@ -26,17 +26,20 @@ urlpatterns = patterns('',
         'GET'  : record_shares,
         'POST' : record_share_add})),
 
-    (r'^/shares/(?P<other_account_id>[^/]+)/delete$', record_share_delete),
+    # Deprecated as of 1.0: This isn't RESTful at all
+    # Use the below call instead.                       
+    (r'^/shares/(?P<other_account_id>[^/]+)/delete$', 
+     MethodDispatcher({'POST':record_share_delete})),
 
-    # reset password
-    (r'^/password_reset$', record_password_reset),
+    (r'^/shares/(?P<other_account_id>[^/]+)$', 
+     MethodDispatcher({'DELETE':record_share_delete})),
 
-    # notify record
-    (r'^/notify$', record_notify),
+    # Deprecated as of 1.0: This isn't RESTful.
+    # Use the below call instead.
+    (r'^/notify$', MethodDispatcher({'POST':record_notify})),
+    (r'^/notifications/$', MethodDispatcher({'POST':record_notify})),
 
     # message record
-    (r'^/inbox/$', MethodDispatcher({
-                'GET': record_inbox})),
     (r'^/inbox/(?P<message_id>[^/]+)$', MethodDispatcher({
                 'POST': record_send_message})),
     (r'^/inbox/(?P<message_id>[^/]+)/attachments/(?P<attachment_num>[^/]+)$', MethodDispatcher({

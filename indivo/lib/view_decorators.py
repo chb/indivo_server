@@ -8,7 +8,8 @@ from indivo import check_safety
 from indivo.middlewares.paramloader import object_lookup_by_id
 from indivo.lib import iso8601
 
-from django.db.transaction import commit_on_success, rollback
+from django.db import IntegrityError
+from django.db import transaction 
 from functools import wraps
 
 import inspect
@@ -134,14 +135,20 @@ def commit_on_200(func):
 
   The idea here is that first we call the func, and if it returns a bad result
   we do a rollback. The exception catching, we leave to the commit_on_success wrapper,
-  which we wrap around ourselves
+  which we wrap around ourselves, except if we got an IntegrityError from postgres, which
+  commit_on_success doesn't handle correctly.
   """
 
   @wraps(func)
   def _inner_commit(*args, **kwargs):
-    result = func(*args, **kwargs)
+    try:
+      result = func(*args, **kwargs)
+    except IntegrityError:
+      transaction.set_dirty()
+      raise
+
     if not hasattr(result, 'status_code') or result.status_code != 200:
-      rollback()
+      transaction.rollback()
 
     return result
 
@@ -149,6 +156,25 @@ def commit_on_200(func):
   # note that, if the wrapped func raises an exception, it goes 
   # right through our decorator here (like butter), and hits the commit_on_success
   # handler which will roll back the transaction then. We keep it simple.
-  return commit_on_success(_inner_commit)
+  return transaction.commit_on_success(_inner_commit)
       
-      
+def handle_integrity_error(msg=''):
+  """
+  Roll back the transaction and Return an HttpResponseBadRequest (400) with the passed message
+  if the call raises an IntegrityError. This is useful to avoid Postgres aborting transactions
+  after an IntegrityError such as a unique constraint violation.
+  """
+  def integrity_error_decorator(func):
+
+    @wraps(func)
+    def _inner_decorator(*args, **kwargs):
+      try:
+        return func(*args, **kwargs)
+      except IntegrityError:
+        transaction.rollback()
+        return HttpResponseBadRequest(msg)
+
+
+    return _inner_decorator
+  
+  return integrity_error_decorator

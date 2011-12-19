@@ -1,55 +1,24 @@
 import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
-
-#app vars
-APP_EMAIL,ASDF = ('myApp@my.com', 'asdf')
-#account vars
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS, PRIMARY_SECRET, SECONDARY_SECRET = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"), 'psecret', 'ssecret')
-#doc vars
-DOCUMENT, DOC_LABEL, EXT_ID = ('''<DOC>HERE'S MY CONTENT</DOC>''', 'A Document!', 'ext_id')
+from indivo.tests.data import *
 
 class PHAInternalTests(InternalTests):
 
     def setUp(self):
         super(PHAInternalTests,self).setUp()
+
         # create app
-        pha_args = {'name' : 'myApp', 
-                    'email' : APP_EMAIL, 
-                    'consumer_key' : 'myapp', 
-                    'secret' : 'myapp', 
-                    'has_ui' : True, 
-                    'frameable' : True, 
-                    'is_autonomous' : False, 
-                    'autonomous_reason' : '', 
-                    'start_url_template' : 'http://myapp.com/start', 
-                    'callback_url' : 'http://myapp.com/afterauth', 
-                    'description' : 'ITS MY APP'}
-        self.pha = self.createPHA(**pha_args)
+        self.app = self.createUserApp(TEST_USERAPPS, 0)
 
         # create account
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL, 'primary_secret':PRIMARY_SECRET, 'secondary_secret':SECONDARY_SECRET}
-        self.accounts = self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args)
+        self.account = self.createAccount(TEST_ACCOUNTS, 4)
         
         # create app specific externally referenced doc
-        md = hashlib.sha256()
-        md.update(DOCUMENT)
-        doc_args = {'content':DOCUMENT,
-                    'pha':self.pha,
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts,
-                    'external_id' : Document.prepare_external_id(EXT_ID, self.pha, pha_specific=True, record_specific=False) }
-        self.external_doc = self.createDocument(**doc_args)
+        self.external_doc = self.createDocument(TEST_A_DOCS, 1, pha=self.app)
+
         # create app specific doc
-        doc_args = {'content':DOCUMENT,
-                    'pha':self.pha,
-                    'size':len(DOCUMENT),
-                    'digest': md.hexdigest(),
-                    'label': DOC_LABEL, 
-                    'creator': self.accounts }
-        self.doc = self.createDocument(**doc_args)
+        self.doc = self.createDocument(TEST_A_DOCS, 0, pha=self.app)
 
     def tearDown(self):
         super(PHAInternalTests,self).tearDown()
@@ -59,49 +28,51 @@ class PHAInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)    
 
     def test_delete_app(self):
-        response = self.client.delete('/apps/%s'%(APP_EMAIL))
+        response = self.client.delete('/apps/%s'%(self.app.email))
         self.assertEquals(response.status_code, 200)    
     
     def test_get_app(self):
-        response = self.client.get('/apps/%s'%(APP_EMAIL))
+        response = self.client.get('/apps/%s'%(self.app.email))
         self.assertEquals(response.status_code, 200)
 
     def test_get_external_document_meta(self):
-        response = self.client.get('/apps/%s/documents/external/%s/meta'%(APP_EMAIL,EXT_ID))
+        response = self.client.get('/apps/%s/documents/external/%s/meta'%(self.app.email,TEST_A_DOCS[1]['external_id']))
         self.assertEquals(response.status_code, 200)            
 
     def test_put_external_document(self):
-        response = self.client.put('/apps/%s/documents/external/%s'%(APP_EMAIL, 'some_ext_id'))
+        response = self.client.put('/apps/%s/documents/external/%s'%(self.app.email, 'some_ext_id'))
         self.assertEquals(response.status_code, 200)
 
-    def test_get_document_label(self):
-        response = self.client.get('/apps/%s/documents/%s/label'%(APP_EMAIL,self.doc.id))
+    def test_put_document_label(self):
+        url = '/apps/%s/documents/%s/label'%(self.app.email,self.doc.id)
+        newlabel = self.doc.label.upper()
+
+        bad_methods = ['get','post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
+        response = self.client.put(url, data=newlabel, content_type='text/plain')
         self.assertEquals(response.status_code, 200)            
 
     def test_get_document_meta(self):
-        response = self.client.get('/apps/%s/documents/%s/meta'%(APP_EMAIL,self.doc.id))
+        response = self.client.get('/apps/%s/documents/%s/meta'%(self.app.email,self.doc.id))
         self.assertEquals(response.status_code, 200)            
 
     def test_put_document(self):
-        response = self.client.put('/apps/%s/documents/%s'%(APP_EMAIL,self.doc.id))        
+        response = self.client.put('/apps/%s/documents/%s'%(self.app.email,self.doc.id))        
         self.assertEquals(response.status_code, 200)            
 
     def test_get_document(self):
-        response = self.client.get('/apps/%s/documents/%s'%(APP_EMAIL,self.doc.id))        
+        response = self.client.get('/apps/%s/documents/%s'%(self.app.email,self.doc.id))        
         self.assertEquals(response.status_code, 200)            
 
     def test_delete_document(self):
-        response = self.client.delete('/apps/%s/documents/%s'%(APP_EMAIL, self.doc.id))
+        response = self.client.delete('/apps/%s/documents/%s'%(self.app.email, self.doc.id))
         self.assertEquals(response.status_code, 200)
 
-    def test_put_document(self):
-        response = self.client.get('/apps/%s/documents/%s/update'%(APP_EMAIL,self.doc.id))
-        self.assertEquals(response.status_code, 200)            
-
     def test_list_document(self):
-        response = self.client.get('/apps/%s/documents/'%(APP_EMAIL))        
+        response = self.client.get('/apps/%s/documents/'%(self.app.email))        
         self.assertEquals(response.status_code, 200)            
 
     def test_create_document(self):
-        response = self.client.post('/apps/%s/documents/'%(APP_EMAIL))        
+        response = self.client.post('/apps/%s/documents/'%(self.app.email))        
         self.assertEquals(response.status_code, 200)            

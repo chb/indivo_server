@@ -1,21 +1,18 @@
 from indivo.lib import iso8601
 from indivo.models import Measurement
 
-XML = 'xml'
-DOM = 'dom'
-
 class IDP_Measurement:
 
   def __init__(self):
     self.type = 'type'
     self.attributes = ['type', 'value', 'unit', 'datetime']
 
-  def process(self, type, doc):
+  def process(self, type, doc_dom):
     """
     moving this to etree
     """
     retval = {}
-    xmldom = doc[DOM]
+    xmldom = doc_dom
     if xmldom is not None:
       attributes = xmldom.attrib
       for attr_name in self.attributes:

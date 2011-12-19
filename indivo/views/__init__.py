@@ -1,6 +1,23 @@
-""" Indivo Views """
+""" Indivo Views.
 
-VERSION = '0.9.3.1'
+The Django views that implement all Indivo API functionality,
+including API calls related to:
+
+* accounts
+* auditing
+* documents
+* messaging
+* apps
+* records
+* reporting
+* sharing
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
+"""
+
+from version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE
 
 from account    import *
 from audit      import *
@@ -12,4 +29,6 @@ from reports    import *
 from shares     import *
 
 from django.http import HttpResponse
-def get_version(request): return HttpResponse(VERSION, mimetype="text/plain")
+def get_version(request): 
+    """ Return the current version of Indivo."""
+    return HttpResponse(INDIVO_SERVER_RELEASE, mimetype="text/plain")

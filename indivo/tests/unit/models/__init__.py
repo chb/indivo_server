@@ -1,0 +1,30 @@
+
+# Unit Tests of Django Models
+
+from accesstoken import AccessTokenModelUnitTests
+from accountauthsystem import AccountAuthSystemModelUnitTests
+from accountfullshare import AccountFullShareModelUnitTests
+from account import AccountModelUnitTests
+from audit import AuditModelUnitTests
+from authsystem import AuthSystemModelUnitTests
+from carenetaccount import CarenetAccountModelUnitTests
+from carenetautoshare import CarenetAutoshareModelUnitTests
+from carenetdocument import CarenetDocumentModelUnitTests
+from carenetpha import CarenetPHAModelUnitTests
+from carenet import CarenetModelUnitTests
+from document import DocumentModelUnitTests
+from documentrels import DocumentRelsModelUnitTests
+from documentschema import DocumentSchemaModelUnitTests
+from documentstatushistory import DocumentStatusHistoryModelUnitTests
+from fact import FactModelUnitTests
+from machineapp import MachineAppModelUnitTests
+from messageattachment import MessageAttachmentModelUnitTests
+from message import MessageModelUnitTests
+from notification import NotificationModelUnitTests
+from pha import PHAModelUnitTests
+from phashare import PHAShareModelUnitTests
+from recordnotificationroute import RecordNotificationRouteModelUnitTests
+from record import RecordModelUnitTests
+from reqtoken import ReqTokenModelUnitTests
+from sessiontoken import SessionTokenModelUnitTests, SessionRequestTokenModelUnitTests
+from statusname import StatusNameModelUnitTests

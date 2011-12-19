@@ -26,21 +26,19 @@ def load_access_rules():
   # Note the unused_args parameter to the access function. This allows different
   # views with different kw_args to share access functions without throwing exceptions:
   # make sure to include it in every access function.
+  #
+  # Also, each access function should have a doc string that describes what principals
+  # it will accept. Doc strings should complete the sentence, 'The views protected by this
+  # access function may be accessed by...'
 
 
   # These view functions will always throw 403, as they are either not used in the API or unimplemented:
-  # inactive_views = [get_id,
-  #                   record_password_reset,
-  #                   documents_delete,
-  #                   record_inbox,
+  # inactive_views = [documents_delete,
   #                   carenet_app_permissions] 
-
   
-  # NO PERMISSIONS IN OLD SYSTEM
-  views = [user_authorization] 
-
   # Top-level views
   def basic_access(principal, **unused_args):
+    """Any principal in Indivo."""
     return principal.basicPrincipalRole()
   # WARNING: This gives request tokens and 'no-users' access to these. Is this a problem?
   views = [get_version, # no-users should have access. Should reqtokens?
@@ -50,6 +48,7 @@ def load_access_rules():
 
   # Account-related views
   def account_management_owner(principal, account, **unused_args):
+    """Any admin app, or the Account owner."""
     return principal.isType('MachineApp') or principal.isSame(account)
   views = [account_info,
            account_info_set,
@@ -57,12 +56,14 @@ def load_access_rules():
   AccessRule('Account Management Owner', account_management_owner, views)
 
   def account_management_by_record(principal, record, **unused_args):
+    """Any admin app, or a principal in full control of the record."""
     return full_control(principal, record) \
         or principal.isType('MachineApp')
   views = [pha_record_delete]
   AccessRule('Account Management By Record', account_management_by_record, views)
 
   def account_management_no_admin_app(principal, account, **unused_args):
+    """The Account owner."""
     return principal.isSame(account)
   views = [account_password_change,
            record_list,
@@ -76,6 +77,7 @@ def load_access_rules():
              account_management_no_admin_app, views)           
 
   def account_management_admin_app_only(principal, **unused_args):
+    """Any admin app."""
     return principal.isType('MachineApp')
   views = [account_create, 
            account_search,
@@ -96,6 +98,7 @@ def load_access_rules():
              account_management_admin_app_only, views)
 
   def account_management_by_ext_id(principal, principal_email, **unused_args):
+    """An admin app with an id matching the principal_email in the URL."""
     return principal.isType('MachineApp') \
         and principal.email == principal_email # No scoping ext_ids to different principals
   views = [record_create_ext]
@@ -103,6 +106,7 @@ def load_access_rules():
              account_management_by_ext_id, views)
 
   def chrome_app_priveleges(principal, **unused_args):
+    """Any Indivo UI app."""
     return principal.isType('chrome')
   views = [session_create,
            account_initialize]
@@ -110,12 +114,14 @@ def load_access_rules():
 
   # PHA-related views
   def app_specific_priveleges(principal, pha, **unused_args):
+    """The user app itself."""
     return pha_app_access(principal, pha)
   views = [pha_delete]
   AccessRule('App Specific Priveleges', app_specific_priveleges, views)
 
   # Oauth-related views
   def account_for_oauth(principal, **unused_args):
+    """Any Account."""
     return principal.isType('Account')
   views = [request_token_claim, 
            request_token_info,
@@ -123,21 +129,19 @@ def load_access_rules():
   AccessRule('Account For Oauth', account_for_oauth, views)
 
   def app_for_oauth(principal, **unused_args):
+    """Any user app."""
     return principal.isType('PHA')
   views = [request_token]
   AccessRule('App For Oauth', app_for_oauth, views)
 
   def reqtoken_for_oauth(principal, **unused_args):
+    """A request signed by a RequestToken."""
     return principal.isType('ReqToken')
   views = [exchange_token]
   AccessRule('Reqtoken For Oauth', reqtoken_for_oauth, views)
 
-  def accesstoken_for_oauth(principal, **unused_args):
-    return principal.isType('AccessToken')
-  views = [get_long_lived_token] # IS THIS OUTDATED?
-  AccessRule('Accesstoken For Oauth', accesstoken_for_oauth, views)
-
   def token_approval_admin(principal, reqtoken, **unused_args):
+    """A principal in the carenet to which the request token is restricted (if the token is restricted), or a principal with full control over the record (if the token is not restricted)."""
     carenet_reqtoken = False
     carenet = reqtoken.carenet
     if carenet and reqtoken:
@@ -149,6 +153,7 @@ def load_access_rules():
 
   # Carenet-related views
   def carenet_read_access(principal, carenet, **unused_args):
+    """A principal in the carenet, in full control of the carenet's record, or any admin app."""
     return full_control(principal, carenet.record) \
         or principal.isInCarenet(carenet) \
         or principal.isType('MachineApp')
@@ -158,6 +163,7 @@ def load_access_rules():
 
   # Should admins do these? Why can't record-level PHAs do these? define more clearly
   def carenet_control(principal, carenet, **unused_args):
+    """A principal in full control of the carenet's record."""
     return full_control(principal, carenet.record)
   views = [carenet_delete,
            carenet_rename,
@@ -170,6 +176,7 @@ def load_access_rules():
   AccessRule('Carenet Control', carenet_control, views)
 
   def carenet_read_all_access(principal, carenet, account, **unused_args):
+    """A user app with access to the carenet and proxying the account, a principal in full control of the carenet's record, or any admin app."""
     return (pha_carenet_access(principal, carenet) and principal.effective_principal.isSame(account)) \
         or full_control(principal, carenet.record) \
         or (principal.isInCarenet(carenet) and principal.isSame(account)) \
@@ -178,8 +185,8 @@ def load_access_rules():
   AccessRule('Carenet Read All Access', carenet_read_all_access, views)
 
   # Record-related views
-
   def record_limited_access(principal, record, **unused_args):
+    """A principal in full control of the record, or any admin app."""
     return full_control(principal, record) \
         or principal.isType('MachineApp')
   views = [record_phas,
@@ -190,6 +197,7 @@ def load_access_rules():
   AccessRule('Record Limited Access', record_limited_access, views)
 
   def record_access(principal, record, **unused_args):
+    """A principal in full control of the record, the admin app that created the record, or a user app with access to the record."""
     return pha_record_access(principal, record) \
         or full_control(principal, record) \
         or principal.createdRecord(record) # Admins can only view records they created
@@ -197,6 +205,7 @@ def load_access_rules():
   AccessRule('Record Access', record_access, views)
 
   def record_full_admin(principal, record, **unused_args):
+    """The owner of the record, or any admin app."""
     return principal.ownsRecord(record) \
         or principal.isType('MachineApp')
   # Decision: PHAs shouldn't be allowed to manipulate sharing, at least not yet.
@@ -207,6 +216,7 @@ def load_access_rules():
 
   # WHY CAN'T ACCOUNTS DO THIS?
   def record_message_access(principal, record, **unused_args):
+    """Any admin app, or a user app with access to the record."""
     return pha_record_access(principal, record) \
         or principal.isType('MachineApp')
   views = [record_notify,
@@ -216,6 +226,7 @@ def load_access_rules():
 
   # Document-related views
   def carenet_doc_access(principal, carenet, **unused_args):
+    """A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record."""
     return pha_carenet_access(principal, carenet) \
         or principal.isInCarenet(carenet) \
         or pha_record_access(principal, carenet.record) \
@@ -228,19 +239,22 @@ def load_access_rules():
            carenet_problem_list,
            carenet_equipment_list,
            carenet_vitals_list,
-           simple_clinical_notes_list,
+           carenet_simple_clinical_notes_list,
+           carenet_lab_list,
            carenet_document_list,
            carenet_document,
            carenet_document_meta]
   AccessRule('Carenet Doc Access', carenet_doc_access, views)
 
   def carenet_special_doc_access(principal, carenet, **unused_args):
+    """A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or the admin app that created the carenet's record."""
     return carenet_doc_access(principal, carenet) \
         or principal.createdRecord(carenet.record)
   views = [read_special_document_carenet]
   AccessRule('Carenet Special Doc Access', carenet_special_doc_access, views)
 
   def record_doc_access(principal, record, **unused_args):
+    """A user app with access to the record, or a principal in full control of the record"""
     return pha_record_access(principal, record) \
         or full_control(principal, record)
   views = [measurement_list,
@@ -252,6 +266,7 @@ def load_access_rules():
            equipment_list,
            vitals_list,
            lab_list,
+           simple_clinical_notes_list,
            report_ccr,
            record_document_list,
            record_document_meta,
@@ -267,6 +282,7 @@ def load_access_rules():
   AccessRule('Record Doc Access', record_doc_access, views)
   
   def record_doc_access_ext(principal, record, pha, **unused_args):
+    """A user app with access to the record, with an id matching the app email in the URL."""
     return pha_record_access(principal, record) \
         and (principal.isSame(pha) or principal.proxied_by.isSame(pha))# Can't scope ext_ids to phas that aren't you
   views = [document_create_by_ext_id,
@@ -278,6 +294,7 @@ def load_access_rules():
   AccessRule('Record Doc Access Ext', record_doc_access_ext, views)
 
   def record_admin_doc_access(principal, record, **unused_args):
+    """A user app with access to the record, a principal in full control of the record, or the admin app that created the record."""
     return record_doc_access(principal, record) \
         or principal.createdRecord(record)  #special case: Admin Apps need to create docs
   views = [document_create,
@@ -285,6 +302,7 @@ def load_access_rules():
   AccessRule('Record Admin Doc Access', record_admin_doc_access, views)
   
   def record_special_doc_access(principal, record, **unused_args):
+    """A user app with access to the record, a principal in full control of the record, or the admin app that created the record."""
     return record_doc_access(principal, record) \
         or principal.createdRecord(record)
   views = [read_special_document, # should PHAs be able to do this?
@@ -292,12 +310,14 @@ def load_access_rules():
   AccessRule('Record Special Doc Access', record_special_doc_access, views)
 
   def record_doc_sharing_access(principal, record, **unused_args):
+    """A principal in full control of the record."""
     return full_control(principal, record)
   views = [document_set_nevershare,
            document_remove_nevershare]
   AccessRule('Record Doc Sharing Access', record_doc_sharing_access, views)
 
   def record_app_doc_access(principal, record, pha, **unused_args):
+    """A user app with access to the record, with an id matching the app email in the URL."""
     return pha_record_app_access(principal, record, pha)
   views = [record_app_document_meta,
            record_app_document_meta_ext,
@@ -305,7 +325,6 @@ def load_access_rules():
            record_app_specific_document,
            record_app_document_create,
            record_app_document_create_or_update_ext,
-           record_app_document_update,
            record_app_document_label,
            record_app_document_delete]
   AccessRule('Record App Doc Access', record_app_doc_access, views)
@@ -314,6 +333,7 @@ def load_access_rules():
   # NOTE: old system checked that there was no record passed in. We don't have to
   # do this because all of the views are known to be app-specific
   def app_doc_access(principal, pha, **unused_args):
+    """A user app with an id matching the app email in the URL."""
     return pha_app_access(principal, pha)
   views = [app_document_meta,
            app_document_meta_ext,
@@ -322,13 +342,13 @@ def load_access_rules():
            app_document_create,
            app_document_create_or_update,
            app_document_create_or_update_ext,
-           app_document_update,
            app_document_label,
            app_document_delete]
   AccessRule('App Doc Access', app_doc_access, views)
 
   # Audit-related views
   def audit_access(principal, record, **unused_args):
+    """A principal in full control of the record, or a user app with access to the record."""
     return full_control(principal, record) \
         or pha_record_access(principal, record)
   views = [audit_record_view,
@@ -339,6 +359,7 @@ def load_access_rules():
 
   # Autoshare-related views: should phas or admins be able to do this?
   def autoshare_permissions(principal, record, **unused_args):
+    """A principal in full control of the record."""
     return full_control(principal, record)
   views = [autoshare_list,
            autoshare_list_bytype_all,

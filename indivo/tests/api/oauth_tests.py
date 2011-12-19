@@ -1,43 +1,52 @@
-import django.test
 from indivo.models import *
-from indivo.tests.internal_tests import InternalTests
+from indivo.tests.unit.models.base import TokenModelUnitTests
+from indivo.tests.data.app import TEST_USERAPPS
+from indivo.tests.data.record import TEST_RECORDS
+from indivo.tests.data.account import TEST_ACCOUNTS
 
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
-
-class OauthInternalTests(InternalTests):
+class OauthInternalTests(TokenModelUnitTests):
     
     def setUp(self):
-        # This might not be sufficient: oauth might require reqTokens or Shares to be setup...
-        # Should we even be testing oauth calls with accesscontrol disabled?
-        super(OauthInternalTests,self).setUp(self)
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL}
-        self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args)
+        super(OauthInternalTests,self).setUp()
 
-        pha_args = {'name' : 'myApp',
-                     'email' : 'myApp@my.com',
-                     'consumer_key' : 'myapp',
-                     'secret' : 'myapp',
-                     'has_ui' : True,
-                     'frameable' : True,
-                     'is_autonomous' : False,
-                     'autonomous_reason' : '',
-                     'start_url_template' : 'http://myapp.com/start',
-                     'callback_url' : 'http://myapp.com/afterauth',
-                     'description' : 'ITS MY APP',
-                     'document_schema' : None
-                     }
-        self.createPHA(**pha_args)
+        # An account
+        self.account = self.createAccount(TEST_ACCOUNTS, 1)
+        
+        # A record for that account
+        self.record = self.createRecord(TEST_RECORDS, 1, owner=self.account)
+
+        # An app
+        self.app = self.createUserApp(TEST_USERAPPS, 0)
+
+        # A request token
+        token, secret = self.generate_token_and_secret()
+        args = {
+            'token':token,
+            'token_secret':secret,
+            'verifier': self.generate_random_string(),
+            'oauth_callback': self.app.callback_url,
+            'pha': self.app,
+            'record':self.record,
+            'authorized_at':None,
+            'authorized_by':None,
+            'share':None
+            }
+        self.rt = ReqToken.objects.create(**args)
 
     def tearDown(self):
-        super(OauthInternalTests,self).tearDown(self)
+        super(OauthInternalTests,self).tearDown()
 
 
-#oauth/access_token ['GET']
-#oauth/authorize ['GET']
-#oauth/internal/long-lived-token ['GET']
-#oauth/internal/request_tokens/(?P<request_token>[^/]+)/approve ['GET']
-#oauth/internal/request_tokens/(?P<request_token>[^/]+)/claim ['GET']
-#oauth/internal/request_tokens/(?P<request_token>[^/]+)/info ['GET']
-#oauth/internal/session_create ['GET']
-#oauth/internal/surl-verify ['GET']
-#oauth/request_token ['GET']
+    def test_oauth_http_methods(self):
+        invalid_calls = {
+            '/oauth/request_token': ['get', 'put', 'delete'],
+            '/oauth/access_token': ['get', 'put', 'delete'],
+            '/oauth/internal/request_tokens/%s/info'%self.rt.token: ['put', 'post', 'delete'],
+            '/oauth/internal/session_create': ['get', 'put', 'delete'],
+            '/oauth/internal/request_tokens/%s/claim'%self.rt.token: ['get', 'put', 'delete'],
+            '/oauth/internal/request_tokens/%s/approve'%self.rt.token: ['get', 'put', 'delete'],
+            '/oauth/internal/surl-verify': ['put', 'post', 'delete'],
+            }
+
+        for url, invalid_methods in invalid_calls.iteritems():
+            self.check_unsupported_http_methods(invalid_methods, url)

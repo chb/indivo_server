@@ -23,9 +23,6 @@ urlpatterns = patterns('',
                         'PUT': app_document_create_or_update, 
                         'DELETE': app_document_delete})),
 
-    # update
-    (r'^/documents/(?P<document_id>[^/]+)/update$', app_document_update),
-
     # One app-specific document's metadata
     # and app-specific document metadata by external ID
     (r'^/documents/(?P<document_id>[^/]+)/meta$', 
@@ -35,7 +32,8 @@ urlpatterns = patterns('',
 
     # app-specific document label
     # FIXME: not sure this view works
-    (r'^/documents/(?P<document_id>[^/]+)/label$', app_document_label),
+    (r'^/documents/(?P<document_id>[^/]+)/label$', 
+     MethodDispatcher({'PUT':app_document_label})),
 
     # app-specific document types
     # (r'^/documents/types/(?P<type>[A-Za-z0-9._%-:#]+)/$', app_document_list_by_type)

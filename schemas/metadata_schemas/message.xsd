@@ -18,6 +18,7 @@
 	  <xs:attribute name="num" type="xs:integer" use="required" />
 	  <xs:attribute name="type" type="xs:string" use="required" />
 	  <xs:attribute name="size" type="xs:integer" use="required" />
+	  <xs:attribute name="doc_id" type="xs:string" />
 	</xs:complexType>
       </xs:element>
     </xs:sequence>

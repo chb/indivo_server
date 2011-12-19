@@ -1,15 +1,20 @@
 import django.test
 from django.conf import settings
-from django.db import models
-from django.utils.http import urlencode
+from django.test.testcases import disable_transaction_methods, restore_transaction_methods
 
 from indivo.models import *
-from indivo.tests.data.reports import TEST_REPORTS
-import urls
-import re
+from indivo.tests.data import *
+from indivo.lib import iso8601
+
+import functools
+import os
+import os.path
+import shutil
 from xml.dom import minidom
 
-class InternalTests(django.test.TestCase):
+ORIGINAL_MEDIA_ROOT = settings.MEDIA_ROOT
+
+class IndivoTests(object):
     dependencies_loaded = False
     dependencies = {DocumentSchema:('document_schemas',['type']),
                     AuthSystem:('auth_systems', ['short_name', 'internal_p']),
@@ -68,55 +73,36 @@ class InternalTests(django.test.TestCase):
 
         self.dependencies_loaded = True
 
-    def createDocument(self, **kwargs):
-        doc = Document.objects.create(**kwargs)
-        return doc
+    def assertNotRaises(self, exception, call, *args, **kwargs):
+        if not hasattr(exception, '__iter__'):
+            exception = [exception]
+        try:
+            result = call(*args, **kwargs)
+        except Exception as e:
+            for exc in exception:
+                if isinstance(e, exc):
+                    raise self.failureException('Exception Raised: %s'%e.__class__.__name__)
+        return
 
-    def addAppToRecord(self, **kwargs):
-        share = PHAShare.objects.create(**kwargs)
+    def validateIso8601(self, datestring, accept_null = True):
+        if not datestring and accept_null:
+            return
+        else:
+            return iso8601.parse_utc_date(datestring)
+
+    def addAppToRecord(self, record, with_pha, carenet=None):
+        share = PHAShare.objects.create(record=record, with_pha=with_pha, carenet=carenet)
         return share
 
-    def createCarenet(self, **kwargs):
-        carenet = Carenet.objects.create(**kwargs)
-        return carenet
+    def shareRecordFull(self, record, account):
+        return AccountFullShare.objects.create(record=record, with_account=account)
 
-
-    def createPHA(self, **kwargs):
-        try:
-            if kwargs.has_key('schema'):
-                kwargs['schema'] = models.DocumentSchema.objects.get(type=kwargs['schema'])
-        except models.DocumentSchema.DoesNotExist:
-            del kwargs['schema']
-        pha = PHA.objects.create(**kwargs)
-        return pha
-    
-    def createAdminApp(self, **kwargs):
-        app = MachineApp.objects.create(**kwargs)
-        return app
-
-    def createRecord(self, **kwargs):
-        record = Record.objects.create(**kwargs)
-        record.create_default_carenets()
-        return record
-              
-    def createAccount(self, username, password, records, **acctargs):
-        account = self.createUninitializedAccount(records, **acctargs)
-        account.set_username_and_password(username = username, 
-                                          password = password)
-        return account
-    
-    def createUninitializedAccount(self, records, **acctargs):
-        account = Account.objects.create(**acctargs)
-        for label in records:
-            self.createRecord(label=label, owner=account)
-        return account
-
-    def addDocToCarenet(self, doc, carenet):
-        cd = CarenetDocument.objects.create(carenet=carenet, document=doc)
+    def addDocToCarenet(self, doc, carenet, share_p=True):
+        cd = CarenetDocument.objects.create(carenet=carenet, document=doc, share_p=share_p)
         return cd
 
-    def addAccountToCarenet(self, account, carenet):
-        ca = CarenetAccount.objects.create(account=account, carenet=carenet)
+    def addAccountToCarenet(self, account, carenet, can_write=False):
+        ca = CarenetAccount.objects.create(account=account, carenet=carenet, can_write=can_write)
         return ca
     
     def addAppToCarenet(self, pha, carenet):
@@ -127,37 +113,136 @@ class InternalTests(django.test.TestCase):
             share = self.addAppToRecord(record=carenet.record, with_pha=pha)
 
         return CarenetPHA.objects.create(carenet=carenet, pha=pha)
-        
-    def createMessage(self, **kwargs):
-        message = Message.objects.create(**kwargs)
-        return message
 
-    def loadTestReports(self, record, creator):
-        for report in TEST_REPORTS:
-            report_args = {'record':record,
-                           'content':report.xml,
-                           'size':report.size(),
-                           'digest':report.digest(),
-                           'label':report.label,
-                           'creator':creator}
-            self.createDocument(**report_args)
+    def relateDocs(self, doc_a, doc_b, rel_type):
+        return DocumentRels.objects.create(document_0=doc_a, document_1=doc_b, relationship=rel_type)
+
+    def createDocument(self, test_document_list, index, **overrides):
+        return self.createTestItem(test_document_list, index, overrides)
+
+    def createCarenet(self, test_carenet_list, index, **overrides):
+        return self.createTestItem(test_carenet_list, index, overrides)
+
+    def createUserApp(self, test_userapp_list, index, **overrides):
+        return self.createTestItem(test_userapp_list, index, overrides)
+    
+    def createMachineApp(self, test_machineapp_list, index, **overrides):
+        return self.createTestItem(test_machineapp_list, index, overrides)
+
+    def createRecord(self, test_record_list, index, **overrides):
+        record = self.createTestItem(test_record_list, index, overrides)
+        record.create_default_carenets()
+        return record
+
+    def createAccount(self, test_account_list, index, **overrides):
+        account = self.createUninitializedAccount(test_account_list, index, **overrides)
+        account.set_username_and_password(username = test_account_list[index]['username'], 
+                                          password = test_account_list[index]['password'])
+        return account
+    
+    def createUninitializedAccount(self, test_account_list, index, **overrides):
+        return self.createTestItem(test_account_list, index, overrides)
+
+    def createMessage(self, test_message_list, index, **overrides):
+        return self.createTestItem(test_message_list, index, overrides)
+
+    def createAttachment(self, test_attachment_list, index, **overrides):
+        return self.createTestItem(test_attachment_list, index, overrides)
+
+    def createAuthSystem(self, test_authsystem_list, index, **overrides):
+        return self.createTestItem(test_authsystem_list, index, overrides)
+
+    def loadTestReports(self, **overrides):
+        for i in range(len(TEST_REPORTS)):
+            self.createTestItem(TEST_REPORTS, i, overrides)
+
+    def createTestItem(self, test_item_list, index, overrides_dict={}):
+        tdi = TestDataItem(index, data_list=test_item_list)
+        scoped_test_model = self.test_data_context.add_model(tdi, **overrides_dict)
+        try:
+            model_obj = scoped_test_model.save()
+        except Exception:
+            
+            # remove the failed item from our context
+            self.test_data_context.del_model(scoped_test_model.identifier, 
+                                             scoped_test_model.subcontext_id)
+            raise
+
+        return model_obj
+
+    def check_unsupported_http_methods(self, invalid_methods, url):
+        for method_name in invalid_methods:
+            method_func = getattr(self.client, method_name)
+            response = method_func(url)
+            self.assertEquals(response.status_code, 405)
 
     def setUp(self):
+        self.test_data_context = TestDataContext()
         self.disableAccessControl()
         self.loadModelDependencies()
 
+        # Redirect settings.MEDIA_ROOT, so flat files are saved separately
+        # from existing files
+        self.old_media_root = ORIGINAL_MEDIA_ROOT
+        new_path = os.path.join(self.old_media_root, 'test_files')
+        if not os.path.exists(new_path):
+            os.makedirs(new_path) # make dirs recursively, just in case MEDIA_ROOT hasn't been created yet.
+        settings.MEDIA_ROOT = new_path
+
     def tearDown(self):
+        
+        # clear out any test files we created
+        for subtree in os.listdir(settings.MEDIA_ROOT):
+            shutil.rmtree(os.path.join(settings.MEDIA_ROOT, subtree))
 
-        # Delete all models from the DB: Blanket cleanup
-        for m in models.get_models():
+        # reset settings.MEDIA_ROOT
+        settings.MEDIA_ROOT = self.old_media_root
 
-            # Don't mess with built in django models
-            if m.__module__.startswith('django'):
-                continue
-            
-            # Don't delete basic dependencies
-            elif m in self.dependencies:
-                continue
+class InternalTests(IndivoTests, django.test.TestCase):
+    """ subclass of Django's TestCase with access to useful utils 
+        specific to Indivo tests (model creation, access control overrides, etc.).
+        Doesn't allow transaction management in tests. """
+    pass
 
-            else:
-                m.objects.all().delete()
+class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
+    """ subclass of Django's TransactionTestCase with access to useful utils 
+    specific to Indivo tests (model creation, access control overrides, etc.).
+    Allows transaction management in tests. 
+
+    WARNING: Transaction Tests are VERY slow. Only use this if you really need
+    to test transactions. If you just need to deal with IntegrityErrors by
+    calling rollback, see enable_transactions below. """
+    pass
+
+def enable_transactions(func):
+    """ Hackish decorator that re-enables transaction management in tests
+        from subclasses of django.test.TestCase (where transaction 
+        management is disabled by default). We're doing this instead of 
+        subclassing django.test.TransactionTestCase because TransactionTestCase 
+        is prohibitively slow.
+
+        WARNING: DO NOT COMMIT, as this will break Django's DB resets
+        between tests. This class should only be used for tests that
+        require periodic rollbacks. 
+
+        WARNING: DO NOT CALL TRANSACTION-MANAGED CODE in tests with this decorator,
+        as they will probably call commit. This includes the @commit-on-success 
+        style decorators.
+
+        WARNING: If you use this decorator, you are responsible for making sure
+        that the DB is clean afterwards. django.test.TestCase will call one
+        final rollback after your test method, and if the database isn't clean
+        after that call, you're in trouble. """
+
+    def _enable_transactions(*args, **kwargs):
+        restore_transaction_methods()
+        try:
+            ret = func(*args, **kwargs)
+        except:
+            raise
+        finally:
+            disable_transaction_methods()
+
+        return ret
+
+    return functools.update_wrapper(_enable_transactions, func)

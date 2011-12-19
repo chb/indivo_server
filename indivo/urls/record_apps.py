@@ -4,7 +4,7 @@ from indivo.views import *
 from indivo.lib.utils import MethodDispatcher
 
 urlpatterns = patterns('',
-  (r'^$', record_phas),
+  (r'^$', MethodDispatcher({'GET':record_phas})),
   (r'^(?P<pha_email>[^/]+)$', 
       MethodDispatcher({'GET' : record_pha, 'DELETE': pha_record_delete})),
   
@@ -25,9 +25,6 @@ urlpatterns = patterns('',
                 'GET': record_app_specific_document,
                 'DELETE': record_app_document_delete})),
 
-  # update
-  (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)/update$', record_app_document_update),
-  
   # One app-specific document's metadata
   (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)/meta$', 
       MethodDispatcher({'GET': record_app_document_meta})),
@@ -37,7 +34,8 @@ urlpatterns = patterns('',
       MethodDispatcher({'GET': record_app_document_meta_ext})),
 
   # app-specific set document label
-  (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)/label$', record_app_document_label),
+  (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)/label$', 
+   MethodDispatcher({'PUT':record_app_document_label})),
 
   # app-specific document types
   # (r'^(?P<pha_email>[^/]+)/documents/types/(?P<type>[A-Za-z0-9._%-:#]+)/$', record_app_document_list_by_type),
@@ -45,5 +43,6 @@ urlpatterns = patterns('',
   # i.e. GET /{pha_email}/documents/?type={TYPE}
 
   # setup a PHA completely (pre-auth'ed)
-  (r'^(?P<pha_email>[^/]+)/setup$', record_pha_setup)
+  (r'^(?P<pha_email>[^/]+)/setup$', 
+   MethodDispatcher({'POST':record_pha_setup})),
 )

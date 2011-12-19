@@ -1,12 +1,56 @@
+"""
+.. module:: views.document.document_rels
+   :synopsis: Indivo view implementations related to document relations
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
+"""
+
 from indivo.views.base import *
 from indivo.views.documents.document import _document_create, _render_documents, _get_document
 
 @marsloader()
 def get_documents_by_rel(request, record, document_id, rel, limit, offset, status, order_by='id', pha=None):
-  """
-  get all documents related to argument-document by rel-type defined by rel
-  includes relationships to other versions of the argument-document
-  (also limit, offset and status)
+  """ Get all documents related to the passed document_id by a relation of the passed relation-type.
+
+  Includes relationships to other versions of *document_id*.
+  Paging operators are NOT IMPLEMENTED.
+
+  **ARGUMENTS:**
+
+  * *request*: The incoming Django HttpRequest object.
+  
+  * *record*: The 
+    :py:class:`~indivo.models.records_and_documents.Record` that
+    the document is scoped to.
+
+  * *document_id*: The internal document identifier for the source document.
+
+  * *rel*: The relationship type to filter related documents by (as a string).
+
+  * *limit*, *offset*, *status*, *order_by*: Standard paging and filtering 
+    arguments. See :py:func:`~indivo.lib.view_decorators.marsloader`
+    or :doc:`/query-api`.
+
+    .. Note:: 
+    
+       Paging operators are not implemented for this call currently. Passing
+       them into the function will have no effect on output.
+
+  * *pha*: The :py:class:`~indivo.models.apps.PHA` object that the
+    source document is scoped to, if applicable.
+
+  **RETURNS:**
+
+  * An HttpResponse object with an XML string listing related documents
+    on success.
+
+  **RAISES:**
+
+  * :py:exc:`django.http.Http404` if *document_id*
+    doesn't identify an existing document scoped to *record*.
+
   """
   # Need to add limit, offset, order_by
   document = _get_document(record=record, document_id=document_id)
@@ -27,10 +71,32 @@ def get_documents_by_rel(request, record, document_id, rel, limit, offset, statu
 
 
 def document_rels(request, record, document_id_0, rel, document_id_1):
-  """
-  create a new document relationship between existing docs.
-  2010-08-15: removed external_id and pha parameters as they are never set.
-  That's for create_by_rel
+  """ Create a new relationship between two existing documents.
+
+  **ARGUMENTS:**
+
+  * *request*: The incoming Django HttpRequest object.
+  
+  * *record*: The 
+    :py:class:`~indivo.models.records_and_documents.Record` that
+    the documents are scoped to.
+
+  * *document_id_0*: The internal document identifier for the source document.
+
+  * *rel*: The relationship type between the two documents (as a string).
+
+  * *document_id_1*: The internal document identifier for the related document.
+
+  **RETURNS:**
+
+  * :http:statuscode:`200` on success.
+
+  **RAISES:**
+
+  * :py:exc:`django.http.Http404` if either *document_id_0* or *document_id_1*
+    don't identify an existing document scoped to *record*, or if *rel* doesn't
+    identify a valid relationship type.
+
   """
   try:
     document_0    = Document.objects.get(id = document_id_0)
@@ -47,19 +113,60 @@ def document_rels(request, record, document_id_0, rel, document_id_1):
 
 @transaction.commit_on_success
 def document_create_by_rel(request, record, document_id, rel):
-  """Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views"""
+  """ Create a document and relate it to an existing document.
+
+  Calls into :py:meth:`~indivo.views.documents.document_rels._document_create_by_rel`.
+
+  """
+
   return _document_create_by_rel(request, record, document_id, rel)
 
 @transaction.commit_on_success
 def document_create_by_rel_with_ext_id(request, record, document_id, rel, pha, external_id):
-  """Calls _document_create_by_rel: exists for 1:1 mapping of URLs to views"""
+  """ Create a document, assign it an external id, and relate it to an existing document.
+
+  Calls into :py:meth:`~indivo.views.documents.document_rels._document_create_by_rel`.
+
+  """
+
   return _document_create_by_rel(request, record, document_id, rel, pha, external_id)
 
 def _document_create_by_rel(request, record, document_id, rel, pha=None, external_id=None):
-  """Create a document and relate it to an existing document, all in one call.
+  """ Create a document and relate it to an existing document.
+
+  **ARGUMENTS:**
+
+  * *request*: The incoming Django HttpRequest object. ``request.POST`` must
+    contain the raw content of the new document.
   
-  FIXME: currently ignoring app_email
+  * *record*: The 
+    :py:class:`~indivo.models.records_and_documents.Record` to
+    which to scope the new document, and to which the source document is scoped.
+
+  * *document_id*: The internal document identifier for the source document.
+
+  * *rel*: The relationship type to establish between the source document and the
+    new document (as a string).
+
+  * *pha*: The :py:class:`~indivo.models.apps.PHA` object that 
+    scopes the external_id, if present.
+
+  * *external_id*: The external identifier to assign to the newly created document.
+
+  **RETURNS:**
+
+  * :http:statuscode:`200` on success.
+
+  * :http:statuscode:`400` if the new document content is invalid
+
+  **RAISES:**
+
+  * :py:exc:`django.http.Http404` if *document_id*
+    doesn't identify an existing document scoped to *record*, or if
+    *rel* doesn't identify an valid relationship type.  
+
   """
+
   old_doc = _get_document(record=record, document_id=document_id)
   if not old_doc:
     raise Http404

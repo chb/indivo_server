@@ -6,7 +6,7 @@ from indivo.lib.utils import MethodDispatcher
 urlpatterns = patterns('',
 
     #sharing
-    (r'^(?P<document_id>[^/]+)/nevershare', MethodDispatcher({
+    (r'^(?P<document_id>[^/]+)/nevershare$', MethodDispatcher({
                 'PUT' : document_set_nevershare,
                 'DELETE': document_remove_nevershare})),
     (r'^(?P<document_id>[^/]+)/carenets/$', MethodDispatcher({
@@ -44,10 +44,12 @@ urlpatterns = patterns('',
     (r'^(?P<document_id>[^/]+)/replace/external/(?P<pha_email>[^/]+)/(?P<external_id>[^/]+)$', MethodDispatcher({'PUT' : document_version_by_ext_id})),
 
     # document versions
-    (r'^(?P<document_id>[^/]+)/versions/$', document_versions),
+    (r'^(?P<document_id>[^/]+)/versions/$', 
+     MethodDispatcher({'GET':document_versions})),
 
     # document label
-    (r'^(?P<document_id>[^/]+)/label$', record_document_label),
+    (r'^(?P<document_id>[^/]+)/label$', 
+     MethodDispatcher({'PUT':record_document_label})),
 
     # Document Status
     (r'^(?P<document_id>[^/]+)/set-status$', MethodDispatcher({'POST' : document_set_status})),
@@ -55,7 +57,8 @@ urlpatterns = patterns('',
 
     # document label by external id
     #(r'^/documents/external/(?P<external_id>[^/]+)/label$', document_label),
-    (r'^external/(?P<pha_email>[^/]+)/(?P<external_id>[^/]+)/label$', record_document_label_ext),
+    (r'^external/(?P<pha_email>[^/]+)/(?P<external_id>[^/]+)/label$', 
+     MethodDispatcher({'PUT':record_document_label_ext})),
 
     # document types
     # disabled 2010-08-15 we will only use the query parameter for this

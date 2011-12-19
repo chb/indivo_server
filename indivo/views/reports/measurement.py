@@ -1,5 +1,10 @@
 """
-Indivo Views -- Measurements
+.. module:: views.reports.measurement
+   :synopsis: Indivo view implementations for the measurement report.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -18,11 +23,23 @@ MEASUREMENT_FILTERS = {
 MEASUREMENT_TEMPLATE = 'reports/measurement.xml'
 
 def measurement_list(*args, **kwargs):
-  """ For 1:1 mapping of URLs to views: calls _measurement_list """
+  """ List the measurement data for a given record.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo.views.reports.measurement._measurement_list`.
+
+  """
+
   return _measurement_list(*args, **kwargs)
 
 def carenet_measurement_list(*args, **kwargs):
-  """ For 1:1 mapping of URLs to views: calls _measurement_list """
+  """ List the measurement data for a given carenet.
+
+  For 1:1 mapping of URLs to views. Just calls
+  :py:meth:`~indivo.views.reports.measurement._measurement_list`.
+
+  """
+
   return _measurement_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
@@ -30,6 +47,15 @@ def _measurement_list(request, group_by, date_group, aggregate_by,
                       limit, offset, order_by,
                       status, date_range, filters,
                       lab_code, record=None, carenet=None):
+  """ List the measurement objects matching the passed query parameters.
+  
+  See :doc:`/query-api` for a listing of valid parameters.
+
+  Will return :http:statuscode:`200` with a list of measurements on success,
+  :http:statuscode:`400` if any invalid query parameters were passed.
+
+  """
+
   query_filters = copy.copy(filters)
   if lab_code:
     query_filters['lab_code'] = lab_code

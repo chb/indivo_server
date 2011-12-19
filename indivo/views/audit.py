@@ -1,5 +1,10 @@
 """
-Indivo Views -- Auditing
+.. module:: views.audit
+   :synopsis: Indivo view implementations for audit-related calls.
+
+.. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu>
+.. moduleauthor:: Ben Adida <ben@adida.net>
+
 """
 
 import logging, copy
@@ -27,7 +32,17 @@ def audit_query(request, group_by, date_group, aggregate_by,
                 limit, offset, order_by,
                 status, date_range, filters,
                 record=None):
-  '''Select Audit Objects via the Query API Interface'''
+  """ Select Audit Objects via the Query API Interface.
+
+  Accepts any argument specified by the :doc:`/query-api`, and filters
+  available audit objects by the arguments.
+
+  Will return :http:statuscode:`200` with XML containing individual or
+  aggregated audit records on succes, :http:statuscode:`400` if any of 
+  the arguments to the query interface are invalid.
+
+  """
+
   query_filters = copy.copy(filters)
   if record:
     # Careful: security hole here.
@@ -60,6 +75,16 @@ def audit_query(request, group_by, date_group, aggregate_by,
 ##################################
 @marsloader()
 def audit_function_view(request, record, document_id, function_name, limit, offset, order_by, status=None):
+  """ Return audits of calls to *function_name* touching *record* and *document_id*.
+
+  Will return :http:statuscode:`200` with matching audits on succes, 
+  :http:statuscode:`404` if *record* or *document_id* don't exist.
+
+  .. deprecated:: 0.9.3
+     Use :py:meth:`~indivo.views.audit.audit_query` instead.
+
+  """
+
   try:
     audits = Audit.objects.filter(record_id=record.id,
                                   document_id=document_id, 
@@ -79,6 +104,16 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
 
 @marsloader()
 def audit_record_view(request, record, limit, offset, order_by, status = None):
+  """ Return audits of calls touching *record*.
+
+  Will return :http:statuscode:`200` with matching audits on succes, 
+  :http:statuscode:`404` if *record* doesn't exist.
+
+  .. deprecated:: 0.9.3
+     Use :py:meth:`~indivo.views.audit.audit_query` instead.
+
+  """
+
   try:
     audits = Audit.objects.filter(record_id=record.id).order_by('-datetime')
     return render_template('reports/report', 
@@ -96,6 +131,16 @@ def audit_record_view(request, record, limit, offset, order_by, status = None):
 
 @marsloader()
 def audit_document_view(request, record, document_id, limit, offset, order_by, status=None):
+  """ Return audits of calls touching *record* and *document_id*.
+
+  Will return :http:statuscode:`200` with matching audits on succes, 
+  :http:statuscode:`404` if *record* or *document_id* don't exist.
+
+  .. deprecated:: 0.9.3
+     Use :py:meth:`~indivo.views.audit.audit_query` instead.
+
+  """
+
   try:
     audits = Audit.objects.filter(record_id=record.id,
                                   document_id=document_id).order_by('-datetime')

@@ -1,10 +1,11 @@
 {% spaceless %}
+{% load template_utils %}
 <?xml version="1.0" encoding="utf-8" ?>
 <Notifications>
 {% for notification in notifications %}
 <Notification id="{{notification.id}}">
   <sender>{{notification.sender.email}}</sender>
-  <received_at>{{notification.created_at}}</received_at>
+  <received_at>{{notification.created_at|format_iso8601_datetime}}</received_at>
   <content>{{notification.content}}</content>
   <record id="{{notification.record.id}}" label="{{notification.record.label}}" />
 {% if notification.document %}

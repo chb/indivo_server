@@ -1,43 +1,26 @@
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
-from django.utils.http import urlencode
-import hashlib, uuid
-
 from indivo.tests.data import *
 
-EMAIL, FULLNAME, CONTACT_EMAIL, USERNAME, PASSWORD, RECORDS = ("mymail@mail.ma","full name","contact@con.con","user","pass",("the mom", "the dad", "the son", "the daughter"))
+from django.utils.http import urlencode
+import hashlib, uuid
 
 DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
 DOC_LABEL = 'A Document!'
 
 class ReportingInternalTests(InternalTests):
-    accounts = []
-    records = []
-    carenets = []
-    labs = []
 
     def setUp(self):
         super(ReportingInternalTests,self).setUp()
 
-        # reset our state
-        self.accounts = []
-        self.records = []
-        self.carenets = []
-        self.labs = []
-
         # Create an Account (with a few records)
-        acct_args = {'email':EMAIL, 'full_name':FULLNAME, 'contact_email':CONTACT_EMAIL}
-        self.accounts.append(self.createAccount(USERNAME, PASSWORD, RECORDS, **acct_args))
+        self.account = self.createAccount(TEST_ACCOUNTS, 4)
 
-        # Track the records and carenets we just created
-        for record in Record.objects.all():
-            self.records.append(record)
-        for carenet in Carenet.objects.all():
-            self.carenets.append(carenet)
+        # Add a record for it
+        self.record = self.createRecord(TEST_RECORDS, 0, owner=self.account)
 
         #Add some sample Reports
-        self.loadTestReports(self.records[0], self.accounts[0])
-        self.labs = list(Lab.objects.all())
+        self.loadTestReports(record=self.record)
 
     def tearDown(self):
         super(ReportingInternalTests,self).tearDown()
@@ -45,8 +28,10 @@ class ReportingInternalTests(InternalTests):
     # TODO: ADD BETTER TESTS OF RESPONSE DATA, NOT JUST 200s
 
     def test_get_vitals(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/vitals/?group_by=category&aggregate_by=min*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -59,8 +44,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_simple_clinical_notes(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/simple-clinical-notes/?group_by=specialty&aggregate_by=count*provider_name&date_range=date_of_visit*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -73,8 +61,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_procedures(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/procedures/?group_by=procedure_name&aggregate_by=count*procedure_name&date_range=date_performed*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -87,8 +78,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_problems(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/problems/?group_by=problem_name&aggregate_by=count*problem_name&date_range=date_onset*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -101,8 +95,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_medications(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/medications/?group_by=medication_brand_name&aggregate_by=count*medication_name&date_range=date_started*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -115,8 +112,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_measurements(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/measurements/HBA1C/?group_by=lab_code&aggregate_by=avg*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -129,8 +129,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_immunizations(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/immunizations/?group_by=vaccine_type&aggregate_by=count*date_administered&date_range=date_administered*2005-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -143,8 +146,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_labs(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/labs/?group_by=lab_type&aggregate_by=count*lab_test_name&date_range=date_measured*2010-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # should see {['lab_type': u'1,25-Dihydroxy Vitamin D', 'aggregation': 1}]
@@ -165,8 +171,11 @@ class ReportingInternalTests(InternalTests):
         # should see 2 labs now, first from 1998, second from 2009-07
 
     def test_get_allergies(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/allergies/?group_by=allergen_type&aggregate_by=count*allergen_name&date_range=date_diagnosed*2004-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -179,8 +188,11 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_equipment(self):
-        record_id = self.records[0].id
+        record_id = self.record.id
         url = '/records/%s/reports/minimal/equipment/?group_by=equipment_vendor&aggregate_by=count*equipment_name&date_range=date_started*2004-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
@@ -193,7 +205,7 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_audits(self):
-        record_id = self.records[0].id        
+        record_id = self.record.id        
 
         # make some audits
         import datetime
@@ -214,6 +226,9 @@ class ReportingInternalTests(InternalTests):
 
 
         url = '/records/%s/audits/query/?date_range=request_date*2010-03-10T00:00:00Z*'%(record_id)
+        bad_methods = ['put', 'post', 'delete']
+        self.check_unsupported_http_methods(bad_methods, url)
+
         response = self.client.get(url)
         # Should see 2 entries
         self.assertEquals(response.status_code, 200)

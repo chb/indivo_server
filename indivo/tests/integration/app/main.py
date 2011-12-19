@@ -76,7 +76,7 @@ RUNNING INTEGRATION TESTS:
     exceptions = ['__init__.py', 'data.py']
     files = [file[0:-3] for file in os.listdir(TEST_MODULES_DIR_LOC) \
                   if  file[-3:] != 'pyc' and file not in exceptions and \
-                      file[0] != '.']
+                      file[0] != '.' and file[-1] != '~' and file[-1] != '#']
     sys.path.insert(0, os.path.abspath(TEST_MODULES_DIR_LOC))
     for file in files:
       if file:
