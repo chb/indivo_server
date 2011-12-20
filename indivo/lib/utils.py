@@ -51,11 +51,8 @@ def send_mail(subject, body, sender, recipient_list):
         try:
             mail.send_mail(subject, body, sender, recipient_list)
         except Exception, e:
-            print "Exception raised when trying to send the following email: %s" % e
-            print '-----'
-            print "From: %s\nTo: %s\nSubject: %s\n\n" % (sender, ', '.join(recipient_list), subject)
-            print body
-            print '-----'
+            logging.error("Exception raised when trying to send the following email: %s" % e)
+            logging.error("-----\nFrom: %s\nTo: %s\nSubject: %s\n\n%s\n-----" % (sender, ', '.join(recipient_list), subject, body))
             raise e
     else:
         logging.debug("send_mail to set to false, would have sent email to %s\n\n%s" % (', '.join(recipient_list), body))
