@@ -32,12 +32,16 @@ SITE_URL_PREFIX = "http://localhost:8000"
 UI_SERVER_URL = 'http://localhost'
 
 # Storage Settings
-DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'indivo'             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASES = {
+    'default':{
+        'ENGINE':'django.db.backends.postgresql_psycopg2', # '.postgresql_psycopg2', '.mysql', or '.oracle'
+        'NAME':'indivo',
+        'USER':'',
+        'PASSWORD':'',
+        'HOST':'', # Set to empty string for localhost.
+        'PORT':'', # Set to empty string for default.
+        },
+}
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
