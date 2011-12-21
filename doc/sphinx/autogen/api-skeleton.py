@@ -1536,7 +1536,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -1604,7 +1604,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -1672,7 +1672,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -1743,7 +1743,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -1835,7 +1835,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -1894,7 +1894,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -1987,7 +1987,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -2051,7 +2051,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -2116,7 +2116,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -2198,7 +2198,7 @@ CALLS=[{
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -2265,7 +2265,7 @@ GIVE AN EXAMPLE OF A RETURN VALUE
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -3247,11 +3247,20 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         'RECORD_ID':'The id string associated with the Indivo record',
         },
     "query_opts":{
+        'status':'The account or document status to filter by',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`audit-query-fields`',
+        'order_by':'See :ref:`query-operators`',
+        'aggregate_by':'See :ref:`query-operators`',
+        'date_range':'See :ref:`query-operators`',
+        'date_group':'See :ref:`query-operators`',
+        'group_by':'See :ref:`query-operators`',
+        'limit':'See :ref:`query-operators`',
+        'offset':'See :ref:`query-operators`',
         },
     "data_fields":{
         },
     "description":"Select Audit Objects via the Query API Interface.",
-    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_desc":":http:statuscode:`200` with a list of audit records, or :http:statuscode:`400` if any of the arguments to the query interface are invalid.",
     "return_ex":'''
 <Reports xmlns="http://indivo.org/vocab/xml/documents#">
   <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
@@ -4793,7 +4802,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -4861,7 +4870,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -4929,7 +4938,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5000,7 +5009,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5092,7 +5101,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5151,7 +5160,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5244,7 +5253,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5308,7 +5317,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5373,7 +5382,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5455,7 +5464,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
@@ -5521,7 +5530,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "query_opts":{
         'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
         'date_range':'See :ref:`query-operators`',
