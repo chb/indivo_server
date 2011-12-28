@@ -21,14 +21,13 @@ from utils.importer import import_data
 
 from optparse import OptionParser
 import subprocess
-import psycopg2
-import _mysql_exceptions 
 
 # Prepare database-specific commands
 CONN_DICT = connection.settings_dict
 DB_MODULE, DB_NAME = CONN_DICT['ENGINE'].rsplit('.', 1)
 
 if DB_NAME == 'mysql':
+    import _mysql_exceptions
     CREATE_DB_CMD = 'mysqladmin -u%s -p%s create %s'%(CONN_DICT['USER'],
                                                         CONN_DICT['PASSWORD'],
                                                         CONN_DICT['NAME'])
@@ -36,6 +35,7 @@ if DB_NAME == 'mysql':
                                                     CONN_DICT['PASSWORD'],
                                                     CONN_DICT['NAME'])
 elif DB_NAME == 'postgresql_psycopg2':
+    import psycopg2
     CREATE_DB_CMD = 'createdb -U %s -W %s'%(CONN_DICT['USER'], CONN_DICT['NAME'])
     DROP_DB_CMD = 'dropdb -U %s -W %s'%(CONN_DICT['USER'], CONN_DICT['NAME'])
 
