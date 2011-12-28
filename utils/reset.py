@@ -27,7 +27,7 @@ CONN_DICT = connection.settings_dict
 DB_MODULE, DB_NAME = CONN_DICT['ENGINE'].rsplit('.', 1)
 
 if DB_NAME == 'mysql':
-    import _mysql_exceptions
+    import _mysql_exceptions as DB_EXCEPTION_MODULE
     CREATE_DB_CMD = 'mysqladmin -u%s -p%s create %s'%(CONN_DICT['USER'],
                                                         CONN_DICT['PASSWORD'],
                                                         CONN_DICT['NAME'])
@@ -35,7 +35,7 @@ if DB_NAME == 'mysql':
                                                     CONN_DICT['PASSWORD'],
                                                     CONN_DICT['NAME'])
 elif DB_NAME == 'postgresql_psycopg2':
-    import psycopg2
+    import psycopg2 as DB_EXCEPTION_MODULE
     CREATE_DB_CMD = 'createdb -U %s -W %s'%(CONN_DICT['USER'], CONN_DICT['NAME'])
     DROP_DB_CMD = 'dropdb -U %s -W %s'%(CONN_DICT['USER'], CONN_DICT['NAME'])
 
@@ -93,7 +93,7 @@ if options.syncdb:
         print "Database Flushed."
 
     # Couldn't flush. Either the database doesn't exist, or it is corrupted.
-    except (psycopg2.OperationalError, _mysql_exceptions.OperationalError) as e:
+    except DB_EXCEPTION_MODULE.OperationalError as e:
 
         # Try dropping the database, in case it existed
         print "Database nonexistent or corrupted. Attempting to drop database..."
