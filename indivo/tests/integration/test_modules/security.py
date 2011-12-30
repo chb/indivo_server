@@ -164,9 +164,14 @@ def test_security(IndivoClient):
 
     test_client_expect_no_access(bogus_client, record_id, document_id)
 
-    # we can't properly test this because of the way the client library works, so that sucks.
-    # We assume null return means no token
-    assert not bogus_client.create_session(data.account), "shouldn't be able to create a session"
+    # Creating a session should raise a 403
+    try:
+        token = bogus_client.create_session(data.account)
+        if token:
+            raise AssertionError("shouldn't be able to create a session: got a valid token.")    
+    except IOError as e:
+        if e.errno  != 403:
+            raise AssertionError("shouldn't be able to create a session: got a non 403 response.")
 
     test_account_admin_calls(bogus_client, account_id)
 
@@ -367,7 +372,14 @@ def test_security(IndivoClient):
     
     for state in ['disabled', 'retired']:
         chrome_client.account_set_state(account_id = data.account['account_id'], data={'state': state})
-        assert not chrome_client.create_session(data.account), "shouldn't be able to log in for a user in state %s" % state
+
+        try:
+            token = chrome_client.create_session(data.account)
+            if token:
+                raise AssertionError("shouldn't be able to log in for a user in state %s: got a valid token.")
+        except IOError as e:
+            if e.errno  != 403:
+                raise AssertionError("shouldn't be able to log in for a user in state %s: got a non 403 response.")
 
     ## test account permissions: messaging, change password
 

@@ -4,7 +4,6 @@ from utils import parse_xml, xpath, assert_403, assert_200
 
 def test_account(IndivoClient):
   try:
-
     chrome_client = IndivoClient('chrome', 'chrome')
 
     # simplest test case
@@ -36,12 +35,6 @@ def test_account(IndivoClient):
     # set the password to something else
     chrome_client.account_set_password(account_id='ben@indivo.org', data={'password':'test2'})      
       
-    # change the state back and forth
-    chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'disabled'})
-    chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'active'})
-    chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'retired'})
-    assert_403(chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'active'}))
-
     # see if we can create a session for it
     chrome_client.create_session({'username':'ben','user_pass':'test2'})
 
@@ -55,7 +48,13 @@ def test_account(IndivoClient):
     assert_200(chrome_client.account_username_set(account_id='ben@indivo.org', data={'username':'ben2'}))
 
     chrome_client = IndivoClient('chrome', 'chrome')
-    chrome_client.create_session({'username':'ben','user_pass':'test3'})
+    chrome_client.create_session({'username':'ben2','user_pass':'test3'})
+
+    # change the state back and forth
+    chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'disabled'})
+    chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'active'})
+    chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'retired'})
+    assert_403(chrome_client.account_set_state(account_id='ben@indivo.org', data={'state': 'active'}))
     
     # do account search
     chrome_client = IndivoClient('chrome', 'chrome')
@@ -65,8 +64,9 @@ def test_account(IndivoClient):
     # create an account with a mychildrens auth system
     chrome_client.create_account({'user_email' : 'ben-chb@indivo.org', 'primary_secret_p' : '0', 'secondary_secret_p' : '0', 'contact_email':'ben-chb@adida.net'})
     chrome_client.add_auth_system(account_id='ben-chb@indivo.org', data={'system':'mychildrens', 'username':'ben-chb'})
+    chrome_client.account_set_state(account_id='ben-chb@indivo.org', data={'state':'active'})
     
-    # FIXME: this call doesn't do anything, probably because of some internal magic that fails if there is no password field
+    # log in with the mychildrens auth system
     chrome_client.create_session({'username':'ben-chb','system':'mychildrens'})
   except Exception, e:
     return False, e

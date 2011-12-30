@@ -2,10 +2,6 @@
 Driver for coding system loading
 """
 
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
-
 from codingsystems.data import snomed, loinc, rxterms, hl7vaccines
 
 def load_codingsystems():

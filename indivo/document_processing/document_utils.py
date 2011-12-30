@@ -4,13 +4,15 @@ class DocumentUtils:
 
   def get_latest_doc(self, docid):
     docobj = Document.objects.get(id=docid)
-    docset = Document.objects.filter(original=docobj.original)
 
     try:
-      latest = docset.order_by('-created_at')[0]
-    except IndexError:
+      latest = Document.objects.get(original=docobj.original,
+                                    replaced_by=None)
+    except Document.DoesNotExist:
       raise ValueError("No objects exist with original document of passed document, db is in a corrupted state")
-
+    except Document.MultipleObjectsReturned:
+      raise ValueError("More than one 'latest' document, db is in a corrupted state")
+    
     return latest
 
   def is_binary(self, data):

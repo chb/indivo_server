@@ -361,6 +361,12 @@ class Document(Object):
       self.size = self.size if self.size else doc.get_document_size()
       self.digest = self.digest if self.digest else doc.get_document_digest()
 
+      # Create our content file if we are binary
+      cf = None
+      if doc.is_binary:
+        self.content = None
+        cf = ContentFile(self.content)
+        
     # Oracle is incompatible with multi-column unique constraints where
     # one column might be null (i.e., UNIQUE(record, external_id)).
     # We therefore insure that all Documents have an external id,
@@ -379,11 +385,9 @@ class Document(Object):
     # Now that we have an id, we can handle any document-processing stuff that requires an id
     if not self.processed:
       
-      # save our content file if we were binary
-      if doc.is_binary:
-        cf = ContentFile(self.content)
+      # save our content file if we were binary, now that we have an id.
+      if cf:
         self.content_file.save(self.id, cf, save=False) # Don't force a save now, as we will resave later
-        self.content = None
 
       # We can also mark the document we are replacing as replaced by us
       if self.replaces:

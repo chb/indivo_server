@@ -96,6 +96,8 @@ The information recorded at each audit level is also configurable. Defaults are:
 * ``MED``: Basic Information, Principal Information, and Resources are recorded.
 * ``HIGH``: Basic Information, Principal Information, Resources, Request Information, and Response information are recorded.
 
+.. _audit-query-fields:
+
 Querying the Audit System
 -------------------------
 There will be a new API call that implements the :doc:`API Query Interface <query-api>`.
