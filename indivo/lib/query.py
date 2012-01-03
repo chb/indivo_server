@@ -9,8 +9,13 @@ from django.db.models import Avg, Count, Max, Min, Sum
 from django.db import connection
 from django.db.backends import postgresql_psycopg2, mysql, oracle
 
-db_module, db_name = connection.settings_dict['ENGINE'].rsplit('.', 1)
-DB_ENGINE = getattr(__import__(db_module, fromlist=[db_name]), db_name)
+
+db_string = connection.settings_dict['ENGINE']
+if '.' in db_string:
+    db_module, db_name = db_string.rsplit('.', 1)
+    DB_ENGINE = getattr(__import__(db_module, fromlist=[db_name]), db_name)
+else:
+    DB_ENGINE = __import__(db_string)
 
 DATE = 'date'
 STRING = 'string'
