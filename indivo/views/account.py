@@ -58,11 +58,11 @@ def account_reset(request, account):
 
 def account_set_state(request, account):
     """ Set the state of an account. 
-
+    
     request.POST must contain:
     
     * *state*: The desired new state of the account.
-
+    
     Options are: 
     
     * ``active``: The account is ready for use.
@@ -74,13 +74,17 @@ def account_set_state(request, account):
       disabled, and will never allow login again.
       Retired accounts cannot be set to any other 
       state.
-
+    
     Will return :http:statuscode:`200` on success,
     :http:statuscode:`403` if the account has been
-    retired.
-
+    retired and :http:statuscode:`400` if POST data
+    did not contain a "status" parameter
+    
     """
-
+    
+    if not request.POST.get('state'):
+        return HttpResponseBadRequest('No state')
+    
     try:
         account.set_state(request.POST['state'])
     except Exception, e:
@@ -136,23 +140,31 @@ def account_username_set(request, account):
 
 def account_info_set(request, account):
     """ Set basic information about an account.
-
+    
     request.POST can contain any of:
-
+    
     * *contact_email*: A new contact email for the account.
-
+    
     * *full_name*: A new full name for the account.
-
+    
     Each passed parameter will be updated for the account.
-
+    
     Will return :http:statuscode:`200` on success, 
     :http:statuscode:`400` if the POST data contains none of
     the settable parameters.
     
     """
-
-    account.contact_email = request.POST['contact_email']
-    account.full_name = request.POST['full_name']
+    
+    contact_email = request.POST.get('contact_email')
+    full_name = request.POST.get('full_name')
+    if not contact_email and not full_name:
+        return HttpResponseBadRequest('No parameter given')
+    
+    if contact_email:
+        account.contact_email = contact_email
+    if full_name:
+        account.full_name = full_name
+    
     account.save()
     return DONE
 
@@ -270,28 +282,28 @@ def account_check_secrets(request, account, primary_secret):
 
 def account_search(request):
     """ Search for accounts by name or email.
-
+    
     request.GET must contain the query parameters, any of:
     
     * *fullname*: The full name of the account
     
     * *contact_email*: The contact email for the account.
-
+    
     This call returns only accounts matching all passed 
     query parameters exactly: there is no partial matching
     or text-search.
-
+    
     Will return :http:statuscode:`200` with XML describing
     matching accounts on success, :http:statuscode:`400` if
     no query parameters are passed.
-
+    
     """
     
     fullname      = request.GET.get('fullname', None)
     contact_email = request.GET.get('contact_email', None)
     
     if not (fullname or contact_email):
-        raise Exception("At least one criteria needed")
+        return HttpResponseBadRequest('No search criteria given')
     
     query = Account.objects
     if fullname:
@@ -340,7 +352,8 @@ def account_authsystem_add(request, account):
     the same username.
 
     """
-
+    
+    # check for username
     USERNAME, PASSWORD = 'username', 'password'
     
     if request.POST.has_key(USERNAME):
@@ -349,8 +362,23 @@ def account_authsystem_add(request, account):
         transaction.rollback()
         return HttpResponseBadRequest('No username')
     
+    # did we get a system?
+    desired_system = request.POST.get('system')
+    if not desired_system:
+        transaction.rollback()
+        return HttpResponseBadRequest('No system')
+    
+    # if we got "password" as system, did we get a password?
+    new_password = None
+    if 'password' == desired_system:
+        new_password = request.POST.get(PASSWORD)
+        if not new_password:
+            transaction.rollback()
+            return HttpResponseBadRequest('No password')
+    
+    # set the auth system
     try:
-        system = AuthSystem.objects.get(short_name = request.POST['system'])
+        system = AuthSystem.objects.get(short_name = desired_system)
         account.auth_systems.create(username = username, 
                                  auth_system = system)
     except AuthSystem.DoesNotExist:
@@ -360,8 +388,8 @@ def account_authsystem_add(request, account):
         transaction.rollback()
         return HttpResponseBadRequest('Duplicate attempt to add authsystem to account')
     else:
-        if system == AuthSystem.PASSWORD() and request.POST.has_key(PASSWORD):
-            account.password_set(request.POST[PASSWORD])
+        if system == AuthSystem.PASSWORD() and new_password:
+            account.password_set(new_password)
             account.set_state(ACTIVE_STATE)
             account.save()
         
@@ -432,32 +460,32 @@ def account_secret(request, account):
 @transaction.commit_on_success
 def account_create(request):
     """ Create a new account, and send out initialization emails.
-
+    
     request.POST holds the creation arguments. 
-
+    
     Required Parameters:
-
+    
     * *account_id*: an identifier for the new address. Must be formatted
       as an email address.
-
+    
     Optional Parameters:
-
+    
     * *full_name*: The full name to associate with the account. Defaults
       to the empty string.
-
+    
     * *contact_email*: A valid email at which the account holder can 
       be reached. Defaults to the *account_id* parameter.
-
+    
     * *primary_secret_p*: ``0`` or ``1``. Whether or not to associate 
-      a primary secret with the account. Defaults to ``0``.
-
+      a primary secret with the account. Defaults to ``1``.
+    
     * *secondary_secret_p*: ``0`` or ``1``. Whether or not to associate
-      a secondary secret with the account. Defaults to ``1``.
-
+      a secondary secret with the account. Defaults to ``0``.
+    
     After creating the new account, this call generates secrets for it,
     and then emails the user (at *contact_email*) with their activation
     link, which contains the primary secret.
-
+    
     This call will return :http:statuscode:`200` with info about the new
     account on success, :http:statuscode:`400` if *account_id* isn't 
     provided or isn't a valid email address, or if an account already
@@ -471,7 +499,7 @@ def account_create(request):
     
     new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
-    
+        
         # generate a secondary secret or not? Requestor can say no.
         # trust model makes sense: the admin app requestor only decides whether or not 
         # they control the additional interaction or if it's not necessary. They never
@@ -483,7 +511,7 @@ def account_create(request):
         new_account.creator = request.principal
         
         password            = request.POST.get('password', None)
-        primary_secret_p    = (request.POST.get('primary_secret_p', "0") == "1")
+        primary_secret_p    = (request.POST.get('primary_secret_p', "1") == "1")
         secondary_secret_p  = (request.POST.get('secondary_secret_p', "0") == "1")
         
         # we don't allow setting the password here anymore
@@ -495,9 +523,9 @@ def account_create(request):
                 new_account.send_secret()
             except Exception, e:
                 logging.exception(e)
-
+    
     # account already existed
     else:
-        return HttpResponseBadRequest("An account with email address %s already exists."%account_id)
+        return HttpResponseBadRequest("An account with email address %s already exists." % account_id)
     
     return render_template('account', {'account': new_account}, type='xml')
