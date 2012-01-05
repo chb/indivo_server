@@ -46,6 +46,8 @@ def create_db():
     return subprocess.check_call(CREATE_DB_CMD, shell=True)
 
 def drop_db():
+    # close django's connection to the database
+    connection.close()
     return subprocess.check_call(DROP_DB_CMD, shell=True)
 
 # Parse commandline Arguments
@@ -77,7 +79,12 @@ parser.add_option("-c",
 parser.add_option("--no-codingsystems", 
                   action="store_false", dest="load_codingsystems",
                   help="Don't load codingsystems data (default behavior).")
-
+parser.add_option("--force-drop", 
+                  action="store_true", dest="force_drop", default=False,
+                  help="Force a drop and recreate of the database (useful if flushing the database fails).")
+parser.add_option("--no-force-drop", 
+                  action="store_false", dest="force_drop",
+                  help="Don't force a drop and recreate of the database unless necessary (default behavior).")
 
 (options, args) = parser.parse_args()
 
@@ -86,17 +93,23 @@ if options.syncdb:
     print "RESETTING DATABASE..."
 
     # Assume the database exists and is synced: try flushing the database
-    try:
-        print "Flushing the Database of existing data..."
-        management.call_command('flush', verbosity=0)
-        management.call_command('migrate', fake=True, verbosity=0)
-        print "Database Flushed."
+    force_drop = options.force_drop
+    if not force_drop:
+        try:
+            print "Flushing the Database of existing data..."
+            management.call_command('flush', verbosity=0)
+            management.call_command('migrate', fake=True, verbosity=0)
+            print "Database Flushed."
 
-    # Couldn't flush. Either the database doesn't exist, or it is corrupted.
-    except DB_EXCEPTION_MODULE.OperationalError as e:
+        # Couldn't flush. Either the database doesn't exist, or it is corrupted.
+        # Try dropping and recreating, below
+        except DB_EXCEPTION_MODULE.OperationalError as e:
+            force_drop = True
+    
+    if force_drop:
 
         # Try dropping the database, in case it existed
-        print "Database nonexistent or corrupted. Attempting to drop database..."
+        print "Database nonexistent or corrupted, or Database drop requeseted. Attempting to drop database..."
         try:
             drop_db()
         except subprocess.CalledProcessError:
@@ -107,8 +120,8 @@ if options.syncdb:
         try:
             create_db()
         except subprocess.CalledProcessError:
-            print "Couldn't create database. Database state likely corrupted."
-            raise
+            print "Couldn't create database. Database state likely corrupted. Exiting..."
+            exit()
 
         # Sync the Database
         print "Syncing and Migrating the database..."
