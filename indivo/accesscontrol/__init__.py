@@ -59,7 +59,8 @@ def load_access_rules():
     """Any admin app, or a principal in full control of the record."""
     return full_control(principal, record) \
         or principal.isType('MachineApp')
-  views = [pha_record_delete]
+  views = [pha_record_delete,
+           record_pha_enable]
   AccessRule('Account Management By Record', account_management_by_record, views)
 
   def account_management_no_admin_app(principal, account, **unused_args):

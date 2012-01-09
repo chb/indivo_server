@@ -6,7 +6,9 @@ from indivo.lib.utils import MethodDispatcher
 urlpatterns = patterns('',
   (r'^$', MethodDispatcher({'GET':record_phas})),
   (r'^(?P<pha_email>[^/]+)$', 
-      MethodDispatcher({'GET' : record_pha, 'DELETE': pha_record_delete})),
+      MethodDispatcher({'GET' : record_pha, 
+                        'PUT': record_pha_enable,
+                        'DELETE': pha_record_delete})),
   
   # List of app-specific documents / create a doc
   (r'^(?P<pha_email>[^/]+)/documents/$', 

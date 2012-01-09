@@ -38,6 +38,26 @@ def pha(request, pha):
 
     return render_template('pha', {'pha' : pha}, type="xml")
 
+def record_pha_enable(request, record, pha):
+    """ Enable a userapp for a record.
+
+    This is accomplished by adding a share between the record and the app.
+    We don't limit the share to a carenet: this is scoped to the whole record.
+
+    Will return :http:statuscode:`200` on success or if the share already exists, 
+    :http:statuscode:`404` if either the record or the app doesn't exist.
+
+    """
+
+    # If this call isn't made by an Account, it's an admin priming the app. 
+    # In that case, we'll leave authorized_by blank.
+    auth_by = request.principal if request.principal.isType('Account') else None
+    share, create_p = PHAShare.objects.get_or_create(record=record,
+                                                     with_pha=pha,
+                                                     defaults={'authorized_at': datetime.datetime.now(),
+                                                               'authorized_by': auth_by})
+    return DONE
+    
 def pha_record_delete(request, record, pha):
     """ Remove a userapp from a record.
 

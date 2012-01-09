@@ -10,6 +10,7 @@ import functools
 import os
 import os.path
 import shutil
+import datetime
 from xml.dom import minidom
 
 ORIGINAL_MEDIA_ROOT = settings.MEDIA_ROOT
@@ -72,6 +73,41 @@ class IndivoTests(object):
                 loadDataSection(ds_info[0], ds_info[1], model)
 
         self.dependencies_loaded = True
+
+    def assertTimeStampsAlmostEqual(self, first, second=None, **kwargs):
+        """ Test that *first* (a datetime.datetime object) is close in time to *second*.
+
+        kwargs contains arguments for constructing a timedelta object, which defines how
+        close the two datetimes should be.
+
+        For example, passing seconds=10, minutes=2 will test that the two dates are within
+        2 minutes and 10 seconds of each other.
+
+        By default, the function is run with a constructor of seconds=10, and compared to the
+        current time.
+
+        """
+
+        if not second:
+            second = datetime.datetime.now()
+
+        defaults = {'seconds':10}
+        defaults.update(kwargs)
+        td = datetime.timedelta(**defaults)
+
+        if first == second:
+            return
+        elif first < second and first + td >= second:
+            return
+        elif first > second and second + td >= first:
+            return
+        else:
+            msg_start = 'Timestamps Not Almost Equal: '
+            human_readable_delta = ', '.join(['%s %s'%(v, k) for k,v in defaults.iteritems()])
+            msg_main = '%s not within %s of %s.'%(iso8601.format_utc_date(first),
+                                                  human_readable_delta,
+                                                  iso8601.format_utc_date(second))
+            raise self.failureException('%s%s' % (msg_start, msg_main))
 
     def assertNotRaises(self, exception, call, *args, **kwargs):
         if not hasattr(exception, '__iter__'):

@@ -3,7 +3,6 @@ from indivo.tests.internal_tests import InternalTests, TransactionInternalTests
 from indivo.tests.data import *
 
 from django.utils.http import urlencode
-import hashlib, uuid
 from lxml import etree
 
 DOCUMENT_TYPE = 'Lab'
@@ -154,6 +153,8 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         pha_email = self.pha.email
         url = '/records/%s/apps/%s'%(record_id, pha_email) 
+        bad_methods = ['post',]
+        self.check_unsupported_http_methods(bad_methods, url)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # Make sure app is correct!
@@ -164,6 +165,34 @@ class RecordInternalTests(InternalTests):
         url = '/records/%s/apps/%s'%(record_id, pha_email) 
         response = self.client.delete(url)
         self.assertEquals(response.status_code, 200)
+
+    def test_enable_record_app(self):
+        record_id = self.record.id
+        pha_email = self.pha.email
+        url = '/records/%s/apps/%s'%(record_id, pha_email) 
+
+        # The app should be enabled by the setup
+        self.assertTrue(PHAShare.objects.filter(record__id=record_id, with_pha__email=pha_email).exists())
+        
+        # The call should work, but do nothing when the share exists
+        response = self.client.put(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(PHAShare.objects.filter(record__id=record_id, with_pha__email=pha_email).exists())
+
+        # Now, drop the share and assert that it's gone
+        PHAShare.objects.get(record__id=record_id, with_pha__email=pha_email).delete()
+        self.assertFalse(PHAShare.objects.filter(record__id=record_id, with_pha__email=pha_email).exists())
+        
+        # Now, make the call again, and expect the share to re-appear
+        response = self.client.put(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(PHAShare.objects.filter(record__id=record_id, with_pha__email=pha_email).exists())
+        
+        # the share should be authorized by None (since we authenticated as the NoUser)
+        # the share should be authorized recently (i.e. within the last second)
+        new_share = PHAShare.objects.get(record__id=record_id, with_pha__email=pha_email)
+        self.assertEqual(new_share.authorized_by, None)
+        self.assertTimeStampsAlmostEqual(new_share.authorized_at, seconds=1)
 
     def test_record_app_specific_docs_ext(self):
         # Multiple calls, to avoid having to resolve ext_ids ourselves
