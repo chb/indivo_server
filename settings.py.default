@@ -89,6 +89,10 @@ logging.basicConfig(level = logging.DEBUG, format = '%(asctime)s %(levelname)s %
 # For Indivo/Django Experts #
 #############################
 
+LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_URL = '/admin/login/'
+LOGOUT_URL = '/admin/logout/'
+
 # excluse a URL pattern from access control
 INDIVO_ACCESS_CONTROL_EXCEPTION = "^/codes/"
 
@@ -138,6 +142,8 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'indivo_server.indivo.middlewares.authentication.Authentication',
     'indivo_server.indivo.middlewares.paramloader.ParamLoader',
     'indivo_server.indivo.middlewares.authorization.Authorization',
@@ -159,6 +165,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sites',
     'django.contrib.auth',
+    'django.contrib.sessions',
     'indivo',
     'codingsystems',
     # for migrations
@@ -167,9 +174,6 @@ INSTALLED_APPS = (
 
 # cookie
 SESSION_COOKIE_NAME = "indivo_server_sessionid"
-
-# auth
-LOGIN_URL = "/account/login"
 
 # no trailing slash just because
 APPEND_SLASH = False

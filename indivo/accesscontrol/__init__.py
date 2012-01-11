@@ -5,6 +5,7 @@ import sys
 from accessfunc import *
 from access_rule import AccessRule
 from indivo.views import *
+from django.contrib.auth.views import login, logout
 
 def load_access_rules():
   """
@@ -43,7 +44,10 @@ def load_access_rules():
   # WARNING: This gives request tokens and 'no-users' access to these. Is this a problem?
   views = [get_version, # no-users should have access. Should reqtokens?
            all_phas,
-           pha] # should either have access?
+           pha, # should either have access?
+           login,
+           logout,
+           show_front_page,] 
   AccessRule('Basic Access', basic_access, views)
 
   # Account-related views
