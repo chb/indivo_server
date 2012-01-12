@@ -80,16 +80,10 @@ def get_principal(request):
   if admin_app:
     return admin_app, oauth_request
 
-  # is this a 'no-user' login?
-  if not request.META.has_key('HTTP_AUTHORIZATION'):
+  # is this an admin login?
+  if not request.META.has_key('HTTP_AUTHORIZATION') and request.user.is_authenticated():
+    return models.AdminUser.objects.get_or_create(email=request.user.email)[0]
 
-    # Only 1 NoUser principal in the database: create it if it
-    # doesn't yet exist
-    try:
-      no_user = models.NoUser.objects.all()[0]
-    except IndexError:
-      no_user = models.NoUser.objects.create(email="", type='NoUser')
-    return no_user, None
-
-  return None, None
+  # No auth--return the NoUser type.
+  return models.NoUser.get_nouser(), None
 

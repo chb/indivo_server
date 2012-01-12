@@ -194,13 +194,18 @@ class Principal(Object):
     """
     return False
 
+  def adminRole(self):
+    """
+    The Principal may access the admin.
+    """
+    return False
+
   def basicPrincipalRole(self):
     """
     The Principal is a principal. Always returns true, and
     shouldn't be overwritten by subclasses
     """
     return True
-
 
   @property
   def effective_principal(self):

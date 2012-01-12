@@ -46,9 +46,14 @@ def load_access_rules():
            all_phas,
            pha, # should either have access?
            login,
-           logout,
-           show_front_page,] 
+           logout,] 
   AccessRule('Basic Access', basic_access, views)
+
+  def admin_access(principal, **unused_args):
+    """Any user authenticated in the admin."""
+    return principal.adminRole()
+  views = [show_front_page]
+  AccessRule('Admin Access', admin_access, views)
 
   # Account-related views
   def account_management_owner(principal, account, **unused_args):

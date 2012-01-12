@@ -93,6 +93,8 @@ LOGIN_REDIRECT_URL = '/admin/'
 LOGIN_URL = '/admin/login/'
 LOGOUT_URL = '/admin/logout/'
 
+ADMIN_LOG_PATH = APP_HOME + '/admin_logs/'
+
 # excluse a URL pattern from access control
 INDIVO_ACCESS_CONTROL_EXCEPTION = "^/codes/"
 

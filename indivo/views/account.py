@@ -460,6 +460,25 @@ def account_secret(request, account):
 @transaction.commit_on_success
 def account_create(request):
     """ Create a new account, and send out initialization emails.
+
+    Calls into :py:meth:`~indivo.views.account._account_create`.
+    
+    This call will return :http:statuscode:`200` with info about the new
+    account on success, :http:statuscode:`400` if *account_id* isn't 
+    provided or isn't a valid email address, or if an account already
+    exists with an id matching *account_id*.
+
+    """
+
+    try:
+        account = _account_create(request)
+        return render_template('account', {'account': account}, type='xml')
+    except ValueError as e:
+        return HttpResponseBadRequest(str(e))
+
+
+def _account_create(request):
+    """ Create a new account, and send out initialization emails.
     
     request.POST holds the creation arguments. 
     
@@ -486,16 +505,15 @@ def account_create(request):
     and then emails the user (at *contact_email*) with their activation
     link, which contains the primary secret.
     
-    This call will return :http:statuscode:`200` with info about the new
-    account on success, :http:statuscode:`400` if *account_id* isn't 
-    provided or isn't a valid email address, or if an account already
-    exists with an id matching *account_id*.
+    This call will return the new account on success, and raise a ValueError
+    if *account_id* isn't provided or isn't a valid email address, or if an 
+    account already exists with an id matching *account_id*.
       
     """
     
     account_id = request.POST.get('account_id', None)
     if not account_id or not utils.is_valid_email(account_id):
-        return HttpResponseBadRequest("Account ID not valid")
+        raise ValueError("Account ID not valid")
     
     new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
@@ -526,6 +544,6 @@ def account_create(request):
     
     # account already existed
     else:
-        return HttpResponseBadRequest("An account with email address %s already exists." % account_id)
-    
-    return render_template('account', {'account': new_account}, type='xml')
+        raise ValueError("An account with email address %s already exists." % account_id)
+
+    return new_account

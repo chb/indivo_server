@@ -236,9 +236,15 @@ def record_create(request, principal_email=None, external_id=None):
   For 1:1 mapping of URLs to views: just calls 
   :py:meth:`~indivo.views.record._record_create`.
 
+  Will return :http:statuscode:`200` with information about the record on success, 
+  :http:statuscode:`400` if the contact data in request.POST was empty or invalid XML.
+
   """
-  
-  return _record_create(request, principal_email, external_id)
+  try:
+    record = _record_create(request, principal_email, external_id)
+    return render_template('record', {'record' : record}, type='xml')
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))
 
 @transaction.commit_on_success
 def record_create_ext(request, principal_email=None, external_id=None):
@@ -247,9 +253,15 @@ def record_create_ext(request, principal_email=None, external_id=None):
   For 1:1 mapping of URLs to views: just calls 
   :py:meth:`~indivo.views.record._record_create`.
 
-  """
+  Will return :http:statuscode:`200` with information about the record on success, 
+  :http:statuscode:`400` if the contact data in request.POST was empty or invalid XML.
 
-  return _record_create(request, principal_email, external_id)
+  """
+  try:
+    record = _record_create(request, principal_email, external_id)
+    return render_template('record', {'record' : record}, type='xml')
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))
 
 def _record_create(request, principal_email=None, external_id=None):
   """ Create an Indivo record.
@@ -272,9 +284,8 @@ def _record_create(request, principal_email=None, external_id=None):
 
   Additionally, this call will create a Contact document for the record.
 
-  Will return :http:statuscode:`200` with information about the record on
-  success, :http:statuscode:`400` if the contact data in request.POST was
-  empty or invalid XML.
+  Will return the record on success, or raise a ValueError if the contact 
+  data in request.POST was empty or invalid XML.
   
   """
 
@@ -283,7 +294,7 @@ def _record_create(request, principal_email=None, external_id=None):
   try:
     etree.XML(xml_data)
   except:
-    return HttpResponseBadRequest("Contact XML not valid")
+    raise ValueError("Contact XML not valid")
 
   record_external_id = Record.prepare_external_id(external_id, principal_email)
     
@@ -322,8 +333,8 @@ def _record_create(request, principal_email=None, external_id=None):
     # save the contact document as the special contact doc
     record.contact = doc
     record.save()
-
-  return render_template('record', {'record' : record}, type='xml')
+    
+  return record
 
 @transaction.commit_on_success
 def record_pha_setup(request, record, pha):
