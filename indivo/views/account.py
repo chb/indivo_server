@@ -471,19 +471,21 @@ def account_create(request):
     """
 
     try:
-        account = _account_create(request)
+        # request.POST is a QueryDict, not a dict, so we have to recast it
+        account = _account_create(request.principal, **dict(request.POST.items())) 
         return render_template('account', {'account': account}, type='xml')
     except ValueError as e:
         return HttpResponseBadRequest(str(e))
 
 
-def _account_create(request):
+def _account_create(creator, account_id='', full_name='', contact_email=None,
+                    primary_secret_p="1", secondary_secret_p="0", **unused_args):
     """ Create a new account, and send out initialization emails.
-    
-    request.POST holds the creation arguments. 
     
     Required Parameters:
     
+    * *creator*: The creator of the account. Usually ``request.principal``
+
     * *account_id*: an identifier for the new address. Must be formatted
       as an email address.
     
@@ -500,6 +502,8 @@ def _account_create(request):
     
     * *secondary_secret_p*: ``0`` or ``1``. Whether or not to associate
       a secondary secret with the account. Defaults to ``0``.
+
+    * *unused_args*: currently ignored.
     
     After creating the new account, this call generates secrets for it,
     and then emails the user (at *contact_email*) with their activation
@@ -510,10 +514,12 @@ def _account_create(request):
     account already exists with an id matching *account_id*.
       
     """
-    
-    account_id = request.POST.get('account_id', None)
+
     if not account_id or not utils.is_valid_email(account_id):
         raise ValueError("Account ID not valid")
+
+    if not contact_email:
+        contact_email = account_id
     
     new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
@@ -523,14 +529,13 @@ def _account_create(request):
         # they control the additional interaction or if it's not necessary. They never
         # see the primary secret.
         
-        new_account.full_name = request.POST.get('full_name', '')
-        new_account.contact_email = request.POST.get('contact_email', account_id)
+        new_account.full_name = full_name
+        new_account.contact_email = contact_email
         
-        new_account.creator = request.principal
+        new_account.creator = creator
         
-        password            = request.POST.get('password', None)
-        primary_secret_p    = (request.POST.get('primary_secret_p', "1") == "1")
-        secondary_secret_p  = (request.POST.get('secondary_secret_p', "0") == "1")
+        primary_secret_p    = (primary_secret_p == "1")
+        secondary_secret_p  = (secondary_secret_p == "0")
         
         # we don't allow setting the password here anymore
         new_account.save()

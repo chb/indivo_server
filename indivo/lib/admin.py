@@ -8,11 +8,12 @@ from indivo.views.record import _record_create
 from indivo.views.account import _account_create
 from indivo.lib import iso8601
 from lxml import etree
+from indivo.models import *
 import os, csv, datetime, lockfile
 
 RECORD_HEADERS = ['id', 'first name', 'last name', 'email address', 
                   'street address', 'zipcode', 'country', 'phone number']
-ACCOUNT_HEADERS = ['id', 'first_name', 'last_name', 'email address']
+ACCOUNT_HEADERS = ['id', 'first_name', 'last_name', 'email address',]
 SHARE_HEADERS = ['record_id', 'account_id', 'rel_type']
 ADMINLOG_HEADERS = ['user email', 'view_func', 'datetime']
 
@@ -89,7 +90,7 @@ class AdminLogCSVManager(IndivoCSVManager):
 def admin_log(func):
     """ View decorator which will log information about the user making an admin request. """
     @wraps(func)
-    def _inner(request *args, **kwargs):
+    def _inner(request, *args, **kwargs):
         data = {'user email': request.user.email,
                 'view_func' : func.__name__,
                 'datetime' : iso8601.format_utc_date(datetime.datetime.now()),
@@ -104,21 +105,22 @@ def admin_log(func):
     return _inner
 
 
-def admin_create_record(request)
+def admin_create_record(contact_xml, creator):
     """" 
     Create a record, then log that to the admin logs.
     """
-    record = _record_create(request)
-    contact_etree = etree.XML(record.contact.content)
+    record = _record_create(creator, contact_xml)
+    contact = Contacts.from_xml(record.contact.content)
+    phone_number = contact.phone_numbers[0] if contact.phone_numbers else ''
     data = {'id': record.id,
-            'first name': contact_etree.findtext('givenName'),
-            'last name': contact_etree.findtext('familyName'),
-            'email address': contact_etree.findtext('email'),
-            'street address': contact_etree.findtext('streetAddress'),
-            'state': contact_etree.findtext('region'),
-            'zipcode': contact_etree.findtext('postalCode'),
-            'country': contact_etree.findtext('country'),
-            'phone number': contact_etree.findtext('phoneNumber'),
+            'first name': contact.given_name,
+            'last name': contact.family_name,
+            'email address': contact.email,
+            'street address': contact.street_address,
+            'state': contact.region,
+            'zipcode': contact.postal_code,
+            'country': contact.country,
+            'phone number': phone_number,
             }
     
     manager = RecordCSVManager()
@@ -127,10 +129,11 @@ def admin_create_record(request)
         manager.add(data, write=True)
     return record
 
-def admin_create_account(request):
-    account = _account_create(request)
+def admin_create_account(creator, account_id, full_name='', contact_email=None):
+    account = _account_create(creator, account_id=account_id, full_name=full_name,
+                              contact_email=contact_email, secondary_secret_p="1")
     namebits = account.full_name.split(' ')
-    data = {'id':account.id,
+    data = {'id':account.email,
             'first name': namebits[0],
             'last name': namebits[1],
             'email address': account.contact_email,
@@ -147,9 +150,9 @@ def admin_create_fullshare(record, account):
     share, created_p = AccountFullShare.objects.get_or_create(record=record, with_account=account, 
                                                               role_label='Guardian')
     if created_p:
-        data = {'record_id', record.id,
-                'account_id', account.id,
-                'rel_type', 'Guardian',
+        data = {'record_id': record.id,
+                'account_id': account.email,
+                'rel_type': 'Guardian',
                 }
         manager = ShareCSVManager()
         with manager.lock:
@@ -162,13 +165,13 @@ def admin_set_owner(record, account):
     record.owner = account
     record.save()
 
-    data = {'record_id', record.id,
-            'account_id', account.id,
-            'rel_type', 'Owner',
+    data = {'record_id': record.id,
+            'account_id': account.email,
+            'rel_type': 'Owner',
             }
     manager = ShareCSVManager()
     with manager.lock:
         manager.read()
         manager.add(data, write=True)
 
-    return acount
+    return account

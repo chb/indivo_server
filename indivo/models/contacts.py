@@ -8,7 +8,7 @@ from django.conf import settings
 from base import BaseModel
 
 from indivo.lib import utils
-from xml.dom.minidom import *
+from lxml import etree
 
 '''
 <Contact xmlns="http://indivo.org/vocab/xml/documents#">
@@ -41,22 +41,38 @@ from xml.dom.minidom import *
 </Contact>
 '''
 
-class Contacts(BaseModel):
-    full_name = models.CharField(max_length = 200)
-    given_name = models.CharField(max_length = 200)
-    family_name = models.CharField(max_length=200)
+class Contacts(object):
+    
+    ns = 'http://indivo.org/vocab/xml/documents#'
+    
+    def __init__(self, data={}):
+        for attr, val in data.iteritems():
+            try:
+                setattr(self, attr, val)
+            except Exception:
+                pass
     
     def to_xml(self):
-        return render_template_raw('indivo/contacts', {'contact': self}, type='xml')
+        return render_template_raw('contacts', {'contact': self}, type='xml')
+
+    def find_text_anywhere(self, xml_etree, tagname):
+        full_tag = './/{%s}%s'%(self.ns, tagname)
+        return xml_etree.findtext(full_tag)
 
     @classmethod
     def from_xml(self, xml_str):
-        xml_dom = parseString(xml_str)
+        xml_etree = etree.XML(xml_str)
 
         contact = Contacts()
-        contact.full_name   = utils.get_element_value(xml_dom, 'fullName')
-        contact.given_name  = utils.get_element_value(xml_dom, 'givenName')
-        contact.family_name = utils.get_element_value(xml_dom, 'familyName')
+        contact.full_name = contact.find_text_anywhere(xml_etree, 'fullName')
+        contact.given_name = contact.find_text_anywhere(xml_etree, 'givenName')
+        contact.family_name = contact.find_text_anywhere(xml_etree, 'familyName')
+        contact.email = contact.find_text_anywhere(xml_etree, 'emailAddress')
+        contact.street_address  = contact.find_text_anywhere(xml_etree, 'streetAddress')
+        contact.region = contact.find_text_anywhere(xml_etree, 'region')
+        contact.postal_code = contact.find_text_anywhere(xml_etree, 'postalCode')
+        contact.country = contact.find_text_anywhere(xml_etree, 'country')
+        contact.phone_numbers = utils.findalltext(xml_etree, '{%s}phoneNumber'%self.ns)
         return contact
         
     class Meta:

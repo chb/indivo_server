@@ -230,7 +230,7 @@ def record_share_delete(request, record, other_account_id):
     raise Http404
 
 @transaction.commit_on_success
-def record_create(request, principal_email=None, external_id=None):
+def record_create(request):
   """ Create a new record.
 
   For 1:1 mapping of URLs to views: just calls 
@@ -241,7 +241,7 @@ def record_create(request, principal_email=None, external_id=None):
 
   """
   try:
-    record = _record_create(request, principal_email, external_id)
+    record = _record_create(request.principal, request.raw_post_data)
     return render_template('record', {'record' : record}, type='xml')
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
@@ -258,12 +258,14 @@ def record_create_ext(request, principal_email=None, external_id=None):
 
   """
   try:
-    record = _record_create(request, principal_email, external_id)
+    record = _record_create(request.principal, request.raw_post_data,
+                            principal_email=principal_email, 
+                            external_id=external_id)
     return render_template('record', {'record' : record}, type='xml')
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
 
-def _record_create(request, principal_email=None, external_id=None):
+def _record_create(creator, contact_xml, owner=None, principal_email=None, external_id=None):
   """ Create an Indivo record.
 
   request.POST must contain raw XML that is a valid Indivo Contact
@@ -289,8 +291,11 @@ def _record_create(request, principal_email=None, external_id=None):
   
   """
 
+  if not owner:
+    owner = creator
+
   # If the xml data is not valid return an HttpResponseBadRequest Obj
-  xml_data = request.raw_post_data
+  xml_data = contact_xml
   try:
     etree.XML(xml_data)
   except:
@@ -302,15 +307,15 @@ def _record_create(request, principal_email=None, external_id=None):
     record , created_p = Record.objects.get_or_create(
       external_id = record_external_id,
       defaults = {
-        'creator' : request.principal,
+        'creator' : creator,
         'label' : Contacts.from_xml(xml_data).full_name,
-        'owner' : request.principal})
+        'owner' : owner})
   else:
     record = Record.objects.create(
       external_id = record_external_id,
-      creator = request.principal,
+      creator = creator,
       label = Contacts.from_xml(xml_data).full_name,
-      owner = request.principal)
+      owner = owner)
     created_p = True
 
   # only set up the new contact document if the record is new
@@ -325,7 +330,7 @@ def _record_create(request, principal_email=None, external_id=None):
     doc_external_id = record_external_id
 
     doc = _document_create( record      = record,
-                            creator     = request.principal,
+                            creator     = creator,
                             pha         = None,
                             content     = xml_data,
                             external_id = doc_external_id)

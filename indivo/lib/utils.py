@@ -72,6 +72,8 @@ def render_template(template_name, vars, type='xml'):
         mimetype = 'text/json'
     return HttpResponse(content, mimetype=mimetype)
 
+def findalltext(etree, text):
+    return [el.text for el in etree.iterfind(text)]
 
 def get_element_value(dom, el):
     try:
