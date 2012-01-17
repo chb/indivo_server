@@ -1081,6 +1081,57 @@ CALLS=[{
 
 },
 {
+    "method":"GET",
+    "path":"/apps/{PHA_EMAIL}/records/",
+    "view_func_name":"app_record_list",
+    "access_doc":"Any autonomous user app.",
+    "url_params":{
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Return a list of all records that have this pha enabled.",
+    "return_desc":":http:statuscode:`200` with a list of records on success.",
+    "return_ex":'''
+<Records>
+  <Record id="123" label="John R. Smith" />
+  <Record id = "234" label="Frank Frankson" />
+
+  ...
+
+</Records>
+''',
+    "deprecated": None,
+    "added": ('1.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"POST",
+    "path":"/apps/{PHA_EMAIL}/records/{RECORD_ID}/access_token",
+    "view_func_name":"autonomous_access_token",
+    "access_doc":"An autonomous user app with a record on which the app is authorized to run.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Fetch an access token for an autonomous app to access a record.",
+    "return_desc":":http:statuscode:`200` with a valid access token for the app bound to the record on success.",
+    "return_ex":'''
+oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_record_id=123
+''',
+    "deprecated": None,
+    "added": ('1.0.0', ''),
+    "changed": None,
+
+},
+{
     "method":"DELETE",
     "path":"/carenets/{CARENET_ID}",
     "view_func_name":"carenet_delete",
@@ -2717,6 +2768,29 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 ''',
     "deprecated": None,
     "added": None,
+    "changed": None,
+
+},
+{
+    "method":"PUT",
+    "path":"/records/{RECORD_ID}/apps/{PHA_EMAIL}",
+    "view_func_name":"record_pha_enable",
+    "access_doc":"Any admin app, or a principal in full control of the record.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Enable a userapp for a record.",
+    "return_desc":":http:statuscode:`200` on success, :http:statuscode:`404` if either the specified record or the specified app doesn't exist.",
+    "return_ex":'''
+<ok/>
+''',
+    "deprecated": None,
+    "added": ('1.0.0', ''),
     "changed": None,
 
 },

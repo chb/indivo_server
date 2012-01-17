@@ -38,6 +38,16 @@ def pha(request, pha):
 
     return render_template('pha', {'pha' : pha}, type="xml")
 
+def app_record_list(request, pha):
+    """ Return a list of all records that have this pha enabled.
+
+    Will return :http:statuscode`200` with a list of records on success.
+ 
+    """
+
+    records = Record.objects.filter(pha_shares__with_pha=pha)
+    return render_template('record_list', {'records':records, 'full_shares':[], 'carenet_shares':[]})
+
 def record_pha_enable(request, record, pha):
     """ Enable a userapp for a record.
 
@@ -151,6 +161,26 @@ def exchange_token(request):
         raise PermissionDenied()
     
     return HttpResponse(access_token.to_string(), mimetype='text/plain')
+
+def autonomous_access_token(request, pha, record):
+    """ Fetch an access token for an autonomous app to access a record.
+
+    This call *assumes* that the app has already been enabled on the record, and 
+    that the user has already authorized it (this must be checked in the access control 
+    for the function). Otherwise, this will automatically enable the app on the record
+    (a BAD idea).
+
+    This call should be made by autonomous apps to get access tokens for records which
+    have already enabled them (presumably after a call to app_record_list).
+
+    Will return :http:statuscode:`200` with a valid access token for the app bound to the
+    record on success.
+   
+    """
+
+    from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
+    access_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record)
+    return HttpResponse(access_token.to_string(), mimetype="application/x-www-form-urlencoded")
 
 ##
 ## OAuth internal calls
