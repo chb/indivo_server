@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+	<h1>Change Owner for Record {{ record.label }} ({{ record.id }})</h1> <!-- change to use contact info -->
+	{% if account_form %}
+		<h3>New Account</h3>
+		<div class="span5 offset1">
+			<form action="/admin/record/{{ record.id }}/owner" method="post" class="span8">{% csrf_token %}
+				{% include "admin/account_form.html" %}
+				<input type="hidden" name="existing" value="False">
+				<div class="actions">
+			    	<input type="submit" value="Create Account & Set as Owner" class="btn primary"/>
+			    </div>
+			</form>
+		</div>
+		<h3>Existing Account</h3>
+		<div class="span5 offset1">
+			<form action="/admin/record/{{ record.id }}/owner" method="post" class="span8">{% csrf_token %}
+				{% include "admin/account_form.html" with account_form=account_search_form %}
+				<input type="hidden" name="existing" value="True">
+				<div class="actions">
+			    	<input type="submit" value="Set Owner" class="btn primary"/>
+			    </div>
+			</form>
+		</div>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+	<h1>Add a Full Share to Record {{ record.label }} ({{ record.id }})</h1> <!-- change to use contact info -->
+	{% if accounts %}
+		<section>
+			<h3>Search Results</h3>
+			<div class="row">
+				{% for account in accounts %}
+					<div class="span4 offset1">
+						{% include "admin/_account.html" with account=account %}
+						<form action="/admin/record/{{ record.id }}/share/{{ account.email }}/" method="post">{% csrf_token %}
+							<input type="submit" value="Add Share" class="btn primary"/>
+						</form>
+					</div>
+				{% empty %}
+					<div class="span4 offset1">
+						<h3>No matches found for your search</h3>
+					</div>
+				{% endfor %}
+			</div>
+		</section>
+	{% endif %}
+	{% if account_form %}
+		<section>
+			<h3>New Account</h3>
+			<div class="span5 offset1">
+				<form action="/admin/record/{{ record.id }}/share" method="post" class="span8">{% csrf_token %}
+					{% include "admin/account_form.html" %}
+					<input type="hidden" name="existing" value="False">
+					<div class="clearfix">
+						<div class="input">
+				    		<input type="submit" value="Create Account & Add Share" class="btn primary"/>
+				    	</div>
+				    </div>
+				</form>
+			</div>
+		<section>
+	{% endif %}
+	{% if account_search_form %}
+		<section>
+			<h3>Existing Account</h3>
+			<div class="span5 offset1">
+				<form action="/admin/record/{{ record.id }}/share" method="post" class="span8">{% csrf_token %}
+					{% include "admin/account_form.html" with account_form=account_search_form %}
+					<input type="hidden" name="existing" value="True">
+					<div class="clearfix">
+						<div class="input">
+				    		<input type="submit" value="Search" class="btn primary"/>
+				    	</div>
+				    </div>
+				</form>
+			</div>
+		</section>
+	{% endif %}
+{% endblock %}

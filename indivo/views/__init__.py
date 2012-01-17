@@ -19,6 +19,7 @@ including API calls related to:
 
 from version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE
 
+from admin      import *
 from account    import *
 from audit      import *
 from documents  import *
@@ -34,8 +35,3 @@ from django.contrib.auth.decorators import login_required
 def get_version(request): 
     """ Return the current version of Indivo."""
     return HttpResponse(INDIVO_SERVER_RELEASE, mimetype="text/plain")
-
-@login_required()
-def show_front_page(request):
-    return HttpResponse('<html><body><h1>Logged in!</h1><p><a href="/admin/logout/">Log Out</a></p></body></html>',
-                        mimetype="text/html")

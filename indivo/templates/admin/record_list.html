@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+
+{% block sidebar %}
+	<h3>Recent Records</h3>
+	{% for recent in recents %}
+		<a class="btn" href="/admin/record/{{ recent }}/">{{ recent }}</a>
+	{% endfor %}
+{% endblock %}
+
+{% block content %}
+	<section id="records">
+		<div class="page-header">
+			<h1>Records</h1>
+		</div>
+		<ul>
+		{% for record in records %}
+			<li><a href="/admin/record/{{ record.id }}/">{{ record.label }} ({{ record.id }})</a></li>
+		{% empty %}
+		
+		{% endfor %}
+		</ul>
+	</section>
+{% endblock %}

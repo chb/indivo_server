@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
+    <!-- TODO: move css to file -->
+    <style>
+		body {padding-top: 50px;}
+		.btn {vertical-align: middle}
+		section {padding-top:10px}
+	</style>
+    <title>Indivo Admin</title>
+</head>
+
+<body>
+	<div class="topbar" data-dropdown="dropdown">
+		<div class="topbar-inner">
+	    	<div class="container">
+	    		<h3><a href="#">Indivo Admin</a></h3>
+	    		<ul class="nav secondary-nav">
+					<li>
+	    				<a href="/admin/logout/">Logout</a>
+	    			</li>
+				</ul>
+	    	</div>
+	    </div><!-- /topbar-inner -->
+	</div>
+	<div class="container-fluid">
+	    <div class="sidebar">
+	      {% block sidebar %}{% endblock %}
+	    </div>
+	    <div class="content">
+	        {% block content %}{% endblock %}
+	    </div>
+	</div>
+</body>
+</html>
+

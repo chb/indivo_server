@@ -1,9 +1,22 @@
 {% spaceless %}
-<Contact id="{{ contact.id }}" xmlns="http://indivo.org/vocab/xml/documents#">
+<Contact xmlns="http://indivo.org/vocab/xml/documents#">
     <name>
         <fullName>{{ contact.full_name }}</fullName>
         <givenName>{{ contact.given_name }}</givenName>
         <familyName>{{ contact.family_name }}</familyName>
     </name>
+    <email type="personal">
+        <emailAddress>{{ contact.email }}</emailAddress>
+    </email>
+    <address type="home">
+        <streetAddress>{{ contact.street_address }}</streetAddress>
+        <postalCode>{{ contact.postal_code }}</postalCode>
+        <locality>{{ contact.locality }}</locality>
+        <region>{{ contact.region }}</region>
+        <country>{{ contact.country }}</country>
+    </address>
+    {% for phone_number in contact.phone_numbers %}
+    	<phoneNumber type="home">{{ phone_number }}</phoneNumber>
+    {% endfor %}
 </Contact>
 {% endspaceless %}

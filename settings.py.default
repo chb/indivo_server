@@ -69,6 +69,14 @@ ACCOUNT_REENABLE_TIMEOUT = None
 # Default carenets for new records
 INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
 
+# Default owner for records created in the admin interface
+DEFAULT_ADMIN_OWNER = {
+	'email':'defaultowner@indivo.org',
+	'first_name': '',
+	'last_name': '',
+	'contact_email': '' # same as email if empty
+}
+
 # Audit Settings
 AUDIT_LEVEL = 'HIGH' # 'HIGH', 'MED', 'LOW', 'NONE'
 AUDIT_OAUTH = True # Audit the calls used solely for the oauth dance?

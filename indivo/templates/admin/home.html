@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+	<section>
+		<div class="page-header">
+			<h2>New Record</h2>
+		</div>
+	</section>
+	<div class="row">
+		<a class="btn primary offset1" href="/admin/record/">Create</a>
+	</div>
+	<section>
+		<div class="page-header">
+			<h2>Search Records</h2>
+		</div>
+	</section>
+	<form action="/admin/record/search" method="get">
+		<div class="clearfix">
+			<label for="search_string">By Full Name:</label>
+			<div class="input">
+				<input class="xlarge" name="search_string" size="30" type="text">
+				<input type="submit" value="Search" class="btn primary "/>
+			</div>
+		</div>
+	</form>
+{% endblock %}

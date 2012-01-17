@@ -52,7 +52,16 @@ def load_access_rules():
   def admin_access(principal, **unused_args):
     """Any user authenticated in the admin."""
     return principal.adminRole()
-  views = [show_front_page]
+  views = [admin_show,
+           admin_record_create,
+           admin_record_show,
+           admin_record_form,
+           admin_record_owner_form,
+           admin_record_owner,
+           admin_record_search,
+           admin_record_share_form,
+           admin_record_share_add,
+           admin_record_account_share_add]
   AccessRule('Admin Access', admin_access, views)
 
   # Account-related views

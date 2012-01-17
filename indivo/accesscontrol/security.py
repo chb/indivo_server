@@ -82,7 +82,7 @@ def get_principal(request):
 
   # is this an admin login?
   if not request.META.has_key('HTTP_AUTHORIZATION') and request.user.is_authenticated():
-    return models.AdminUser.objects.get_or_create(email=request.user.email)[0]
+    return models.AdminUser.objects.get_or_create(email=request.user.email)[0], None
 
   # No auth--return the NoUser type.
   return models.NoUser.get_nouser(), None
