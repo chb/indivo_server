@@ -1,12 +1,5 @@
 {% extends "admin/base.html" %}
 
-{% block sidebar %}
-	<h3>Recent Records</h3>
-	{% for recent in recents %}
-		<a class="btn" href="/admin/record/{{ recent }}/">{{ recent }}</a>
-	{% endfor %}
-{% endblock %}
-
 {% block content %}
 	<section id="records">
 		<div class="page-header">

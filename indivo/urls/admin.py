@@ -14,5 +14,6 @@ urlpatterns = patterns('',
     (r'^record/(?P<record_id>[^/]+)/share$', MethodDispatcher({'GET': admin_record_share_form, 'POST': admin_record_share_add})),
     (r'^record/(?P<record_id>[^/]+)/share/(?P<account_id>[^/]+)/$', MethodDispatcher({'POST': admin_record_account_share_add})),
     (r'^record/(?P<record_id>[^/]+)/owner$', MethodDispatcher({'GET': admin_record_owner_form, 'POST': admin_record_owner})),
+    (r'^record/(?P<record_id>[^/]+)/owner/(?P<account_id>[^/]+)/$', MethodDispatcher({'POST': admin_record_account_owner_set})),
     (r'^record/search$', MethodDispatcher({'GET': admin_record_search})),
     )

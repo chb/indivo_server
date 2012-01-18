@@ -58,6 +58,7 @@ def load_access_rules():
            admin_record_form,
            admin_record_owner_form,
            admin_record_owner,
+           admin_record_account_owner_set,
            admin_record_search,
            admin_record_share_form,
            admin_record_share_add,

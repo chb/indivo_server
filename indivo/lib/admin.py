@@ -21,7 +21,7 @@ ADMINLOG_HEADERS = ['user email', 'view_func', 'datetime']
 class CSVManager(object):
     def __init__(self, filepath, headers):
         self.fp = filepath
-        self.lock = FileLock(self.fp)
+        self.lock = lockfile.FileLock(self.fp)
         self.data = []
         self.headers = headers
 

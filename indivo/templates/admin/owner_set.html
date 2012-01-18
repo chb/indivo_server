@@ -1,25 +1,50 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
-	<h1>Change Owner for Record {{ record.label }} ({{ record.id }})</h1> <!-- change to use contact info -->
+	<h1>Change Owner for {{ record.label }} ({{ record.id }})</h1>
+	{% if not accounts == None %}
+		<section>
+			<h3>Search Results</h3>
+			<div class="row">
+				{% for account in accounts %}
+					<div class="span4 offset1">
+						{% include "admin/_account.html" with account=account %}
+						<form action="/admin/record/{{ record.id }}/owner/{{ account.email }}/" method="post">{% csrf_token %}
+							<input type="submit" value="Set as Owner" class="btn primary"/>
+						</form>
+					</div>
+				{% empty %}
+					<div class="offset1">
+						<h3>No matches found for your search</h3>
+					</div>
+				{% endfor %}
+			</div>
+		</section>
+	{% endif %}
 	{% if account_form %}
 		<h3>New Account</h3>
 		<div class="span5 offset1">
 			<form action="/admin/record/{{ record.id }}/owner" method="post" class="span8">{% csrf_token %}
 				{% include "admin/account_form.html" %}
 				<input type="hidden" name="existing" value="False">
-				<div class="actions">
-			    	<input type="submit" value="Create Account & Set as Owner" class="btn primary"/>
+				<div class="clearfix">
+			    	<div class="input">
+			    		<input type="submit" value="Create Account & Set as Owner" class="btn primary "/>
+			    	</div>
 			    </div>
 			</form>
 		</div>
+	{% endif %}
+	{% if account_search_form %}
 		<h3>Existing Account</h3>
 		<div class="span5 offset1">
 			<form action="/admin/record/{{ record.id }}/owner" method="post" class="span8">{% csrf_token %}
 				{% include "admin/account_form.html" with account_form=account_search_form %}
 				<input type="hidden" name="existing" value="True">
-				<div class="actions">
-			    	<input type="submit" value="Set Owner" class="btn primary"/>
+				<div class="clearfix">
+			    	<div class="input">
+			    		<input type="submit" value="Search" class="btn primary "/>
+			    	</div>
 			    </div>
 			</form>
 		</div>

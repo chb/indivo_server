@@ -1,16 +1,13 @@
 {% extends "admin/base.html" %}
 
-{% block sidebar %}
-	<h3>Recent Records</h3>
-	{% for recent in recents %}
-		<a class="btn" href="/admin/record/{{ recent }}/">{{ recent }}</a>
-	{% endfor %}
-{% endblock %}
-
 {% block content %}
 	<section id="record">
 		<div class="page-header">
-			<h1>Record {{ record.id|default_if_none:"" }}</h1>
+			{% if record %}
+				<h1>{{ record.label }} ({{ record.id|default_if_none:"" }})</h1>			
+			{% else %}
+				<h1>New Record</h1>
+			{% endif %}
 		</div>
 		<div>
 			{% include "admin/record_form.html" %}
@@ -20,7 +17,7 @@
 		<section id="owner">
 			<div class="page-header">
 				<h2>Owner 
-					<a class="btn success" href="/admin/record/{{ record.id }}/owner">+ {% if record.owner %}Change{% else %}Assign{% endif %} Owner</a> 
+					<a class="btn" href="/admin/record/{{ record.id }}/owner">+ {% if record.owner %}Change{% else %}Assign{% endif %} Owner</a> 
 			</div>
 			<div class="row">
 				<div class="span4 offset1">
@@ -34,7 +31,7 @@
 		</section>
 		<section id="shares">
 			<div class="page-header">
-				<h2>Full Shares <a class="btn success" href="/admin/record/{{ record.id }}/share">+ Add Share</a></h2>
+				<h2>Full Shares <a class="btn" href="/admin/record/{{ record.id }}/share">+ Add Share</a></h2>
 			</div>
 			<div class="row">
 				{% for share in record.fullshares.iterator %}

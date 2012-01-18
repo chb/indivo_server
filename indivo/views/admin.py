@@ -13,22 +13,30 @@ import pdb
 
 @login_required()
 def admin_show(request):
-    return render_to_response('admin/home.html') 
+    # read in recently viewed records
+    recents = request.session.get('recent_records', set([]))
+    return render_to_response('admin/home.html', {
+        'recents': recents
+    }) 
 
 @login_required()    
 def admin_record_show(request, record):
     # read in recently viewed records
     recents = request.session.get('recent_records', set([]))
-    recents.add(record.id)
+    recents.add(record) # TODO: check to see if this is a memory/performance issue
     request.session['recent_records'] = recents
     # populate form from contact document  TODO: currently only handles single phone number
-    contact = Contacts.from_xml(record.contact.content)
-    recordForm = RecordForm(initial={'full_name':contact.full_name,
-                                     'email':contact.email,
-                                     'street_address':contact.street_address,
-                                     'postal_code':contact.postal_code,
-                                     'country':contact.country,
-                                     'phone_number':contact.phone_numbers[0]})
+    if record.contact:
+        contact = Contacts.from_xml(record.contact.content)
+        recordForm = RecordForm(initial={'full_name':contact.full_name,
+                                         'email':contact.email,
+                                         'street_address':contact.street_address,
+                                         'postal_code':contact.postal_code,
+                                         'country':contact.country,
+                                         'phone_number':contact.phone_numbers[0]})
+    else:
+        recordForm = RecordForm(initial={'full_name':record.label})
+        
     return render_to_response('admin/record_show.html', {
         'record_form': recordForm,
         'account_form': AccountForm(),
@@ -38,9 +46,12 @@ def admin_record_show(request, record):
 
 @login_required()    
 def admin_record_form(request):
+    # read in recently viewed records
+    recents = request.session.get('recent_records', set([]))
     recordForm = RecordForm()
     return render_to_response('admin/record_show.html', {
-        'record_form': recordForm
+        'record_form': recordForm,
+        'recents': recents
     }) 
 
 @login_required()
@@ -65,8 +76,11 @@ def admin_record_create(request):
             raise
         return redirect('/admin/record/' + record.id + '/')
     else:
+        # read in recently viewed records
+        recents = request.session.get('recent_records', set([]))
         return render_to_response('admin/record_show.html', {
-            'record_form': form
+            'record_form': form,
+            'recents': recents
         })  
 
 @login_required()    
@@ -80,16 +94,22 @@ def admin_record_search(request):
     if (len(records) == 1):
         return redirect('/admin/record/' + records[0].id + '/')
     else:
+        # read in recently viewed records
+        recents = request.session.get('recent_records', set([]))
         return render_to_response('admin/record_list.html',{
-            'records': records
+            'records': records,
+            'recents': recents
         })
 
 @login_required()
 def admin_record_share_form(request, record):
+    # read in recently viewed records
+    recents = request.session.get('recent_records', set([]))
     return render_to_response('admin/share_add.html', {
         'account_form': AccountForm,
         'account_search_form': AccountForm,
-        'record': record
+        'record': record,
+        'recents': recents
     })
     
 @login_required()
@@ -107,10 +127,13 @@ def admin_record_share_add(request, record):
                 raise
             return redirect('/admin/record/' + record.id +'/')
         else:
+            # read in recently viewed records
+            recents = request.session.get('recent_records', set([]))
             return render_to_response('admin/share_add.html', {
                 'account_form': form,
                 'account_search_form': AccountForm(),
-                'record': record
+                'record': record,
+                'recents': recents
             })
     else:
         # Add share to existing Account
@@ -120,11 +143,13 @@ def admin_record_share_add(request, record):
         except Exception as e:
             #TODO
             raise e
-        
+        # read in recently viewed records
+        recents = request.session.get('recent_records', set([]))
         return render_to_response('admin/share_add.html', {
                 'record': record,
                 'accounts': accounts,
-                'account_search_form': AccountForm(),
+                'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']}),
+                'recents': recents
             })
     
 @login_required()
@@ -138,10 +163,13 @@ def admin_record_account_share_add(request, record, account):
 
 @login_required()
 def admin_record_owner_form(request, record):
+    # read in recently viewed records
+    recents = request.session.get('recent_records', set([]))
     return render_to_response('admin/owner_set.html', {
         'account_form': AccountForm,
         'account_search_form': AccountForm,
-        'record': record
+        'record': record,
+        'recents': recents
     })
 
 @login_required()
@@ -151,7 +179,6 @@ def admin_record_owner(request, record):
         form = AccountForm(request.POST)
         if form.is_valid(): 
             # TODO: generate account id
-            pdb.set_trace()
             try:
                 account = admin.admin_create_account(request.principal, form.cleaned_data['email'], full_name=form.cleaned_data['full_name'], contact_email=form.cleaned_data['email'])
                 account = admin.admin_set_owner(record, account)
@@ -160,11 +187,37 @@ def admin_record_owner(request, record):
                 x =2
             return redirect('/admin/record/' + record.id +'/')
         else:
-            return render_to_response('admin/share_add.html', {
+            # read in recently viewed records
+            recents = request.session.get('recent_records', set([]))
+            return render_to_response('admin/owner_set.html', {
                 'account_form': form,
                 'account_search_form': AccountForm(),
-                'record': record
+                'record': record,
+                'recents': recents
             })
     else:
+        # set existing Account as owner
+        account = []
+        try:
+            accounts = Account.objects.filter(full_name__icontains=request.POST['full_name'], email__icontains=request.POST['email'])
+        except Exception as e:
+            #TODO
+            raise e
+        # read in recently viewed records
+        recents = request.session.get('recent_records', set([]))
+        return render_to_response('admin/owner_set.html', {
+                'record': record,
+                'accounts': accounts,
+                'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']}),
+                'recents': recents
+            })
+
+@login_required()
+def admin_record_account_owner_set(request, record, account):
+    try:
+        account = admin.admin_set_owner(record, account)
+    except Exception as e:
         # TODO
-        return redirect('/admin/record/' + record.id +'/')
+        raise
+    return redirect('/admin/record/' + record.id +'/')
+

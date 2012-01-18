@@ -16,7 +16,15 @@
 	<div class="topbar" data-dropdown="dropdown">
 		<div class="topbar-inner">
 	    	<div class="container">
-	    		<h3><a href="#">Indivo Admin</a></h3>
+	    		<h3><a href="/admin/">Indivo Admin</a></h3>
+	    		<ul class="nav">
+					<li>
+						<a href="/admin/record/">New Record</a>
+					</li>
+				</ul>
+				<form class="pull-left" action="/admin/record/search" method="get">
+            		<input type="text" name="search_string" placeholder="Search Records by Full Name">
+          		</form>
 	    		<ul class="nav secondary-nav">
 					<li>
 	    				<a href="/admin/logout/">Logout</a>
@@ -27,7 +35,14 @@
 	</div>
 	<div class="container-fluid">
 	    <div class="sidebar">
-	      {% block sidebar %}{% endblock %}
+	    	{% block sidebar %}
+	    		{% if recents %}
+					<h3>Recent Records</h3>
+					{% for record in recents %}
+						<a class="btn span3" href="/admin/record/{{ record.id }}/">{{ record.label }}</a>
+					{% endfor %}
+				{% endif %}
+			{% endblock %}	
 	    </div>
 	    <div class="content">
 	        {% block content %}{% endblock %}

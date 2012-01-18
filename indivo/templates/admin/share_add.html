@@ -1,8 +1,8 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
-	<h1>Add a Full Share to Record {{ record.label }} ({{ record.id }})</h1> <!-- change to use contact info -->
-	{% if accounts %}
+	<h1>Add a Full Share to {{ record.label }} ({{ record.id }})</h1> <!-- change to use contact info -->
+	{% if not accounts == None %}
 		<section>
 			<h3>Search Results</h3>
 			<div class="row">
@@ -14,7 +14,7 @@
 						</form>
 					</div>
 				{% empty %}
-					<div class="span4 offset1">
+					<div class="offset1">
 						<h3>No matches found for your search</h3>
 					</div>
 				{% endfor %}
