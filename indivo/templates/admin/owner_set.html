@@ -8,7 +8,7 @@
 			<div class="row">
 				{% for account in accounts %}
 					<div class="span4 offset1">
-						{% include "admin/_account.html" with account=account %}
+						{% include "admin/_account.html" %}
 						<form action="/admin/record/{{ record.id }}/owner/{{ account.email }}/" method="post">{% csrf_token %}
 							<input type="submit" value="Set as Owner" class="btn primary"/>
 						</form>
@@ -26,7 +26,7 @@
 		<div class="span5 offset1">
 			<form action="/admin/record/{{ record.id }}/owner" method="post" class="span8">{% csrf_token %}
 				{% include "admin/account_form.html" %}
-				<input type="hidden" name="existing" value="False">
+				<input type="hidden" name="existing" value="False"/>
 				<div class="clearfix">
 			    	<div class="input">
 			    		<input type="submit" value="Create Account & Set as Owner" class="btn primary "/>
@@ -39,7 +39,9 @@
 		<h3>Existing Account</h3>
 		<div class="span5 offset1">
 			<form action="/admin/record/{{ record.id }}/owner" method="post" class="span8">{% csrf_token %}
-				{% include "admin/account_form.html" with account_form=account_search_form %}
+			        {% with account_search_form as account_form %}
+				{% include "admin/account_form.html" %}
+			        {% endwith %}
 				<input type="hidden" name="existing" value="True">
 				<div class="clearfix">
 			    	<div class="input">

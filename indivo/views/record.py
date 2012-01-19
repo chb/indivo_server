@@ -11,12 +11,10 @@
 from lxml import etree
 
 from indivo.lib import utils
-from indivo.views.documents.document import _document_create
+from indivo.lib.modelutils import _record_create, _document_create
 from base import *
 
 ACTIVE_STATE = 'active'
-
-
 
 @marsloader()
 def record_list(request, account, status, limit=None, offset=None, order_by=None):
@@ -264,82 +262,6 @@ def record_create_ext(request, principal_email=None, external_id=None):
     return render_template('record', {'record' : record}, type='xml')
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
-
-def _record_create(creator, contact_xml, owner=None, principal_email=None, external_id=None):
-  """ Create an Indivo record.
-
-  request.POST must contain raw XML that is a valid Indivo Contact
-  document (see :doc:`/schemas/contact-schema`).
-  
-  This call will create a new record containing the following 
-  information:
-
-  * *creator*: Corresponds to ``request.principal``.
-
-  * *label*: The full name of the new record, specified in the
-    contact document.
-
-  * *owner*: Corresponds to ``request.principal``.
-
-  * *external_id* An external identifier for the record, if 
-    passed in.
-
-  Additionally, this call will create a Contact document for the record.
-
-  Will return the record on success, or raise a ValueError if the contact 
-  data in request.POST was empty or invalid XML.
-  
-  """
-
-  if not owner:
-    owner = creator
-
-  # If the xml data is not valid return an HttpResponseBadRequest Obj
-  xml_data = contact_xml
-  try:
-    etree.XML(xml_data)
-  except:
-    raise ValueError("Contact XML not valid")
-
-  record_external_id = Record.prepare_external_id(external_id, principal_email)
-    
-  if external_id:
-    record , created_p = Record.objects.get_or_create(
-      external_id = record_external_id,
-      defaults = {
-        'creator' : creator,
-        'label' : Contacts.from_xml(xml_data).full_name,
-        'owner' : owner})
-  else:
-    record = Record.objects.create(
-      external_id = record_external_id,
-      creator = creator,
-      label = Contacts.from_xml(xml_data).full_name,
-      owner = owner)
-    created_p = True
-
-  # only set up the new contact document if the record is new
-  # otherwise just return the existing record
-  if created_p:
-    # Create default carenets for this particular record
-    record.create_default_carenets()
-
-    # Create the contact document
-    # use the same external ID as for the record
-    # since those are distinct anyways
-    doc_external_id = record_external_id
-
-    doc = _document_create( record      = record,
-                            creator     = creator,
-                            pha         = None,
-                            content     = xml_data,
-                            external_id = doc_external_id)
-      
-    # save the contact document as the special contact doc
-    record.contact = doc
-    record.save()
-    
-  return record
 
 @transaction.commit_on_success
 def record_pha_setup(request, record, pha):

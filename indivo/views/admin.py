@@ -9,7 +9,6 @@ from django.template import Context
 from django.template.loader import get_template
 from indivo.forms import *
 from indivo.lib import admin
-import pdb
 
 @login_required()
 def admin_show(request):
@@ -106,8 +105,8 @@ def admin_record_share_form(request, record):
     # read in recently viewed records
     recents = request.session.get('recent_records', set([]))
     return render_to_response('admin/share_add.html', {
-        'account_form': AccountForm,
-        'account_search_form': AccountForm,
+        'account_form': AccountForm(),
+        'account_search_form': AccountForm(),
         'record': record,
         'recents': recents
     })
@@ -166,8 +165,8 @@ def admin_record_owner_form(request, record):
     # read in recently viewed records
     recents = request.session.get('recent_records', set([]))
     return render_to_response('admin/owner_set.html', {
-        'account_form': AccountForm,
-        'account_search_form': AccountForm,
+        'account_form': AccountForm(),
+        'account_search_form': AccountForm(),
         'record': record,
         'recents': recents
     })

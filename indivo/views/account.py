@@ -11,6 +11,7 @@ from base import *
 import urllib
 import logging
 from indivo.lib import utils
+from indivo.lib.modelutils import _account_create
 from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
 
@@ -476,79 +477,3 @@ def account_create(request):
         return render_template('account', {'account': account}, type='xml')
     except ValueError as e:
         return HttpResponseBadRequest(str(e))
-
-
-def _account_create(creator, account_id='', full_name='', contact_email=None,
-                    primary_secret_p="1", secondary_secret_p="0", **unused_args):
-    """ Create a new account, and send out initialization emails.
-    
-    Required Parameters:
-    
-    * *creator*: The creator of the account. Usually ``request.principal``
-
-    * *account_id*: an identifier for the new address. Must be formatted
-      as an email address.
-    
-    Optional Parameters:
-    
-    * *full_name*: The full name to associate with the account. Defaults
-      to the empty string.
-    
-    * *contact_email*: A valid email at which the account holder can 
-      be reached. Defaults to the *account_id* parameter.
-    
-    * *primary_secret_p*: ``0`` or ``1``. Whether or not to associate 
-      a primary secret with the account. Defaults to ``1``.
-    
-    * *secondary_secret_p*: ``0`` or ``1``. Whether or not to associate
-      a secondary secret with the account. Defaults to ``0``.
-
-    * *unused_args*: currently ignored.
-    
-    After creating the new account, this call generates secrets for it,
-    and then emails the user (at *contact_email*) with their activation
-    link, which contains the primary secret.
-    
-    This call will return the new account on success, and raise a ValueError
-    if *account_id* isn't provided or isn't a valid email address, or if an 
-    account already exists with an id matching *account_id*.
-      
-    """
-
-    if not account_id or not utils.is_valid_email(account_id):
-        raise ValueError("Account ID not valid")
-
-    if not contact_email:
-        contact_email = account_id
-    
-    new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
-    if create_p:
-        
-        # generate a secondary secret or not? Requestor can say no.
-        # trust model makes sense: the admin app requestor only decides whether or not 
-        # they control the additional interaction or if it's not necessary. They never
-        # see the primary secret.
-        
-        new_account.full_name = full_name
-        new_account.contact_email = contact_email
-        
-        new_account.creator = creator
-        
-        primary_secret_p    = (primary_secret_p == "1")
-        secondary_secret_p  = (secondary_secret_p == "0")
-        
-        # we don't allow setting the password here anymore
-        new_account.save()
-        
-        if primary_secret_p:
-            new_account.generate_secrets(secondary_secret_p = secondary_secret_p)
-            try:
-                new_account.send_secret()
-            except Exception, e:
-                logging.exception(e)
-    
-    # account already existed
-    else:
-        raise ValueError("An account with email address %s already exists." % account_id)
-
-    return new_account

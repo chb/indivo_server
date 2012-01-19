@@ -22,7 +22,9 @@
 			<div class="row">
 				<div class="span4 offset1">
 					{% if record.owner %}
-						{% include "admin/_account.html" with account=record.owner.account %}
+					{% with record.owner.account as account %}
+						{% include "admin/_account.html" %}
+					{% endwith %}
 					{% else %}
 						<h3>No Owner</h3>
 					{% endif %}
@@ -36,7 +38,9 @@
 			<div class="row">
 				{% for share in record.fullshares.iterator %}
 					<div class="span4 offset1">
-						{% include "admin/_account.html" with account=share.with_account %}
+					        {% with share.with_account as account %}
+						{% include "admin/_account.html" %}
+						{% endwith %}
 						<button class="btn error">remove share</button>
 					</div>
 				{% empty %}

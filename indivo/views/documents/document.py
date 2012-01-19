@@ -11,6 +11,7 @@ import urllib2
 import hashlib
 
 from indivo.lib import utils
+from indivo.lib.modelutils import _document_create
 
 from indivo.views.base import *
 from indivo.document_processing.document_utils import DocumentUtils
@@ -18,7 +19,6 @@ from indivo.document_processing.document_processing import DocumentProcessing
 
 from django.db.models import Count
 from django.db import IntegrityError, transaction
-
 
 PHA, RECORD, CREATOR, MIME_TYPE, EXTERNAL_ID, ORIGINAL_ID, CONTENT, DIGEST, SIZE, TYPE, REPLACES, STATUS    = (
     'pha', 'record', 'creator', 'mime_type', 'external_id', 'original_id', 'content', 'digest', 'size', 'type', 'replaces', 'status')
@@ -160,101 +160,6 @@ def _get_document(record=None, carenet=None, document_id=None, pha=None, externa
         return None
     return doc
 
-def _document_create(creator, content, pha, record,
-                                         replaces_document=None, external_id=None, mime_type=None,
-                                         status = None):
-    """ Create an Indivo Document.
-
-    This is the lowest-level creation function called for all record- and/or 
-    app-specific documents.
-
-    The PHA argument, if non-null, indicates app-specificity only. By this point, 
-    the external_id should be fully formed.
-
-    If status is specified, then it is used, otherwise it is not specified and 
-    the model's default value is used (i.e. ``active``).
-
-    This function creates a new model instance, processing the document if 
-    necessary, and storing it in the database (or in the file system, if the
-    document is binary).
-
-    **Arguments:**
-
-    * *creator*: The :py:class:`~indivo.models.base.Principal`
-        instance that is responsible for creating the document.
-
-    * *content*: The raw content (XML or binary) of the document to be created.
-
-    * *pha*: if the document is application-specific, this
-        :py:class:`~indivo.models.apps.PHA` instance refers to the 
-        application to which the document pertains.
-    
-    * *record*: if the document is record-specific, this
-        :py:class:`~indivo.models.records_and_documents.Record`
-        instance refers to the document's record.
-
-    * *replaces_document*: If the new document will overwrite (via in-place update
-        or versioning) an existing document, this 
-        :py:class:`~indivo.models.records_and_documents.Document`
-        instance references the old document to be overwritten.
-
-    * *external_id*: the external identifier to assing to the new document, 
-        if available. The identifier should already have been prepared using
-        :py:meth:`~indivo.models.records_and_documents.Document.prepare_external_id`.
-
-    * *mime_type*: the mime type of the new document, i.e. 
-        :mimetype:`application/xml`.
-
-    * *status*: The initial status of the new document. ``active`` by default.
-     
-    **Returns:**
-
-    * A new instance of 
-        :py:class:`~indivo.models.records_and_documents.Document`,
-        on success. If the document was updated in place, and no new document was
-        created, the old document is returned.
-
-    **Raises:**
-    
-    * :py:exc:`ValueError`: if the document doesn't validate.
-    
-    * :py:exc:`django.db.IntegrityError`: if the arguments to this function
-        violate a database unique constraint (i.e., duplicate external id).
-
-        .. warning::
-
-             If an :py:exc:`IntegrityError` is raised, it will invalidate the 
-             current database transaction. Calling functions should handle this
-             case and rollback the current transaction.
-
-    """
-
-    new_doc = None
-
-    # Overwrite content if we are replacing an existing PHA doc
-    if pha and replaces_document:
-        replaces_document.replace(content, mime_type)
-    
-    # Create new document
-    else:
-        creator = creator.effective_principal
-        doc_args = {PHA         : pha,
-                    RECORD      : record,
-                    CREATOR     : creator,
-                    MIME_TYPE   : mime_type,
-                    EXTERNAL_ID : external_id,
-                    REPLACES    : replaces_document,
-                    CONTENT     : content,
-                    ORIGINAL_ID : replaces_document.original_id if replaces_document else None
-                }
-        if status:
-            doc_args[STATUS] = status
-
-        # create the document
-        new_doc = Document.objects.create(**doc_args)
-
-    # return new doc if we have it, otherwise updated old doc
-    return new_doc or replaces_document
 
 def __local_document_create(request, record, pha, external_id, existing_doc):
     """ Create a document, or update one in place.
