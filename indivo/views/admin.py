@@ -3,7 +3,6 @@ Indivo Views -- Indivo Admin
 """
 from base import *
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
 from django.shortcuts import redirect 
 from django.template import Context
 from django.template.loader import get_template
@@ -12,15 +11,11 @@ from indivo.lib import admin
 
 @login_required()
 def admin_show(request):
-    # read in recently viewed records
-    recents = request.session.get('recent_records', set([]))
-    return render_to_response('admin/home.html', {
-            'recents': recents
-            }) 
+    return admin.render_admin_response(request, 'admin/home.html') 
 
 @login_required()    
 def admin_record_show(request, record):
-    # read in recently viewed records
+    # update recently viewed records
     recents = request.session.get('recent_records', set([]))
     recents.add(record) # TODO: check to see if this is a memory/performance issue
     request.session['recent_records'] = recents
@@ -36,21 +31,17 @@ def admin_record_show(request, record):
     else:
         recordForm = RecordForm(initial={'full_name':record.label})
         
-    return render_to_response('admin/record_show.html', {
+    return admin.render_admin_response(request, 'admin/record_show.html', {
         'record_form': recordForm,
         'account_form': AccountForm(),
-        'record': record,
-        'recents': recents
+        'record': record
     }) 
 
 @login_required()    
 def admin_record_form(request):
-    # read in recently viewed records
-    recents = request.session.get('recent_records', set([]))
     recordForm = RecordForm()
-    return render_to_response('admin/record_show.html', {
+    return admin.render_admin_response(request, 'admin/record_show.html', {
         'record_form': recordForm,
-        'recents': recents
     }) 
 
 @login_required()
@@ -75,11 +66,8 @@ def admin_record_create(request):
             raise
         return redirect('/admin/record/' + record.id + '/')
     else:
-        # read in recently viewed records
-        recents = request.session.get('recent_records', set([]))
-        return render_to_response('admin/record_show.html', {
+        return admin.render_admin_response(request, 'admin/record_show.html', {
             'record_form': form,
-            'recents': recents
         })  
 
 @login_required()    
@@ -93,22 +81,16 @@ def admin_record_search(request):
     if (len(records) == 1):
         return redirect('/admin/record/' + records[0].id + '/')
     else:
-        # read in recently viewed records
-        recents = request.session.get('recent_records', set([]))
-        return render_to_response('admin/record_list.html',{
+        return admin.render_admin_response(request, 'admin/record_list.html',{
             'records': records,
-            'recents': recents
         })
 
 @login_required()
 def admin_record_share_form(request, record):
-    # read in recently viewed records
-    recents = request.session.get('recent_records', set([]))
-    return render_to_response('admin/share_add.html', {
+    return admin.render_admin_response(request, 'admin/share_add.html', {
         'account_form': AccountForm(),
         'account_search_form': AccountForm(),
         'record': record,
-        'recents': recents
     })
     
 @login_required()
@@ -126,13 +108,10 @@ def admin_record_share_add(request, record):
                 raise
             return redirect('/admin/record/' + record.id +'/')
         else:
-            # read in recently viewed records
-            recents = request.session.get('recent_records', set([]))
-            return render_to_response('admin/share_add.html', {
+            return admin.render_admin_response(request, 'admin/share_add.html', {
                 'account_form': form,
                 'account_search_form': AccountForm(),
                 'record': record,
-                'recents': recents
             })
     else:
         # Add share to existing Account
@@ -142,13 +121,10 @@ def admin_record_share_add(request, record):
         except Exception as e:
             #TODO
             raise e
-        # read in recently viewed records
-        recents = request.session.get('recent_records', set([]))
-        return render_to_response('admin/share_add.html', {
+        return admin.render_admin_response(request, 'admin/share_add.html', {
                 'record': record,
                 'accounts': accounts,
-                'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']}),
-                'recents': recents
+                'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']})
             })
     
 @login_required()
@@ -162,13 +138,10 @@ def admin_record_account_share_add(request, record, account):
 
 @login_required()
 def admin_record_owner_form(request, record):
-    # read in recently viewed records
-    recents = request.session.get('recent_records', set([]))
-    return render_to_response('admin/owner_set.html', {
+    return admin.render_admin_response(request, 'admin/owner_set.html', {
         'account_form': AccountForm(),
         'account_search_form': AccountForm(),
         'record': record,
-        'recents': recents
     })
 
 @login_required()
@@ -186,13 +159,10 @@ def admin_record_owner(request, record):
                 x =2
             return redirect('/admin/record/' + record.id +'/')
         else:
-            # read in recently viewed records
-            recents = request.session.get('recent_records', set([]))
-            return render_to_response('admin/owner_set.html', {
+            return admin.render_admin_response(request, 'admin/owner_set.html', {
                 'account_form': form,
                 'account_search_form': AccountForm(),
-                'record': record,
-                'recents': recents
+                'record': record
             })
     else:
         # set existing Account as owner
@@ -202,13 +172,10 @@ def admin_record_owner(request, record):
         except Exception as e:
             #TODO
             raise e
-        # read in recently viewed records
-        recents = request.session.get('recent_records', set([]))
-        return render_to_response('admin/owner_set.html', {
+        return admin.render_admin_response(request, 'admin/owner_set.html', {
                 'record': record,
                 'accounts': accounts,
-                'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']}),
-                'recents': recents
+                'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']})
             })
 
 @login_required()

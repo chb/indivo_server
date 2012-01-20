@@ -6,6 +6,7 @@ Utils for the Admin interface.
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import *
+from django.shortcuts import render_to_response
 from indivo.lib.modelutils import _record_create, _account_create
 from indivo.models import *
 import csv, StringIO, os
@@ -236,3 +237,9 @@ def admin_create_user(creator, username, password, is_superuser = False, first_n
     user.last_name = last_name
     user.save()
     return user
+
+def render_admin_response(request, template_path, context={}):
+    recents = request.session.get('recent_records', set([]))
+    admin_context = {'recents':recents}
+    admin_context.update(context)
+    return render_to_response(template_path, admin_context) 
