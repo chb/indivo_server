@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     
     (r'^login/', MethodDispatcher({'GET': login, 'POST': login,}), {}, 'login-view'),
     (r'^$', MethodDispatcher({'GET': admin_show})),
+    (r'^export', MethodDispatcher({'GET':admin_dump_state})),
     (r'^logout/', MethodDispatcher({'GET': logout})),
     (r'^record/$', MethodDispatcher({'POST': admin_record_create, 'GET': admin_record_form})),
     (r'^record/(?P<record_id>[^/]+)/$', MethodDispatcher({'GET': admin_record_show})),

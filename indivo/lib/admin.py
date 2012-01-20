@@ -9,6 +9,7 @@ from django.core.exceptions import *
 from indivo.lib.modelutils import _record_create, _account_create
 from indivo.models import *
 import csv, StringIO, os
+from zipfile import ZipFile
 
 RECORD_HEADERS = ['id', 'first name', 'last name', 'email address', 
                   'street address', 'state', 'zipcode', 'country', 'phone number']
@@ -101,6 +102,18 @@ class CSVStreamManager(object):
             
     def get_stream(self):
         return self.io_obj.get_stream()
+
+def in_mem_zipfile(file_dict):
+    buf = StringIO.StringIO()
+    zipped = ZipFile(buf, 'a')
+    for name, file_obj in file_dict.iteritems():
+        file_obj.seek(0)
+        zipped.writestr(name, file_obj.read())
+    zipped.close()
+    buf.flush()
+    data = buf.getvalue()
+    buf.close()
+    return data
 
 def dump_db():
     """ Get a list of all records, accounts, and their relationships as csv data.

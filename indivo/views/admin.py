@@ -15,8 +15,8 @@ def admin_show(request):
     # read in recently viewed records
     recents = request.session.get('recent_records', set([]))
     return render_to_response('admin/home.html', {
-        'recents': recents
-    }) 
+            'recents': recents
+            }) 
 
 @login_required()    
 def admin_record_show(request, record):
@@ -220,3 +220,23 @@ def admin_record_account_owner_set(request, record, account):
         raise
     return redirect('/admin/record/' + record.id +'/')
 
+@login_required()
+def admin_dump_state(request):
+    try:
+        records_file, accounts_file, shares_file = admin.dump_db()
+    except Exception as e:
+        # TODO
+        raise
+
+    try:
+        zip_data = admin.in_mem_zipfile({'records.csv':records_file,
+                                         'accounts.csv':accounts_file,
+                                         'shares.csv':shares_file,})
+    except Exception as e:
+        # TODO
+        raise
+    
+    response = HttpResponse(mimetype='application/zip')
+    response['Content-Disposition'] = 'filename=indivodata.zip'
+    response.write(zip_data)
+    return response
