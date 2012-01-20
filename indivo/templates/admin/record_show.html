@@ -4,9 +4,9 @@
 	<section id="record">
 		<div class="page-header">
 			{% if record %}
-				<h1>{{ record.label }} ({{ record.id|default_if_none:"" }})</h1>			
+				<h2>{{ record.label }} ({{ record.id|default_if_none:"" }})</h2>			
 			{% else %}
-				<h1>New Record</h1>
+				<h2>New Record</h2>
 			{% endif %}
 		</div>
 		<div>
@@ -16,8 +16,7 @@
 	{% if record %}
 		<section id="owner">
 			<div class="page-header">
-				<h2>Owner 
-					<a class="btn" href="/admin/record/{{ record.id }}/owner">+ {% if record.owner %}Change{% else %}Assign{% endif %} Owner</a> 
+				<h3>Owner <a class="btn" href="/admin/record/{{ record.id }}/owner">{% if record.owner %}Change{% else %}Assign{% endif %} Owner</a></h3> 
 			</div>
 			<div class="row">
 				<div class="span4 offset1">
@@ -33,7 +32,7 @@
 		</section>
 		<section id="shares">
 			<div class="page-header">
-				<h2>Full Shares <a class="btn" href="/admin/record/{{ record.id }}/share">+ Add Share</a></h2>
+				<h3>Full Shares <a class="btn" href="/admin/record/{{ record.id }}/share">+ Add Share</a></h3>
 			</div>
 			<div class="row">
 				{% for share in record.fullshares.iterator %}

@@ -3,24 +3,32 @@
 {% block content %}
 	<section>
 		<div class="page-header">
-			<h2>New Record</h2>
+			<h3>New</h3>
 		</div>
 	</section>
 	<div class="row">
-		<a class="btn primary offset1" href="/admin/record/">Create</a>
+		<a class="btn primary offset1" href="/admin/record/">+ Record</a>
 	</div>
 	<section>
 		<div class="page-header">
-			<h2>Search Records</h2>
+			<h3>Search Records</h3>
 		</div>
-	</section>
-	<form action="/admin/record/search" method="get">
-		<div class="clearfix">
-			<label for="search_string">By Full Name:</label>
-			<div class="input">
-				<input class="xlarge" name="search_string" size="30" type="text">
-				<input type="submit" value="Search" class="btn primary "/>
+		<form action="/admin/record/search" method="get">
+			<div class="clearfix">
+				<label for="search_string">By Full Name:</label>
+				<div class="input">
+					<input class="xlarge" name="search_string" size="30" type="text">
+					<input type="submit" value="Search" class="btn primary "/>
+				</div>
 			</div>
+		</form>
+	</section>
+	<section>
+		<div class="page-header">
+			<h3>Export Data</h3>
 		</div>
-	</form>
+		<div class="row">
+		<a class="btn primary offset1" href="/admin/export">Export</a>
+	</div>
+	</section>
 {% endblock %}
