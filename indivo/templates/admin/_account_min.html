@@ -1,4 +1,4 @@
 <address>
-	<strong>{{ account.full_name }}</strong><br>
-	<a mailto="">{{ account.email }}</a>
+	<strong><a href="/admin/account/{{ account.email }}/">{{ account.full_name }}</a></strong><br>
+	<span>{{ account.email }}</span>
 </address>

@@ -8,7 +8,7 @@
 			<div class="row">
 				{% for account in accounts %}
 					<div class="span4 offset1">
-						{% include "admin/_account.html" %}
+						{% include "admin/_account_min.html" %}
 						<form action="/admin/record/{{ record.id }}/owner/{{ account.email }}/" method="post">{% csrf_token %}
 							<input type="submit" value="Set as Owner" class="btn primary"/>
 						</form>

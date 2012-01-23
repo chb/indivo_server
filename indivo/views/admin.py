@@ -196,6 +196,12 @@ def admin_record_account_owner_set(request, record, account):
         raise
     return redirect('/admin/record/' + record.id +'/')
 
+@login_required()    
+def admin_account_show(request, account):
+    return admin.render_admin_response(request, 'admin/account.html', {
+        'account': account
+    }) 
+
 @login_required()
 def admin_dump_state(request):
     try:

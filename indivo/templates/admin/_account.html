@@ -1,1 +1,44 @@
-{% include "admin/_account_full.html" %}
+<form>
+	<div class="clearfix">
+		<label>Full Name</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.full_name }}</span>
+		</div>
+	</div>
+	<div class="clearfix">
+		<label>ID</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.email }}</span>
+		</div>
+	</div>
+	<div class="clearfix">
+		<label>Contact Email</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.contact_email }}</span>
+		</div>
+	</div>
+	<div class="clearfix">
+		<label>Created On</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.created_at }}</span>
+		</div>
+	</div>
+	<div class="clearfix">
+		<label>Created by</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.creator.email }}</span>
+		</div>
+	</div>
+	<div class="clearfix">
+		<label>Status</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.state }}</span>
+		</div>
+	</div>
+	<div class="clearfix">
+		<label>Pin</label>
+		<div class="input">
+			<span class="uneditable-input">{{ account.secondary_secret_pretty }}</span>
+		</div>
+	</div>
+</form>

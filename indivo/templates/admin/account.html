@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+	<section id="account">
+		<div class="page-header">
+			<h2>Account Details</h2>			
+		</div>
+		<div class="span8">
+			{% include "admin/_account.html" %}
+		</div>
+	</section>
+	<section id="owner">
+		<div class="page-header">
+			<h3>Records Owned</h3>
+		</div>
+		{% for record in account.records_owned_by.iterator %}
+			<div class="row">
+				<div class="offset1">
+					{% include "admin/_record_min.html" %}
+				</div>
+			</div>
+		{% endfor %}
+	</section>
+	<section id="shares">
+		<div class="page-header">
+			<h3>Full Shares</h3>
+		</div>
+		{% for share in account.fullshares_to.iterator %}
+			{% with share.record as record %}
+				<div class="row">
+					<div class="offset1">
+						{% include "admin/_record_min.html" %}
+					</div>
+				</div>
+			{% endwith %}			
+		{% endfor %}
+	</section>
+{% endblock %}
