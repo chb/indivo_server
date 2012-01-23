@@ -36,16 +36,20 @@
 			</div>
 			<div class="row">
 				{% for share in record.fullshares.iterator %}
-					<div class="span4 offset1">
-					        {% with share.with_account as account %}
-						{% include "admin/_account.html" %}
-						{% endwith %}
-						<button class="btn error">remove share</button>
-					</div>
+				<div class="span4 offset1">
+				  <form method="get" action="/admin/record/{{ record.id }}/share/{{ share.with_account.email }}/delete/">{% csrf_token %}
+
+				    {% with share.with_account as account %}
+				    {% include "admin/_account.html" %}
+				    {% endwith %}
+				    
+				    <input type="submit" value="Remove Share" class="btn error" />
+				  </form>
+				</div>
 				{% empty %}
-					<div class="span4 offset1">
-						<h3>No Full Shares</h3>
-					</div>
+				<div class="span4 offset1">
+				  <h3>No Full Shares</h3>
+				</div>
 				{% endfor %}
 			</div>
 		</section>

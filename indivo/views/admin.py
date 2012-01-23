@@ -126,7 +126,16 @@ def admin_record_share_add(request, record):
                 'accounts': accounts,
                 'account_search_form': AccountForm(initial={'full_name':request.POST['full_name'], 'email':request.POST['email']})
             })
+
+@login_required()
+def admin_record_account_share_delete(request, record, account):
+    success = admin.admin_remove_fullshare(record, account)
+    if not success:
+        # TODO
+        raise Exception("couldn't delete share!")
     
+    return redirect('/admin/record/' + record.id + '/')
+
 @login_required()
 def admin_record_account_share_add(request, record, account):
     try:

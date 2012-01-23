@@ -72,8 +72,7 @@ INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
 # Default owner for records created in the admin interface
 DEFAULT_ADMIN_OWNER = {
 	'email':'defaultowner@indivo.org',
-	'first_name': '',
-	'last_name': '',
+	'full_name': '',
 	'contact_email': '' # same as email if empty
 }
 

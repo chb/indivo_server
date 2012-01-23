@@ -54,6 +54,13 @@ class Account(Principal):
     def __unicode__(self):
         return 'Account %s' % self.id
 
+    @property
+    def secondary_secret_pretty(self):
+        if not self.secondary_secret:
+            return 'None'
+        else:
+            return self.secondary_secret[:3] + '-' + self.secondary_secret[3:]
+
     def save(self, *args, **kwargs):
         """ Enforce case-insensitive emails. """
         self.email = self.email.lower().strip()

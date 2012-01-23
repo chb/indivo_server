@@ -63,6 +63,7 @@ def load_access_rules():
            admin_record_share_form,
            admin_record_share_add,
            admin_record_account_share_add,
+           admin_record_account_share_delete,
            admin_dump_state,]
   AccessRule('Admin Access', admin_access, views)
 

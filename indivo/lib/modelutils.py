@@ -113,7 +113,7 @@ def _account_create(creator, account_id='', full_name='', contact_email=None,
     account already exists with an id matching *account_id*.
       
     """
-
+    
     if not account_id or not utils.is_valid_email(account_id):
         raise ValueError("Account ID not valid")
 
@@ -134,7 +134,7 @@ def _account_create(creator, account_id='', full_name='', contact_email=None,
         new_account.creator = creator
         
         primary_secret_p    = (primary_secret_p == "1")
-        secondary_secret_p  = (secondary_secret_p == "0")
+        secondary_secret_p  = (secondary_secret_p == "1")
         
         # we don't allow setting the password here anymore
         new_account.save()
