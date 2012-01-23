@@ -47,9 +47,11 @@
 	    	{% block sidebar %}
 	    		{% if recents %}
 					<h3>Recent Records</h3>
+					<ul class="unstyled">
 					{% for record in recents %}
-						<a class="btn span3" href="/admin/record/{{ record.id }}/">{{ record.label }}</a>
+						<li><a class="" href="/admin/record/{{ record.id }}/">{{ record.label }}</a></li>
 					{% endfor %}
+					</ul>
 				{% endif %}
 			{% endblock %}	
 	    </div>

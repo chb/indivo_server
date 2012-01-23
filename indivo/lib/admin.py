@@ -221,6 +221,7 @@ def admin_set_owner(record, account):
 
 def admin_retire_account(account):
     account.set_state('retired')
+    account.save()
     return account
 
 def admin_create_user(creator, username, password, is_superuser = False, first_name=None, last_name=None, email=None):

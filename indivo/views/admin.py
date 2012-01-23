@@ -203,6 +203,11 @@ def admin_account_show(request, account):
     }) 
 
 @login_required()
+def admin_account_retire(request, account):
+    admin.admin_retire_account(account);
+    return redirect('/admin/account/' + account.email + '/')
+
+@login_required()
 def admin_dump_state(request):
     try:
         records_file, accounts_file, shares_file = admin.dump_db()

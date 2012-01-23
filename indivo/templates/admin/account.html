@@ -7,6 +7,13 @@
 		</div>
 		<div class="span8">
 			{% include "admin/_account.html" %}
+			{% if account.is_active %}
+				<form action="/admin/account/{{ account.email }}/retire" method="post">
+					<div class="input">
+						<button class="btn error" type="submit">Retire Account</button>
+					</div>
+				</form>
+			{% endif %}
 		</div>
 	</section>
 	<section id="owner">

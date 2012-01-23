@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     (r'^record/(?P<record_id>[^/]+)/owner/(?P<account_id>[^/]+)/$', MethodDispatcher({'POST': admin_record_account_owner_set})),
     (r'^record/search$', MethodDispatcher({'GET': admin_record_search})),
     (r'^account/(?P<account_id>[^/]+)/$', MethodDispatcher({'GET': admin_account_show})),
+    (r'^account/(?P<account_id>[^/]+)/retire$', MethodDispatcher({'POST': admin_account_retire})),
     )
