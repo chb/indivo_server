@@ -239,7 +239,9 @@ def admin_create_user(creator, username, password, is_superuser = False, first_n
     return user
 
 def render_admin_response(request, template_path, context={}):
+    # add in the User and recent Records to all admin Contexts
     recents = request.session.get('recent_records', set([]))
-    admin_context = {'recents':recents}
+    admin_context = {'recents':recents,
+                     'user':request.user}
     admin_context.update(context)
     return render_to_response(template_path, admin_context) 

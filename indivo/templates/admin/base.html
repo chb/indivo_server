@@ -27,9 +27,15 @@
             		<input type="text" name="search_string" placeholder="Search Records by Full Name">
           		</form>
 	    		<ul class="nav secondary-nav">
-					<li>
-	    				<a href="/admin/logout/">Logout</a>
-	    			</li>
+	    			{% if user and user.is_authenticated %}
+						<li>
+		    				<a href="/admin/logout/">Log Out</a>
+		    			</li>
+	    			{% else %}
+	    				<li>
+		    				<a href="/admin/login/">Login</a>
+		    			</li>
+	    			{% endif %}
 				</ul>
 	    	</div>
 	    </div><!-- /topbar-inner -->
