@@ -554,6 +554,27 @@ is particularly built to support live autocomplete in JavaScript.
    :http:get:`/codes/systems/{SHORT_NAME}/query`
      Search a coding system for a value.
 
+Autonomous Apps API
+-------------------
+Autonomous user applications are unlike standard user apps in that they may not 
+have a user interface, and require access to records without an active user 
+session. In order to authenticate against Indivo on behalf of records at any 
+time, autonomous apps may make the following calls:
+
+.. glossary::
+
+   :http:get:`/apps/{APP_ID}/records/`
+     Return a list of records which have enabled the app, and to which (therefore)
+     the app can authenticate and acquire access.
+
+   :http:post:`/apps/{APP_ID}/records/{RECORD_ID}/access_token`
+     Retrieve a valid access token providing the app with access to a record. This
+     call will only succeed if the app is autonomous, and if the record has enabled
+     the app.
+
+     Using this call, an autonomous app can retrive a valid access token for any 
+     record on which it is enabled, without an active user session.
+
 Administrative API
 ------------------
 
@@ -703,6 +724,10 @@ Record Administration
      consent is impossible or unnecessary (i.e., at a hospital installation of
      Indivo, this call could be used to prime all new records with the syncer
      application that pulls data into Indivo from the hospital EMR).
+
+   :http:put:`/records/{RECORD_ID}/apps/{APP_ID}`
+     Enable an app to run against a record. This gives the app access to the entire
+     record.
 
    :http:delete:`/records/{RECORD_ID}/apps/{APP_ID}`
      Remove a user app from a record.

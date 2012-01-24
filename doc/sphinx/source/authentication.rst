@@ -111,11 +111,12 @@ simply gives the user a yes/no choice.
 
 Autonomous apps can, in some circumstances, have no user-interface. This might happen if, for example, a hospital connector 
 application sits behind the hospital firewall and connects autonomously to the Indivo record to upload hospital data into 
-the PCHR, but never lets the user connect directly to the app itself. The only way, currently, to authorize such an 
-application is via admin-based PHA setup, where an administrative app primes the Indivo record with this app. In the future, 
-autonomous apps without a user interface may be permissioned by the user directly. In any case, these apps must declare their 
-lack of UI at registration time, much like they declare their being autonomous or not. Only autonomous apps can choose 
-to forgo a UI.
+the PCHR, but never lets the user connect directly to the app itself. There are two ways, currently, to authorize such an 
+application. The first is via admin-based PHA setup, where an administrative app primes the Indivo record with this app. 
+Alternatively, the UI may allow users to permission autonomous apps without an interface. In this case, there is no oauth
+dance: the user 'enables' the app, and the app is then able to acquire access tokens for enabled users directly. In any 
+case, these apps must declare their lack of UI at registration time, much like they declare their being autonomous or not. 
+Only autonomous apps can choose to forgo a UI.
 
 A non-autonomous app, on the other hand, is one that is meant to be used by whoever is logged in and has access to the record 
 in question. Depending on which user has launched the app, the app's permissions might differ. For example, when Alice uses 
@@ -130,7 +131,8 @@ access tokens for non-autonomous apps are valid only for the duration of a web s
 Connecting a PHA to a Record
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When a user opts to add a PHA to her Indivo record, she is sent to the PHA's ``start URL`` with the ``indivo_record_id`` 
+A user opts to add a PHA to her Indivo record by enabling it in the UI. At any subsequent point, when the user attempts 
+to use the PHA (i.e. by clicking on it in the UI), she is sent to the PHA's ``start URL`` with the ``indivo_record_id`` 
 filled in. The PHA may present informational content if it so desires, then is expected to begin the OAuth authorization 
 process. When the PHA begins the oAuth process, it should do so with the indicated ``indivo_record_id`` that it received 
 when its ``start_url`` was accessed.
