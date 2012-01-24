@@ -91,7 +91,20 @@ API Reference
 =============
 
 This page contains a full list of valid Indivo API calls, generated from the code.
-For a more detailed walkthrough of individual calls, see :doc:`api`
+For a more detailed walkthrough of individual calls, see :doc:`api`.
+
+In the access control for some calls, you might see the phrase *full control*. In
+Indivo, this is defined as follows:
+
+.. glossary::
+   
+   full control
+     A principal is said to be in full control of a record if either:
+
+     * The principal is the owner of the record
+ 
+     * There is a full share between the record and the principal.
+
 '''
         full_fp = '%s/%s%s'%(settings.APP_HOME, self.api_ref_fp, self.api_ref_ext)
         render_func = 'to_ReST'
