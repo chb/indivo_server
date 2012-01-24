@@ -275,19 +275,8 @@ If a passed query operator is inconsistent with the data type being operated on
 (i.e., a numerical aggregator like 'avg' applied to a string field like 
 'lab_type'), the request will be answered with an HTTP 400 Bad Request response.
 
-Labs
-^^^^
-
-* ``lab_type``: The category of the lab. **String**
-
-* ``date_measured``: The date on which the lab was measured. **Date**
-
-* ``lab_test_name``: The name of the test conducted. **String**
-
-* ``created_at``: The date on which the lab was added to indivo. **Date**
-
-Allergies
-^^^^^^^^^
+Allergies (:http:get:`/records/{RECORD_ID}/reports/minimal/allergies/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``date_diagnosed``: The date on which the allergy was diagnosed. **Date**
 
@@ -299,8 +288,26 @@ Allergies
 
 * ``created_at``: The date on which the allergy was added to indivo. **Date**
 
-Equipment
-^^^^^^^^^
+Audit (:http:get:`/records/{RECORD_ID}/audits/query/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* ``document_id``: The document modified by the request. **String**
+
+* ``external_id``: The external id used to reference a resource in the request. **String**
+
+* ``request_date``: The date on which the request was made. **Date**
+
+* ``function_name``: The internal Indivo X view function called by the request. **String**
+
+* ``principal_email``: The email of the principal making the request. **String**
+
+* ``proxied_by_email``: The email of the principal proxied by the principal making the request 
+  (i.e., the email of the Account being proxied by a PHA). **String**
+
+The default ordering on results will be in descending order by ``request_date``.
+
+Equipment (:http:get:`/records/{RECORD_ID}/reports/minimal/equipment/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``date_started``: The date on which the patient started using the equipment. 
   **Date**
@@ -314,8 +321,9 @@ Equipment
 
 * ``created_at``: The date on which the equipment was added to indivo. **Date**
 
-Immunizations
-^^^^^^^^^^^^^
+Immunizations (:http:get:`/records/{RECORD_ID}/reports/minimal/immunizations/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``vaccine_type``: The type of Vaccination administered. **String**
 
 * ``date_administered``: The date on which the patient received the vaccination. 
@@ -323,8 +331,20 @@ Immunizations
 
 * ``created_at``: The date on which the immunization was added to indivo. **Date**
 
-Measurements
-^^^^^^^^^^^^
+Labs (:http:get:`/records/{RECORD_ID}/reports/minimal/labs/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* ``lab_type``: The category of the lab. **String**
+
+* ``date_measured``: The date on which the lab was measured. **Date**
+
+* ``lab_test_name``: The name of the test conducted. **String**
+
+* ``created_at``: The date on which the lab was added to indivo. **Date**
+
+Measurements (:http:get:`/records/{RECORD_ID}/reports/minimal/measurements/{LAB_CODE}/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``lab_code``: The identifier for the measurement taken. **String**
 
 * ``value``: The value measured. **Number**
@@ -333,8 +353,8 @@ Measurements
 
 * ``created_at``: The date on which the measurement was added to indivo. **Date**
 
-Medications
-^^^^^^^^^^^
+Medications (:http:get:`/records/{RECORD_ID}/reports/minimal/medications/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``date_started``: The date on which the patient started taking the medication. 
   **Date**
@@ -349,8 +369,8 @@ Medications
 
 * ``created_at``: The date on which the medication was added to indivo. **Date**
 
-Problems
-^^^^^^^^
+Problems (:http:get:`/records/{RECORD_ID}/reports/minimal/problems/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``date_onset``: The date on which the patient started experiencing the problem. 
   **Date**
@@ -361,16 +381,18 @@ Problems
 
 * ``created_at``: The date on which the problem was added to indivo. **Date**
 
-Procedures
-^^^^^^^^^^
+Procedures (:http:get:`/records/{RECORD_ID}/reports/minimal/procedures/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``date_performed``: The date on which the procedure was performed. **Date**
 
 * ``procedure_name``: The name of the procedure. **String**
 
 * ``created_at``: The date on which the procedure was added to indivo. **Date**
 
-Simple Clinical Notes
-^^^^^^^^^^^^^^^^^^^^^
+Simple Clinical Notes (:http:get:`/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``date_of_visit``: The date on which the clinical note was taken. **Date**
 
 * ``specialty``: The clinical specialty relevant to the visit. **String**
@@ -380,8 +402,10 @@ Simple Clinical Notes
 * ``created_at``: The date on which the clinical note was added to indivo. 
   **Date**
 
-Vitals
-^^^^^^
+
+Vitals (:http:get:`/records/{RECORD_ID}/reports/minimal/vitals/`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``date_measured``: The date on which the vital sign was measured. **Date**
 
 * ``category``: The category of vital sign taken. **String**
