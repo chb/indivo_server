@@ -956,6 +956,16 @@ Basic Carenet Calls
    :http:get:`/carenets/{CARENET_ID}/record`
      Fetch basic information about the record that a carenet belongs to.
 
+   :http:post:`/records/{RECORD_ID}/carenets/`
+     Create a new carenet on a record.
+
+   :http:post:`/carenets/{CARENET_ID}/rename`
+     Rename a carenet.
+
+   :http:delete:`/carenets/{CARENET_ID}`
+     Delete a carenet. This will unshare all of the data in the carenet with
+     all users and apps in the carenet.
+
 Data in Carenets
 """"""""""""""""
 
