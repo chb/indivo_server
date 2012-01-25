@@ -927,6 +927,10 @@ Many of the document and reporting calls that can be made on
 :file:`/records/{{RECORD_ID}}` can be made on :file:`/carenets/{{CARENET_ID}}`.
 Where applicable, such calls have been listed throughout this document.
 
+Importantly, carenets are (at present) **READ-ONLY**. Accounts placed in carenets
+may view any data in the carenets, but we have not implemented any calls for them
+to modify or add to that data. In the future, carenets will be write-capable.
+
 Sharing API
 ^^^^^^^^^^^
 
