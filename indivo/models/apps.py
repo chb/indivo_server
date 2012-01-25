@@ -99,6 +99,12 @@ class PHA(OAuthApp):
     except:
       return False
 
+  def scopedToRecord(self, record):
+    """
+    True if the PHA is enabled on the record
+    """
+    return self.pha_shares_to.filter(record=record).exists()
+
 ##
 ## App Tokens are implemented separately, since they require access to record and docs
 ## (yes, this is confusing, but otherwise it's circular import hell)

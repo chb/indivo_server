@@ -35,6 +35,15 @@ urlpatterns = patterns('',
     (r'^/documents/(?P<document_id>[^/]+)/label$', 
      MethodDispatcher({'PUT':app_document_label})),
 
+    # List available records
+    # (autonomous apps only)
+    (r'^/records/$', MethodDispatcher({'GET':app_record_list})),
+
+    # Get an access token for an enabled record
+    # (autonomous apps only!!!!!)
+    # POST, for compatibility with other oAuth calls
+    (r'^/records/(?P<record_id>[^/]+)/access_token$', MethodDispatcher({'POST': autonomous_access_token})),
+
     # app-specific document types
     # (r'^/documents/types/(?P<type>[A-Za-z0-9._%-:#]+)/$', app_document_list_by_type)
     # REMOVED 02/15/2011 for compatibility with record-specific document type calls

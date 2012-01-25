@@ -152,6 +152,18 @@ def load_access_rules():
            surl_verify]
   AccessRule('Account For Oauth', account_for_oauth, views)
 
+  def autonomous_app_for_oauth(principal, **unused_args):
+    """Any autonomous user app."""
+    return principal.isType('PHA') and principal.is_autonomous
+  views = [app_record_list]
+  AccessRule('Autonomous App For Oauth', autonomous_app_for_oauth, views)
+
+  def autonomous_app_on_enabled_record(principal, record, **unused_args):
+    """An autonomous user app with a record on which the app is authorized to run."""
+    return autonomous_app_for_oauth(principal) and principal.scopedToRecord(record)
+  views = [autonomous_access_token]
+  AccessRule('Autonomous App On Enabled Record', autonomous_app_on_enabled_record, views)
+
   def app_for_oauth(principal, **unused_args):
     """Any user app."""
     return principal.isType('PHA')

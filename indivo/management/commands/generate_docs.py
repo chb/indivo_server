@@ -8,6 +8,7 @@ from doc.sphinx.autogen.api_defaults import *
 from django.conf import settings
 import urls
 import os
+import copy
 
 class Command(BaseCommand):
     args = 'parse | build | prepare'
