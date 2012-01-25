@@ -705,6 +705,9 @@ Record Administration
 
    :http:get:`/records/{RECORD_ID}`
      Get info about a single record.
+   
+   :http:get:`/records/{RECORD_ID}/owner`
+     Get the owner of a record
 
    :http:get:`/records/{RECORD_ID}/apps/`
      List applications attached to a record. Supports order by ``name``.   
