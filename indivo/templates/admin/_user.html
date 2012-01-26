@@ -1,0 +1,14 @@
+<address>
+  <strong>
+    <span>{{ user.username }}</span>
+    {% if is_me %}
+    <span class="label notice">me</span>
+    {% endif %}
+    {% if not user.is_active %}
+    <span class="label warning">inactive</span>
+    {% endif %}
+  </strong><br/>
+  {% if user.first_name %}<span>{{ user.first_name }} {{ user.last_name }}</span><br/>{% endif %}
+  {% if user.is_superuser %}<span>superuser</span><br/>{% endif %}
+  <span>{{ user.email }}</span>
+</address>

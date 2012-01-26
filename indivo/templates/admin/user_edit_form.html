@@ -1,0 +1,19 @@
+<form action="/admin/users/{{ u.id }}/edit/" method="post" class="span8">{% csrf_token %}
+    {{ user_form.non_field_errors }}
+    {% for field in user_form %}
+  <div class="clearfix {% if field.errors %}error{% endif %}">
+    {{ field.label_tag }}
+    <div class="input">
+      {{ field }}
+      {% for error in field.errors %}
+      <span class="help-inline">{{ error }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  <div class="clearfix">
+    <div class="input">
+      <input type="submit" value="Edit User" class="btn primary "/>
+    </div>
+  </div>
+</form>

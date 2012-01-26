@@ -2,12 +2,14 @@
 Indivo Views -- Indivo Admin
 """
 from base import *
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect 
 from django.template import Context
 from django.template.loader import get_template
 from indivo.forms import *
 from indivo.lib import admin
+import copy
 
 @login_required()
 def admin_show(request):
@@ -227,3 +229,90 @@ def admin_dump_state(request):
     response['Content-Disposition'] = 'filename=indivodata.zip'
     response.write(zip_data)
     return response
+
+@login_required()
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/')
+def admin_users_show(request):
+    return admin.render_admin_response(request, 
+                                       'admin/user_list.html', 
+                                       {'users':admin.admin_get_users_to_manage(request),
+                                        'user_form':admin.FullUserForm(),})
+
+@login_required()
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/')
+def admin_user_create(request):
+    form = admin.FullUserForm(request.POST) 
+    try:
+        form.save()
+        return redirect('/admin/users/')
+    except ValueError:
+        return admin.render_admin_response(request, 
+                                           'admin/user_list.html', 
+                                           {'users':admin.admin_get_users_to_manage(request),
+                                            'user_form':form,})
+    except Exception as e:
+        # TODO
+        raise
+
+@login_required()
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/')
+def admin_user_edit(request, user_id):
+    if request.method == "GET":
+        try:
+            user = User.objects.get(id=user_id)
+            return admin.render_admin_response(request, 'admin/user_edit.html',
+                                               {'u':user,
+                                                'user_form':admin.FullUserChangeForm(instance=user),})
+        except User.DoesNotExist:
+            # TODO
+            raise
+        except Exception as e:
+            # TODO
+            raise
+    else:
+        try:
+            user = User.objects.get(id=user_id)
+            form = admin.FullUserChangeForm(request.POST, instance=user)
+            form.save()
+            return redirect('/admin/users/')
+        except ValueError:
+            return admin.render_admin_response(request, 'admin/user_edit.html',
+                                               {'u':user,
+                                                'user_form':form,})
+        except User.DoesNotExist:
+            # TODO
+            raise
+        except Exception as e:
+            # TODO
+            raise
+
+@login_required()
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/')
+def admin_user_deactivate(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user.is_active = False
+        user.save()
+        return redirect('/admin/users/')
+    except User.DoesNotExist:
+        # TODO
+        raise
+    except Exception as e:
+        # TODO
+        raise
+
+@login_required()
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/')
+def admin_user_activate(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user.is_active = True
+        user.save()
+        return redirect('/admin/users/')
+    except User.DoesNotExist:
+        # TODO
+        raise
+    except Exception as e:
+        # TODO
+        raise
+

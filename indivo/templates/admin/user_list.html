@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+	<section id="users">
+		<div class="page-header">
+			<h2>Existing Admin Users</h2>
+		</div>
+		<div class="row">
+		{% for u in users %}
+		{% with u.is_active as active %}
+		  <div class="span4 offset1">
+		    {% if active %}
+		    <form method="get" action="/admin/users/{{ u.id }}/deactivate/">
+		    {% else %}
+		    <form method="get" action="/admin/users/{{ u.id }}/activate/">
+		    {% endif %}{% csrf_token %}
+		    {% if u.id == user.id %}
+		      {% with "True" as is_me %}
+		      {% with u as user %}
+		      {% include "admin/_user.html" %}
+		      {% endwith %}
+		      {% endwith %}
+		    {% else %}
+		      {% with u as user %}
+		      {% include "admin/_user.html" %}
+		      {% endwith %}
+		    {% endif %}
+		    {% if active %}
+		    <input type="submit" value="Deactivate" class="btn xsmall error" />
+		    {% else %}
+		    <input type="submit" value="Reactivate" class="btn xsmall error" />
+		    {% endif %}
+		    <a href="/admin/users/{{ u.id }}/edit/" class="btn xsmall">Edit</a>
+		    </form>
+		  </div>
+		{% endwith %}
+		{% empty %}
+		  <div class="span4 offset1">
+		    <h3>No Active Users</h3>
+		  </div>
+		{% endfor %}
+		</div>
+	</section>
+	<section id="new-user">
+	  <div class="page-header">
+	    <h2>New Admin User</h2>
+	  </div>
+	  <div>
+	    {% include "admin/user_create_form.html" %}
+	  </div>
+	</section>
+{% endblock %}

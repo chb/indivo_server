@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+	<section id="user">
+	  <div class="page-header">
+	    <h2>Editing Admin User: {{ u.username }}</h2>
+	  </div>
+	  <div>
+	    {% include "admin/user_edit_form.html" %}
+	  </div>
+	</section>
+{% endblock %}
