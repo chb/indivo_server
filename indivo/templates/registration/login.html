@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block content %}
+{% for e in form.non_field_errors %}
+<div class="alert-message error span9">{{ e }}</div>
+{% endfor %}
 <form method="post" action="."> {% csrf_token %}
 	{% for field in form %}
 		<div class="clearfix {% if field.errors %}error{% endif %}">
