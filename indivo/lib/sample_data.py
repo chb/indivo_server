@@ -31,7 +31,7 @@ class IndivoDataLoader(object):
         self.creator = loader_principal
         self.data_dir = data_dir
 
-    @transaction.commit_manually
+    @transaction.commit_on_success
     def load_profile(self, record, profile):
         """ Bulk load data into a record.
     
@@ -77,29 +77,21 @@ class IndivoDataLoader(object):
 
         """
 
-        # Transactional: rolled back on failure
-        try:
+        # quick security check
+        if profile.startswith('.') or profile.startswith('/'):
+            raise ValueError("invalid data profile")
+            
+        docs_dir = os.path.join(self.data_dir, profile)
+        if not os.path.exists(docs_dir):
+            raise ValueError("invalid data profile")
 
-            # quick security check
-            if profile.startswith('.') or profile.startswith('/'):
-                raise ValueError("invalid data profile")
-
-            docs_dir = os.path.join(self.data_dir, profile)
-            if not os.path.exists(docs_dir):
-                raise ValueError("invalid data profile")
-
-            # load in the special docs
-            self.load_special_docs(docs_dir, record)
-    
-            # load in the rest of the docs
-            for raw_content, mime_type in self.get_all_docs(docs_dir):
-                self._document_create(self.creator, raw_content, pha=None,
-                                      record=record, mime_type=mime_type)
-        except Exception, e:
-            transaction.rollback()
-            raise
-        else:
-            transaction.commit()
+        # load in the special docs
+        self.load_special_docs(docs_dir, record)
+                
+        # load in the rest of the docs
+        for raw_content, mime_type in self.get_all_docs(docs_dir):
+            self._document_create(self.creator, raw_content, pha=None,
+                                          record=record, mime_type=mime_type)
 
     def get_all_docs(self, data_dir):
         return self._yield_docs(glob.iglob(os.path.join(data_dir, 'doc_*')))
