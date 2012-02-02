@@ -1,0 +1,6 @@
+<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2007-09-01T00:00:00Z</ns0:dateMeasured>
+   <ns0:name abbrev="Pulse" type="http://codes.indivo.org/vitalsigns" value="7935038">Pulse</ns0:name>
+   <ns0:value>126</ns0:value>
+   <ns0:unit abbrev="bpm" type="http://codes.indivo.org/units/" value="239">Beats/Minute</ns0:unit>
+</ns0:VitalSign>

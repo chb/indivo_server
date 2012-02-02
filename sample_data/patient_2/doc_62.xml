@@ -1,0 +1,10 @@
+<ns0:Immunization xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateAdministered>2010-06-18T00:00:00Z</ns0:dateAdministered>
+   <ns0:vaccine>
+      <ns0:type abbrev="PC13" type="http://codes.indivo.org/codes/vaccinetypes/" value="999">Prevnar13 - Pneumococcal conjugate vaccine 13 valent</ns0:type>
+      <ns0:manufacturer>Wyeth Labs</ns0:manufacturer>
+      <ns0:lot>E45350</ns0:lot>
+   </ns0:vaccine>
+   <ns0:sequence>1</ns0:sequence>
+   <ns0:anatomicSurface>LUE</ns0:anatomicSurface>
+</ns0:Immunization>

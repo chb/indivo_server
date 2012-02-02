@@ -1,0 +1,16 @@
+<ns0:Contact xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:name>
+      <ns0:fullName>test4  last_test4</ns0:fullName>
+      <ns0:givenName>test4</ns0:givenName>
+      <ns0:familyName>last_test4</ns0:familyName>
+   </ns0:name>
+   <ns0:email type="">last_test4@gmail.com</ns0:email>
+   <ns0:address type="home">
+      <ns0:streetAddress>301 Longwood Ave</ns0:streetAddress>
+      <ns0:postalCode>02115</ns0:postalCode>
+      <ns0:locality>Boston</ns0:locality>
+      <ns0:region>MA</ns0:region>
+      <ns0:country>US</ns0:country>
+      <ns0:timeZone>UTC/GMT -5 hours</ns0:timeZone>
+   </ns0:address>
+</ns0:Contact>

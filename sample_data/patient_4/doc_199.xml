@@ -1,0 +1,6 @@
+<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2009-09-02T00:00:00Z</ns0:dateMeasured>
+   <ns0:name abbrev="SPO2" type="http://codes.indivo.org/vitalsigns" value="8238766">Blood Oxygen Saturation</ns0:name>
+   <ns0:value>98</ns0:value>
+   <ns0:unit abbrev="%" type="http://codes.indivo.org/units/" value="325">% percent</ns0:unit>
+</ns0:VitalSign>

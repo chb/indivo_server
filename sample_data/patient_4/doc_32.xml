@@ -1,0 +1,6 @@
+<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2009-12-19T00:00:00Z</ns0:dateMeasured>
+   <ns0:name abbrev="Weight" type="http://codes.indivo.org/vitalsigns" value="2700654">Weight</ns0:name>
+   <ns0:value>24.800</ns0:value>
+   <ns0:unit abbrev="kg" type="http://codes.indivo.org/units/" value="271">Kilogram</ns0:unit>
+</ns0:VitalSign>

@@ -1,0 +1,6 @@
+<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2010-05-06T00:00:00Z</ns0:dateMeasured>
+   <ns0:name abbrev="Height" type="http://codes.indivo.org/vitalsigns" value="2700653">Height</ns0:name>
+   <ns0:value>126.50</ns0:value>
+   <ns0:unit abbrev="cm" type="http://codes.indivo.org/units/" value="246">Centimeter</ns0:unit>
+</ns0:VitalSign>

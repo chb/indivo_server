@@ -1,0 +1,7 @@
+<ns0:Immunization xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateAdministered>2000-08-29T00:00:00Z</ns0:dateAdministered>
+   <ns0:vaccine>
+      <ns0:type abbrev="PCV7" type="http://codes.indivo.org/codes/vaccinetypes/" value="100">Prevnar - Pneumococcal conjugate vaccine 7 valent</ns0:type>
+   </ns0:vaccine>
+   <ns0:sequence>1</ns0:sequence>
+</ns0:Immunization>

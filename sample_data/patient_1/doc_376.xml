@@ -1,0 +1,8 @@
+<ns0:Allergy xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateDiagnosed>2002-05-31</ns0:dateDiagnosed>
+   <ns0:allergen>
+      <ns0:type abbrev="MA" type="http://codes.indivo.org/codes/allergentypes/" value="638972">Miscellaneous allergy</ns0:type>
+      <ns0:name type="http://codes.indivo.org/codes/allergens/" value="8521584">LATEX</ns0:name>
+   </ns0:allergen>
+   <ns0:reaction>true allergy to latex</ns0:reaction>
+</ns0:Allergy>

@@ -1,0 +1,6 @@
+<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2007-09-01T00:00:00Z</ns0:dateMeasured>
+   <ns0:name abbrev="Respiratory Rate" type="http://codes.indivo.org/vitalsigns" value="703540">Respiratory Rate</ns0:name>
+   <ns0:value>18</ns0:value>
+   <ns0:unit abbrev="br/min" type="http://codes.indivo.org/units/" value="678167">Breaths/Minute</ns0:unit>
+</ns0:VitalSign>

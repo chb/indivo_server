@@ -1,0 +1,10 @@
+<ns0:Immunization xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateAdministered>2007-07-13T00:00:00Z</ns0:dateAdministered>
+   <ns0:vaccine>
+      <ns0:type abbrev="PCV7" type="http://codes.indivo.org/codes/vaccinetypes/" value="100">Prevnar - Pneumococcal conjugate vaccine 7 valent</ns0:type>
+      <ns0:manufacturer>Lederle Labs</ns0:manufacturer>
+      <ns0:lot>B08679C</ns0:lot>
+   </ns0:vaccine>
+   <ns0:sequence>2</ns0:sequence>
+   <ns0:anatomicSurface>LUE</ns0:anatomicSurface>
+</ns0:Immunization>

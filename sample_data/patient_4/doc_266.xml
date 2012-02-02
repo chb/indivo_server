@@ -1,0 +1,176 @@
+<ns0:Lab xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2008-12-04T00:00:00Z</ns0:dateMeasured>
+   <ns0:labType>Pneumococcal Antibody IgG</ns0:labType>
+   <ns0:laboratory>
+      <ns0:name>Lab Control</ns0:name>
+      <ns0:address>Children's Hospital Boston</ns0:address>
+   </ns0:laboratory>
+   <ns0:labPanel>
+      <ns0:name>Pneumococcal Antibody IgG</ns0:name>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcal IgG Panel Interpretation">Pneumococcal IgG Panel Interpretation</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:textValue>SEE NOTE</ns0:textValue>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 1, IgG">Pneumococcus Type 1, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.66</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 12F, IgG">Pneumococcus Type 12F, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.73</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 14, IgG">Pneumococcus Type 14, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.29</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 18C, IgG">Pneumococcus Type 18C, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.29</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 19F, IgG">Pneumococcus Type 19F, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.93</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 23F, IgG">Pneumococcus Type 23F, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.72</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 6B, IgG">Pneumococcus Type 6B, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>1.83</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 3, IgG">Pneumococcus Type 3, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.42</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 4, IgG">Pneumococcus Type 4, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.35</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 5, IgG">Pneumococcus Type 5, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>1.86</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 7F, IgG">Pneumococcus Type 7F, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.31</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 8, IgG">Pneumococcus Type 8, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>1.4</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 9N, IgG">Pneumococcus Type 9N, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.32</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2008-12-07T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Pneumococcus Type 9V, IgG">Pneumococcus Type 9V, IgG</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>0.37</ns0:value>
+               <ns0:unit abbrev="mcg/mL" type="http://indivohealth.org/codes/units#" value="mcg/mL">mcg/mL</ns0:unit>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+   </ns0:labPanel>
+   <ns0:comments>--</ns0:comments>
+</ns0:Lab>

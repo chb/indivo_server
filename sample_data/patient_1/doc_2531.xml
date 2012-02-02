@@ -1,0 +1,192 @@
+<ns0:Lab xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+   <ns0:labType>Complete Blood Count with Differential</ns0:labType>
+   <ns0:laboratory>
+      <ns0:name>Hematology</ns0:name>
+      <ns0:address>Children's Hospital Boston</ns0:address>
+   </ns0:laboratory>
+   <ns0:labPanel>
+      <ns0:name>Complete Blood Count with Differential</ns0:name>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="WBC">WBC</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>6.27</ns0:value>
+               <ns0:unit abbrev="K cells/uL" type="http://indivohealth.org/codes/units#" value="K cells/uL">K cells/uL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>5.78</ns0:minimum>
+               <ns0:maximum>10.33</ns0:maximum>
+               <ns0:unit abbrev="K cells/uL" type="http://indivohealth.org/codes/units#" value="K cells/uL">K cells/uL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Hemoglobin">Hemoglobin</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="L" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="L">Low</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>9.6</ns0:value>
+               <ns0:unit abbrev="g/dL" type="http://indivohealth.org/codes/units#" value="g/dL">g/dL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>11.4</ns0:minimum>
+               <ns0:maximum>15.1</ns0:maximum>
+               <ns0:unit abbrev="g/dL" type="http://indivohealth.org/codes/units#" value="g/dL">g/dL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Hematocrit">Hematocrit</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="L" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="L">Low</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>28.9</ns0:value>
+               <ns0:unit abbrev="%" type="http://indivohealth.org/codes/units#" value="%">%</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>33.0</ns0:minimum>
+               <ns0:maximum>43.4</ns0:maximum>
+               <ns0:unit abbrev="%" type="http://indivohealth.org/codes/units#" value="%">%</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Platelet">Platelet</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>283.0</ns0:value>
+               <ns0:unit abbrev="K cells/uL" type="http://indivohealth.org/codes/units#" value="K cells/uL">K cells/uL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>146.0</ns0:minimum>
+               <ns0:maximum>326.0</ns0:maximum>
+               <ns0:unit abbrev="K cells/uL" type="http://indivohealth.org/codes/units#" value="K cells/uL">K cells/uL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="MPV">MPV</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>8.5</ns0:value>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>7.7</ns0:minimum>
+               <ns0:maximum>8.7</ns0:maximum>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="RBC">RBC</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="L" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="L">Low</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>3.01</ns0:value>
+               <ns0:unit abbrev="M cells/uL" type="http://indivohealth.org/codes/units#" value="M cells/uL">M cells/uL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>3.75</ns0:minimum>
+               <ns0:maximum>5.07</ns0:maximum>
+               <ns0:unit abbrev="M cells/uL" type="http://indivohealth.org/codes/units#" value="M cells/uL">M cells/uL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="MCV">MCV</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="H" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="H">High</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>95.7</ns0:value>
+               <ns0:unit abbrev="fL" type="http://indivohealth.org/codes/units#" value="fL">fL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>83.5</ns0:minimum>
+               <ns0:maximum>90.2</ns0:maximum>
+               <ns0:unit abbrev="fL" type="http://indivohealth.org/codes/units#" value="fL">fL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="MCH">MCH</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="H" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="H">High</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>32.0</ns0:value>
+               <ns0:unit abbrev="pg" type="http://indivohealth.org/codes/units#" value="pg">pg</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>28.9</ns0:minimum>
+               <ns0:maximum>31.4</ns0:maximum>
+               <ns0:unit abbrev="pg" type="http://indivohealth.org/codes/units#" value="pg">pg</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="MCHC">MCHC</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="L" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="L">Low</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>33.4</ns0:value>
+               <ns0:unit abbrev="g/dL" type="http://indivohealth.org/codes/units#" value="g/dL">g/dL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>33.7</ns0:minimum>
+               <ns0:maximum>35.3</ns0:maximum>
+               <ns0:unit abbrev="g/dL" type="http://indivohealth.org/codes/units#" value="g/dL">g/dL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="RDW">RDW</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:value>13.2</ns0:value>
+               <ns0:unit abbrev="%" type="http://indivohealth.org/codes/units#" value="%">%</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>13.1</ns0:minimum>
+               <ns0:maximum>15.2</ns0:maximum>
+               <ns0:unit abbrev="%" type="http://indivohealth.org/codes/units#" value="%">%</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-11-03T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="HDW">HDW</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:flag abbrev="H" type="http://indivohealth.org/codes/hl7-abnormal-flags#" value="H">High</ns0:flag>
+            <ns0:valueAndUnit>
+               <ns0:value>3.4</ns0:value>
+               <ns0:unit abbrev="g/dL" type="http://indivohealth.org/codes/units#" value="g/dL">g/dL</ns0:unit>
+            </ns0:valueAndUnit>
+            <ns0:normalRange>
+               <ns0:minimum>2.64</ns0:minimum>
+               <ns0:maximum>3.19</ns0:maximum>
+               <ns0:unit abbrev="g/dL" type="http://indivohealth.org/codes/units#" value="g/dL">g/dL</ns0:unit>
+            </ns0:normalRange>
+         </ns0:result>
+      </ns0:labTest>
+   </ns0:labPanel>
+</ns0:Lab>

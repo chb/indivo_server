@@ -1,0 +1,10 @@
+<ns0:Immunization xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateAdministered>2008-06-26T00:00:00Z</ns0:dateAdministered>
+   <ns0:vaccine>
+      <ns0:type abbrev="HEPA" type="http://codes.indivo.org/codes/vaccinetypes/" value="52">Hepatitis A </ns0:type>
+      <ns0:manufacturer>GSK</ns0:manufacturer>
+      <ns0:lot>AHAVB173AA</ns0:lot>
+   </ns0:vaccine>
+   <ns0:sequence>2</ns0:sequence>
+   <ns0:anatomicSurface>RLE</ns0:anatomicSurface>
+</ns0:Immunization>

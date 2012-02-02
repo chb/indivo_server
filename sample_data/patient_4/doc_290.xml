@@ -1,0 +1,21 @@
+<ns0:Lab xmlns:ns0="http://indivo.org/vocab/xml/documents#">
+   <ns0:dateMeasured>2009-06-19T00:00:00Z</ns0:dateMeasured>
+   <ns0:labType>Coombs Test, Direct</ns0:labType>
+   <ns0:laboratory>
+      <ns0:name>Blood Bank</ns0:name>
+      <ns0:address>Children's Hospital Boston</ns0:address>
+   </ns0:laboratory>
+   <ns0:labPanel>
+      <ns0:name>Coombs Test, Direct</ns0:name>
+      <ns0:labTest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns0:SingleResultLabTest">
+         <ns0:dateMeasured>2009-06-19T00:00:00Z</ns0:dateMeasured>
+         <ns0:name abbrev="Direct Coombs Test">Direct Coombs Test</ns0:name>
+         <ns0:final>true</ns0:final>
+         <ns0:result xsi:type="ns0:ResultInRange">
+            <ns0:valueAndUnit>
+               <ns0:textValue>Negative</ns0:textValue>
+            </ns0:valueAndUnit>
+         </ns0:result>
+      </ns0:labTest>
+   </ns0:labPanel>
+</ns0:Lab>
