@@ -11,8 +11,10 @@ from base import *
 import urllib
 import logging
 from indivo.lib import utils
+from indivo.lib.sample_data import IndivoDataLoader
 from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
+from django.conf import settings
 
 ACTIVE_STATE, UNINITIALIZED_STATE = 'active', 'uninitialized'
 
@@ -461,7 +463,11 @@ def account_secret(request, account):
 def account_create(request):
     """ Create a new account, and send out initialization emails.
     
-    request.POST holds the creation arguments. 
+    ``request.POST`` holds the creation arguments. 
+
+    In Demo Mode, this call
+    automatically creates new records for the account, populated with
+    sample data. See :doc:`/sample-data` for details.
     
     Required Parameters:
     
@@ -524,6 +530,20 @@ def account_create(request):
             except Exception, e:
                 logging.exception(e)
     
+        if settings.DEMO_MODE:
+            loader = IndivoDataLoader(request.principal)
+
+            # Create new records for the account, populated by sample data.
+            for record_label, data_profile in settings.DEMO_PROFILES.iteritems():
+                
+                # Create the record
+                record = Record.objects.create(creator=request.principal,
+                                               label=record_label,
+                                               owner=new_account)
+
+                # Load the data
+                loader.load_profile(record, data_profile)
+                
     # account already existed
     else:
         return HttpResponseBadRequest("An account with email address %s already exists." % account_id)
