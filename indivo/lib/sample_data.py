@@ -77,16 +77,16 @@ class IndivoDataLoader(object):
 
         """
 
-        # quick security check
-        if profile.startswith('.') or profile.startswith('/'):
-            raise ValueError("invalid data profile")
-
-        docs_dir = os.path.join(self.data_dir, profile)
-        if not os.path.exists(docs_dir):
-            raise ValueError("invalid data profile")
-
         # Transactional: rolled back on failure
         try:
+
+            # quick security check
+            if profile.startswith('.') or profile.startswith('/'):
+                raise ValueError("invalid data profile")
+
+            docs_dir = os.path.join(self.data_dir, profile)
+            if not os.path.exists(docs_dir):
+                raise ValueError("invalid data profile")
 
             # load in the special docs
             self.load_special_docs(docs_dir, record)
