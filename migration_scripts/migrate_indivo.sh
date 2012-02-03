@@ -1,7 +1,7 @@
 #!/bin/bash
 
 target=$1
-usage="Usage: ./migration_scripts/migrate_indivo <release_target>\nScript must be run from top-level Indivo Server directory.\nValid Targets:\n\tbeta1\n\tbeta2\n\tbeta3"
+usage="Usage: ./migration_scripts/migrate_indivo <release_target>\nScript must be run from top-level Indivo Server directory.\nValid Targets:\n\tbeta1\n\tbeta2\n\tbeta3\n\t1.0"
 arg=""
 
 if [ -z $target ]; then
@@ -15,6 +15,9 @@ elif [ $target = 'beta2' ]; then
 elif [ $target = 'beta3' ]; then
     echo "Starting Migration to Beta 3"
     arg="0010"
+elif [ $target = '1.0' ]; then
+    echo "Starting Migration to v1.0"
+    arg="0013"
 else
     echo -e $usage
 fi
