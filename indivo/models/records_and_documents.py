@@ -364,8 +364,8 @@ class Document(Object):
       # Create our content file if we are binary
       cf = None
       if doc.is_binary:
-        self.content = None
         cf = ContentFile(self.content)
+        self.content = None
         
     # Oracle is incompatible with multi-column unique constraints where
     # one column might be null (i.e., UNIQUE(record, external_id)).
