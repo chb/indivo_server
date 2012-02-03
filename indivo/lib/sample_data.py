@@ -25,11 +25,11 @@ SUPPORTED_DOCUMENT_TYPES = {
 }
 
 class IndivoDataLoader(object):
-    def __init__(self, loader_principal, data_dir=settings.SAMPLE_DATA_DIR):
+    def __init__(self, loader_principal, data_dir=None):
         from indivo.views.documents.document import _document_create
         self._document_create = _document_create
         self.creator = loader_principal
-        self.data_dir = data_dir
+        self.data_dir = data_dir or settings.SAMPLE_DATA_DIR
 
     @transaction.commit_on_success
     def load_profile(self, record, profile):

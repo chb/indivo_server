@@ -43,7 +43,7 @@ def sampleDataSetUp(test_cases_instance):
     _self.no_demo_profile_dir = settings.SAMPLE_DATA_DIR + '/nodemo'
     
     # create a loader for use in tests
-    _self.loader = IndivoDataLoader(_self.creator, data_dir=settings.SAMPLE_DATA_DIR)
+    _self.loader = IndivoDataLoader(_self.creator)
 
 def sampleDataTearDown(test_cases_instance):
     _self = test_cases_instance
