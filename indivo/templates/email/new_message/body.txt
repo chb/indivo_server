@@ -1,2 +1,10 @@
+Dear {{ full_name }},
 
-This should contain a body of text [[needs fill-in]].
+Someone has sent a new message to your Indivo personally controlled health record (PCHR) inbox.
+
+To view this message you may log in to your Indivo account by clicking on the following link:
+{{ url_prefix }}
+
+If you are having trouble logging in and viewing your messages, you can contact us via email:
+{{ email_support_name }} <{{ email_support_address }}>
+
