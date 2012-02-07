@@ -10,3 +10,6 @@
 [submodule "indivo/tests/client"]
 	path = indivo/tests/client
 	url = git://github.com/chb/indivo_client_py.git
+[submodule "sample_data"]
+	path = sample_data
+	url = git@github.com:chb/indivo_sample_data
