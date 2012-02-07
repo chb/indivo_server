@@ -31,8 +31,18 @@ class IndivoDataLoader(object):
         self.creator = loader_principal
         self.data_dir = data_dir or settings.SAMPLE_DATA_DIR
 
+
+    def load_profile(self, record, profile, transaction=True):
+        if transaction:
+            return self._load_profile_transactional(record, profile)
+        else:
+            return self._load_profile(record, profile)
+
     @transaction.commit_on_success
-    def load_profile(self, record, profile):
+    def _load_profile_transactional(self, record, profile):
+        return self._load_profile(record, profile)
+
+    def _load_profile(self, record, profile):
         """ Bulk load data into a record.
     
         Loads every document identified by *profile* into *record*.

@@ -522,17 +522,10 @@ def account_create(request):
         
         # we don't allow setting the password here anymore
         new_account.save()
-        
-        if primary_secret_p:
-            new_account.generate_secrets(secondary_secret_p = secondary_secret_p)
-            try:
-                new_account.send_secret()
-            except Exception, e:
-                logging.exception(e)
-    
+            
         if settings.DEMO_MODE:
             loader = IndivoDataLoader(request.principal)
-
+            
             # Create new records for the account, populated by sample data.
             for record_label, data_profile in settings.DEMO_PROFILES.iteritems():
                 
@@ -541,8 +534,20 @@ def account_create(request):
                                                label=record_label,
                                                owner=new_account)
 
-                # Load the data
-                loader.load_profile(record, data_profile)
+                try:
+                    # Load the data: no transactions, as we're already managing them above
+                    loader.load_profile(record, data_profile, transaction=False)
+                except Exception, e: # Something went wrong: roll everything back and fail
+                    logging.exception(e)
+                    raise
+
+        if primary_secret_p:
+            new_account.generate_secrets(secondary_secret_p = secondary_secret_p)
+            try:
+                new_account.send_secret()
+            except Exception, e:
+                logging.exception(e)
+
                 
     # account already existed
     else:
