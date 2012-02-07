@@ -1,11 +1,26 @@
-All source code is licensed under GPLv3.
+Welcome to Indivo
+=================
 
-- now needs django_extensions
-http://github.com/django-extensions/django-extensions.git
+Indivo is the original personally controlled health record (PCHR) system. 
+A PCHR enables an individual to own and manage a complete, secure, digital 
+copy of her health and wellness information. Indivo integrates health 
+information across sites of care and over time. Indivo is free and 
+open-source, uses open, unencumbered standards, and is actively deployed 
+in diverse settings.
 
-- cron jobs should be scheduled to run
-python manage.py cleanup_old_tokens
+See indivohealth.org for more information about the project.
 
-- now needs markdown support
+See docs.indivohealth.org for technical documentation.
 
-easy_install Markdown
+Indivo Backend Server (this repository) source code is licensed under 
+GPLv3.
+
+Required Setup
+--------------
+
+* cron jobs should be scheduled to run::
+  
+  python manage.py cleanup_old_tokens
+
+See http://wiki.chip.org/indivo/index.php/HOWTO:_install_Indivo_X for 
+full installation instructions.
