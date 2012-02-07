@@ -1,6 +1,0 @@
-<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
-   <ns0:dateMeasured>2009-12-29T00:00:00Z</ns0:dateMeasured>
-   <ns0:name abbrev="Temperature" type="http://codes.indivo.org/vitalsigns" value="8713424">Temperature</ns0:name>
-   <ns0:value>36.7</ns0:value>
-   <ns0:unit abbrev="DegC" type="http://codes.indivo.org/units/" value="252">Degrees Centigrade</ns0:unit>
-</ns0:VitalSign>

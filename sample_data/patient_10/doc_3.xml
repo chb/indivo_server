@@ -1,6 +1,0 @@
-<ns0:VitalSign xmlns:ns0="http://indivo.org/vocab/xml/documents#">
-   <ns0:dateMeasured>2009-01-13T00:00:00Z</ns0:dateMeasured>
-   <ns0:name abbrev="Diastolic" type="http://codes.indivo.org/vitalsigns" value="703516">Blood Pressure - Diastolic</ns0:name>
-   <ns0:value>53</ns0:value>
-   <ns0:unit abbrev="mmHg" type="http://codes.indivo.org/units/" value="678177">millimeters of mercury</ns0:unit>
-</ns0:VitalSign>

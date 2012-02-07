@@ -1,7 +1,0 @@
-<ns0:Immunization xmlns:ns0="http://indivo.org/vocab/xml/documents#">
-   <ns0:dateAdministered>2002-09-12T00:00:00Z</ns0:dateAdministered>
-   <ns0:vaccine>
-      <ns0:type abbrev="IPV" type="http://codes.indivo.org/codes/vaccinetypes/" value="10">Inactivated poliovirus</ns0:type>
-   </ns0:vaccine>
-   <ns0:sequence>4</ns0:sequence>
-</ns0:Immunization>

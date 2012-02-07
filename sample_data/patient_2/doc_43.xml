@@ -1,7 +1,0 @@
-<ns0:Immunization xmlns:ns0="http://indivo.org/vocab/xml/documents#">
-   <ns0:dateAdministered>1999-08-26T00:00:00Z</ns0:dateAdministered>
-   <ns0:vaccine>
-      <ns0:type abbrev="MMR" type="http://codes.indivo.org/codes/vaccinetypes/" value="03">Live measles, mumps, and rubella viruses</ns0:type>
-   </ns0:vaccine>
-   <ns0:sequence>1</ns0:sequence>
-</ns0:Immunization>

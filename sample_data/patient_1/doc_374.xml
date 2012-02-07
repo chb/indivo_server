@@ -1,8 +1,0 @@
-<ns0:Allergy xmlns:ns0="http://indivo.org/vocab/xml/documents#">
-   <ns0:dateDiagnosed>2005-02-04</ns0:dateDiagnosed>
-   <ns0:allergen>
-      <ns0:type abbrev="DA" type="http://codes.indivo.org/codes/allergentypes/" value="3288">Drug</ns0:type>
-      <ns0:name type="http://codes.indivo.org/codes/allergens/" value="8523231">AMOXICILLIN</ns0:name>
-   </ns0:allergen>
-   <ns0:reaction>Hives</ns0:reaction>
-</ns0:Allergy>
