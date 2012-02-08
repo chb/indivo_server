@@ -12,9 +12,6 @@ See indivohealth.org for more information about the project.
 
 See docs.indivohealth.org for technical documentation.
 
-Indivo Backend Server (this repository) source code is licensed under 
-GPLv3.
-
 Required Setup
 --------------
 
@@ -24,3 +21,21 @@ Required Setup
 
 See http://wiki.chip.org/indivo/index.php/HOWTO:_install_Indivo_X for 
 full installation instructions.
+
+Licensing
+---------
+
+Copyright (C) 2012  Children's Hospital Boston. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify it 
+under the terms of the GNU General Public License as published by the 
+Free Software Foundation, either version 3 of the License, or (at your 
+option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+A copy of the GNU General Public License is located in the LICENSE.txt
+file in this repository, and at http://www.gnu.org/licenses/.
