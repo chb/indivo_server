@@ -260,9 +260,9 @@ def load_access_rules():
   AccessRule('Carenet Doc Access', carenet_doc_access, views)
 
   def carenet_special_doc_access(principal, carenet, **unused_args):
-    """A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or the admin app that created the carenet's record."""
+    """A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or any admin app."""
     return carenet_doc_access(principal, carenet) \
-        or principal.createdRecord(carenet.record)
+        or principal.isType('MachineApp')
   views = [read_special_document_carenet]
   AccessRule('Carenet Special Doc Access', carenet_special_doc_access, views)
 
@@ -315,9 +315,9 @@ def load_access_rules():
   AccessRule('Record Admin Doc Access', record_admin_doc_access, views)
   
   def record_special_doc_access(principal, record, **unused_args):
-    """A user app with access to the record, a principal in full control of the record, or the admin app that created the record."""
+    """A user app with access to the record, a principal in full control of the record, or any admin app."""
     return record_doc_access(principal, record) \
-        or principal.createdRecord(record)
+        or principal.isType("MachineApp")
   views = [read_special_document, # should PHAs be able to do this?
            save_special_document]
   AccessRule('Record Special Doc Access', record_special_doc_access, views)
