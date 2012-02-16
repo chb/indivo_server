@@ -13,6 +13,7 @@ import logging
 from indivo.lib import utils
 from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
+from django.db.models import Q
 
 ACTIVE_STATE, UNINITIALIZED_STATE = 'active', 'uninitialized'
 
@@ -305,11 +306,13 @@ def account_search(request):
     if not (fullname or contact_email):
         return HttpResponseBadRequest('No search criteria given')
     
-    query = Account.objects
+    query_filter = Q()
     if fullname:
-        query = query.filter(full_name = fullname)
+        query_filter |= Q(full_name__icontains = fullname)
     if contact_email:
-        query = query.filter(contact_email = contact_email)
+        query_filter |= Q(contact_email__icontains = contact_email)
+
+    query = Account.objects.filter(query_filter)
     
     return render_template('accounts_search', {'accounts': query}, type='xml')
 

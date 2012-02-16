@@ -218,8 +218,72 @@ class AccountInternalTests(InternalTests):
         response = self.client.post('/accounts/%s/set-state'%(self.account.email), urlencode({'state':'active'}), 'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
 
-    def test_search(self):
-        response = self.client.get('/accounts/search?fullname=%s&contact_email=%s'%(self.account.full_name,self.account.email))
+    def test_account_search(self):
+        url = '/accounts/search?'
+
+        # We should have only our own account in the system
+        self.assertEqual(Account.objects.all().count(), 1)
+
+        # Create one more, with customized search fields
+        search_account = self.createAccount(TEST_ACCOUNTS, 3, 
+                                            fullname='test fullname', 
+                                            contact_email='test@contact.com')
+
+        # run a search for the existing account by name
+        response = self.client.get(url + 'fullname=%s'%(self.account.full_name))
         self.assertEquals(response.status_code, 200)
+
+        # Make sure the results were as expected
+        results = etree.XML(response.content).findall('Account')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.account.email)
+
+        # run a search for the existing account by contact email
+        response = self.client.get(url + 'contact_email=%s'%(self.account.contact_email))
+        self.assertEquals(response.status_code, 200)
+
+        # Make sure the results were as expected
+        results = etree.XML(response.content).findall('Account')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.account.email)
+        
+        # run a search for the existing account by partial name
+        response = self.client.get(url + 'fullname=%s'%(self.account.full_name[:-3]))
+        self.assertEquals(response.status_code, 200)
+
+        # Make sure the results were as expected
+        results = etree.XML(response.content).findall('Account')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.account.email)
+
+        # run a search for the existing account, passing a bogus contact email
+        response = self.client.get(url + 'fullname=%s&contact_email=%s'%(self.account.full_name,
+                                                                         'DEADBEEF'))
+        self.assertEquals(response.status_code, 200)
+
+        # Make sure the results were as expected
+        results = etree.XML(response.content).findall('Account')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.account.email)
+
+        # run a search that should return nothing
+        response = self.client.get(url + 'fullname=DEADBEEF&contact_email=DEADBEEF')
+        self.assertEqual(response.status_code, 200)
+        
+        # Check the results
+        results = etree.XML(response.content).findall('Account')
+        self.assertEqual(len(results), 0)
+
+        # run a search that should return both
+        response = self.client.get(url + 'contact_email=contact')
+        self.assertEqual(response.status_code, 200)
+        
+        # Check the results
+        results = etree.XML(response.content).findall('Account')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(set([r.get('id') for r in results]), 
+                         set([self.account.email, search_account.email]))
+        
+        
         
         
