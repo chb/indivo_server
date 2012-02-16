@@ -14,6 +14,8 @@ from indivo.lib import utils
 from indivo.views.documents.document import _document_create
 from base import *
 
+from django.db.models import Q
+
 ACTIVE_STATE = 'active'
 
 
@@ -79,6 +81,36 @@ def record(request, record):
 
   return render_template('record', {'record': record})
 
+def record_search(request):
+  """ Search for records by label (usually the same as full name).
+
+  request.GET must contain the query parameters, any of:
+
+  * *label*: The record's label
+
+  This call returns all records matching any part of any of the 
+  query parameters: i.e. it ORs together the query parameters and
+  runs a partial-text match on each.
+
+  Will return :http:statuscode:`200` with XML describing matching
+  records on success, :http:statuscode:`400` if no query parameters 
+  are passed.
+
+  """
+
+  label = request.GET.get('label', None)
+
+  if not label:
+    return HttpResponseBadRequest('No search criteria given')
+
+  query_filter = Q()
+  if label:
+    query_filter |= Q(label__icontains=label)
+
+  query = Record.objects.filter(query_filter)
+
+  return render_template('record_list', {'records':query}, type='xml')
+                                         
 
 def record_phas(request, record):
   """ List userapps bound to a given record.

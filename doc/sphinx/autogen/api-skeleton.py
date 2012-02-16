@@ -1408,7 +1408,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "method":"GET",
     "path":"/carenets/{CARENET_ID}/documents/special/{SPECIAL_DOCUMENT}",
     "view_func_name":"read_special_document_carenet",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or the admin app that created the carenet's record.",
+    "access_doc":"A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or any admin app.",
     "url_params":{
         'CARENET_ID':'The id string associated with the Indivo carenet',
         'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
@@ -2660,6 +2660,34 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 },
 {
     "method":"GET",
+    "path":"/records/search",
+    "view_func_name":"record_search",
+    "access_doc":"Any admin app.",
+    "url_params":{
+        },
+    "query_opts":{
+            'label':'A search string to match against record labels.',
+        },
+    "data_fields":{
+        },
+    "description":"Search for records by label (usually the same as full name).",
+    "return_desc":":http:statuscode:`200` with a list of matching records on success, :http:statuscode:`400` if no query parameters were passed.",
+    "return_ex":'''
+<Records>
+  <Record id="123" label="John R. Smith" />
+  <Record id = "234" label="Frank Frankson" />
+
+  ...
+
+</Records>
+''',
+    "deprecated": None,
+    "added": ('1.0.1', ''),
+    "changed": None,
+
+},
+{
+    "method":"GET",
     "path":"/records/{RECORD_ID}",
     "view_func_name":"record",
     "access_doc":"A principal in full control of the record, the admin app that created the record, or a user app with access to the record.",
@@ -3787,7 +3815,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "method":"GET",
     "path":"/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}",
     "view_func_name":"read_special_document",
-    "access_doc":"A user app with access to the record, a principal in full control of the record, or the admin app that created the record.",
+    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
@@ -3839,7 +3867,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "method":"POST",
     "path":"/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}",
     "view_func_name":"save_special_document",
-    "access_doc":"A user app with access to the record, a principal in full control of the record, or the admin app that created the record.",
+    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
@@ -3873,7 +3901,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "method":"PUT",
     "path":"/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}",
     "view_func_name":"save_special_document",
-    "access_doc":"A user app with access to the record, a principal in full control of the record, or the admin app that created the record.",
+    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',

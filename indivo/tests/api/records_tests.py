@@ -793,3 +793,40 @@ class RecordInternalTests(InternalTests):
     def test_get_record_vitals_by_category(self):
         # NOT IMPLEMENTED YET
         pass
+
+    def test_record_search(self):
+        url = '/records/search?label=%s'
+
+        # expect only two existing records: our record and 'the empty record'
+        self.assertEqual(Record.objects.all().count(), 2)
+
+        # create another
+        search_record = self.createRecord(TEST_RECORDS, 1, owner=self.account)
+
+        # run a search to return our record
+        response = self.client.get(url%self.record.label)
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.record.id)
+
+        # run a search to return the other record, using partial matching
+        response = self.client.get(url%search_record.label[:-3])
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), search_record.id)
+
+        # run a search to return neither record
+        response = self.client.get(url%'DEADBEEF')
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 0)
+
+        # run a search to return both records
+        response = self.client.get(url%'record_label')
+        self.assertEqual(response.status_code, 200) 
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(set([r.get('id') for r in results]), 
+                         set([self.record.id, search_record.id]))

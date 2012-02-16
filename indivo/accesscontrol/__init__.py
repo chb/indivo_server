@@ -82,6 +82,7 @@ def load_access_rules():
     return principal.isType('MachineApp')
   views = [account_create, 
            account_search,
+           record_search,
            account_forgot_password, 
            account_authsystem_add,
            account_check_secrets,
