@@ -290,9 +290,9 @@ def account_search(request):
     
     * *contact_email*: The contact email for the account.
     
-    This call returns only accounts matching all passed 
-    query parameters exactly: there is no partial matching
-    or text-search.
+    This call returns all accounts matching any part of any of the
+    passed query parameters: i.e. it ORs together the query parameters 
+    and runs a partial-text match on each.
     
     Will return :http:statuscode:`200` with XML describing
     matching accounts on success, :http:statuscode:`400` if
