@@ -211,10 +211,10 @@ def load_access_rules():
   AccessRule('Record Limited Access', record_limited_access, views)
 
   def record_access(principal, record, **unused_args):
-    """A principal in full control of the record, the admin app that created the record, or a user app with access to the record."""
+    """A principal in full control of the record, any admin app, or a user app with access to the record."""
     return pha_record_access(principal, record) \
         or full_control(principal, record) \
-        or principal.createdRecord(record) # Admins can only view records they created
+        or principal.isType('MachineApp')
   views = [record]
   AccessRule('Record Access', record_access, views)
 

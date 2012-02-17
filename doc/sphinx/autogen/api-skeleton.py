@@ -535,7 +535,7 @@ CALLS=[{
     "method":"GET",
     "path":"/accounts/{ACCOUNT_EMAIL}/records/",
     "view_func_name":"record_list",
-    "access_doc":"The Account owner.",
+    "access_doc":"Any admin app, or the Account owner.",
     "url_params":{
         'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
         },
@@ -2666,7 +2666,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "url_params":{
         },
     "query_opts":{
-            'label':'A search string to match against record labels.',
+        'label':'A search string to match against record labels.',
         },
     "data_fields":{
         },
@@ -2690,7 +2690,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "method":"GET",
     "path":"/records/{RECORD_ID}",
     "view_func_name":"record",
-    "access_doc":"A principal in full control of the record, the admin app that created the record, or a user app with access to the record.",
+    "access_doc":"A principal in full control of the record, any admin app, or a user app with access to the record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         },
