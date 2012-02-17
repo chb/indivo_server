@@ -52,7 +52,8 @@ def load_access_rules():
     return principal.isType('MachineApp') or principal.isSame(account)
   views = [account_info,
            account_info_set,
-           account_username_set]
+           account_username_set,
+           record_list,]
   AccessRule('Account Management Owner', account_management_owner, views)
 
   def account_management_by_record(principal, record, **unused_args):
@@ -67,7 +68,6 @@ def load_access_rules():
     """The Account owner."""
     return principal.isSame(account)
   views = [account_password_change,
-           record_list,
            account_inbox,
            account_inbox_message,
            account_inbox_message_attachment_accept,
