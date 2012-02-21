@@ -705,6 +705,9 @@ Record Administration
 
    :http:get:`/records/{RECORD_ID}`
      Get info about a single record.
+
+   :http:get:`/records/search`
+     Search Indivo for existing records by record label.
    
    :http:get:`/records/{RECORD_ID}/owner`
      Get the owner of a record
