@@ -6,7 +6,7 @@ import os, sys, inspect
 from django.db.models import Model
 
 MODULE_NAME = 'model'
-MODULE_FILE = 'model.py'
+MODULE_EXTENSIONS = ['.py', '.isj']
 MODEL_MODULE_NAMES = [
     'indivo.data_models.core',
     'indivo.data_models.contrib',
@@ -24,19 +24,32 @@ class IndivoDataModelLoader(object):
             self.add_model_to_module(model_name, model_class, target_module)
 
     @classmethod
-    def is_valid_data_model(cls, dir_path):
+    def detect_model_dir(cls, dir_path):
         """ Detects whether a directory is a properly-formatted datamodel.
         
         This is true if:
         
-        * It contains a model.py file (maybe more to come later)
+        * It contains a model file of an appropriate type
+          (for now, .py or .isj)
         
-        *dir_path* MUST be an absolute path for this to work
+        * More to come later (maybe)
+        
+        *dir_path* MUST be an absolute path for this to work. Returns a tuple of
+        (valid_p, fileroot, ext), where valid_p is True if the format is valid,
+        fileroot is the name of the file containing the model definition (without 
+        the extention), and ext is the extension. If no such file exists, returns
+        (False, None, None). Returns the first valid definition format.
         
         """
 
-        module_path = os.path.join(dir_path, MODULE_FILE)
-        return os.path.isdir(dir_path) and os.path.isfile(module_path)
+        if os.path.isdir(dir_path):
+            for ext in MODULE_EXTENSIONS:
+                filename = MODULE_NAME + ext
+                path = os.path.join(dir_path, filename)
+                if os.path.isfile(path):
+                    return (True, MODULE_NAME, ext)
+
+        return (False, None, None)
 
     @classmethod
     def add_model_to_module(cls, model_name, model_class, module):
@@ -60,26 +73,44 @@ class IndivoDataModelLoader(object):
         """
     
         for (dirpath, dirnames, filenames) in os.walk(self.top):
-            if self.is_valid_data_model(dirpath):
+            valid_p, fileroot, ext = self.detect_model_dir(dirpath)
+            if valid_p:
                 dirnames = [] # we found a datamodel: don't look in subdirectories for others
+
+                # Handle models defined in python modules
+                if ext == '.py':
+                    return self._discover_python_data_models(dirpath, fileroot, ext)
+                
+                # Handle models defined in Indivo-Specific JSON
+                elif ext == '.isj':
+                    return self._discover_isj_data_models(dirpath, fileroot, ext)
             
-                # add the model.py file to the path
-                sys.path.insert(0, dirpath)
+    def _discover_python_data_models(self, dirpath, fileroot, ext):
+        """ Imports a python module and extracts all Django Model subclasses."""
+        
+        # add the model.py file to the path
+        sys.path.insert(0, dirpath)
+        
+        # import the module
+        try:
+            module = __import__(fileroot)
+        except ImportError:
+            return # fail silently
 
-                # import the module
-                try:
-                    module = __import__(MODULE_NAME)
-                except ImportError:
-                    continue # fail silently
+        # now that we have the module, remove model.py from the path
+        sys.path.pop(0)
 
-                # now that we have the module, remove model.py from the path
-                sys.path.pop(0)
+        # discover and yield classes in the module
+        for name, cls in inspect.getmembers(module):
+            if inspect.isclass(cls) and issubclass(cls, Model) \
+                    and inspect.getmodule(cls).__name__ in MODEL_MODULE_NAMES:
+                yield (name, cls)
 
-                # discover and yield classes in the module
-                for name, cls in inspect.getmembers(module):
-                    if inspect.isclass(cls) and issubclass(cls, Model) \
-                            and inspect.getmodule(cls).__name__ in MODEL_MODULE_NAMES:
-                        yield (name, cls)
+    def _discover_isj_data_models(self, dirpath, fileroot, ext):
+        """ Reads in an ISJ model definition and generates Django Model subclasses."""
+
+        # TODO
+        pass
                         
 # Core data models
 from core import *
