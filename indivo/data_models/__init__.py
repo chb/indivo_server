@@ -71,20 +71,21 @@ class IndivoDataModelLoader(object):
         skip it.
 
         """
-    
+
         for (dirpath, dirnames, filenames) in os.walk(self.top):
             valid_p, fileroot, ext = self.detect_model_dir(dirpath)
             if valid_p:
                 dirnames = [] # we found a datamodel: don't look in subdirectories for others
 
-                # Handle models defined in python modules
+                # Handle models based on their definition type
                 if ext == '.py':
-                    return self._discover_python_data_models(dirpath, fileroot, ext)
-                
-                # Handle models defined in Indivo-Specific JSON
+                    handler_func = self._discover_python_data_models
                 elif ext == '.isj':
-                    return self._discover_isj_data_models(dirpath, fileroot, ext)
-            
+                    handler_func = self._discover_isj_data_models
+
+                for name, cls in handler_func(dirpath, fileroot, ext):
+                    yield (name, cls)
+                
     def _discover_python_data_models(self, dirpath, fileroot, ext):
         """ Imports a python module and extracts all Django Model subclasses."""
         
