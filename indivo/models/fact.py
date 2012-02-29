@@ -12,7 +12,7 @@ class Fact(BaseModel):
   record = models.ForeignKey(Record, related_name='allergy', null=True)
 
   def __unicode__(self):
-    return "Fact %s" % self.id
+    return "%s %s" % (self.__class__.name, self.id)
   
   #Meta = BaseMeta(True)
 

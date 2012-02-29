@@ -4,19 +4,20 @@ Indivo DataModels
 
 import os, sys, inspect
 from django.db.models import Model
+from indivo.lib import isj
 
 MODULE_NAME = 'model'
 MODULE_EXTENSIONS = ['.py', '.isj']
-MODEL_MODULE_NAMES = [
-    'indivo.data_models.core',
-    'indivo.data_models.contrib',
-    ]
+MODEL_MODULE_NAMES = {
+    'core':'indivo.data_models.core',
+    'contrib':'indivo.data_models.contrib',
+    }
 
 # Utilities to discover data models
 class IndivoDataModelLoader(object):
     
-    def __init__(self, top, core=True):
-        self.core = core
+    def __init__(self, top, module='core'):
+        self.module_name = MODEL_MODULE_NAMES[module]
         self.top = top
 
     def import_data_models(self, target_module):
@@ -104,14 +105,20 @@ class IndivoDataModelLoader(object):
         # discover and yield classes in the module
         for name, cls in inspect.getmembers(module):
             if inspect.isclass(cls) and issubclass(cls, Model) \
-                    and inspect.getmodule(cls).__name__ in MODEL_MODULE_NAMES:
+                    and inspect.getmodule(cls).__name__ == self.module_name:
                 yield (name, cls)
 
     def _discover_isj_data_models(self, dirpath, fileroot, ext):
         """ Reads in an ISJ model definition and generates Django Model subclasses."""
 
-        # TODO
-        pass
+        # read the ISJ definition in
+        with open(os.path.join(dirpath, fileroot+ext)) as f:
+            raw_data = f.read()
+
+        # parse them into django models
+        parser = isj.ISJSchema(raw_data, self.module_name)
+        for cls in parser.get_output():
+            yield (cls.__name__, cls)
                         
 # Core data models
 from core import *

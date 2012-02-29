@@ -1,0 +1,11 @@
+{
+    "__modelname__": "Problem",
+    "date_onset": "Date",
+    "date_resolution": "Date",
+    "name": "String",
+    "name_type": "String",
+    "name_value": "String",
+    "name_abbrev": "String",
+    "comments": "String",
+    "diagnosed_by": "String"
+}
