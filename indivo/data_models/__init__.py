@@ -54,6 +54,11 @@ class IndivoDataModelLoader(object):
 
     @classmethod
     def add_model_to_module(cls, model_name, model_class, module):
+
+        # Check for conflicts in the namespaces
+        if hasattr(module, model_name):
+            raise ValueError("The module %s.%s already exists: Please choose a different name for your data model"% (module.__name__, model_name))
+
         setattr(module, model_name, model_class)
         all_list = getattr(module, '__all__', None)
         if all_list:
