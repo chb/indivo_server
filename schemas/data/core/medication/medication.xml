@@ -1,0 +1,36 @@
+<Medication xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateStarted>2009-02-05</dateStarted>
+  <name type="http://indivo.org/codes/meds#" abbrev="c2i" value="COX2 Inhibitor" />    
+  <brandName type="http://indivo.org/codes/meds#" abbrev="vioxx" value="Vioxx" />
+  <dose>
+    <value>3</value>
+    <unit type="http://indivo.org/codes/units#" value="pills" abbrev="p" />
+  </dose>
+  <route type="http://indivo.org/codes/routes#" value="PO">By Mouth</route>
+  <strength>
+    <value>100</value>
+    <unit type="http://indivo.org/codes/units#" value="mg" abbrev="mg" />
+  </strength>
+  <frequency type="http://indivo.org/codes/frequency#" value="daily">daily</frequency>
+
+  <prescription>
+    <by>
+      <name>Dr. Ken Mandl</name>
+      <institution>Children's Hospital Boston</institution>
+    </by>
+
+    <on>2009-02-01</on>
+    <stopOn>2010-01-31</stopOn>
+
+    <dispenseAsWritten>true</dispenseAsWritten>
+    
+    <!-- this duration means 2 months -->
+    <duration>P2M</duration>
+    
+    <!-- does this need more structure? -->
+    <refillInfo>once a month for 3 months</refillInfo>
+    
+    <instructions>don't take them all at once!</instructions>
+    
+  </prescription>
+</Medication>

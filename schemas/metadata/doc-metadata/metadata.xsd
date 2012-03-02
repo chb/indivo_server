@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!-- didn't place this in the Indivo namespace because it's not medical payload -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="Principal">
+    <xs:sequence>
+      <xs:element name="fullname" type="xs:string" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    <!-- e.g. "fhh@apps.indivo.org" -->
+    <xs:attribute name="id" type="xs:string" use="required" />
+    <!-- e.g. "userapp" or "account" or "adminapp" -->
+    <xs:attribute name="type" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="Relation">
+    <xs:attribute name="type" type="xs:string" use="required" />
+    <xs:attribute name="count" type="xs:integer" use="required" />
+  </xs:complexType>
+
+  <xs:element name="Document">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="createdAt" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+	<xs:element name="creator" type="Principal" minOccurs="1" maxOccurs="1" />
+
+	<!-- if suppressedAt is non-null, then suppressor should be present -->
+	<xs:element name="suppressedAt" type="xs:dateTime" minOccurs="0" maxOccurs="1" />
+	<xs:element name="suppressor" type="Principal" minOccurs="0" maxOccurs="1" />
+
+	<xs:element name="replacedBy" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="replaces" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="original" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="latest" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required" />
+            <xs:attribute name="createdAt" type="xs:dateTime" use="required" />
+            <xs:attribute name="createdBy" type="xs:string" use="required" />
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="label" type="xs:string" minOccurs="0" maxOccurs="1" />
+
+	<xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="1" />
+	<xs:element name="nevershare" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+
+	<xs:element name="relatesTo" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="relation" type="Relation" minOccurs="0" maxOccurs="unbounded" />
+	    </xs:sequence>
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="isRelatedFrom" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="relation" type="Relation" minOccurs="0" maxOccurs="unbounded" />
+	    </xs:sequence>
+	  </xs:complexType>
+	</xs:element>
+
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="record_id" type="xs:string" use="optional" />
+      <xs:attribute name="size" type="xs:string" use="required" />
+      <xs:attribute name="digest" type="xs:string" use="required" />
+      <xs:attribute name="type" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,10 @@
+<Allergy xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateDiagnosed>2009-05-16</dateDiagnosed>
+  <diagnosedBy>Children's Hospital Boston</diagnosedBy>
+  <allergen>
+    <type type="http://codes.indivo.org/codes/allergentypes/" value="drugs">Drugs</type>
+    <name type="http://codes.indivo.org/codes/allergens/" value="penicillin">Penicillin</name>
+  </allergen>
+  <reaction>blue rash</reaction>
+  <specifics>this only happens on weekends</specifics>
+</Allergy>

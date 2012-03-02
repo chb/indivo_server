@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+    <dateOfBirth>2001-05-15</dateOfBirth>
+    <dateOfDeath>2095-10-11</dateOfDeath>
+    <gender>Male</gender>
+    <ethnicity>Basque</ethnicity>
+    <language>EN</language>
+    <maritalStatus>Single</maritalStatus>
+    <employmentStatus>Unemployed</employmentStatus>
+    <employmentIndustry>Textiles</employmentIndustry>
+    <occupation>Tailor</occupation>
+    <religion>Jewish</religion>
+    <income>12,000 USD</income>
+    <highestEducation>High School</highestEducation>
+    <organDonor>false</organDonor>
+</Demographics>

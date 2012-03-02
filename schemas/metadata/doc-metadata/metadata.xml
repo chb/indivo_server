@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Document id="14c81023-c84f-496d-8b8e-9438280441d3" type="" digest="7e9bc09276e0829374fd810f96ed98d544649703db3a9bc231550a0b0e5bcb1c" size="77">
+  <createdAt>2009-05-04T17:05:33</createdAt>
+  <creator id="steve@indivo.org" type="account">
+    <fullname>Steve Zabak</fullname>
+  </creator>
+  <suppressedAt>2009-05-06T17:05:33</suppressedAt>
+  <suppressor id="steve@indivo.org" type="account">
+    <fullname>Steve Zabak</fullname>
+  </suppressor>
+  <original id="14c81023-c84f-496d-8b8e-9438280441d3" />
+  <latest id="14c81023-c84f-496d-8b8e-9438280441d3" createdAt="2009-05-05T17:05:33" createdBy="steve@indivo.org" />
+  <label>HBA1C reading</label>
+  <status>active</status>
+  <nevershare>false</nevershare>
+  <relatesTo>
+    <relation type="http://indivo.org/vocab/documentrels#attachment" count="1" />
+    <relation type="http://indivo.org/vocab/documentrels#annotation" count="5" />
+  </relatesTo>
+  <isRelatedFrom>
+    <relation type="http://indivo.org/vocab/documentrels#interpretation" count="1" />
+  </isRelatedFrom>
+</Document>

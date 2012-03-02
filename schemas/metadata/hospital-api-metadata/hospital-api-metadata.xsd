@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Document">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="created" minOccurs="1" maxOccurs="1">
+	  <xs:complexType>
+            <xs:attribute name="at" type="xs:dateTime" use="required" />
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="suppressed" minOccurs="0" maxOccurs="1">
+	  <xs:complexType>
+            <xs:attribute name="at" type="xs:dateTime" use="required" />
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required" />
+      <xs:attribute name="type" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

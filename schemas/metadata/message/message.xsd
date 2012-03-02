@@ -4,7 +4,7 @@
     <xs:sequence>
       <xs:element name="sender" type="xs:string" minOccurs="1" maxOccurs="1" />
       <xs:element name="received_at" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
-      <xs:element name="read_at" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+      <xs:element name="read_at" type="xs:dateTime" minOccurs="0" maxOccurs="1" />
       <xs:element name="subject" type="xs:string" minOccurs="1" maxOccurs="1" />
       <xs:element name="severity" type="xs:string" minOccurs="1" maxOccurs="1" />
       <xs:element name="record" minOccurs="0" maxOccurs="1">

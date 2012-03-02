@@ -1,0 +1,28 @@
+<SimpleClinicalNote xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateOfVisit>2010-02-02T12:00:00Z</dateOfVisit>
+  <finalizedAt>2010-02-03T13:12:00Z</finalizedAt>
+  <visitType type="http://codes.indivo.org/visit-types#" value="acute">Acute Care</visitType>
+  <visitLocation>Longfellow Medical</visitLocation>
+  <specialty type="http://codes.indivo.org/specialties#" value="hem-onc">Hematology/Oncology</specialty>
+
+  <signature>
+    <at>2010-02-03T13:12:00Z</at>
+    
+    <provider>
+      <name>Kenneth Mandl</name>
+      <institution>Children's Hospital Boston</institution>
+    </provider>
+  </signature>
+
+  <signature>
+    <provider>
+      <name>Isaac Kohane</name>
+      <institution>Children's Hospital Boston</institution>
+    </provider>
+  </signature>
+
+  <chiefComplaint>stomach ache</chiefComplaint>
+  <content>
+    Patient presents with ...
+  </content>
+</SimpleClinicalNote>

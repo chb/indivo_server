@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#"
+	   xmlns:indivo="http://indivo.org/vocab/xml/documents#"
+	   elementFormDefault="qualified">
+
+  <xs:include schemaLocation="../../common/codes.xsd" />
+  <xs:include schemaLocation="../../common/provider.xsd" />
+  <xs:include schemaLocation="../../common/values.xsd" />
+ 
+  <!-- prescription information that can be attached to a medication -->
+  <xs:complexType name="Prescription">
+    <xs:sequence>
+      <xs:element name="by" type="indivo:Provider" minOccurs="0" maxOccurs="1" />
+      <xs:element name="on" type="xs:date" minOccurs="0" maxOccurs="1" />
+      <xs:element name="stopOn" type="xs:date" minOccurs="0" maxOccurs="1" />
+      <xs:element name="dispenseAsWritten" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+      <xs:element name="duration" type="xs:duration" minOccurs="0" maxOccurs="1" />
+      <xs:element name="refillInfo" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="instructions" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- may not need a top-level prescription element -->
+  <!-- <xs:element name="Prescription" type="indivo:Prescription" /> -->
+
+  <!-- a medication, how often it's taken, etc.. -->
+  <xs:complexType name="Medication">
+    <xs:sequence>
+      <xs:element name="dateStarted" type="xs:date" minOccurs="0" maxOccurs="1" />
+      <xs:element name="dateStopped" type="xs:date" minOccurs="0" maxOccurs="1" />
+      <xs:element name="reasonStopped" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="name" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+      <xs:element name="brandName" type="indivo:CodedValue" minOccurs="0" maxOccurs="1" />
+      <xs:element name="dose" type="indivo:ValueAndUnit" minOccurs="1" maxOccurs="1" />
+
+      <!-- this is typically contained in the code, but maybe not -->
+      <xs:element name="route" type="indivo:CodedValue" minOccurs="0" maxOccurs="1" />
+      <xs:element name="strength" type="indivo:ValueAndUnit" minOccurs="0" maxOccurs="1" />
+
+      <xs:element name="frequency" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+
+      <!-- was it prescribed? -->
+      <xs:element name="prescription" type="indivo:Prescription" minOccurs="0" maxOccurs="1" />
+      
+      <!-- other details on this drug -->
+      <xs:element name="details" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="Medication" type="indivo:Medication" />
+
+</xs:schema>

@@ -1,0 +1,13 @@
+<Immunization xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateAdministered>2009-05-16T12:00:00</dateAdministered>
+  <administeredBy>Children's Hospital Boston</administeredBy>
+  <vaccine>
+    <type type="http://codes.indivo.org/vaccines#" value="hep-B">Hepatitis B</type>
+    <manufacturer>Oolong Pharmaceuticals</manufacturer>
+    <lot>AZ1234567</lot>
+    <expiration>2009-06-01</expiration>
+  </vaccine>
+  <sequence>2</sequence>
+  <anatomicSurface type="http://codes.indivo.org/anatomy/surfaces#" value="shoulder">Shoulder</anatomicSurface>
+  <adverseEvent>pain and rash</adverseEvent>
+</Immunization>

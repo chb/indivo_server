@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#"
+	   xmlns:indivo="http://indivo.org/vocab/xml/documents#"
+	   elementFormDefault="qualified">
+
+  <xs:include schemaLocation="../../common/codes.xsd" />
+  <xs:include schemaLocation="../../common/provider.xsd" />
+  <xs:include schemaLocation="../../common/values.xsd" />
+ 
+
+  <!-- the base type for a lab test -->
+  <xs:complexType name="LabTest">
+    <xs:sequence>
+      <xs:element name="dateMeasured" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+      
+      <!-- e.g. "hematocrit" -->
+      <xs:element name="name" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+
+      <!-- either preliminary, or final -->
+      <xs:element name="final" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>  
+  </xs:complexType>
+
+
+  <!-- a type to represent a single-value lab test -->
+  <xs:complexType name="SingleResultLabTest">
+    <xs:complexContent>
+      <xs:extension base="indivo:LabTest">
+	<xs:sequence>
+	  <!-- an abstract type, which will be subtyped in instance documents -->
+	  <xs:element name="result" type="indivo:Result" minOccurs="1" maxOccurs="1" />	  
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- a type to represent a single MIC lab test -->
+  <xs:complexType name="MicroWithCultureLabTest">
+    <xs:complexContent>
+      <xs:extension base="indivo:LabTest">
+	<xs:sequence>
+	  
+	  <xs:element name="source" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+
+	  <!-- a bunch of observations -->
+	  <xs:element name="observation" minOccurs="0" maxOccurs="unbounded">
+	    <xs:complexType>
+	      <xs:sequence>
+		<xs:element name="time" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+		<xs:element name="microbialDensity" type="indivo:Concentration" minOccurs="0" maxOccurs="1" />
+		<xs:element name="organism" type="indivo:CodedValue" minOccurs="0" maxOccurs="1" />
+		
+		<xs:element name="extendedDescription" type="xs:string" minOccurs="0" maxOccurs="1" />
+		
+		<!-- aerobic, anaerobic, not specified, or not cultured altogether -->
+		<xs:element name="cultureCondition" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="gram" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+		<xs:element name="morphology" type="xs:string" minOccurs="0" maxOccurs="1" />
+		<xs:element name="organization" type="xs:string" minOccurs="0" maxOccurs="1" />
+		
+		<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1" />
+	      </xs:sequence>
+
+	      <!-- an isolate is a group of organisms that look similar, while an identity is a clear identified microorg -->
+	      <xs:attribute name="isolate" type="xs:string" use="required" />	      
+	      <xs:attribute name="identity" type="xs:string" use="optional" />
+
+	    </xs:complexType>
+	  </xs:element>
+
+	  <!-- a bunch of results (could be more than one if more than one bug -->
+	  <xs:element name="result" minOccurs="0" maxOccurs="unbounded">
+	    <xs:complexType>
+	      <xs:sequence>
+		<xs:element name="organism" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+		<xs:element name="sensitivity" minOccurs="0" maxOccurs="unbounded">
+		  <xs:complexType>
+		    <xs:sequence>
+		      <xs:element name="antibiotic" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+		      
+		      <xs:element name="MIC" type="indivo:Concentration" minOccurs="0" maxOccurs="1" />
+		      
+		      <!-- coded value for resistant/intermediate/not resistant -->
+		      <xs:element name="interpretation" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+
+		      <!-- more info -->
+		      <xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1" />
+		    </xs:sequence>
+		  </xs:complexType>
+		</xs:element>
+
+		<xs:element name="interpretation" type="xs:string" minOccurs="0" maxOccurs="1" />
+		
+		<!-- additional comments that are not directly interpretation -->
+		<xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1" />
+
+	      </xs:sequence>
+	      <xs:attribute name="isolate" type="xs:string" use="required" />
+	      <xs:attribute name="identity" type="xs:string" use="optional" />
+	    </xs:complexType>
+	  </xs:element>
+
+
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <!-- a type to represent a panel of tests -->
+  <xs:complexType name="LabPanel">
+    <xs:sequence>
+      <!-- e.g. CBC -->
+      <xs:element name="name" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+      
+      <!-- for now, no subpanels, but we could do it if we wanted to with a self-reference -->
+
+      <!-- a bunch of lab tests -->
+      <xs:element name="labTest" type="indivo:LabTest" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="Lab">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="dateMeasured" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+
+	<!-- e.g. "hematology" -->
+	<xs:element name="labType" type="xs:string" minOccurs="1" maxOccurs="1" />
+
+	<!-- the lab provider -->
+	<xs:element name="laboratory" type="indivo:LabProvider" minOccurs="0" maxOccurs="1" />
+
+	<!-- a bunch of panels -->
+	<xs:element name="labPanel" type="indivo:LabPanel" minOccurs="0" maxOccurs="unbounded" />
+
+	<!-- a bunch of additional tests not in any panel -->
+	<xs:element name="labTest" type="indivo:LabTest" minOccurs="0" maxOccurs="unbounded" />
+
+        <xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
