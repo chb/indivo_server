@@ -12,8 +12,8 @@ python validate.py # Validates everything
 """
 
 import sys, os
+from lxml import etree
 import glob
-from validate_xml_with_schema import validate_docs
 
 DEFAULT_SCHEMA_DIRS = [
     'metadata',
@@ -40,6 +40,25 @@ def get_xsd(schema_dir):
         return glob.glob(os.path.join(schema_dir, '*.xsd'))[0]
     except IndexError:
         raise ValueError('Schema directory %s doesn\'t contain a valid XSD file'%schema_dir)
+
+def validate_docs(xsd_path, xml_paths, verbose=1):
+    with open(xsd_path, "r") as schema_file:
+        schema = etree.XMLSchema(etree.parse(schema_file))
+
+    for xml_path in xml_paths:
+        with open(xml_path, "r") as xml_file:
+            doc = etree.parse(xml_file)
+        
+        output = 'Validating %s against %s...      '%(xml_path, xsd_path)
+        if schema.validate(doc):
+            output += "ok"
+        else:
+            log = schema.error_log
+            error = log.last_error
+            output += str(error)
+        
+        if verbose:
+            print output
 
 if __name__ == '__main__':
     schema_paths = []
