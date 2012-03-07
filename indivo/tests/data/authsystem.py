@@ -10,11 +10,8 @@ class TestAuthSystem(TestModel):
         self.internal_p = internal_p
 
 _TEST_AUTHSYSTEMS = [
-    {'short_name':'test_auth_system',
+    {'short_name':'mychildrens',
      'internal_p':False,
      },
-    {'short_name':'test_auth_system2',
-     'internal_p':False,
-     },    
     ]
 TEST_AUTHSYSTEMS = scope(_TEST_AUTHSYSTEMS, TestAuthSystem)
