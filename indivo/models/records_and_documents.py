@@ -220,10 +220,8 @@ class Document(Object):
     else:
       return "%s/%s" % (pha.email, local_external_id)
 
-
-  #type = models.URLField()
-  # xml type
-  type = models.ForeignKey(DocumentSchema, null = True)
+  # Fully Qualified Toplevel XML Name (i.e. http://indivo.org/vocab/xml/documents#Lab)
+  fqn = models.CharField(max_length=255, null = True)
 
   # mime type
   mime_type = models.CharField(max_length=100, null = True)
@@ -320,7 +318,7 @@ class Document(Object):
       self.mime_type = new_mime_type
       
       # empty out derived fields so that doc processing will repopulate them
-      self.type = None
+      self.fqn = None
       self.size = None
       self.digest = None
 
@@ -357,9 +355,9 @@ class Document(Object):
         Fact.objects.filter(document = self.replaces).delete()
 
       # Update document info based on processing
-      self.type = self.type if self.type else doc.get_document_schema()
-      self.size = self.size if self.size else doc.get_document_size()
-      self.digest = self.digest if self.digest else doc.get_document_digest()
+      self.fqn = self.fqn if self.fqn else doc.fqn
+      self.size = self.size if self.size else doc.size
+      self.digest = self.digest if self.digest else doc.digest
 
       # Create our content file if we are binary
       cf = None
@@ -394,6 +392,13 @@ class Document(Object):
         self.replaces.replaced_by = self
         self.replaces.save()
 
+      # Update newly created Fact objs, if we created any
+      for fobj in doc.processed_facts:
+        if fobj:
+          fobj.document = self
+          fobj.record = self.record
+          fobj.save()
+
       # Mark document as processed
       self.processed = True
       save_again = True
@@ -403,14 +408,7 @@ class Document(Object):
       self.external_id = self.id
       save_again = True
 
-    # Update newly created Fact objs, if we created any
-    if doc and hasattr(doc, 'f_objs'):
-      for fobj in doc.f_objs:
-        if fobj:
-          fobj.document = self
-          fobj.record = self.record
-          fobj.save()
-
+    # Make sure we point to the original document version
     if not self.original:
       self.original = self
       save_again = True

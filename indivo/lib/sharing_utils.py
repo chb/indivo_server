@@ -34,7 +34,7 @@ def document_carenets_filter(document, carenets):
   explicitly_shared_with = Q(carenetdocument__document=document, carenetdocument__share_p=True)
 
   # The carenet has been shared with implicitly via autoshares
-  implicitly_shared_with = Q(carenetautoshare__type=document.type, carenetautoshare__type__isnull=False)
+  implicitly_shared_with = Q(carenetautoshare__type__type=document.fqn, carenetautoshare__type__isnull=False)
 
   # There is an exception to the autoshares
   implicit_share_exception = Q(carenetdocument__document=document, carenetdocument__share_p=False)
@@ -46,15 +46,15 @@ def document_carenets_filter(document, carenets):
 def _carenet_filter(carenet, objs, facts_p = False):
   if carenet:  
 
-    # All doc types the carenet autoshares with
-    carenet_autoshare_types = DocumentSchema.objects.filter(carenetautoshare__carenet = carenet)
+    # All doc fqns the carenet autoshares with
+    carenet_autoshare_fqns = [ds.type for ds in DocumentSchema.objects.filter(carenetautoshare__carenet = carenet)]
 
     # If we're filtering a set of Fact objects, the filters have to use the 'document' property of the objects
     if facts_p:
       explicit_args = {'document__carenetdocument__carenet':carenet, 
                        'document__carenetdocument__share_p':True,
                        'document__nevershare': False,}
-      autoshared_args = {'document__type__in': carenet_autoshare_types,
+      autoshared_args = {'document__fqn__in': carenet_autoshare_fqns,
                          'document__nevershare':False}
       autoshare_exception_args = {'document__carenetdocument__carenet':carenet,
                                   'document__carenetdocument__share_p': False}
@@ -62,7 +62,7 @@ def _carenet_filter(carenet, objs, facts_p = False):
       explicit_args = {'carenetdocument__carenet':carenet, 
                        'carenetdocument__share_p':True,
                        'nevershare': False,}
-      autoshared_args = {'type__in': carenet_autoshare_types,
+      autoshared_args = {'fqn__in': carenet_autoshare_fqns,
                          'nevershare':False}
       autoshare_exception_args = {'carenetdocument__carenet':carenet,
                                   'carenetdocument__share_p': False}

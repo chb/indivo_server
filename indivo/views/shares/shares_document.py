@@ -26,6 +26,7 @@ def carenet_document_placement(request, record, carenet, document_id):
   on it.
 
   """
+
   document = _get_document(document_id=document_id, record=record)
 
   # don't allow this for nevershare documents

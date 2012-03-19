@@ -1,0 +1,19 @@
+{
+    "__modelname__": "TestMed",
+    "date_started": "Date",
+    "name": "String",
+    "brand_name": "String",
+    "frequency": "Number",
+
+    "prescription": {
+        "__modelname__": "TestPrescription",
+	"prescribed_by_name": "String",
+	"prescribed_on": "Date"
+    },
+
+    "fills": [{
+        "__modelname__": "TestFill",
+	"date_filled": "Date",
+	"supply_days": "Number"
+    }]
+}

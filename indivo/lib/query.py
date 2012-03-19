@@ -73,7 +73,6 @@ RELATED_LIST = [
     'document__creator',
     'document__creator__account',
     'document__creator__pha',
-    'document__type',
     'document__suppressed_by',
     'document__suppressed_by__account',
     'document__status',

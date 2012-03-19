@@ -56,7 +56,7 @@ class MessageAttachmentModelUnitTests(InternalTests):
         self.assertTrue(self.attachment.saved)
         self.assertEqual(self.attachment.content, self.attachment.saved_to_document.content)
         self.assertNotEqual(n_fobjs, Fact.objects.all().count()) # doc should have been processed, creating a fact
-        self.assertEqual(self.attachment.type, self.attachment.saved_to_document.type.type)
+        self.assertEqual(self.attachment.type, self.attachment.saved_to_document.fqn)
         self.assertEqual(self.attachment.size, self.attachment.saved_to_document.size)
         self.assertEqual(self.attachment.saved_to_document.external_id, 
                          'SAVED_ATTACHMENT_%s_%s'%(self.attachment.message.external_identifier, 

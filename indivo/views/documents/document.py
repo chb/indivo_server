@@ -578,21 +578,16 @@ def document_list(request, limit, offset, status, order_by='created_at', record=
         correspond to an existing Indivo schema.
 
     """
-    # SZ: CLEAN CODE!
-    # SZ: CLEAN CODE!
-    # SZ: CLEAN CODE!
-    type = request.GET.get('type', None)
-    type = DocumentProcessing.expand_schema(type)
 
+    fqn = DocumentProcessing.expand_schema(request.GET.get('type', None))
     try:
-        if type:
+        if fqn:
             try:
-                type_obj = DocumentSchema.objects.get(type=type)
                 if record:
-                    docs = record.documents.filter(type=type_obj, 
+                    docs = record.documents.filter(fqn=fqn, 
                                                    replaced_by=None, status=status, pha=pha).order_by(order_by)
                 else:
-                    docs = Document.objects.filter(type=type_obj, 
+                    docs = Document.objects.filter(fqn=fqn, 
                                                    pha=pha, replaced_by=None, status=status).order_by(order_by)
                 return _render_documents(docs, record, pha, docs.count())
             except DocumentSchema.DoesNotExist:

@@ -118,6 +118,37 @@ def django_json(func):
     functools.update_wrapper(func_with_json_conversion, func)
     return func_with_json_conversion
 
+# Taken from http://code.activestate.com/
+# A decorator for properties whose value should only be calculated once.
+# Sample use:
+# class SomeClass(object):
+#
+#     @LazyProperty
+#     def someprop(self):
+#         print 'Actually calculating value'
+#         return 13
+#
+# To force recalculation (inadvisable):
+# o = SomeClass()
+# o.someprop # runs the calculation
+# o.someprop # doesn't recalculate
+# del o.someprop
+# o.someprop # re-runs the calculation
+#
+# Note: DO NOT USE THIS ON PROPERTIES WHICH DEPEND ON THE VALUE OF SETTINGS!!
+# If the settings change, the computed value might be incorrect.
+ 
+class LazyProperty(object):
+    def __init__(self, calculate_function):
+        self._calculate = calculate_function
+
+    def __get__(self, obj, _=None):
+        if obj is None:
+            return self
+        value = self._calculate(obj)
+        setattr(obj, self._calculate.func_name, value)
+        return value
+
 class DjangoVersionDependentExecutor(object):
     """ class which will execute different code based on Django's version.
 

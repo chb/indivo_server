@@ -28,7 +28,16 @@ class DocumentModelUnitTests(InternalTests):
         self.r_doc1 = self.createDocument(TEST_R_DOCS, 2, record=self.record)
         self.r_doc2 = self.createDocument(TEST_R_DOCS, 10, record=self.record)
 
+        # save the settings we'll be squashing
+        self.old_validate_xml_syntax = settings.VALIDATE_XML_SYNTAX
+        self.old_validate_xml = settings.VALIDATE_XML
+
     def tearDown(self):
+        
+        # restore the settings
+        settings.VALIDATE_XML_SYNTAX = self.old_validate_xml_syntax
+        settings.VALIDATE_XML = self.old_validate_xml
+
         super(DocumentModelUnitTests, self).tearDown()
         
     @enable_transactions
@@ -166,14 +175,14 @@ class DocumentModelUnitTests(InternalTests):
         new_mimetype = 'text/xml'
         new_digest = self.r_doc2.digest
         new_size = self.r_doc2.size
-        new_type = self.r_doc2.type
+        new_type = self.r_doc2.fqn
 
         # Make sure we start out with the appropriate state
         self.assertNotEqual(self.r_doc1.content, new_content)
         self.assertNotEqual(self.r_doc1.mime_type, new_mimetype)
         self.assertNotEqual(self.r_doc1.digest, new_digest)
         self.assertNotEqual(self.r_doc1.size, new_size)
-        self.assertNotEqual(self.r_doc1.type, new_type) # This is broken right now, need to fix doc typing
+        self.assertNotEqual(self.r_doc1.fqn, new_type) # This is broken right now, need to fix doc typing
 
         # Replace the doc, make sure it worked
         self.r_doc1.replace(new_content, new_mimetype)
@@ -181,7 +190,7 @@ class DocumentModelUnitTests(InternalTests):
         self.assertEqual(self.r_doc1.mime_type, new_mimetype)
         self.assertEqual(self.r_doc1.digest, new_digest)
         self.assertEqual(self.r_doc1.size, new_size)
-        self.assertEqual(self.r_doc1.type, new_type)
+        self.assertEqual(self.r_doc1.fqn, new_type)
 
         # Replace the doc with bad XML, make sure it fails if validation is on
         malformed_xml = '<AwesomeTag>Stuff<WrongTag>'
@@ -190,6 +199,7 @@ class DocumentModelUnitTests(InternalTests):
         settings.VALIDATE_XML_SYNTAX = True
         self.assertRaises(ValueError, self.r_doc1.replace, malformed_xml, new_mimetype)
         settings.VALIDATE_XML_SYNTAX = False
+
         try:
             self.r_doc1.replace(malformed_xml, new_mimetype)
         except ValueError:
@@ -198,6 +208,7 @@ class DocumentModelUnitTests(InternalTests):
         settings.VALIDATE_XML = True
         self.assertRaises(ValueError, self.r_doc1.replace, invalid_xml, new_mimetype)
         settings.VALIDATE_XML = False
+
         try:
             self.r_doc1.replace(invalid_xml, new_mimetype)
         except ValueError:

@@ -70,8 +70,8 @@ class Message(Object):
         attachment = MessageAttachment.objects.create(
             message = self,
             content = content,
-            size = doc_utils.get_document_size(),
-            type = doc_utils.get_type(),
+            size = doc_utils.size,
+            type = doc_utils.fqn,
             attachment_num = attachment_num)
 
         return attachment

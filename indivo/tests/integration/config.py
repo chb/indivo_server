@@ -21,5 +21,6 @@ ts = [
 
 # to test only one
 #ts = [ 
-    #    { 'test' : 1, 'name' : 'Sharing', 'func' : 'test_sharing'},
+#    { 'test' : 1, 'name' : 'Document Handling Test',    'func' : 'test_document_handling'},
+#    { 'test' : 1, 'name' : 'Sharing', 'func' : 'test_sharing'},
 #    ]

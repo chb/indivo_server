@@ -4,10 +4,10 @@ Indivo DataModels
 
 import os, sys, inspect
 from django.db.models import Model
-from indivo.lib import isj
+from indivo.lib import simpledatamodel
 
 MODULE_NAME = 'model'
-MODULE_EXTENSIONS = ['.py', '.isj']
+MODULE_EXTENSIONS = ['.py', '.sdmj']
 MODEL_MODULE_NAMES = {
     'core':'indivo.data_models.core',
     'contrib':'indivo.data_models.contrib',
@@ -31,7 +31,7 @@ class IndivoDataModelLoader(object):
         This is true if:
         
         * It contains a model file of an appropriate type
-          (for now, .py or .isj)
+          (for now, .py or .sdmj)
         
         * More to come later (maybe)
         
@@ -86,8 +86,8 @@ class IndivoDataModelLoader(object):
                 # Handle models based on their definition type
                 if ext == '.py':
                     handler_func = self._discover_python_data_models
-                elif ext == '.isj':
-                    handler_func = self._discover_isj_data_models
+                elif ext == '.sdmj':
+                    handler_func = self._discover_sdmj_data_models
 
                 for name, cls in handler_func(dirpath, fileroot, ext):
                     yield (name, cls)
@@ -113,15 +113,15 @@ class IndivoDataModelLoader(object):
                     and inspect.getmodule(cls).__name__ == self.module_name:
                 yield (name, cls)
 
-    def _discover_isj_data_models(self, dirpath, fileroot, ext):
-        """ Reads in an ISJ model definition and generates Django Model subclasses."""
+    def _discover_sdmj_data_models(self, dirpath, fileroot, ext):
+        """ Reads in an SDMJ model definition and generates Django Model subclasses."""
 
-        # read the ISJ definition in
+        # read the SDMJ definition in
         with open(os.path.join(dirpath, fileroot+ext)) as f:
             raw_data = f.read()
 
         # parse them into django models
-        parser = isj.ISJSchema(raw_data, self.module_name)
+        parser = simpledatamodel.SDMJSchema(raw_data, self.module_name)
         for cls in parser.get_output():
             yield (cls.__name__, cls)
                         

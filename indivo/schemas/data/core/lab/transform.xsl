@@ -3,21 +3,21 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> 
   <xsl:output method = "xml" indent = "yes" />  
   <xsl:template match="indivodoc:Lab">
-    <facts>
-      <fact>
-        <date_measured><xsl:value-of select='indivodoc:dateMeasured/text()' /></date_measured>
-        <lab_type><xsl:value-of select='indivodoc:labType/text()' /></lab_type>
-        <lab_name><xsl:value-of select='indivodoc:laboratory/indivodoc:name/text()' /></lab_name>
-        <lab_address><xsl:value-of select='indivodoc:laboratory/indivodoc:address/text()' /></lab_address>
-        <lab_comments><xsl:value-of select='indivodoc:comments/text()' /></lab_comments>
+    <Models>
+      <Model name="Lab">
+        <Field name="date_measured"><xsl:value-of select='indivodoc:dateMeasured/text()' /></Field>
+        <Field name="lab_type"><xsl:value-of select='indivodoc:labType/text()' /></Field>
+        <Field name="lab_name"><xsl:value-of select='indivodoc:laboratory/indivodoc:name/text()' /></Field>
+        <Field name="lab_address"><xsl:value-of select='indivodoc:laboratory/indivodoc:address/text()' /></Field>
+        <Field name="lab_comments"><xsl:value-of select='indivodoc:comments/text()' /></Field>
 
 	<xsl:if test="indivodoc:labPanel">
-	  <first_panel_name><xsl:value-of select='indivodoc:labPanel/indivodoc:name/text()' /></first_panel_name>
+	  <Field name="first_panel_name"><xsl:value-of select='indivodoc:labPanel/indivodoc:name/text()' /></Field>
 	</xsl:if>
 
 	<xsl:choose>
 	  <xsl:when test="indivodoc:labTest">
-	    <first_lab_test_name><xsl:value-of select='indivodoc:labTest/indivodoc:name/text()' /></first_lab_test_name>
+	    <Field name="first_lab_test_name"><xsl:value-of select='indivodoc:labTest/indivodoc:name/text()' /></Field>
 	    <xsl:apply-templates select='indivodoc:labTest[1]/indivodoc:result' />
 	  </xsl:when>
 	  <xsl:otherwise>
@@ -27,12 +27,12 @@
 	    </xsl:if>-->
 	  </xsl:otherwise>
 	</xsl:choose>
-      </fact>
-    </facts>
+      </Model>
+    </Models>
   </xsl:template>
 
   <xsl:template match="indivodoc:result">
-    <first_lab_test_value>
+    <Field name="first_lab_test_value">
     <xsl:if test="indivodoc:valueAndUnit">
       <xsl:choose>
 	<xsl:when test="indivodoc:valueAndUnit/indivodoc:value">
@@ -46,39 +46,39 @@
     <xsl:if test="indivodoc:value">
       <xsl:value-of select="indivodoc:value" />
     </xsl:if>
-    </first_lab_test_value>
+    </Field>
     
     <xsl:if test="indivodoc:valueAndUnit or indivodoc:value">
       <xsl:if test="indivodoc:normalRange/indivodoc:minimum">
-	<normal_range_minimum><xsl:value-of select="indivodoc:normalRange/indivodoc:minimum/text()"/>
+	<Field name="normal_range_minimum"><xsl:value-of select="indivodoc:normalRange/indivodoc:minimum/text()"/>
 	  <xsl:if test="indivodoc:normalRange/indivodoc:unit">
 	    <xsl:value-of select="indivodoc:normalRange/indivodoc:unit/@indivodoc:abbrev"/>
 	  </xsl:if>
-	</normal_range_minimum>
+	</Field>
       </xsl:if>
       
       <xsl:if test="indivodoc:normalRange/indivodoc:maximum">
-	<normal_range_maximum><xsl:value-of select="indivodoc:normalRange/indivodoc:maximum/text()"/>
+	<Field name="normal_range_maximum"><xsl:value-of select="indivodoc:normalRange/indivodoc:maximum/text()"/>
 	  <xsl:if test="indivodoc:normalRange/indivodoc:unit">
 	    <xsl:value-of select="indivodoc:normalRange/indivodoc:unit/@indivodoc:abbrev"/>
 	  </xsl:if>
-	</normal_range_maximum>
+	</Field>
       </xsl:if>
       
       <xsl:if test="indivodoc:nonCriticalRange/indivodoc:minimum">
-	<non_critical_range_minimum><xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:minimum/text()"/>
+	<Field name="non_critical_range_minimum"><xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:minimum/text()"/>
 	  <xsl:if test="indivodoc:nonCriticalRange/indivodoc:unit">
 	    <xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:unit/@indivodoc:abbrev"/>
 	  </xsl:if>
-	</non_critical_range_minimum>
+	</Field>
       </xsl:if>
       
       <xsl:if test="indivodoc:nonCriticalRange/indivodoc:maximum">
-	<non_critical_range_maximum><xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:maximum/text()"/>
+	<Field name="non_critical_range_maximum"><xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:maximum/text()"/>
 	  <xsl:if test="indivodoc:nonCriticalRange/indivodoc:unit">
 	    <xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:unit/@indivodoc:abbrev"/>
 	  </xsl:if>
-	</non_critical_range_maximum>
+	</Field>
       </xsl:if>
       
     </xsl:if>

@@ -77,8 +77,8 @@ AUDIT_FAILURE = True # Audit the calls that return with unsuccessful status (4XX
 # XML Validation and Transformation settings
 VALIDATE_XML_SYNTAX = True # Validate all incoming XML docs for basic syntax?
 VALIDATE_XML = True # Validate XML docs to process against the Indivo schemas?
-XSLT_STYLESHEET_LOC = APP_HOME + '/indivo/document_processing/stylesheets/'
-XSD_SCHEMA_LOC = APP_HOME + '/schemas/doc_schemas/'
+CORE_SCHEMA_LOC = APP_HOME + '/indivo/schemas/data/core'
+CONTRIB_SCHEMA_LOC = APP_HOME + '/indivo/schemas/data/contrib'
 
 # logging
 import logging
