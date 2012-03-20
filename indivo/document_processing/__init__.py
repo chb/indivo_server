@@ -1,9 +1,10 @@
 """ Indivo Document Processing. """
 
 from django.conf import settings
-import os
-import functools
+import sys, os
+import functools, inspect
 from lxml import etree
+from transform import BaseTransform
 
 REGISTERED_SCHEMAS = {}
 
@@ -106,9 +107,9 @@ class IndivoSchemaLoader(object):
 
                 # Get the transformation func
                 if schema_dir.transform_ext == '.py':
-                    handler = self._get_transform_func_from_py
+                    transform_handler = self._get_transform_from_py
                 elif schema_dir.transform_ext.startswith('.xsl'):
-                    transform_handler = self._get_transform_func_from_xslt
+                    transform_handler = self._get_transform_from_xslt
 
                 transformation_func = transform_handler(schema_dir)
                 
@@ -133,14 +134,35 @@ class IndivoSchemaLoader(object):
 
         return schema.assertValid
 
-    def _get_transform_func_from_py(self, schema_dir):
-#        with open(schema_dir.get_full_transform_path(), 'r') as transform_file:
-        # TODO
-        pass
+    def _get_transform_from_py(self, schema_dir):
 
-    def _get_transform_func_from_xslt(self, schema_dir):
+        # Add the python module to the path
+        sys.path.insert(0, schema_dir.dir_path)
+
+        # import the module
+        try:
+            module = __import__(TRANSFORM_NAME)
+        except ImportError:
+            return None
+
+        # Now that we have the module, remove the module from the path
+        sys.path.pop(0)
+
+        # discover subclasses of our BaseTransform class -- just take the first one,
+        # there shouldn't really be multiple per module
+        for name, cls in inspect.getmembers(module):
+            if inspect.isclass(cls) and issubclass(cls, BaseTransform) and cls != BaseTransform:
+                return cls()
+
+        return None # No valid class in the module
+
+        
+    def _get_transform_from_xslt(self, schema_dir):
         with open(schema_dir.get_full_transform_path(), 'r') as transform_file:
-            return etree.XSLT(etree.parse(transform_file))
+            transform_func = etree.XSLT(etree.parse(transform_file))
+            
+        # XSLTs should transform data into SDMX form
+        return BaseTransform.from_transformation_func(transform_func, 'to_sdmx')
 
 # get the core schemas
 loader = IndivoSchemaLoader(settings.CORE_SCHEMA_LOC)

@@ -6,6 +6,7 @@ import os
 import sys
 import hashlib
 import re
+from StringIO import StringIO
 from lxml import etree
 
 from indivo.models import DocumentSchema, Fact
@@ -106,40 +107,29 @@ class DocumentProcessing(object):
       
       # But they have to all be Fact objects
       for fact in output:
-        if not isinstance(output, Fact):
-          raise ValueError("Transform output a list of fact objects, but not all list elements were facts.")
-        ret.append(output)
-
-    # If the output of the transform was our Simple Data Modeling XML, we'll 
-    # need to parse it
-    elif isinstance(output, etree._ElementTree):
-      parser = SDMXData(output)
-      ret.extend([instance for instance in parser.get_output()])
-
-
-    # If the output of the transform was our Simple Data Modeling JSON, we'll need to parse it
-    # TODO
-
+        if not isinstance(fact, Fact):
+          raise ValueError("Transform outputted a list of fact objects, but not all list elements were facts.")
+        ret.append(fact)
     
     return ret
 
   @NonBinaryLazyProperty
   def content_etree(self):
     try:
-      return etree.XML(self.content)
+      return etree.parse(StringIO(self.content))
     except Exception, e:
       return None # Don't raise an error, so processing can still 'work' if validation is turned off
 
   @NonBinaryLazyProperty
   def basename(self):
     if self.content_etree is not None:
-      return ETREE_NS_RE.sub('', self.content_etree.tag)
+      return ETREE_NS_RE.sub('', self.content_etree.getroot().tag)
     return None
 
   @NonBinaryLazyProperty
   def fqn(self):
     if self.content_etree is not None:
-      return ETREE_NS_RE.sub('\g<ns>', self.content_etree.tag)
+      return ETREE_NS_RE.sub('\g<ns>', self.content_etree.getroot().tag)
     return None
 
   @NonBinaryLazyProperty

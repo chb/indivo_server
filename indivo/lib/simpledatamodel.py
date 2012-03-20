@@ -16,62 +16,6 @@ from indivo.models import Fact
 from lxml import etree
 from indivo.lib import iso8601
 
-test_sdmj_definition = '''
-{
-    "__modelname__": "Medication",
-    "name": "String",
-    "date_started": "Date",
-    "date_stopped": "Date",
-    "brand_name": "String", 
-    "route": "String",
-    "prescription": {
-        "__modelname__": "Prescription",
-        "prescribed_by_name": "String",
-        "prescribed_by_institution": "String",
-        "prescribed_on": "Date",
-        "prescribed_stop_on": "Date"
-        },
-    "fills": [{
-            "__modelname__": "Fill",
-            "date_filled": "Date",
-            "supply_days": "Number",
-            "filled_at_name": "String"
-            }]
-}
-'''
-   
-test_sdmj_document = '''
-{
-    "__modelname__": "Medication",
-    "name": "ibuprofen",
-    "date_started": "10-01-2010T00:00:00Z",
-    "date_stopped": "10-31-2010T00:00:00Z",
-    "brand_name": "Advil",
-    "route": "Oral",
-    "prescription": {
-        "__modelname__": "Prescription"
-        "prescribed_by_name": "Kenneth D. Mandl",
-        "prescribed_by_institution": "Children'sHospitalBoston",
-        "prescribed_on": "09-30-2010T00: 00: 00Z",
-        "prescribed_stop_on": "10-31-2010T00: 00: 00Z"
-    },
-    "fills": [
-        {
-            "__modelname__": "Fill"
-            "date_filled": "10-01-2010T00: 00: 00Z",
-            "supply_days": "15",
-            "filled_at_name": "CVS"
-        },
-        {
-            "__modelname__": "Fill"
-            "date_filled": "10-16-2010T00: 00: 00Z",
-            "supply_days": "15",
-            "filled_at_name": "CVS"
-        }
-    ]
-}
-'''
-
 SDM_TYPES = {
     'Date': (models.DateTimeField, {'null':True}),
     'String': (models.CharField, {'max_length': 255, 'null':True}),
@@ -87,7 +31,7 @@ class SDMJ(object):
 
     Usage of subclasses looks like:
     >>> parser = SDMJSubclass()
-    >>> django_objs = parser.get_output()
+    >>> for django_obj in parser.get_output(): do_stuff()
     
     """
     
@@ -118,6 +62,30 @@ class SDMJ(object):
             for django_obj in self._parse():
                 self.output_objects.append(django_obj)
                 yield django_obj
+
+test_sdmj_definition = '''
+{
+    "__modelname__": "Medication",
+    "name": "String",
+    "date_started": "Date",
+    "date_stopped": "Date",
+    "brand_name": "String", 
+    "route": "String",
+    "prescription": {
+        "__modelname__": "Prescription",
+        "prescribed_by_name": "String",
+        "prescribed_by_institution": "String",
+        "prescribed_on": "Date",
+        "prescribed_stop_on": "Date"
+        },
+    "fills": [{
+            "__modelname__": "Fill",
+            "date_filled": "Date",
+            "supply_days": "Number",
+            "filled_at_name": "String"
+            }]
+}
+'''
 
 class SDMJSchema(SDMJ):
     """ A class for parsing SDMJ definitions and building them as Django Model Subclasses. """
@@ -224,13 +192,153 @@ class SDMJSchema(SDMJ):
         # And we're done!
         return (subdefs_to_parse, klass)        
 
+test_sdmj_document = '''
+{
+    "__modelname__": "Medication",
+    "name": "ibuprofen",
+    "date_started": "10-01-2010T00:00:00Z",
+    "date_stopped": "10-31-2010T00:00:00Z",
+    "brand_name": "Advil",
+    "route": "Oral",
+    "prescription": {
+        "__modelname__": "Prescription"
+        "prescribed_by_name": "Kenneth D. Mandl",
+        "prescribed_by_institution": "Children'sHospitalBoston",
+        "prescribed_on": "09-30-2010T00: 00: 00Z",
+        "prescribed_stop_on": "10-31-2010T00: 00: 00Z"
+    },
+    "fills": [
+        {
+            "__modelname__": "Fill"
+            "date_filled": "10-01-2010T00: 00: 00Z",
+            "supply_days": "15",
+            "filled_at_name": "CVS"
+        },
+        {
+            "__modelname__": "Fill"
+            "date_filled": "10-16-2010T00: 00: 00Z",
+            "supply_days": "15",
+            "filled_at_name": "CVS"
+        }
+    ]
+}
+'''
+
 class SDMJData(SDMJ):
     """ A class for parsing SDMJ data, and building it into Django Model instances. """
-    
-    def _parse(self):
-        # TODO
-        pass
 
+    def _parse(self):
+        """ Parses the data string into Django model instances. """
+
+        # Add our toplevel SDMJ documents to the stack
+        parse_stack = []
+        for toplevel_model_instance in self.parsed_data:
+            parse_stack.append((toplevel_model_instance, None, None, None))
+
+        # Parse until the stack is empty
+        while parse_stack:
+            next = parse_stack.pop()
+            subdefs_to_parse, model_instance = self._parse_one(*next)
+                
+            # Add the submodels to our stack
+            parse_stack.extend(subdefs_to_parse)
+
+            # Yield the model instance we just created
+            yield model_instance
+
+    def _parse_one(self, instance_dict, rel_parent_obj=None, rel_fieldname=None, rel_to_parent=False):
+        """ Build one Django model instance.
+        
+        rel_parent_obj, rel_fieldname, and rel_to_parent, if provided, are instructions to set up a 
+        reference to the parent object. Rel_fieldname is the field on which to create the reference,
+        and rel_on_parent indicates which direction the reference should go (child to parent for a
+        manytomany relationship, parent to child for a onetoone relationship).
+
+        Returns a tuple of (subdefs_to_parse, parsed_instance), where subdefs_to_parse is a list
+        of subobjects that need parsing, and parsed_instance is an instance of the 
+        django.db.models.Model subclass we have just parsed. List elements of subdefs_to_parse are 
+        tuples of (instance_etree, rel_parent_obj, rel_fieldname, rel_to_parent), appropriate for passing 
+        back into this function.
+        
+        """
+
+        subobjs_found = []
+        subdefs_to_parse = []
+        fields = {}
+
+        # Pull out our model's name first, so we can pass it into submodels as needed.
+        model_name = instance_dict.get(MODEL_NAME_KEY, None)
+        del instance_dict[MODEL_NAME_KEY]
+        if not model_name:
+            raise SDMDataException("All SDM data instances must specify the model they belong to.")
+     
+        try:
+            model_class = getattr(__import__('indivo.models', fromlist=[str(model_name)]), model_name, None)
+        except ImportError:
+            model_class = None
+        finally:
+            if not model_class:
+                raise SDMDataException("SDM model specified a non-existent data-model: %s"%model_name)
+
+        for fieldname, raw_value in instance_dict.iteritems():
+            if isinstance(raw_value, list):
+                # OneToMany Field: we save the subobjects for later parsing.
+                # We tell the subobject to add a reference to our instance on a field
+                # named after the lowercase of our modelname.
+                for subobject_dict in raw_value:                
+                    subobjs_found.append((subobject_dict, model_name.lower(), True))
+
+            elif isinstance(raw_value, dict):
+                # OnetoOne Field: we save the subobject for later parsing.
+                # We tell the subobject to add a reference from our instance to them
+                subobjs_found.append((raw_value, fieldname, False))
+
+            else:
+                # Simple Field: we validate the datatype, then add the data to our model
+                # get the field definition on the class
+                model_field = model_class._meta.get_field(fieldname)
+                if not model_field:
+                    raise SDMDataException("Non-existent data field: %s"%fieldname)
+                
+                if not raw_value:
+                    fields[fieldname] = None
+                
+                else:
+
+                    # since everything is coming in as a string, try converting to native Django types
+                    if isinstance(model_field, models.DateField):
+                        try:
+                            value = iso8601.parse_utc_date(raw_value)
+                        except Exception as e:
+                            raise SDMDataException("SDM data for field %s should have been an iso8601 datetime: got %s instead"%(fieldname, raw_value))
+
+                    elif isinstance(model_field, models.FloatField) and raw_value:
+                        try:
+                            value = float(raw_value)
+                        except Exception as e:
+                            raise SDMDataException("SDM data for field %s should have been numeric: got %s instead"%(fieldname, raw_value))
+                    else:
+                        value = raw_value
+ 
+                    fields[fieldname] = value
+
+        # Add a reference from us to them, if we were asked to.
+        if rel_parent_obj and rel_to_parent:
+            fields[rel_fieldname] = rel_parent_obj
+
+        # Now build the Django Model instance
+        instance = model_class(**fields)
+
+        # Add a reference from them to us, if we were asked to.
+        if rel_parent_obj and not rel_to_parent:
+            setattr(rel_parent_obj, rel_fieldname, instance)
+
+        # Add ourselves as the parent to all of our subinstances
+        for subobj_dict, subobj_field, subobj_direction in subobjs_found:
+            subdefs_to_parse.append((subobj_dict, instance, subobj_field, subobj_direction))
+
+        # And we're done!
+        return (subdefs_to_parse, instance)        
 
 test_sdmx_document = '''
 <Models>
@@ -296,7 +404,7 @@ class SDMXData(object):
             # Add the submodels to our stack
             parse_stack.extend(subdefs_to_parse)
 
-            # Yield the model_class we just created
+            # Yield the model instance we just created
             yield model_instance
 
     def _parse_one(self, instance_etree, rel_parent_obj=None, rel_fieldname=None, rel_to_parent=False):

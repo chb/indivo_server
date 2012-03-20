@@ -1,5 +1,5 @@
 <Allergy xmlns="http://indivo.org/vocab/xml/documents#">
-  <dateDiagnosed>2009-05-16</dateDiagnosed>
+  <dateDiagnosed>2009-05-16T00:00:00Z</dateDiagnosed>
   <diagnosedBy>Children's Hospital Boston</diagnosedBy>
   <allergen>
     <type type="http://codes.indivo.org/codes/allergentypes/" value="drugs">Drugs</type>
