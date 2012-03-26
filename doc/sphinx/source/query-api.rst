@@ -58,8 +58,8 @@ Filtering Operators
   returning a sliced portion of the result set from indices ``offset`` to 
   ``offset + limit``.
 
-* Custom Filters: Syntax is: ``?{field}={value}``. Limits result sets to items 
-  where the passed field has the passed value. If no items have such a value in 
+* Custom Filters: Syntax is: ``?{field}={value[|value]...}``. Limits result sets to items 
+  where the passed field is in the set of pipe delimited values. If no items have such a value in 
   the passed field, the query will return an empty result set. Field names must 
   be data fields exposed by the desired report type.
 
@@ -225,6 +225,13 @@ Get all labs of type 'Hematology' within a date range
   
   GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology&
   date_range=date_measured*2009-05-04T00:00:00Z*2011-03-09T00:00:00Z
+
+Get all labs of type 'Hematology' or 'Chemistry' 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+  
+  GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology|Chemistry
 
 .. 
   Get the average result value of all labs of type 'Hematology'
