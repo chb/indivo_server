@@ -81,21 +81,19 @@ RELATED_LIST = [
 
 class FactQuery(object):
     def __init__(self, model, model_filters,
-                 group_by, date_group, aggregate_by,
-                 limit, offset, order_by,
-                 status, date_range, filters,
+                 query_options,
                  record=None, carenet=None):
         self.model = model
         self.valid_filters = model_filters
-        self.group_by = group_by
-        self.date_group = date_group
-        self.aggregate_by = aggregate_by
-        self.limit = limit
-        self.offset = offset
-        self.order_by = order_by
-        self.status = status
-        self.date_range = date_range
-        self.query_filters = filters
+        self.group_by = query_options['group_by']
+        self.date_group = query_options['date_group']
+        self.aggregate_by = query_options['aggregate_by']
+        self.limit = query_options['limit']
+        self.offset = query_options['offset']
+        self.order_by = query_options['order_by']
+        self.status = query_options['status']
+        self.date_range = query_options['date_range']
+        self.query_filters = query_options['filters']
         
         self.results = None
         self.trc = None
@@ -199,8 +197,14 @@ class FactQuery(object):
             if self.valid_filters.has_key(field):
                 field_type = self.valid_filters[field][1]
                 try:
-                    parsed_val = EXPOSED_TYPES[field_type](val)
-                    filter_args[self.valid_filters[field][0]] = parsed_val
+                    val = val.split('|')
+                    if len(val) == 1:
+                        parsed_val = EXPOSED_TYPES[field_type](val[0])
+                        filter_args[self.valid_filters[field][0]] = parsed_val
+                    else:
+                        parsed_values = [EXPOSED_TYPES[field_type](x) for x in val]
+                        if len(parsed_values) > 0:
+                            filter_args[self.valid_filters[field][0] + '__in'] = parsed_values
                 except:
                     raise ValueError('Invalid argument type for field %s: expected %s, got %s'%(field, field_type, val))
             else:

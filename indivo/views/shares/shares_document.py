@@ -82,7 +82,7 @@ def carenet_record(request, carenet):
 
 
 @marsloader()
-def carenet_document_list(request, carenet, limit, offset, status, order_by):
+def carenet_document_list(request, carenet, query_options):
   """List documents from a given carenet.
 
   request.GET may contain:
@@ -109,6 +109,8 @@ def carenet_document_list(request, carenet, limit, offset, status, order_by):
   documents = carenet_documents_filter(carenet, carenet.record.documents)
   tdc = documents.count()
 
+  offset = query_options['offset']
+  limit = query_options['limit']
   ret_documents = documents[offset:offset+limit]
 
   return _render_documents(ret_documents, carenet.record, None, tdc)

@@ -21,7 +21,7 @@ ACTIVE_STATE = 'active'
 
 
 @marsloader()
-def record_list(request, account, status, limit=None, offset=None, order_by=None):
+def record_list(request, account, query_options): # TODO defaults were previously None, decorator's are not.  These are not currently used.
   """ List all available records for an account.
 
   This includes records that *account* owns, records that have been fully shared

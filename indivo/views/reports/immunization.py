@@ -41,9 +41,8 @@ def carenet_immunization_list(*args, **kwargs):
   return _immunization_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _immunization_list(request, group_by, date_group, aggregate_by,
-                       limit, offset, order_by,
-                       status, date_range, filters,
+def _immunization_list(request, 
+                       query_options,
                        record=None, carenet=None):
   """ List the immunization objects matching the passed query parameters.
   
@@ -55,9 +54,7 @@ def _immunization_list(request, group_by, date_group, aggregate_by,
   """
 
   q = FactQuery(Immunization, IMMUNIZATION_FILTERS,
-                group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                status, date_range, filters,
+                query_options,
                 record, carenet)
   try:
     return q.render(IMMUNIZATION_TEMPLATE)

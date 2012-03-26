@@ -28,9 +28,7 @@ AUDIT_FILTERS = {
 AUDIT_TEMPLATE = 'audit.xml'
 
 @marsloader(query_api_support=True)
-def audit_query(request, group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                status, date_range, filters,
+def audit_query(request, query_options,
                 record=None):
   """ Select Audit Objects via the Query API Interface.
 
@@ -42,26 +40,25 @@ def audit_query(request, group_by, date_group, aggregate_by,
   the arguments to the query interface are invalid.
 
   """
-
-  query_filters = copy.copy(filters)
+  query_filters = copy.copy(query_options['filters'])
   if record:
     # Careful: security hole here.
     # /records/abc/audits/?record_id=bcd is dangerous
     # Eliminate that possibility
-    if filters.has_key('record_id') and filters['record_id'] is not record.id:
+    if query_filters.has_key('record_id') and query_filters['record_id'] is not record.id:
       return HttpResponseBadRequest('Cannot make Audit queries over records not in the request url')
     
     query_filters['record_id'] = record.id
-
+    query_options['filters'] = query_filters
+    query_options['status'] = None #ignore status for audits
+    
   q = FactQuery(Audit, AUDIT_FILTERS,
-                group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                None, date_range, query_filters, # ignore status for audits
+                query_options,
                 record=None, carenet=None)
   try:
     # Don't display record_id in the output if it wasn't in the query string.
     q.execute()
-    if q.query_filters.has_key('record_id') and not filters.has_key('record_id'):
+    if q.query_filters.has_key('record_id') and not query_options['filters'].has_key('record_id'):  # TODO same danger if not using a copy of filters?
       del q.query_filters['record_id']
     
     return q.render(AUDIT_TEMPLATE)
@@ -74,7 +71,7 @@ def audit_query(request, group_by, date_group, aggregate_by,
 ## Use Query API via audit_query #
 ##################################
 @marsloader()
-def audit_function_view(request, record, document_id, function_name, limit, offset, order_by, status=None):
+def audit_function_view(request, record, document_id, function_name, query_options): # TODO previous default status of None vs decorator's
   """ Return audits of calls to *function_name* touching *record* and *document_id*.
 
   Will return :http:statuscode:`200` with matching audits on succes, 
@@ -89,6 +86,11 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
     audits = Audit.objects.filter(record_id=record.id,
                                   document_id=document_id, 
                                   view_func=function_name).order_by('-datetime')
+                                  
+    offset = query_options['offset']
+    limit = query_options['limit']
+    order_by = query_options['order_by']
+    status = query_options['status']
     return render_template('reports/report', 
                            {'fobjs' : audits[offset:offset+limit],
                             'trc': len(audits),
@@ -103,7 +105,7 @@ def audit_function_view(request, record, document_id, function_name, limit, offs
 
 
 @marsloader()
-def audit_record_view(request, record, limit, offset, order_by, status = None):
+def audit_record_view(request, record, query_options): # TODO previous default status of None vs decorator's
   """ Return audits of calls touching *record*.
 
   Will return :http:statuscode:`200` with matching audits on succes, 
@@ -113,7 +115,10 @@ def audit_record_view(request, record, limit, offset, order_by, status = None):
      Use :py:meth:`~indivo.views.audit.audit_query` instead.
 
   """
-
+  offset = query_options['offset']
+  limit = query_options['limit']
+  order_by = query_options['order_by']
+  status = query_options['status']
   try:
     audits = Audit.objects.filter(record_id=record.id).order_by('-datetime')
     return render_template('reports/report', 
@@ -130,7 +135,7 @@ def audit_record_view(request, record, limit, offset, order_by, status = None):
 
 
 @marsloader()
-def audit_document_view(request, record, document_id, limit, offset, order_by, status=None):
+def audit_document_view(request, record, document_id, query_options):
   """ Return audits of calls touching *record* and *document_id*.
 
   Will return :http:statuscode:`200` with matching audits on succes, 
@@ -144,6 +149,11 @@ def audit_document_view(request, record, document_id, limit, offset, order_by, s
   try:
     audits = Audit.objects.filter(record_id=record.id,
                                   document_id=document_id).order_by('-datetime')
+                                  
+    offset = query_options['offset']
+    limit = query_options['limit']
+    order_by = query_options['order_by']
+    status = query_options['status']
     return render_template('reports/report', 
                            {'fobjs' : audits[offset:offset+limit],
                             'trc': len(audits),

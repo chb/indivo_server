@@ -130,7 +130,7 @@ def record_message_attach(request, record, message_id, attachment_num):
   return DONE
 
 @marsloader()
-def account_inbox(request, account, limit, offset, status, order_by):
+def account_inbox(request, account, query_options):
   """ List messages in an account's inbox.
 
   Messages will be ordered by *order_by* and paged by *limit* and
@@ -144,7 +144,7 @@ def account_inbox(request, account, limit, offset, status, order_by):
 
   """
 
-  messages = account.message_as_recipient.order_by(order_by)
+  messages = account.message_as_recipient.order_by(query_options['order_by'])
 
   if not request.GET.get('include_archive', False):
     messages = messages.filter(archived_at=None)
@@ -229,7 +229,7 @@ def account_message_archive(request, account, message_id):
 
 
 @marsloader()
-def account_notifications(request, account, limit, offset, status, order_by):
+def account_notifications(request, account, query_options):
   """ List an account's notifications.
 
   Orders by *order_by*, pages by *limit* and *offset*.
@@ -238,5 +238,5 @@ def account_notifications(request, account, limit, offset, status, order_by):
 
   """
 
-  notifications = Notification.objects.filter(account = account).order_by(order_by)
+  notifications = Notification.objects.filter(account = account).order_by(query_options['order_by'])
   return render_template('notifications', {'notifications' : notifications})
