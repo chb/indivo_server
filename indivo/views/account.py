@@ -500,6 +500,10 @@ def account_create(request):
     if not account_id or not utils.is_valid_email(account_id):
         return HttpResponseBadRequest("Account ID not valid")
     
+    contact_email = request.POST.get('contact_email', account_id)
+    if not contact_email or not utils.is_valid_email(contact_email):
+        return HttpResponseBadRequest("Contact email not valid")
+    
     new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
         
@@ -509,7 +513,7 @@ def account_create(request):
         # see the primary secret.
         
         new_account.full_name = request.POST.get('full_name', '')
-        new_account.contact_email = request.POST.get('contact_email', account_id)
+        new_account.contact_email = contact_email
         
         new_account.creator = request.principal
         

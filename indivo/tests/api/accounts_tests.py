@@ -66,8 +66,21 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_create_accounts(self):
+        # check invalid email address
+        email = "mybadmail2@mail.ma@"
+        contact_email = "mymail2@mail.ma"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':contact_email,'password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 400)
+        
+        # check invalid contact email address 
         email = "mymail2@mail.ma"
-        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':'contactemail','password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        contact_email = "mybadmail2"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':contact_email,'password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 400)
+        
+        # valid email and contact addresses
+        contact_email = "mymail2@mail.ma"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':contact_email,'password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)        
         
     def test_change_password(self):
