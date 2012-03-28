@@ -168,6 +168,7 @@ class AccountInternalTests(InternalTests):
         msg = TEST_MESSAGES[0]
         data = {'message_id': msg['message_id'],
                 'body':msg['body'],
+                'body_type':'markdown',
                 'severity':msg['severity'],
                 }
         response = self.client.post('/accounts/%s/inbox/'%(self.account.email), urlencode(data),'application/x-www-form-urlencoded')

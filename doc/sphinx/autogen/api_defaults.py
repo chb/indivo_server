@@ -62,7 +62,7 @@ DATA_FIELD_DESC = {
     'body':'The message body. Defaults to ``[no body]``.',
     'severity': 'The importance of the message. Options are ``low``, ``medium``, ``high``. Defaults to ``low``.',
     'subject':'The message subject. Defaults to ``[no subject]``.',
-    'body_type':'The formatting of the message body. Options are ``plaintext``, ``markdown``. Defaults to ``markdown``.',
+    'body_type':'The formatting of the message body. Options are ``plaintext``, ``markdown``. Defaults to ``plaintext``.',
     '':'The raw content of the document to create.',
     }
 

@@ -57,6 +57,7 @@ def account_send_message(request, account):
     external_identifier = request.POST.get('message_id', None), 
     subject             = _get_subject(request),
     body                = request.POST.get('body', "[no body]"),
+    body_type           = request.POST.get('body_type', 'plaintext'),
     severity            = request.POST.get('severity', 'low'))
   
   account.notify_account_of_new_message()

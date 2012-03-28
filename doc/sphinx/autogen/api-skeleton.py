@@ -304,6 +304,7 @@ CALLS=[{
         },
     "data_fields":{
         'body':'The message body. Defaults to ``[no body]``.',
+        'body_type':'The formatting of the message body. Options are ``plaintext``, ``markdown``. Defaults to ``plaintext``.',
         'subject':'The message subject. Defaults to ``[no subject]``.',
         'message_id':'An external identifier for the message.',
         'severity':'The importance of the message. Options are ``low``, ``medium``, ``high``. Defaults to ``low``.',
