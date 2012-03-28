@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#" xmlns:indivo="http://indivo.org/vocab/xml/documents#">
+
+  <xs:complexType name="CodedValue">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+	<xs:attribute name="type" type="xs:anyURI" use="optional" />
+	<xs:attribute name="value" type="xs:string" use="optional" />
+	<xs:attribute name="abbrev" type="xs:string" use="optional" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>
+  

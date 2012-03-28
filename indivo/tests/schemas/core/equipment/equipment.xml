@@ -1,0 +1,10 @@
+<Equipment xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateStarted>2009-02-05</dateStarted>
+  <dateStopped>2010-06-12</dateStopped>
+  <type>cardiac</type>
+  <name>Pacemaker</name>
+  <vendor>Acme Medical Devices</vendor>
+  <id>167-ABC-23</id>
+  <description>it works</description>
+  <specification>blah blah blah</specification>
+</Equipment>

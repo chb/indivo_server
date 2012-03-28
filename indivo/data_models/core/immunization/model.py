@@ -2,7 +2,7 @@
 Indivo Models for Immunizations
 """
 
-from fact import Fact
+from indivo.models import Fact
 from django.db import models
 from django.conf import settings
 

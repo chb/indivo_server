@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#"
+	   xmlns:indivo="http://indivo.org/vocab/xml/documents#" elementFormDefault="qualified">
+
+  <xs:complexType name="Range">
+    <xs:sequence>
+      <!-- a missing minimum means < max -->
+      <xs:element name="minimum" type="xs:double" minOccurs="0" maxOccurs="1" />
+
+      <!-- a missing maximum means > min -->
+      <xs:element name="maximum" type="xs:double" minOccurs="0" maxOccurs="1" />
+
+      <!-- technically this schema allows a range with neither min nor max, which doesn't mean much, but no big deal -->
+
+      <xs:element name="unit" type="indivo:CodedValue" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <!-- an ordinal, i.e. "2+" is coded using textValue -->
+  <xs:complexType name="ValueAndUnit">
+    <xs:sequence>
+      <xs:element name="value" type="xs:double" minOccurs="0" maxOccurs="1" />
+      <xs:element name="textValue" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="unit" type="indivo:CodedValue" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- a result is an abstract base, only subtypes can be used -->
+  <xs:complexType name="Result" abstract="true">
+    <xs:sequence>
+      <!-- HL7 defines flag types -->
+      <xs:element name="flag" type="indivo:CodedValue" minOccurs="0" maxOccurs="1" />	
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ResultInRange">
+    <xs:complexContent>
+      <xs:extension base="indivo:Result">
+	<xs:sequence>
+	  <xs:element name="valueAndUnit" type="indivo:ValueAndUnit" minOccurs="1" maxOccurs="1" />
+	  
+	  <xs:element name="normalRange" type="indivo:Range" minOccurs="0" maxOccurs="1" />
+	  
+	  <!-- nontoxicrange as in, if it's outside the range, it's toxic -->
+	  <xs:element name="nonCriticalRange" type="indivo:Range" minOccurs="0" maxOccurs="1" />	  
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- untyped strings, e.g. "positive" -->
+  <xs:complexType name="ResultInSet">
+    <xs:complexContent>
+      <xs:extension base="indivo:Result">
+	<xs:sequence>
+	  <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1" />
+
+	  <!-- the options should be listed in sensible order -->
+	  <xs:element name="option" minOccurs="0" maxOccurs="unbounded">
+	    <xs:complexType>
+	      <xs:simpleContent>
+		<xs:extension base="xs:string">
+		  <xs:attribute name="normal" type="xs:boolean" use="required" />
+		  <xs:attribute name="description" type="xs:string" use="optional" />
+		</xs:extension>
+	      </xs:simpleContent>
+	    </xs:complexType>
+	  </xs:element>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ValueOrRange">
+    <xs:choice>
+      <xs:element name="value" type="indivo:ValueAndUnit" />
+      <xs:element name="range" type="indivo:Range" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="Concentration">
+    <xs:complexContent>
+      <xs:extension base="indivo:ValueOrRange" />
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+  

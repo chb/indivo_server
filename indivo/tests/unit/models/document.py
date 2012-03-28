@@ -29,14 +29,14 @@ class DocumentModelUnitTests(InternalTests):
         self.r_doc2 = self.createDocument(TEST_R_DOCS, 10, record=self.record)
 
         # save the settings we'll be squashing
-        self.old_validate_xml_syntax = settings.VALIDATE_XML_SYNTAX
-        self.old_validate_xml = settings.VALIDATE_XML
+        self.save_setting('VALIDATE_XML_SYNTAX')
+        self.save_setting('VALIDATE_XML')
 
     def tearDown(self):
         
         # restore the settings
-        settings.VALIDATE_XML_SYNTAX = self.old_validate_xml_syntax
-        settings.VALIDATE_XML = self.old_validate_xml
+        self.restore_setting('VALIDATE_XML_SYNTAX')
+        self.restore_setting('VALIDATE_XML')
 
         super(DocumentModelUnitTests, self).tearDown()
         

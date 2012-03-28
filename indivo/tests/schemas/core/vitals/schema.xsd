@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#" xmlns:indivo="http://indivo.org/vocab/xml/documents#"
+	   elementFormDefault="qualified">
+
+  <xs:include schemaLocation="../../common/codes.xsd" />
+
+  <xs:element name="VitalSign">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="dateMeasured" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+        <xs:element name="name" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+        <xs:element name="value" type="xs:decimal" minOccurs="1" maxOccurs="1" />
+        <xs:element name="unit" type="indivo:CodedValue" minOccurs="1" maxOccurs="1" />
+
+        <xs:element name="site" type="xs:string" minOccurs="0" maxOccurs="1" />
+
+        <xs:element name="position" type="xs:string" minOccurs="0" maxOccurs="1" />
+
+        <xs:element name="comments" type="xs:string" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

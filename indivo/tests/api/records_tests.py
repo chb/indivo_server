@@ -575,7 +575,7 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         url = '/records/%s/documents/'%(record_id)
         response = self.client.post(url, data=TEST_R_DOCS[1]['content'], content_type='text/xml')
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 200)                                     
 
     def test_delete_all_record_specific_docs(self):
         record_id = self.record.id

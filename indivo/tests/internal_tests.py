@@ -13,8 +13,6 @@ import shutil
 import datetime
 from xml.dom import minidom
 
-ORIGINAL_MEDIA_ROOT = settings.MEDIA_ROOT
-
 class IndivoTests(object):
     dependencies_loaded = False
     dependencies = {DocumentSchema:('document_schemas',['type']),
@@ -212,27 +210,62 @@ class IndivoTests(object):
             response = method_func(url)
             self.assertEquals(response.status_code, 405)
 
+    def save_setting(self, setting_name):
+        curr_val = getattr(settings, setting_name, None)
+        if self.saved_settings.has_key(setting_name):
+            raise ValueError("Already saved setting %s, can't save it again"%setting_name)
+        self.saved_settings[setting_name] = curr_val        
+
+    def save_and_modify_setting(self, setting_name, setting_val):
+        self.save_setting(setting_name)
+        setattr(settings, setting_name, setting_val)
+
+    def restore_setting(self, setting_name):
+        old_val = self.saved_settings.get(setting_name, None)
+        if not old_val:
+            raise ValueError("Cannot restore setting %s, which was never saved"%setting_name)
+        setattr(settings, setting_name, old_val)
+
+
+    def setup_test_settings(self):
+        self.saved_settings = {}
+
+        # Redirect settings.MEDIA_ROOT, so flat files are saved separately
+        # from existing files
+        test_media_root = os.path.join(settings.APP_HOME, 'indivo/tests/test_files')
+        self.save_and_modify_setting('MEDIA_ROOT', test_media_root)
+
+        # Redirect Schema and Datamodel file locations, so we can play with them during tests
+        self.save_and_modify_setting('CORE_SCHEMA_DIRS', 
+                                     [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/core')])
+        self.save_and_modify_setting('CONTRIB_SCHEMA_DIRS',
+                                     [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/contrib')])
+
+        self.save_and_modify_setting('CORE_DATAMODEL_DIRS',
+                                     [os.path.join(settings.APP_HOME, 'indivo/tests/data_models/core')])
+        self.save_and_modify_setting('CONTRIB_DATAMODEL_DIRS',
+                                     [os.path.join(settings.APP_HOME, 'indivo/tests/data_models/contrib')])
+
+    def restore_test_settings(self):
+        # clear out any test files we created, and restore the MEDIA_ROOT setting
+        for subtree in os.listdir(settings.MEDIA_ROOT):
+            shutil.rmtree(os.path.join(settings.MEDIA_ROOT, subtree))
+        self.restore_setting('MEDIA_ROOT')
+
+        # Restore settings for schema and datamodel locations
+        self.restore_setting('CORE_SCHEMA_DIRS')
+        self.restore_setting('CONTRIB_SCHEMA_DIRS')
+        self.restore_setting('CORE_DATAMODEL_DIRS')
+        self.restore_setting('CONTRIB_DATAMODEL_DIRS')
+
     def setUp(self):
         self.test_data_context = TestDataContext()
         self.disableAccessControl()
         self.loadModelDependencies()
-
-        # Redirect settings.MEDIA_ROOT, so flat files are saved separately
-        # from existing files
-        self.old_media_root = ORIGINAL_MEDIA_ROOT
-        new_path = os.path.join(self.old_media_root, 'test_files')
-        if not os.path.exists(new_path):
-            os.makedirs(new_path) # make dirs recursively, just in case MEDIA_ROOT hasn't been created yet.
-        settings.MEDIA_ROOT = new_path
+        self.setup_test_settings()
 
     def tearDown(self):
-        
-        # clear out any test files we created
-        for subtree in os.listdir(settings.MEDIA_ROOT):
-            shutil.rmtree(os.path.join(settings.MEDIA_ROOT, subtree))
-
-        # reset settings.MEDIA_ROOT
-        settings.MEDIA_ROOT = self.old_media_root
+        self.restore_test_settings()
 
 class InternalTests(IndivoTests, django.test.TestCase):
     """ subclass of Django's TestCase with access to useful utils 

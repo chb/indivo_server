@@ -20,7 +20,7 @@ from . import REGISTERED_SCHEMAS
 DEFAULT_PREFIX= "http://indivo.org/vocab/xml/documents#"
 ETREE_NS_RE = re.compile(r'{(?P<ns>.*?)}')
 
-# subclass of utils.LazyDecorator which returns None if the object is binary
+# subclass of utils.LazyProperty which returns None if the object is binary
 class NonBinaryLazyProperty(LazyProperty):
   def __get__(self, obj, _=None):
     if obj and obj.is_binary:

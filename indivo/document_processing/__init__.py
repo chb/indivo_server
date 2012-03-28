@@ -58,7 +58,7 @@ class IndivoSchemaDir(object):
 
 class IndivoSchemaLoader(object):
 
-    def __init__(self, top):
+    def __init__(self, top=''):
         self.top = top
 
     def import_schemas(self):
@@ -165,9 +165,7 @@ class IndivoSchemaLoader(object):
         return BaseTransform.from_transformation_func(transform_func, 'to_sdmx')
 
 # get the core schemas
-loader = IndivoSchemaLoader(settings.CORE_SCHEMA_LOC)
-loader.import_schemas()
-
-# get the contributed schemas
-loader.top = settings.CONTRIB_SCHEMA_LOC
-loader.import_schemas()
+loader = IndivoSchemaLoader()
+for schema_dir in settings.CORE_SCHEMA_DIRS + settings.CONTRIB_SCHEMA_DIRS:
+    loader.top = schema_dir
+    loader.import_schemas()

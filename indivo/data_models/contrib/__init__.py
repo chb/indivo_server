@@ -2,12 +2,12 @@
 Contributed Indivo DataModels
 """
 
-import sys, os
+from django.conf import settings
+import sys
 
-# Autoload datamodels defined in this package
-from indivo.data_models import IndivoDataModelLoader
-this_dir = os.path.abspath(os.path.dirname(__file__))
+# Autoload contributed datamodels
+from indivo.data_models import load_data_models
 this_module = sys.modules[__name__]
 
-loader = IndivoDataModelLoader(this_dir, module='contrib')
-loader.import_data_models(this_module)
+for data_model_dir in settings.CONTRIB_DATAMODEL_DIRS:
+    load_data_models(data_model_dir, this_module)

@@ -32,7 +32,7 @@ fields = {
   'diagnosed_by': models.CharField(max_length=128, null=True),
   '__unicode__': lambda self: 'Problem %s' % self.id,
 
-  # special Django attrs
+  # special Django attrs: This is a placeholder, and will be replaced when the model is imported
   '__module__': 'indivo.data_models.core',
 }
 

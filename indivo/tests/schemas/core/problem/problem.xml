@@ -1,0 +1,7 @@
+<Problem xmlns="http://indivo.org/vocab/xml/documents#">
+  <dateOnset>2009-05-16T12:00:00</dateOnset>
+  <dateResolution>2009-05-16T16:00:00</dateResolution>
+  <name type="http://codes.indivo.org/problems/" value="123" abbrev="MI">Myocardial Infarction</name>
+  <comments>mild heart attack</comments>
+  <diagnosedBy>Dr. Mandl</diagnosedBy>
+</Problem>

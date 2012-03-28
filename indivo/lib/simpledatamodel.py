@@ -35,12 +35,11 @@ class SDMJ(object):
     
     """
     
-    def __init__(self, data_string, module_name=None):
+    def __init__(self, data_string):
         self.parsed_data = simplejson.loads(data_string)
         if not isinstance(self.parsed_data, list): # Allow lists of SMDJ objects in one string
             self.parsed_data = [self.parsed_data]
 
-        self.module_name = module_name
         self.output_objects = []
 
     def _parse(self):
@@ -183,8 +182,8 @@ class SDMJSchema(SDMJ):
                 fk_name = fk_target.__name__.lower()
             fields[fk_name] = foreign_key
 
-        # Add special Django-specific model attrs
-        fields['__module__'] = self.module_name
+        # Add special Django-specific model attrs: placeholder, will be overwritten when the model is imported
+        fields['__module__'] = 'indivo.data_models.tmp'
 
         # Now build the Django Model class
         klass = type(str(model_name), MODEL_SUPERCLASSES, fields)
@@ -196,27 +195,27 @@ test_sdmj_document = '''
 {
     "__modelname__": "Medication",
     "name": "ibuprofen",
-    "date_started": "10-01-2010T00:00:00Z",
-    "date_stopped": "10-31-2010T00:00:00Z",
+    "date_started": "2010-10-01T00:00:00Z",
+    "date_stopped": "2010-10-31T00:00:00Z",
     "brand_name": "Advil",
     "route": "Oral",
     "prescription": {
         "__modelname__": "Prescription"
         "prescribed_by_name": "Kenneth D. Mandl",
-        "prescribed_by_institution": "Children'sHospitalBoston",
-        "prescribed_on": "09-30-2010T00: 00: 00Z",
-        "prescribed_stop_on": "10-31-2010T00: 00: 00Z"
+        "prescribed_by_institution": "Children's Hospital Boston",
+        "prescribed_on": "2010-09-30T00:00:00Z",
+        "prescribed_stop_on": "2010-10-31T00:00:00Z"
     },
     "fills": [
         {
             "__modelname__": "Fill"
-            "date_filled": "10-01-2010T00: 00: 00Z",
+            "date_filled": "2010-10-01T00:00:00Z",
             "supply_days": "15",
             "filled_at_name": "CVS"
         },
         {
             "__modelname__": "Fill"
-            "date_filled": "10-16-2010T00: 00: 00Z",
+            "date_filled": "2010-10-16T00:00:00Z",
             "supply_days": "15",
             "filled_at_name": "CVS"
         }
