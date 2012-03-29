@@ -172,7 +172,8 @@ def load_access_rules():
         or principal.isInCarenet(carenet) \
         or principal.isType('MachineApp')
   views = [carenet_account_list, # WHY CAN'T A PHA DO THESE? (they should)
-           carenet_apps_list]
+           carenet_apps_list,
+           carenet_record]
   AccessRule('Carenet Read Access', carenet_read_access, views)
 
   # Should admins do these? Why can't record-level PHAs do these? define more clearly
