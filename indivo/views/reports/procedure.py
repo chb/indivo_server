@@ -41,9 +41,7 @@ def carenet_procedure_list(*args, **kwargs):
   return _procedure_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _procedure_list(request, group_by, date_group, aggregate_by,
-                    limit, offset, order_by,
-                    status, date_range, filters,
+def _procedure_list(request, query_options,
                     record=None, carenet=None):
   """ List the procedure objects matching the passed query parameters.
   
@@ -55,9 +53,7 @@ def _procedure_list(request, group_by, date_group, aggregate_by,
   """
 
   q = FactQuery(Procedure, PROCEDURE_FILTERS,
-                group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                status, date_range, filters,
+                query_options,
                 record, carenet)
 
   try:

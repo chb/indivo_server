@@ -16,16 +16,33 @@ def import_data(verbosity=True):
       lines.append(line.strip())
     dom = minidom.parseString(''.join(lines))
     for root in dom.childNodes:
+      # Make sure to pull in required info first
+      # This is hack, but the required stuff shouldn't
+      # really be in the data file anyways.
+      
+      # Required info is auth_systems, status_names, document_schemas
+      req_secs = ['auth_systems', 'status_names', 'document_schemas']
+
       for section in root.childNodes:
-        try:
-          # Note the nodeName, className and fileName relationship
-          if section and hasattr(section, 'nodeName'):
-            if hasattr(datasections, section.nodeName):
-              class_name = section.nodeName.capitalize()
-              seclib = getattr(datasections, section.nodeName)
-              if hasattr(seclib, class_name):
-                getattr(seclib, class_name)(section, verbosity)
-        except ImportError:
-          pass
+        if section and getattr(section, 'nodeName', None) in req_secs:
+          import_section(section, verbosity)
+
+      # Now import the others
+      for section in root.childNodes:
+        if section and getattr(section, 'nodeName', None) not in req_secs:
+          import_section(section, verbosity)
   else:
     raise ValueError("No indivo_data.xml file found")
+
+def import_section(section, verbosity):
+  try:
+    # Note the nodeName, className and fileName relationship
+    if hasattr(section, 'nodeName'):
+      if hasattr(datasections, section.nodeName):
+        class_name = section.nodeName.capitalize()
+        seclib = getattr(datasections, section.nodeName)
+        if hasattr(seclib, class_name):
+          getattr(seclib, class_name)(section, verbosity)
+  except ImportError:
+    pass
+

@@ -11,8 +11,10 @@ from base import *
 import urllib
 import logging
 from indivo.lib import utils
+from indivo.lib.sample_data import IndivoDataLoader
 from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
+from django.conf import settings
 from django.db.models import Q
 
 ACTIVE_STATE, UNINITIALIZED_STATE = 'active', 'uninitialized'
@@ -464,7 +466,11 @@ def account_secret(request, account):
 def account_create(request):
     """ Create a new account, and send out initialization emails.
     
-    request.POST holds the creation arguments. 
+    ``request.POST`` holds the creation arguments. 
+
+    In Demo Mode, this call
+    automatically creates new records for the account, populated with
+    sample data. See :doc:`/sample-data` for details.
     
     Required Parameters:
     
@@ -500,6 +506,10 @@ def account_create(request):
     if not account_id or not utils.is_valid_email(account_id):
         return HttpResponseBadRequest("Account ID not valid")
     
+    contact_email = request.POST.get('contact_email', account_id)
+    if not contact_email or not utils.is_valid_email(contact_email):
+        return HttpResponseBadRequest("Contact email not valid")
+    
     new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
         
@@ -509,7 +519,7 @@ def account_create(request):
         # see the primary secret.
         
         new_account.full_name = request.POST.get('full_name', '')
-        new_account.contact_email = request.POST.get('contact_email', account_id)
+        new_account.contact_email = contact_email
         
         new_account.creator = request.principal
         
@@ -519,14 +529,33 @@ def account_create(request):
         
         # we don't allow setting the password here anymore
         new_account.save()
-        
+            
+        if settings.DEMO_MODE:
+            loader = IndivoDataLoader(request.principal)
+            
+            # Create new records for the account, populated by sample data.
+            for record_label, data_profile in settings.DEMO_PROFILES.iteritems():
+                
+                # Create the record
+                record = Record.objects.create(creator=request.principal,
+                                               label=record_label,
+                                               owner=new_account)
+
+                try:
+                    # Load the data: no transactions, as we're already managing them above
+                    loader.load_profile(record, data_profile, transaction=False)
+                except Exception, e: # Something went wrong: roll everything back and fail
+                    logging.exception(e)
+                    raise
+
         if primary_secret_p:
             new_account.generate_secrets(secondary_secret_p = secondary_secret_p)
             try:
                 new_account.send_secret()
             except Exception, e:
                 logging.exception(e)
-    
+
+                
     # account already existed
     else:
         return HttpResponseBadRequest("An account with email address %s already exists." % account_id)

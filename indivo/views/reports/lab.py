@@ -42,10 +42,8 @@ def carenet_lab_list(*args, **kwargs):
   return _lab_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _lab_list(request, group_by, date_group, aggregate_by,
-             limit, offset, order_by,
-             status, date_range, filters,
-             record=None, carenet=None):
+def _lab_list(request, query_options, 
+              record=None, carenet=None):
   """ List the lab objects matching the passed query parameters.
   
   See :doc:`/query-api` for a listing of valid parameters.
@@ -56,9 +54,7 @@ def _lab_list(request, group_by, date_group, aggregate_by,
   """
 
   q = FactQuery(Lab, LAB_FILTERS, 
-                group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                status, date_range, filters,
+                query_options,
                 record, carenet)
   try:
     return q.render(LAB_TEMPLATE)

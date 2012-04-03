@@ -24,6 +24,19 @@ SECRET_KEY = 'REPLACEMENOW'
 # absolute filepath where indivo_server is installed
 APP_HOME = '/web/indivo_server'
 
+# Automatically create new records with sample data by default
+DEMO_MODE = False
+
+# which sample data to load when in demo mode. Maps desired record labels
+# to data profiles. 'Data profiles' correspond
+# to subfolders of SAMPLE_DATA_DIR
+DEMO_PROFILES = {
+    'John Doe':'patient_1',
+    }
+
+# Location for sample data
+SAMPLE_DATA_DIR = APP_HOME + '/sample_data'
+
 # URL prefix (where indivo_server will be accessible from the web)
 SITE_URL_PREFIX = "http://localhost:8000"
 

@@ -42,9 +42,7 @@ def carenet_problem_list(*args, **kwargs):
   return _problem_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _problem_list(request, group_by, date_group, aggregate_by,
-                  limit, offset, order_by,
-                  status, date_range, filters,
+def _problem_list(request, query_options,
                   record=None, carenet=None):
   """ List the problem objects matching the passed query parameters.
   
@@ -56,9 +54,7 @@ def _problem_list(request, group_by, date_group, aggregate_by,
   """
 
   q = FactQuery(Problem, PROBLEM_FILTERS,
-                group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                status, date_range, filters,
+                query_options,
                 record, carenet)
   try:
     return q.render(PROBLEM_TEMPLATE)

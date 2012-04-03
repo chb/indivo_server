@@ -1,7 +1,7 @@
-import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests, TransactionInternalTests
 from django.utils.http import urlencode
+from django.conf import settings
 from indivo.tests.data import *
 
 from lxml import etree
@@ -66,9 +66,63 @@ class AccountInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_create_accounts(self):
+        # check invalid email address
+        email = "mybadmail2@mail.ma@"
+        contact_email = "mymail2@mail.ma"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':contact_email,'password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 400)
+        
+        # check invalid contact email address 
         email = "mymail2@mail.ma"
-        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':'contactemail','password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        contact_email = "mybadmail2"
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':contact_email,'password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
+        self.assertEquals(response.status_code, 400)
+        
+        # valid email and contact addresses
+        # Make sure DEMO_MODE = False works as expected
+        prev_num_accounts = Account.objects.all().count()
+        demo_mode = settings.DEMO_MODE
+        settings.DEMO_MODE = False
+        contact_email = "mymail2@mail.ma"
+
+        # create an Account, normally: should be no records
+        response = self.client.post('/accounts/', urlencode({'account_id' : email,'full_name':'fl','contact_email':contact_email,'password':'pass','primary_secret_p':'primaryp','secondary_secret_p':'secondaryp'}),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)        
+        self.assertEqual(Account.objects.all().count(), prev_num_accounts+1)
+        new_acct = Account.objects.get(email=email)
+        self.assertEqual(list(new_acct.records_owned_by.all()), [])
+
+        settings.DEMO_MODE = demo_mode
+
+    def test_create_accounts_demo_mode(self):
+        email = "mymail2@mail.ma"
+        prev_num_accounts = Account.objects.all().count()
+
+        # backup demo settings
+        demo_mode = settings.DEMO_MODE
+        demo_profiles = settings.DEMO_PROFILES
+        data_dir = settings.SAMPLE_DATA_DIR
+
+        # activate demo mode
+        settings.DEMO_MODE = True
+        settings.DEMO_PROFILES = { 'John Doe':'patient_1', 'John Doe 2':'patient_1',}
+        settings.SAMPLE_DATA_DIR = settings.APP_HOME + '/indivo/tests/data/sample'
+
+        # create an Account in demo mode: should see some populated records
+        response = self.client.post('/accounts/', urlencode({'account_id':email, 'full_name':'fl','contact_email':'contactemail@me.com','password':'pass','primary_secret_p':'1','secondary_secret_p':'1'}), 'application/x-www-form-urlencoded')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Account.objects.all().count(), prev_num_accounts+1)
+        new_acct = Account.objects.get(email=email)
+        recs = new_acct.records_owned_by.all()
+        self.assertEqual(recs.count(), 2)
+        self.assertEqual(set([r.label for r in recs]), set(['John Doe', 'John Doe 2']))
+        for r in recs:
+            self.assertNotEqual(Document.objects.filter(record=r).count(), 0)
+
+        # restore demo settings
+        settings.DEMO_MODE = demo_mode
+        settings.DEMO_PROFILES = demo_profiles
+        settings.SAMPLE_DATA_DIR = data_dir
         
     def test_change_password(self):
         response = self.client.post('/accounts/%s/authsystems/password/change'%(self.account.email), urlencode({'old':TEST_ACCOUNTS[4]['password'],'new':"newpassword"}),'application/x-www-form-urlencoded')
@@ -155,6 +209,7 @@ class AccountInternalTests(InternalTests):
         msg = TEST_MESSAGES[0]
         data = {'message_id': msg['message_id'],
                 'body':msg['body'],
+                'body_type':'markdown',
                 'severity':msg['severity'],
                 }
         response = self.client.post('/accounts/%s/inbox/'%(self.account.email), urlencode(data),'application/x-www-form-urlencoded')

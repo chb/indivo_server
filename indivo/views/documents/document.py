@@ -514,36 +514,36 @@ def _render_document(document):
 
 
 @marsloader()
-def app_document_list(request, pha, limit, offset, status, order_by='created_at'):
+def app_document_list(request, pha, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
     """ List app-specific documents.
 
     Calls into :py:meth:`~indivo.views.documents.document.document_list`.
 
     """
 
-    return document_list(request, limit, offset, status, order_by, pha=pha)
+    return document_list(request, query_options, pha=pha)
 
 @marsloader()
-def record_document_list(request, record, limit, offset, status, order_by='created_at'):
+def record_document_list(request, record, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
     """ List record-specific documents.
 
     Calls into :py:meth:`~indivo.views.documents.document.document_list`.
 
     """
 
-    return document_list(request, limit, offset, status, order_by, record=record)
+    return document_list(request, query_options, record=record)
 
 @marsloader()
-def record_app_document_list(request, record, pha, limit, offset, status, order_by='created_at'):
+def record_app_document_list(request, record, pha, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
     """ List record-app-specific documents.
 
     Calls into :py:meth:`~indivo.views.documents.document.document_list`.
 
     """
 
-    return document_list(request, limit, offset, status, order_by, record=record, pha=pha)
+    return document_list(request, query_options, record=record, pha=pha)
 
-def document_list(request, limit, offset, status, order_by='created_at', record=None, pha=None):
+def document_list(request, query_options, record=None, pha=None): # TODO: default order_by matched what is in the decorator, but check with Dan
     """ List Indivo documents.
 
     **Arguments:**
@@ -578,6 +578,11 @@ def document_list(request, limit, offset, status, order_by='created_at', record=
         correspond to an existing Indivo schema.
 
     """
+
+    order_by = query_options['order_by']
+    offset = query_options['offset']
+    limit = query_options['limit']
+    status = query_options['status']
 
     fqn = DocumentProcessing.expand_schema(request.GET.get('type', None))
     try:

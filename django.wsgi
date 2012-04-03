@@ -6,9 +6,9 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../')
 
 # For production servers
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../../')
+#sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)) + '/../../')
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo_server.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 class AdjEnvironMiddleware:
 

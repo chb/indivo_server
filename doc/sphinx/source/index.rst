@@ -62,6 +62,7 @@ App Developers
    Data Pipeline <data-pipeline>
    Experimental API <experimental-api>
    Messaging and Notifications <messaging>
+   Sample Data <sample-data>
    Schemas <schemas/index>
 
 Indivo Administrators
@@ -78,6 +79,7 @@ You'll probably want to start with our
    Coding Systems <coding-systems>
    Connecting Indivo to a Hospital <hospital-connector>
    Localization <localization>
+   Sample Data <sample-data>
    Schemas <schemas/index>
 
 Indivo Hackers
@@ -100,6 +102,7 @@ Indivo Hackers
    Experimental API <experimental-api>
    Localization <localization>
    Messaging and Notifications <messaging>
+   Sample Data <sample-data>
    Schemas <schemas/index>
    todos
 

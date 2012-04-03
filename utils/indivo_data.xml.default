@@ -9,7 +9,7 @@
       <username>jsmith</username>
       <password>password.example</password>
       <records>
-        <record label='John S. Smith' />
+        <record label='John S. Smith' data_profile='patient_2'/>
         <record label='Mary' />
       </records>
     </account>
