@@ -15,6 +15,7 @@ from indivo.lib.sample_data import IndivoDataLoader
 from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
 from django.conf import settings
+from django.db.models import Q
 
 ACTIVE_STATE, UNINITIALIZED_STATE = 'active', 'uninitialized'
 
@@ -291,9 +292,9 @@ def account_search(request):
     
     * *contact_email*: The contact email for the account.
     
-    This call returns only accounts matching all passed 
-    query parameters exactly: there is no partial matching
-    or text-search.
+    This call returns all accounts matching any part of any of the
+    passed query parameters: i.e. it ORs together the query parameters 
+    and runs a partial-text match on each.
     
     Will return :http:statuscode:`200` with XML describing
     matching accounts on success, :http:statuscode:`400` if
@@ -307,11 +308,13 @@ def account_search(request):
     if not (fullname or contact_email):
         return HttpResponseBadRequest('No search criteria given')
     
-    query = Account.objects
+    query_filter = Q()
     if fullname:
-        query = query.filter(full_name = fullname)
+        query_filter |= Q(full_name__icontains = fullname)
     if contact_email:
-        query = query.filter(contact_email = contact_email)
+        query_filter |= Q(contact_email__icontains = contact_email)
+
+    query = Account.objects.filter(query_filter)
     
     return render_template('accounts_search', {'accounts': query}, type='xml')
 
@@ -503,6 +506,10 @@ def account_create(request):
     if not account_id or not utils.is_valid_email(account_id):
         return HttpResponseBadRequest("Account ID not valid")
     
+    contact_email = request.POST.get('contact_email', account_id)
+    if not contact_email or not utils.is_valid_email(contact_email):
+        return HttpResponseBadRequest("Contact email not valid")
+    
     new_account, create_p = Account.objects.get_or_create(email=urllib.unquote(account_id).lower().strip())
     if create_p:
         
@@ -512,7 +519,7 @@ def account_create(request):
         # see the primary secret.
         
         new_account.full_name = request.POST.get('full_name', '')
-        new_account.contact_email = request.POST.get('contact_email', account_id)
+        new_account.contact_email = contact_email
         
         new_account.creator = request.principal
         

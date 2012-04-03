@@ -3,14 +3,14 @@ Hello {{ full_name }}
 You or somebody else has requested a password reset for your account "{{ account.contact_email }}" on {{ url_prefix }}. For security reasons, login to this account has temporarily been disabled.
 
 To reactivate your account without changing the password, please visit the following link{% if account.secondary_secret %} *{% endif %}:
-{{ url_prefix }}/accounts/{{ account.contact_email }}/init/{{ account.primary_secret }}
+{{ url_prefix }}/accounts/{{ account.email }}/init/{{ account.primary_secret }}
 
 To proceed with the password reset, visit this link{% if account.secondary_secret %} *{% endif %}:
-{{ url_prefix }}/accounts/{{ account.contact_email }}/reset_password/{{ account.primary_secret }}
+{{ url_prefix }}/accounts/{{ account.email }}/reset_password/{{ account.primary_secret }}
 
 {% if account.secondary_secret %}
 * You will be asked to enter the confirmation code displayed on the website when you requested to reset your password. If you no longer have your confirmation code you can retrieve it here:
-{{ url_prefix }}/accounts/{{ account.contact_email }}/send_secret/{{ account.primary_secret }}
+{{ url_prefix }}/accounts/{{ account.email }}/send_secret/{{ account.primary_secret }}
 {% endif %}
 If you are having trouble activating your account, you can contact us via email:
 {{ email_support_name }} <{{ email_support_address }}>

@@ -78,7 +78,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Indivo X'
-copyright = u'2011, Daniel Haas, Ben Adida, Arjun Sanyal, Isaac Kohane, Kenneth Mandl'
+copyright = u"2012, Children's Hospital Boston. All rights reserved"
 
 from version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE
 # The version info for the project you're documenting, acts as replacement for

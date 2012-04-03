@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^records/$', MethodDispatcher({'POST': record_create})),
     (r'^records/external/(?P<principal_email>[^/]+)/(?P<external_id>[^/]+)$', 
      MethodDispatcher({'PUT'  : record_create_ext})),
+    (r'^records/search$', MethodDispatcher({'GET':record_search})),                       
     (r'^records/(?P<record_id>[^/]+)', include('indivo.urls.record')),
     
     # PHAs

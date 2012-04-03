@@ -52,7 +52,8 @@ def load_access_rules():
     return principal.isType('MachineApp') or principal.isSame(account)
   views = [account_info,
            account_info_set,
-           account_username_set]
+           account_username_set,
+           record_list,]
   AccessRule('Account Management Owner', account_management_owner, views)
 
   def account_management_by_record(principal, record, **unused_args):
@@ -67,7 +68,6 @@ def load_access_rules():
     """The Account owner."""
     return principal.isSame(account)
   views = [account_password_change,
-           record_list,
            account_inbox,
            account_inbox_message,
            account_inbox_message_attachment_accept,
@@ -82,6 +82,7 @@ def load_access_rules():
     return principal.isType('MachineApp')
   views = [account_create, 
            account_search,
+           record_search,
            account_forgot_password, 
            account_authsystem_add,
            account_check_secrets,
@@ -171,7 +172,8 @@ def load_access_rules():
         or principal.isInCarenet(carenet) \
         or principal.isType('MachineApp')
   views = [carenet_account_list, # WHY CAN'T A PHA DO THESE? (they should)
-           carenet_apps_list]
+           carenet_apps_list,
+           carenet_record]
   AccessRule('Carenet Read Access', carenet_read_access, views)
 
   # Should admins do these? Why can't record-level PHAs do these? define more clearly
@@ -210,10 +212,10 @@ def load_access_rules():
   AccessRule('Record Limited Access', record_limited_access, views)
 
   def record_access(principal, record, **unused_args):
-    """A principal in full control of the record, the admin app that created the record, or a user app with access to the record."""
+    """A principal in full control of the record, any admin app, or a user app with access to the record."""
     return pha_record_access(principal, record) \
         or full_control(principal, record) \
-        or principal.createdRecord(record) # Admins can only view records they created
+        or principal.isType('MachineApp')
   views = [record]
   AccessRule('Record Access', record_access, views)
 
@@ -260,9 +262,9 @@ def load_access_rules():
   AccessRule('Carenet Doc Access', carenet_doc_access, views)
 
   def carenet_special_doc_access(principal, carenet, **unused_args):
-    """A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or the admin app that created the carenet's record."""
+    """A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or any admin app."""
     return carenet_doc_access(principal, carenet) \
-        or principal.createdRecord(carenet.record)
+        or principal.isType('MachineApp')
   views = [read_special_document_carenet]
   AccessRule('Carenet Special Doc Access', carenet_special_doc_access, views)
 
@@ -315,9 +317,9 @@ def load_access_rules():
   AccessRule('Record Admin Doc Access', record_admin_doc_access, views)
   
   def record_special_doc_access(principal, record, **unused_args):
-    """A user app with access to the record, a principal in full control of the record, or the admin app that created the record."""
+    """A user app with access to the record, a principal in full control of the record, or any admin app."""
     return record_doc_access(principal, record) \
-        or principal.createdRecord(record)
+        or principal.isType("MachineApp")
   views = [read_special_document, # should PHAs be able to do this?
            save_special_document]
   AccessRule('Record Special Doc Access', record_special_doc_access, views)

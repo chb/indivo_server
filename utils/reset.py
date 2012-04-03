@@ -14,7 +14,7 @@ from django.core import management
 from django.conf import settings
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../'))
-from django.db import connection
+from django.db import connection, DatabaseError, IntegrityError
 
 from load_codingsystems import load_codingsystems
 from utils.importer import import_data
@@ -88,65 +88,82 @@ parser.add_option("--no-force-drop",
 
 (options, args) = parser.parse_args()
 
-# Reset the Database
-if options.syncdb:
-    print "RESETTING DATABASE..."
+# Prompt for confirmation--we are about to trash a database, after all
+confirm = raw_input("""You have requested a reset of the database.
+This will IRREVERSIBLY DESTROY all data currently in the %r database,
+and return each table to its initial state.
+Are you sure you want to do this?
 
-    # Assume the database exists and is synced: try flushing the database
-    force_drop = options.force_drop
-    if not force_drop:
-        try:
-            print "Flushing the Database of existing data..."
-            management.call_command('flush', verbosity=0)
-            management.call_command('migrate', fake=True, verbosity=0)
-            print "Database Flushed."
+    Type 'yes' to continue, or 'no' to cancel: """ % CONN_DICT['NAME'])
 
-        # Couldn't flush. Either the database doesn't exist, or it is corrupted.
-        # Try dropping and recreating, below
-        except DB_EXCEPTION_MODULE.OperationalError as e:
-            force_drop = True
+if confirm != 'yes':
+    print "Reset Cancelled."
+
+else:
+
+    # Reset the Database
+    if options.syncdb:
+        print "RESETTING DATABASE..."
+
+        # Assume the database exists and is synced: try flushing the database
+        force_drop = options.force_drop
+        if not force_drop:
+            try:
+                print "Flushing the Database of existing data..."
+                management.call_command('flush', verbosity=0, interactive=False)
+                management.call_command('migrate', fake=True, verbosity=0)
+                print "Database Flushed."
+
+            # Couldn't flush. Either the database doesn't exist, or it is corrupted.
+            # Try dropping and recreating, below
+            except (DB_EXCEPTION_MODULE.OperationalError, DatabaseError, IntegrityError) as e:
+                force_drop = True
+
+            # Unknown exception. For now, just treat same as other exceptions
+            except Exception as e:
+                force_drop = True
     
-    if force_drop:
+        if force_drop:
 
-        # Try dropping the database, in case it existed
-        print "Database nonexistent or corrupted, or Database drop requeseted. Attempting to drop database..."
-        try:
-            drop_db()
-        except subprocess.CalledProcessError:
-            print "Couldn't drop database. Probably because it didn't exist."
+            # Try dropping the database, in case it existed
+            print "Database nonexistent or corrupted, or Database drop requeseted. Attempting to drop database..."
+            try:
+                drop_db()
+            except subprocess.CalledProcessError:
+                print "Couldn't drop database. Probably because it didn't exist."
             
-        # Create the Database
-        print "Creating the Database..."
+            # Create the Database
+            print "Creating the Database..."
+            try:
+                create_db()
+            except subprocess.CalledProcessError:
+                print "Couldn't create database. Database state likely corrupted. Exiting..."
+                exit()
+
+            # Sync the Database
+            print "Syncing and Migrating the database..."
+            management.call_command('syncdb', verbosity=0)
+
+            # Migrate the Database
+            management.call_command('migrate', verbosity=0)
+            print "Database Synced."
+
+    # Load codingsystems
+    if options.load_codingsystems:
+        print "LOADING CODINGSYSTEMS DATA..."
         try:
-            create_db()
-        except subprocess.CalledProcessError:
-            print "Couldn't create database. Database state likely corrupted. Exiting..."
-            exit()
+            load_codingsystems()
+            print "LOADED."
+        except Exception as e:
+            print str(e)
+            print "COULDN'T LOAD DATA. SKIPPING."
 
-        # Sync the Database
-        print "Syncing and Migrating the database..."
-        management.call_command('syncdb', verbosity=0)
-
-        # Migrate the Database
-        management.call_command('migrate', verbosity=0)
-        print "Database Synced."
-
-# Load codingsystems
-if options.load_codingsystems:
-    print "LOADING CODINGSYSTEMS DATA..."
-    try:
-        load_codingsystems()
-        print "LOADED."
-    except Exception as e:
-        print str(e)
-        print "COULDN'T LOAD DATA. SKIPPING."
-
-# Import initial data
-if options.load_data:
-    print "LOADING INITIAL INDIVO DATA..."
-    try:
-        import_data()
-        print "LOADED."
-    except Exception as e:
-        print str(e)
-        print "COULDN'T LOAD DATA. SKIPPING."
+    # Import initial data
+    if options.load_data:
+        print "LOADING INITIAL INDIVO DATA..."
+        try:
+            import_data()
+            print "LOADED."
+        except Exception as e:
+            print str(e)
+            print "COULDN'T LOAD DATA. SKIPPING."
