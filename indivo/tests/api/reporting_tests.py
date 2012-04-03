@@ -69,7 +69,7 @@ class ReportingInternalTests(InternalTests):
         
         for report in reports:
             vital_value = report.findtext('.//{%s}value' % NS)
-            self.assertIn(float(vital_value), [185, 145])
+            self.assertTrue(float(vital_value) in [185, 145])
 
     def test_get_simple_clinical_notes(self):
         record_id = self.record.id
@@ -217,7 +217,7 @@ class ReportingInternalTests(InternalTests):
         for report in reports:
             date_measured = report.findtext('.//{%s}dateMeasured' % NS)
             date_measured = self.validateIso8601(date_measured)
-            self.assertIs((date_measured >= min_date), True)
+            self.assertTrue(date_measured >= min_date)
 
         url = '/records/%s/reports/minimal/labs/?lab_type=hematology&order_by=date_measured&date_range=date_measured*1995-03-10T00:00:00Z*'%(record_id)
         response = self.client.get(url)
@@ -231,7 +231,7 @@ class ReportingInternalTests(InternalTests):
         for report in reports:
             date_measured = report.findtext('.//{%s}dateMeasured' % NS)
             date_measured = self.validateIso8601(date_measured)
-            self.assertIs((date_measured >= min_date), True)
+            self.assertTrue(date_measured >= min_date)
         
         url = '/records/%s/reports/minimal/labs/?lab_type=hematology|1,25-Dihydroxy Vitamin D'%(record_id)
         response = self.client.get(url)
@@ -244,7 +244,7 @@ class ReportingInternalTests(InternalTests):
         
         for report in reports:
             lab_type = report.findtext('.//{%s}labType' % NS)
-            self.assertIn(lab_type, ['hematology', '1,25-Dihydroxy Vitamin D'])
+            self.assertTrue(lab_type in ['hematology', '1,25-Dihydroxy Vitamin D'])
             
         url = '/records/%s/reports/minimal/labs/?lab_type=hematology|nonexistentlabtype'%(record_id)
         response = self.client.get(url)
@@ -257,7 +257,7 @@ class ReportingInternalTests(InternalTests):
         
         for report in reports:
             lab_type = report.findtext('.//{%s}labType' % NS)
-            self.assertIn(lab_type, ['hematology', 'nonexistentlabtype'])
+            self.assertTrue(lab_type in ['hematology', 'nonexistentlabtype'])
             
         url = '/records/%s/reports/minimal/labs/?lab_type=nonexistentlabtype1|nonexistentlabtype2|nonexistentlabtype3'%(record_id)
         response = self.client.get(url)
@@ -280,7 +280,7 @@ class ReportingInternalTests(InternalTests):
         
         for report in reports:
             lab_type = report.findtext('.//{%s}dateMeasured' % NS)
-            self.assertIn(lab_type, ['2010-07-16T12:00:00Z', '1998-07-16T12:00:00Z'])
+            self.assertTrue(lab_type in ['2010-07-16T12:00:00Z', '1998-07-16T12:00:00Z'])
 
     def test_get_allergies(self):
         record_id = self.record.id
