@@ -2,10 +2,9 @@
 Decorators for views
 """
 
-from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest
 from indivo import models
 from indivo import check_safety
-from indivo.middlewares.paramloader import object_lookup_by_id
 from indivo.lib import iso8601
 
 from django.db import IntegrityError
@@ -13,9 +12,10 @@ from django.db import transaction
 from functools import wraps
 
 import inspect
-import functools, copy, logging
+import functools
 
 DEFAULT_ORDERBY = 'created_at'
+QUERY_OPTIONS_ARG = 'query_options'
 
 def marsloader(query_api_support = False):
   def marsloader_decorator(func):
@@ -27,15 +27,50 @@ def marsloader(query_api_support = False):
 
       04-05-2011: Modified to Handle the New Query Interface
       New arguments are: group_by, aggregate_by, date_group,
-      date_range, generic filters.
+      date_range, generic report_specific_filters.
       
       Also: No longer checks that the URL ends in a '/'. We assume
       that if you didn't want to call this function, you wouldn't
       have decorated the view with it.
       """
-
+      
+      def parse_string(value):
+          return value
+      
+      def parse_int(value):
+          return int(value)
+      
+      def parse_status(value):
+          return models.StatusName.objects.get(name=value)
+      
+      def parse_aggregate_by(value):
+          operator, field = value.split('*')
+          field = None if field == '' else field
+          return {'operator':operator, 'field':field}
+      
+      def parse_date_range(value):
+          field, start_date, end_date = value.split('*')
+          start_date = None if start_date == '' else iso8601.parse_utc_date(start_date)
+          end_date = None if end_date == '' else iso8601.parse_utc_date(end_date)
+          return {'field':field, 'start_date':start_date, 'end_date':end_date}
+      
+      def parse_date_group(value):
+          field, time_incr = value.split('*')
+          return {'field':field, 'time_incr':time_incr}
+      
       check_safety()
-
+      
+      parse_map = {
+        'limit': parse_int,
+        'offset': parse_int,
+        'order_by': parse_string,
+        'status': parse_status,
+        'group_by': parse_string,
+        'aggregate_by': parse_aggregate_by,  
+        'date_range': parse_date_range,   
+        'date_group': parse_date_group,            
+      }
+      
       # This should be abstracted
       # StatusName 'active' should always be available
       arg_defaults = {
@@ -50,70 +85,39 @@ def marsloader(query_api_support = False):
         'date_range': None,
         'date_group': None,
         }
-
-      # Every get paramater should be useful: otherwise we have to treat it as
-      # an invalid filter
-      new_args = copy.copy(kwargs)
-      filters = {}
+     
+      base_options = {}
+      report_specific_filters = {}
+      
+      # set defaults
+      base_options.update(arg_defaults)
+      if query_api_support:
+          base_options.update(query_api_defaults)
+          base_options['filters'] = report_specific_filters
+      
       for _arg, value in request.GET.iteritems():
         arg = str(_arg)
         try:
-          if arg == 'limit':
-            new_args[arg] = int(value)
-          elif arg == 'offset':
-            new_args[arg] = int(value)
-          elif arg == 'order_by':
-            new_args[arg] = value
-          elif arg == 'status':
-            new_args[arg] = models.StatusName.objects.get(name=value)
-          elif arg == 'group_by' and query_api_support:
-            new_args[arg] = value
-          elif arg == 'aggregate_by' and query_api_support:
-            operator, field = value.split('*')
-            field = None if field == '' else field
-            new_args[arg] = {'operator':operator, 'field':field} 
-          elif arg == 'date_range' and query_api_support:
-            field, start_date, end_date = value.split('*')
-            start_date = None if start_date == '' else iso8601.parse_utc_date(start_date)
-            end_date = None if end_date == '' else iso8601.parse_utc_date(end_date)
-            new_args[arg] = {'field':field, 'start_date':start_date, 'end_date':end_date}
-          elif arg == 'date_group' and query_api_support:
-            field, time_incr = value.split('*')
-            new_args[arg] = {'field':field, 'time_incr':time_incr}
-
-          # We assume that all remaining parameters are field-specific query parameters 
-          # (i.e. 'lab_type=hematology') if this is a query_api call
+          if parse_map.has_key(arg):
+              base_options[arg] = parse_map[arg](value)
           else:
-            if query_api_support: 
-              
-              # Don't do type-checking here: the individual report defines the types of filters
-              filters[arg] = value
+              # might be field-specific query parameter, allow individual reports to type-check
+              report_specific_filters[arg] = value
         except models.StatusName.DoesNotExist:
           raise Http404
         except ValueError:
           return HttpResponseBadRequest('Argument %s must be formatted according to the Indivo Query API'%(arg))
 
-      if query_api_support:
-        new_args['filters'] = filters
-
-      # Add defaults for missing params
-      for arg, default in arg_defaults.iteritems():
-        if not new_args.has_key(arg):
-          new_args[arg] = default
-    
-      if query_api_support:
-        for arg, default in query_api_defaults.iteritems():
-          if not new_args.has_key(arg):
-            new_args[arg] = default
-
-      # Check that the new arguments are all in func()
+      # Check that the new query_options argument is in func()
       if len(inspect.getargspec(func)) > 0:
-        for new_arg in new_args.keys():
-          if new_arg not in inspect.getargspec(func)[0]:
-            raise Exception("Missing arg " + new_arg + " in " + func.func_name)
+        if QUERY_OPTIONS_ARG not in inspect.getargspec(func)[0]:
+          raise Exception("Missing arg " + QUERY_OPTIONS_ARG + " in " + func.func_name)
+      
+      # update args
+      kwargs[QUERY_OPTIONS_ARG] = base_options
       
       # call the view
-      return func(request, **new_args)
+      return func(request, **kwargs)
 
     # Return the wrapped Function
     return functools.update_wrapper(marsloader_func, func)

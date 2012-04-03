@@ -96,7 +96,7 @@ def _document_version(request, record, document_id, pha=None, external_id=None):
 
 
 @marsloader()
-def document_versions(request, record, document_id, limit, offset, status, order_by='created_at'):
+def document_versions(request, record, document_id, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
   """ Retrieve the versions of a document.
 
   **ARGUMENTS:**
@@ -131,7 +131,10 @@ def document_versions(request, record, document_id, limit, offset, status, order
 
   try:
     docs = Document.objects.filter( original  = document.original_id, 
-                                    status    = status).order_by(order_by)
+                                    status    = query_options['status']).order_by(query_options['order_by'])
   except:
     raise Http404
+
+  offset = query_options['offset']
+  limit = query_options['limit']
   return _render_documents(docs[offset:offset+limit], record, None, len(docs))

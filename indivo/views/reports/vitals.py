@@ -42,9 +42,7 @@ def carenet_vitals_list(*args, **kwargs):
   return _vitals_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _vitals_list(request, group_by, date_group, aggregate_by,
-                 limit, offset, order_by,
-                 status, date_range, filters,
+def _vitals_list(request, query_options,
                  category=None, record=None, carenet=None):
   """ List the vitals objects matching the passed query parameters.
   
@@ -56,14 +54,12 @@ def _vitals_list(request, group_by, date_group, aggregate_by,
   """
 
   # change underscores to spaces in the category, to make it easier without URL encoding
-  if category and not filters.has_key('category'):
+  if category and not query_options['filters'].has_key('category'):
     category = category.replace("_"," ")
-    filters['category'] = category
+    query_options['filters']['category'] = category
     
   q = FactQuery(Vitals, VITALS_FILTERS,
-                group_by, date_group, aggregate_by,
-                limit, offset, order_by,
-                status, date_range, filters,
+                query_options,
                 record, carenet)
 
   try:
