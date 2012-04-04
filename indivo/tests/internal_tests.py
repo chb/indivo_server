@@ -233,6 +233,8 @@ class IndivoTests(object):
         # Redirect settings.MEDIA_ROOT, so flat files are saved separately
         # from existing files
         test_media_root = os.path.join(settings.APP_HOME, 'indivo/tests/test_files')
+        if not os.path.exists(test_media_root):
+            os.makedirs(test_media_root)
         self.save_and_modify_setting('MEDIA_ROOT', test_media_root)
 
         # Redirect Schema and Datamodel file locations, so we can play with them during tests
