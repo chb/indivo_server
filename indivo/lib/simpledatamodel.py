@@ -12,6 +12,7 @@ except ImportError:
         raise ImportError("Couldn't find an installation of SimpleJSON")
 
 from django.db import models
+from django.db.models.fields import FieldDoesNotExist
 from indivo.models import Fact
 from lxml import etree
 from indivo.lib import iso8601
@@ -267,9 +268,9 @@ class SDMJData(SDMJ):
 
         # Pull out our model's name first, so we can pass it into submodels as needed.
         model_name = instance_dict.get(MODEL_NAME_KEY, None)
-        del instance_dict[MODEL_NAME_KEY]
         if not model_name:
             raise SDMDataException("All SDM data instances must specify the model they belong to.")
+        del instance_dict[MODEL_NAME_KEY]
      
         try:
             model_class = getattr(__import__('indivo.models', fromlist=[str(model_name)]), model_name, None)
@@ -294,8 +295,13 @@ class SDMJData(SDMJ):
 
             else:
                 # Simple Field: we validate the datatype, then add the data to our model
+
                 # get the field definition on the class
-                model_field = model_class._meta.get_field(fieldname)
+                try:
+                    model_field = model_class._meta.get_field(fieldname)
+                except FieldDoesNotExist:
+                    model_field = None
+
                 if not model_field:
                     raise SDMDataException("Non-existent data field: %s"%fieldname)
                 
@@ -458,8 +464,13 @@ class SDMXData(object):
 
             else:
                 # Simple Field: we validate the datatype, then add the data to our model
+
                 # get the field definition on the class
-                model_field = model_class._meta.get_field(fieldname)
+                try:
+                    model_field = model_class._meta.get_field(fieldname)
+                except FieldDoesNotExist:
+                    model_field = None
+
                 if not model_field:
                     raise SDMDataException("Non-existent data field: %s"%fieldname)
                 raw_value = field_etree.text
