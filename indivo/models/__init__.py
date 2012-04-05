@@ -12,7 +12,6 @@ from status import *
 from records_and_documents import *
 from document_relationships import *
 from shares import *
-from document_processing import *
 from messaging import *
 from notifications import *
 from audit import *
