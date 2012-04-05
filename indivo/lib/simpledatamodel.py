@@ -506,14 +506,19 @@ class SDMXData(object):
                     fields[fieldname] = value
 
         # Add a reference from us to them, if we were asked to.
+        # We'll need to save the parent object first, so it has an ID
         if rel_parent_obj and rel_to_parent:
+            if not rel_parent_obj.id:
+                rel_parent_obj.save()
             fields[rel_fieldname] = rel_parent_obj
 
         # Now build the Django Model instance
         instance = model_class(**fields)
 
         # Add a reference from them to us, if we were asked to.
+        # We'll need to save ourselves first, so we have an ID.
         if rel_parent_obj and not rel_to_parent:
+            instance.save()
             setattr(rel_parent_obj, rel_fieldname, instance)
 
         # Add ourselves as the parent to all of our subinstances
