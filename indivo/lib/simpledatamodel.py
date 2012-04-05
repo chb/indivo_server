@@ -130,8 +130,11 @@ class SDMJSchema(SDMJ):
         if not model_name:
             raise SDMJSchemaException("All model definitions must specify a name, using the '%s' key"%MODEL_NAME_KEY)
         del parsed_def[MODEL_NAME_KEY]
+        model_name = str(model_name) # Eliminate any unicode weirdness
 
         for attrname, attrval in parsed_def.iteritems():
+            attrname = str(attrname) # Eliminate unicode weirdness
+
             if isinstance(attrval, list):
                 # OneToMany Relationship: we save the subobject for later parsing.
                 # We don't create any fields on our model--we just tell the subobject
@@ -151,7 +154,7 @@ class SDMJSchema(SDMJ):
 
                 # get the submodel's name
                 try:
-                    submodel_name = attrval[MODEL_NAME_KEY]
+                    submodel_name = str(attrval[MODEL_NAME_KEY])
                 except KeyError:
                     raise SDMJSchemaException("All model definitions must specify a name, using the '%s' key"%MODEL_NAME_KEY)
 
@@ -328,14 +331,19 @@ class SDMJData(SDMJ):
                     fields[fieldname] = value
 
         # Add a reference from us to them, if we were asked to.
+        # We'll need to save the parent object first, so it has an ID
         if rel_parent_obj and rel_to_parent:
+            if not rel_parent_obj.id:
+                rel_parent_obj.save()
             fields[rel_fieldname] = rel_parent_obj
 
         # Now build the Django Model instance
         instance = model_class(**fields)
 
         # Add a reference from them to us, if we were asked to.
+        # We'll need to save ourselves first, so we have an ID.
         if rel_parent_obj and not rel_to_parent:
+            instance.save()
             setattr(rel_parent_obj, rel_fieldname, instance)
 
         # Add ourselves as the parent to all of our subinstances
