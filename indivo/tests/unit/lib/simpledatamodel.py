@@ -1,6 +1,6 @@
 import sys
 from indivo.lib import iso8601
-from indivo.tests.internal_tests import InternalTests
+from indivo.tests.internal_tests import TransactionInternalTests, InternalTests
 from indivo.tests.data import TEST_SDMJ_SCHEMAS, TEST_SDMJ_DOCS, TEST_SDMX_DOCS
 from indivo.tests.data import INVALID_TEST_SDMJ_SCHEMAS, INVALID_TEST_SDMJ_DOCS, INVALID_TEST_SDMX_DOCS
 from indivo.lib.simpledatamodel import SDMJSchema, SDMJData, SDMXData, SDMException
@@ -14,6 +14,9 @@ class SDMJSchemaUnitTests(InternalTests):
         self.instance = SDMJSchema(TEST_SDMJ_SCHEMAS[0])
 
     def tearDown(self):
+        self.remove_model_from_cache('TestMedication2')
+        self.remove_model_from_cache('TestPrescription2')
+        self.remove_model_from_cache('TestFill2')
         self.instance = None
         super(SDMJSchemaUnitTests, self).tearDown()
 
@@ -104,21 +107,41 @@ class SDMJSchemaUnitTests(InternalTests):
                 self.fail('SDMJSchema parsing did not produce field %s on % class'%(field_name, klass.__name__))
             self.assertTrue(isinstance(field, field_class))
             
-class SDMJDataUnitTests(InternalTests):
+class SDMJDataUnitTests(TransactionInternalTests):
     def setUp(self):
         super(SDMJDataUnitTests, self).setUp()
         self.instance = SDMJData(TEST_SDMJ_DOCS[0])
+        self.required_classes = []
         
         # Make sure the classes are in indivo.models, so we can find them
         indivo_models_module = sys.modules['indivo.models']
-        for klass in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output():
+        klasses = [k for k in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output()]
+        for klass in klasses:
+            self.required_classes.append(klass)
             klass.__module__ = 'indivo.models'
             klass.Meta.app_label = 'indivo'
             setattr(indivo_models_module, klass.__name__, klass)
 
+            # Make sure the DB is up to date, so we can save objects
+            self.create_db_model(klass)
+        self.finish_db_creation()
+
     def tearDown(self):
         self.instance = None
-        super(SDMJDataUnitTests, self).tearDown()
+
+        # Unregister the classes, reset the DB
+        indivo_models_module = sys.modules['indivo.models']
+        for klass in self.required_classes:
+            attr = getattr(indivo_models_module, klass.__name__, None)
+            if attr:
+                del attr
+
+            self.drop_db_model(klass)
+            self.remove_model_from_cache(klass.__name__)
+
+        self.required_classes = []
+
+        super(SDMJDataUnitTests, self).tearDown()        
 
     def test_get_output(self):
         output_objects = [obj for obj in self.instance.get_output()]
@@ -201,14 +224,41 @@ class SDMJDataUnitTests(InternalTests):
             actual_val = getattr(obj, field_name, None)
             self.assertEqual(actual_val, expected_val)
 
-class SDMXDataUnitTests(InternalTests):
+class SDMXDataUnitTests(TransactionInternalTests):
     def setUp(self):
         super(SDMXDataUnitTests, self).setUp()
         self.instance = SDMXData(etree.parse(StringIO(TEST_SDMX_DOCS[0])))
+        self.required_classes = []
+        
+        # Make sure the classes are in indivo.models, so we can find them
+        indivo_models_module = sys.modules['indivo.models']
+        klasses = [k for k in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output()]
+        for klass in klasses:
+            self.required_classes.append(klass)
+            klass.__module__ = 'indivo.models'
+            klass.Meta.app_label = 'indivo'
+            setattr(indivo_models_module, klass.__name__, klass)
+
+            # Make sure the DB is up to date, so we can save objects
+            self.create_db_model(klass)
+        self.finish_db_creation()
 
     def tearDown(self):
         self.instance = None
-        super(SDMXDataUnitTests, self).tearDown()
+
+        # Unregister the classes, reset the DB
+        indivo_models_module = sys.modules['indivo.models']
+        for klass in self.required_classes:
+            attr = getattr(indivo_models_module, klass.__name__, None)
+            if attr:
+                del attr
+
+            self.drop_db_model(klass)
+            self.remove_model_from_cache(klass.__name__)
+
+        self.required_classes = []
+
+        super(SDMXDataUnitTests, self).tearDown()        
 
     def test_get_output(self):
         output_objects = [obj for obj in self.instance.get_output()]

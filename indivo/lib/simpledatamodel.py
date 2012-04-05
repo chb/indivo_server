@@ -143,7 +143,7 @@ class SDMJSchema(SDMJ):
                     raise SDMJSchemaException("OneToMany Relationships may only define one target relation model")
                 
                 # build the foreignkey that the submodel should add (pointing at our model)
-                submodel_fk = models.ForeignKey(model_name, related_name=attrname)
+                submodel_fk = models.ForeignKey(model_name, related_name=attrname, null=True)
 
                 # Add the submodel definition and requested key to the list
                 subdefs_to_parse.append((attrval[0], submodel_fk))
@@ -161,7 +161,7 @@ class SDMJSchema(SDMJ):
                 # create the OneToOne field
                 # The related name is by default the lowercased name of our model.
                 # Might want to re-examine this at some point.
-                fields[attrname] = models.OneToOneField(submodel_name)
+                fields[attrname] = models.OneToOneField(submodel_name, null=True)
                 
                 # Save the submodel for later parsing
                 subdefs_to_parse.append((attrval, None))

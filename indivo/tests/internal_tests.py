@@ -1,6 +1,9 @@
 import django.test
 from django.conf import settings
 from django.test.testcases import disable_transaction_methods, restore_transaction_methods
+from django.db.models.loading import cache
+
+from south.db import db
 
 from indivo.models import *
 from indivo.tests.data import *
@@ -209,6 +212,29 @@ class IndivoTests(object):
             method_func = getattr(self.client, method_name)
             response = method_func(url)
             self.assertEquals(response.status_code, 405)
+
+    def create_db_model(self, django_class):
+        fields = [(f.name, f) for f in django_class._meta.local_fields]
+        table_name = django_class._meta.db_table
+        db.create_table(table_name, fields)
+
+    def finish_db_creation(self):
+        db.execute_deferred_sql()
+
+    def drop_db_model(self, django_class):
+        # Drop the table. Also force a commit, or we'll have trouble with pending triggers in future operations.
+        # This means you can ONLY USE THIS FUNCTION IF TRANSACTIONS ARE ENABLED (i.e. in a subclass of 
+        # django.test.TransactionTestCase
+        table_name = django_class._meta.db_table
+        db.start_transaction()
+        db.delete_table(table_name)
+        db.commit_transaction()
+
+    def remove_model_from_cache(self, modelname):
+        try:
+            del cache.app_models['indivo'][modelname]
+        except KeyError:
+            pass
 
     def save_setting(self, setting_name):
         curr_val = getattr(settings, setting_name, None)
