@@ -113,32 +113,15 @@ class SDMJDataUnitTests(TransactionInternalTests):
         self.instance = SDMJData(TEST_SDMJ_DOCS[0])
         self.required_classes = []
         
-        # Make sure the classes are in indivo.models, so we can find them
-        indivo_models_module = sys.modules['indivo.models']
+        # Load test Classes
         klasses = [k for k in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output()]
-        for klass in klasses:
-            self.required_classes.append(klass)
-            klass.__module__ = 'indivo.models'
-            klass.Meta.app_label = 'indivo'
-            setattr(indivo_models_module, klass.__name__, klass)
-
-            # Make sure the DB is up to date, so we can save objects
-            self.create_db_model(klass)
-        self.finish_db_creation()
+        self.required_classes = self.load_classes(klasses)
 
     def tearDown(self):
         self.instance = None
 
         # Unregister the classes, reset the DB
-        indivo_models_module = sys.modules['indivo.models']
-        for klass in self.required_classes:
-            attr = getattr(indivo_models_module, klass.__name__, None)
-            if attr:
-                del attr
-
-            self.drop_db_model(klass)
-            self.remove_model_from_cache(klass.__name__)
-
+        self.unload_classes(self.required_classes)
         self.required_classes = []
 
         super(SDMJDataUnitTests, self).tearDown()        
@@ -230,32 +213,15 @@ class SDMXDataUnitTests(TransactionInternalTests):
         self.instance = SDMXData(etree.parse(StringIO(TEST_SDMX_DOCS[0])))
         self.required_classes = []
         
-        # Make sure the classes are in indivo.models, so we can find them
-        indivo_models_module = sys.modules['indivo.models']
+        # Load test Classes
         klasses = [k for k in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output()]
-        for klass in klasses:
-            self.required_classes.append(klass)
-            klass.__module__ = 'indivo.models'
-            klass.Meta.app_label = 'indivo'
-            setattr(indivo_models_module, klass.__name__, klass)
-
-            # Make sure the DB is up to date, so we can save objects
-            self.create_db_model(klass)
-        self.finish_db_creation()
+        self.required_classes = self.load_classes(klasses)
 
     def tearDown(self):
         self.instance = None
 
         # Unregister the classes, reset the DB
-        indivo_models_module = sys.modules['indivo.models']
-        for klass in self.required_classes:
-            attr = getattr(indivo_models_module, klass.__name__, None)
-            if attr:
-                del attr
-
-            self.drop_db_model(klass)
-            self.remove_model_from_cache(klass.__name__)
-
+        self.unload_classes(self.required_classes)
         self.required_classes = []
 
         super(SDMXDataUnitTests, self).tearDown()        

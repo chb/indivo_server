@@ -309,7 +309,33 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
     WARNING: Transaction Tests are VERY slow. Only use this if you really need
     to test transactions. If you just need to deal with IntegrityErrors by
     calling rollback, see enable_transactions below. """
-    pass
+    
+    def load_classes(self, klasses):
+        added_classes = []
+        
+        # Make sure the classes are in indivo.models, so we can find them
+        indivo_models_module = sys.modules['indivo.models']
+        for klass in klasses:
+            added_classes.append(klass)
+            klass.__module__ = 'indivo.models'
+            klass.Meta.app_label = 'indivo'
+            setattr(indivo_models_module, klass.__name__, klass)
+
+            # Make sure the DB is up to date, so we can save objects
+            self.create_db_model(klass)
+        self.finish_db_creation()
+        
+        return added_classes
+        
+    def unload_classes(self, klasses):
+        indivo_models_module = sys.modules['indivo.models']
+        for klass in klasses:
+            attr = getattr(indivo_models_module, klass.__name__, None)
+            if attr:
+                del attr
+
+            self.drop_db_model(klass)
+            self.remove_model_from_cache(klass.__name__)
 
 def enable_transactions(func):
     """ Hackish decorator that re-enables transaction management in tests
