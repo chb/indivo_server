@@ -30,7 +30,7 @@ class BaseTransform(object):
 
         Subclasses should implement this method, which takes an
         ``lxml.etree._ElementTree`` (the result of calling ``etree.parse()``),
-        and returns a list of ``indivo.models.Fact`` subclasses.
+        and returns a list of :py:class:`indivo.models.Fact` subclasses.
 
         """
 
@@ -41,7 +41,7 @@ class BaseTransform(object):
 
         Subclasses should implement this method, which takes an
         ``lxml.etree._ElementTree`` (the result of calling ``etree.parse()``),
-        and returns a string in valid SDMJ format.
+        and returns a string in valid :ref:`SDMJ <sdmj>` format.
 
         """
 
@@ -53,7 +53,7 @@ class BaseTransform(object):
         Subclasses should implement this method, which takes an
         ``lxml.etree._ElementTree`` (the result of calling ``etree.parse()``),
         and returns another ``lxml.etree._ElementTree`` instance representing 
-        an XML document in valid SDMX format.
+        an XML document in valid :ref:`SDMX <sdmx>` format.
 
         """
 
