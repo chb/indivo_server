@@ -16,17 +16,18 @@ from lxml import etree
 import glob
 
 DEFAULT_SCHEMA_DIRS = [
-    'metadata',
-    'data/core',
-    'data/contrib',
-    'data/output',
+    '../metadata',
+    '../data/core',
+    '../data/contrib',
+    '../data/output',
 ]
 
 def discover_schemas(schema_dirs):
     ret = []
     for schema_dir in schema_dirs:
-        for entry in os.listdir(schema_dir):
-            schema_path = os.path.join(schema_dir, entry)
+        full_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), schema_dir)
+        for entry in os.listdir(full_path):
+            schema_path = os.path.join(full_path, entry)
             if os.path.isdir(schema_path) and glob.glob(os.path.join(schema_path, '*.xsd')):
                 ret.append(schema_path)
     
