@@ -1,0 +1,20 @@
+<TestMed xmlns="http://indivo.org/vocab/xml/documents#">
+    <dateStarted>2010-10-01T00:00:00Z</dateStarted>
+    <name>ibuprofen</name>
+    <brandName>Advil</brandName>
+    <frequency>2</frequency>
+    <Prescription>
+        <prescribedByName>Kenneth D. Mandl</prescribedByName>
+        <prescribedOn>2010-09-30T00:00:00Z</prescribedOn>
+    </Prescription>
+    <TestFills>
+        <TestFill>
+            <dateFilled>2010-10-01T00:00:00Z</dateFilled>
+            <supplyDays>15</supplyDays>
+        </TestFill>
+        <TestFill>
+            <dateFilled>2010-10-16T00:00:00Z</dateFilled>
+            <supplyDays>15</supplyDays>
+        </TestFill>
+    </TestFills>
+</TestMed>

@@ -65,6 +65,10 @@ class IndivoSchemaLoader(object):
         for schema_name, schema_etree, transform_func in self.discover_schema_dirs():
             self.register_schema(schema_name, schema_etree, transform_func)
     
+    def unregister_all_schemas(self):
+        for schema_name, schema_etree, transform_func in self.discover_schema_dirs():
+            self.unregister_schema(schema_name)
+    
     @classmethod
     def detect_schema_dir(cls, dir_path):
         """ Detects whether a directory is a properly-formatted datamodel.
@@ -86,7 +90,14 @@ class IndivoSchemaLoader(object):
         if REGISTERED_SCHEMAS.has_key(schema_qn):
             raise ValueError("The schema %s already exists: please choose a different name for your schema"%schema_qn)
         REGISTERED_SCHEMAS[schema_qn] = (validation_func, transformation_func)
-
+        
+    @classmethod
+    def unregister_schema(cls, schema_qn):
+        if REGISTERED_SCHEMAS.has_key(schema_qn):
+            REGISTERED_SCHEMAS.pop(schema_qn)
+        else:
+            raise ValueError("The schema %s does not exist"%schema_qn)
+        
     def discover_schema_dirs(self):
         for (dirpath, dirnames, filenames) in os.walk(self.top):
             schema_dir = self.detect_schema_dir(dirpath)

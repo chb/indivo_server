@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#" xmlns:indivo="http://indivo.org/vocab/xml/documents#"
+elementFormDefault="qualified">
+
+	<complexType name="TestFill">
+		<sequence>
+			<element name="dateFilled" type="dateTime" minOccurs="0" maxOccurs="1" />
+			<element name="supplyDays" type="integer" minOccurs="0" maxOccurs="1" />
+		</sequence>		
+	</complexType>
+
+	<complexType name="TestPrescription">
+    	<sequence>
+	    	<element name="prescribedByName" type="string" minOccurs="0" maxOccurs="1" />
+	    	<element name="prescribedOn" type="dateTime" minOccurs="0" maxOccurs="1" />
+    	</sequence>
+	</complexType>
+
+	<complexType name="TestMed">
+      <sequence>
+        <element name="dateStarted" type="dateTime" minOccurs="0" maxOccurs="1" />
+        <element name="name" type="string" minOccurs="0" maxOccurs="1" />
+        <element name="brandName" type="string" minOccurs="0" maxOccurs="1" />
+        <element name="frequency" type="integer" minOccurs="0" maxOccurs="1" />
+        <element name="Prescription" type="indivo:TestPrescription" />
+		<element name="TestFills">
+			<complexType>
+				<sequence>
+					<element name="TestFill" type="indivo:TestFill" minOccurs="0" maxOccurs="unbounded" />
+				</sequence>
+			</complexType>
+		</element>
+      </sequence>
+    </complexType>
+
+  <element name="TestMed" type="indivo:TestMed" />
+</schema>

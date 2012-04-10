@@ -11,3 +11,6 @@ from schema_loader import IndivoSchemaDirUnitTests, SchemaLoaderUnitTests
 
 # tests of the datamodel loader
 from datamodel_loader import DataModelLoaderUnitTests
+
+# tests of document_processing
+from document_processing import DocumentProcessingUnitTests
