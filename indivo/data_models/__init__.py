@@ -7,7 +7,7 @@ from indivo.models import Fact
 from indivo.lib import simpledatamodel
 
 MODULE_NAME = 'model'
-MODULE_EXTENSIONS = ['.py', '.sdmj']
+MODULE_EXTENSIONS = ['.py', '.sdml']
 MODEL_MODULES = {
     'core':'indivo.data_models.core',
     'contrib':'indivo.data_models.contrib',
@@ -35,7 +35,7 @@ class IndivoDataModelLoader(object):
         This is true if:
         
         * It contains a model file of an appropriate type
-          (for now, .py or .sdmj)
+          (for now, .py or .sdml)
         
         * More to come later (maybe)
         
@@ -94,8 +94,8 @@ class IndivoDataModelLoader(object):
                 # Handle models based on their definition type
                 if ext == '.py':
                     handler_func = self._discover_python_data_models
-                elif ext == '.sdmj':
-                    handler_func = self._discover_sdmj_data_models
+                elif ext == '.sdml':
+                    handler_func = self._discover_sdml_data_models
 
                 for name, cls in handler_func(dirpath, fileroot, ext):
                     yield (name, cls)
@@ -123,15 +123,15 @@ class IndivoDataModelLoader(object):
                     and cls != Fact: # Necessary because issubclass(Fact, Fact) evaluates to True                
                 yield (name, cls)
 
-    def _discover_sdmj_data_models(self, dirpath, fileroot, ext):
-        """ Reads in an SDMJ model definition and generates Indivo Fact subclasses."""
+    def _discover_sdml_data_models(self, dirpath, fileroot, ext):
+        """ Reads in an SDML model definition and generates Indivo Fact subclasses."""
 
-        # read the SDMJ definition in
+        # read the SDML definition in
         with open(os.path.join(dirpath, fileroot+ext)) as f:
             raw_data = f.read()
 
         # parse them into django models
-        parser = simpledatamodel.SDMJSchema(raw_data)
+        parser = simpledatamodel.SDML(raw_data)
         for cls in parser.get_output():
             yield (cls.__name__, cls)
                         

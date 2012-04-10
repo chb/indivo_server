@@ -1,10 +1,5 @@
-"""
-Indivo Models for Immunizations
-"""
-
 from indivo.models import Fact
 from django.db import models
-from django.conf import settings
 
 class Immunization(Fact):
   date_administered = models.DateTimeField(null=True)
@@ -22,7 +17,4 @@ class Immunization(Fact):
   anatomic_surface_value =  models.CharField(max_length=20, null=True)
   anatomic_surface_abbrev =  models.CharField(max_length=20, null=True)
   adverse_event = models.CharField(max_length=100, null=True)
-
-  def __unicode__(self):
-    return 'Immunization %s' % self.id
 

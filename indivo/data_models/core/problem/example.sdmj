@@ -1,0 +1,11 @@
+{
+    "__modelname__": "Problem",
+    "date_onset": "2009-05-16T12:00:00Z",
+    "date_resolution": "2009-05-16T16:00:00Z",
+    "name": "Myocardial Infarction",
+    "name_type": "http://codes.indivo.org/problems/",
+    "name_value": "123",
+    "name_abbrev": "MI",
+    "comments": "Mild Heart Attack",
+    "diagnosed_by": "Dr. Mandl"
+}

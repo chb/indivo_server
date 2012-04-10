@@ -1,10 +1,5 @@
-"""
-Indivo Model for Procedure
-"""
-
 from indivo.models import Fact
 from django.db import models
-from django.conf import settings
 
 class Procedure(Fact):
   date_performed = models.DateTimeField(null=True)
@@ -17,6 +12,4 @@ class Procedure(Fact):
   location = models.CharField(max_length=100, null=True)
   comments = models.TextField(null=True)
 
-  def __unicode__(self):
-    return 'Procedure %s' % self.id
 

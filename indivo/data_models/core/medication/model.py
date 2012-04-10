@@ -1,10 +1,5 @@
-"""
-Indivo Model for Medication
-"""
-
 from indivo.models import Fact
 from django.db import models
-from django.conf import settings
 
 class Medication(Fact):
   date_started = models.DateField(null=True)
@@ -37,19 +32,11 @@ class Medication(Fact):
   frequency_type = models.CharField(null=True, max_length=200)
   frequency_value = models.CharField(null=True, max_length=20)
   frequency_abbrev = models.CharField(null=True, max_length=20)
-
   prescribed_by_name = models.CharField(max_length=200, null=True)
   prescribed_by_institution = models.CharField(max_length=200, null=True)
   prescribed_on = models.DateField(null=True)
   prescribed_stop_on = models.DateField(null=True)
-
   dispense_as_written = models.NullBooleanField(null=True)
-
-  # written as days
   prescription_duration = models.CharField(null=True, max_length=100)
   prescription_refill_info = models.TextField(null=True)
   prescription_instructions = models.TextField(null=True)
-
-  def __unicode__(self):
-    return 'Medication %s' % self.id
-

@@ -1,0 +1,15 @@
+<Models>
+  <Model name="Procedure">
+    <Field name="date_performed">2009-05-16T12:00:00</Field>
+    <Field name="name">Appendectomy</Field>
+    <Field name="name_type">http://codes.indivo.org/procedures#</Field>
+    <Field name="name_value">123</Field>
+    <Field name="name_abbrev">append</Field>
+    <Field name="provider_name">Kenneth Mandl</Field>
+    <Field name="provider_institution">Children's Hospital Boston</Field>
+    <Field name="location">300 Longwood Ave, Boston MA 02115</Field>
+    <Field name="comments">Went great!</Field>
+  </Model>
+</Models>
+
+

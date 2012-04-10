@@ -1,5 +1,5 @@
 """
-Library functions for parsing and generating Simple Data Model (SDM) definitions and data.
+Library functions for parsing and generating Simple Data Modeling Language (SDML) definitions and data.
 
 """
 
@@ -87,13 +87,13 @@ test_sdmj_definition = '''
 }
 '''
 
-class SDMJSchema(SDMJ):
-    """ A class for parsing SDMJ definitions and building them as Django Model Subclasses. """
+class SDML(SDMJ):
+    """ A class for parsing SDML data model definitions and building them as Django Model Subclasses. """
 
     def _parse(self):
         """ Parses the definition string into Django model definitions """
 
-        # Add our toplevel SDMJ definitions to the stack
+        # Add our toplevel SDML definitions to the stack
         parse_stack = []
         for toplevel_model_def in self.parsed_data:
             parse_stack.append((toplevel_model_def, None))
@@ -128,7 +128,7 @@ class SDMJSchema(SDMJ):
         # Pull out our model's name first, so we can pass it into submodels as needed.
         model_name = parsed_def.get(MODEL_NAME_KEY, None)
         if not model_name:
-            raise SDMJSchemaException("All model definitions must specify a name, using the '%s' key"%MODEL_NAME_KEY)
+            raise SDMLException("All model definitions must specify a name, using the '%s' key"%MODEL_NAME_KEY)
         del parsed_def[MODEL_NAME_KEY]
         model_name = str(model_name) # Eliminate any unicode weirdness
 
@@ -140,7 +140,7 @@ class SDMJSchema(SDMJ):
                 # We don't create any fields on our model--we just tell the subobject
                 # to add a foreign key to us.
                 if len(attrval) != 1:
-                    raise SDMJSchemaException("OneToMany Relationships may only define one target relation model")
+                    raise SDMLException("OneToMany Relationships may only define one target relation model")
                 
                 # build the foreignkey that the submodel should add (pointing at our model)
                 submodel_fk = models.ForeignKey(model_name, related_name=attrname, null=True)
@@ -171,7 +171,7 @@ class SDMJSchema(SDMJ):
                 try:
                     field_class, args = SDM_TYPES[attrval]
                 except KeyError:
-                    raise SDMJSchemaException("Invalid SDM type: %s" % str(attrval))
+                    raise SDMLException("Invalid SDM type: %s" % str(attrval))
 
                 fields[attrname] = field_class(**args)
 
@@ -534,8 +534,8 @@ class SDMException(ValueError):
     def __init__(self, msg):
         super(SDMException, self).__init__(self.prefix + msg)
     
-class SDMJSchemaException(SDMException):
-    prefix = "Invalid SDM model definition: "
+class SDMLException(SDMException):
+    prefix = "Invalid SDML model definition: "
 
 class SDMDataException(SDMException):
     prefix = "Invalid SDM data: "

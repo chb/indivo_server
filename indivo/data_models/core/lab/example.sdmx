@@ -1,0 +1,17 @@
+<Models>
+  <Model name="Lab">
+    <Field name="date_measured">2009-07-16T12:00:00</Field>
+    <Field name="lab_name">Quest</Field>
+    <Field name="lab_address">300 Longwood Ave, Boston MA 02215</Field>
+    <Field name="lab_type">hematology</Field>
+    <Field name="lab_comments">Was looking pretty sick.</Field>
+    <Field name="first_panel_name">CBC</Field>
+    <Field name="first_lab_test_name">Hct</Field>
+    <Field name="first_lab_test_value">49%</Field>
+    <Field name="normal_range_minimum">44</Field>
+    <Field name="normal_range_maximum">48</Field>
+    <Field name="non_critical_range_minimum">42</Field>
+    <Field name="non_critical_range_maximum">50</Field>
+  </Model>
+</Models>
+

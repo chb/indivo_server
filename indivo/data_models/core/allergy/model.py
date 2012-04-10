@@ -1,10 +1,5 @@
-"""
-Indivo Model for Allergies
-"""
-
 from indivo.models import Fact
 from django.db import models
-from django.conf import settings
 
 class Allergy(Fact):
   date_diagnosed = models.DateField(null=True)
@@ -22,7 +17,4 @@ class Allergy(Fact):
 
   reaction = models.CharField(max_length=128, null=True)
   specifics = models.TextField(null=True)
-
-  def __unicode__(self):
-    return 'Allergy %s' % self.id
 

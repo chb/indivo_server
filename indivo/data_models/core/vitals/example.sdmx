@@ -1,0 +1,18 @@
+<Models>
+  <Model name="Vitals">
+    <Field name="date_measured">2009-05-16T15:23:21Z</Field>
+    <Field name="name">Blood Pressure Systolic</Field>
+    <Field name="name_type">http://codes.indivo.org/vitalsigns/</Field>
+    <Field name="name_value">123</Field>
+    <Field name="name_abbrev">BPsys</Field>
+    <Field name="value">145</Field>
+    <Field name="unit">millimeters of mercury</Field>
+    <Field name="unit_type">http://codes.indivo.org/units/</Field>
+    <Field name="unit_value">234</Field>
+    <Field name="unit_abbrev">mmHg</Field>
+    <Field name="site">left arm</Field>
+    <Field name="position">sitting down</Field>
+    <Field name="comments">Patient seemed nervous.</Field>
+  </Model>
+</Models>
+

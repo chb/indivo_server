@@ -68,7 +68,7 @@ class DataModelLoaderUnitTests(InternalTests):
     def test_detect_model_dir(self):
         
         # Make sure we can detect all of our valid model dirs
-        # Note: the problem model has an sdmj definition, so we're testing python and sdmj here
+        # Note: the problem model has an sdml definition, so we're testing python and sdml here
         for model_dir in CORE_DIRS:
             dir_path = os.path.join(settings.CORE_DATAMODEL_DIRS[0], model_dir)
             valid_p, module_name, ext = IndivoDataModelLoader.detect_model_dir(dir_path)

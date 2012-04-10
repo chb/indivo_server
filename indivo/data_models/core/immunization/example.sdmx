@@ -1,0 +1,19 @@
+<Models>
+  <Model name="Immunization">
+    <Field name="date_administered">2009-05-16T12:00:00Z</Field>
+    <Field name="administered_by">Children's Hospital Boston</Field>
+    <Field name="vaccine_type">Hepatitis B</Field>
+    <Field name="vaccine_type_type">http://codes.indivo.org/vaccines#</Field>
+    <Field name="vaccine_type_value">123</Field>
+    <Field name="vaccine_type_abbrev">hep-B</Field>
+    <Field name="vaccine_manufacturer">Oolong Pharmaceuticals</Field>
+    <Field name="vaccine_lot">AZ1234567</Field>
+    <Field name="vaccine_expiration">2009-06-01</Field>
+    <Field name="sequence">2</Field>
+    <Field name="anatomic_surface">Shoulder</Field>
+    <Field name="anatomic_surface_type">http://codes.indivo.org/anatomy/surfaces#</Field>
+    <Field name="anatomic_surface_value">234</Field>
+    <Field name="adverse_event">Pain and rash.</Field>
+  </Model>
+</Models>
+

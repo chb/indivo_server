@@ -1,0 +1,15 @@
+<Models>
+  <Model name="Allergy">
+    <Field name="date_diagnosed">2009-05-16</Field>
+    <Field name="diagnosed_by">Children's Hospital Boston</Field>
+    <Field name="allergen_type">Drugs</Field>
+    <Field name="allergen_type_type">http://codes.indivo.org/codes/allergentypes/</Field>
+    <Field name="allergen_type_value">123</Field>
+    <Field name="allergen_name">Penicillin</Field>
+    <Field name="allergen_name_type">http://codes.indivo.org/codes/allergens/</Field>
+    <Field name="allergen_name_value">234</Field>
+    <Field name="allergen_name_abbrev">PCN</Field>
+    <Field name="reaction">Blue Rash</Field>
+    <Field name="specifics">This only happens on weekends</Field>
+  </Model>
+</Models>

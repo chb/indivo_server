@@ -1,24 +1,24 @@
 import sys
 from indivo.lib import iso8601
 from indivo.tests.internal_tests import TransactionInternalTests, InternalTests
-from indivo.tests.data import TEST_SDMJ_SCHEMAS, TEST_SDMJ_DOCS, TEST_SDMX_DOCS
-from indivo.tests.data import INVALID_TEST_SDMJ_SCHEMAS, INVALID_TEST_SDMJ_DOCS, INVALID_TEST_SDMX_DOCS
-from indivo.lib.simpledatamodel import SDMJSchema, SDMJData, SDMXData, SDMException
+from indivo.tests.data import TEST_SDML_DOCS, TEST_SDMJ_DOCS, TEST_SDMX_DOCS
+from indivo.tests.data import INVALID_TEST_SDML_DOCS, INVALID_TEST_SDMJ_DOCS, INVALID_TEST_SDMX_DOCS
+from indivo.lib.simpledatamodel import SDML, SDMJData, SDMXData, SDMException
 from django.db import models
 from lxml import etree
 from StringIO import StringIO
 
-class SDMJSchemaUnitTests(InternalTests):
+class SDMLUnitTests(InternalTests):
     def setUp(self):
-        super(SDMJSchemaUnitTests, self).setUp()
-        self.instance = SDMJSchema(TEST_SDMJ_SCHEMAS[0])
+        super(SDMLUnitTests, self).setUp()
+        self.instance = SDML(TEST_SDML_DOCS[0])
 
     def tearDown(self):
         self.remove_model_from_cache('TestMedication2')
         self.remove_model_from_cache('TestPrescription2')
         self.remove_model_from_cache('TestFill2')
         self.instance = None
-        super(SDMJSchemaUnitTests, self).tearDown()
+        super(SDMLUnitTests, self).tearDown()
 
     def test_get_output(self):
         output_classes = [obj for obj in self.instance.get_output()]
@@ -34,14 +34,14 @@ class SDMJSchemaUnitTests(InternalTests):
             elif klass_name == 'TestFill2':
                 fill_klass = klass
             else:
-                self.fail('SDMJSchema parsing produced an invalid class %s'%klass_name)
+                self.fail('SDML parsing produced an invalid class %s'%klass_name)
                 
         if not med_klass:
-            self.fail('SDMJSchema parsing did not produce a TestMedication2 class')
+            self.fail('SDML parsing did not produce a TestMedication2 class')
         if not scrip_klass:
-            self.fail('SDMJSchema parsing did not produce a TestPrescription2 class')
+            self.fail('SDML parsing did not produce a TestPrescription2 class')
         if not fill_klass:
-            self.fail('SDMJSchema parsing did not produce a TestFill2 class')
+            self.fail('SDML parsing did not produce a TestFill2 class')
 
         # Make sure the testmedication2 class parsed as expected
         med_expected_fields = {
@@ -93,10 +93,10 @@ class SDMJSchemaUnitTests(InternalTests):
 
     def test_invalid_schemas(self):
         def cause_exception(doc):
-            parser = SDMJSchema(doc)
+            parser = SDML(doc)
             output = [obj for obj in parser.get_output()]
 
-        for doc in INVALID_TEST_SDMJ_SCHEMAS:
+        for doc in INVALID_TEST_SDML_DOCS:
             self.assertRaises(SDMException, cause_exception, doc)
 
     def check_class_fields(self, klass, expected_fields):
@@ -104,7 +104,7 @@ class SDMJSchemaUnitTests(InternalTests):
             try:
                 field = klass._meta.get_field(field_name)
             except FieldDoesNotExist:
-                self.fail('SDMJSchema parsing did not produce field %s on % class'%(field_name, klass.__name__))
+                self.fail('SDML parsing did not produce field %s on % class'%(field_name, klass.__name__))
             self.assertTrue(isinstance(field, field_class))
             
 class SDMJDataUnitTests(TransactionInternalTests):
@@ -114,7 +114,7 @@ class SDMJDataUnitTests(TransactionInternalTests):
         self.required_classes = []
         
         # Load test Classes
-        klasses = [k for k in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output()]
+        klasses = [k for k in SDML(TEST_SDML_DOCS[0]).get_output()]
         self.required_classes = self.load_classes(klasses)
 
     def tearDown(self):
@@ -214,7 +214,7 @@ class SDMXDataUnitTests(TransactionInternalTests):
         self.required_classes = []
         
         # Load test Classes
-        klasses = [k for k in SDMJSchema(TEST_SDMJ_SCHEMAS[0]).get_output()]
+        klasses = [k for k in SDML(TEST_SDML_DOCS[0]).get_output()]
         self.required_classes = self.load_classes(klasses)
 
     def tearDown(self):

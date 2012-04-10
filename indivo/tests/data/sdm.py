@@ -1,4 +1,4 @@
-TEST_SDMJ_SCHEMAS = ['''
+TEST_SDML_DOCS = ['''
 {
     "__modelname__": "TestMedication2",
     "name": "String",
@@ -91,7 +91,7 @@ TEST_SDMX_DOCS = ['''
 ''',
 ]
 
-INVALID_TEST_SDMJ_SCHEMAS = ['''
+INVALID_TEST_SDML_DOCS = ['''
 {
     "__modelname__": "TestMedication3",
     "name": "String",

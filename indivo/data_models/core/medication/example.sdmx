@@ -1,0 +1,39 @@
+<Models>
+  <Model name="Medication"> 
+    <Field name="date_started">2009-02-05</Field>
+    <Field name="name">COX2 Inhibitor</Field>
+    <Field name="name_type">http://indivo.org/codes/meds#</Field>
+    <Field name="name_value">123</Field>
+    <Field name="name_abbrev">c2i</Field>
+    <Field name="brand_name">Vioxx</Field>
+    <Field name="brand_name_type">http://indivo.org/codes/meds#</Field>
+    <Field name="brand_name_value">234</Field>
+    <Field name="brand_name_abbrev">vioxx</Field>
+    <Field name="dose_value">3</Field>
+    <Field name="dose_unit">pills</Field>
+    <Field name="dose_unit_type">http://indivoi.org/codes/units#</Field>
+    <Field name="dose_unit_value">345</Field>
+    <Field name="dose_unit_abbrev">p</Field>
+    <Field name="route">By Mouth</Field>
+    <Field name="route_type">http://indivo.org/codes/routes#</Field>
+    <Field name="route_value">456</Field>
+    <Field name="route_abbrev">PO</Field>
+    <Field name="strength_value">100</Field>
+    <Field name="strength_unit">milligrams</Field>
+    <Field name="strength_unit_type">http://indivo.org/codes/units#</Field>
+    <Field name="strength_unit_value">567</Field>
+    <Field name="strength_unit_abbrev">mg</Field>
+    <Field name="frequency">daily</Field>
+    <Field name="frequency_type">http://indivo.org/codes/frequency#</Field>
+    <Field name="frequency_value">678</Field>
+    <Field name="frequency_abbrev">daily</Field>
+    <Field name="prescribed_by_name">Dr. Ken Mandl</Field>
+    <Field name="prescribed_by_institution">Children's Hospital Boston</Field>
+    <Field name="prescribed_on">2009-02-01</Field>
+    <Field name="prescribed_stop_on">2010-01-31</Field>
+    <Field name="dispense_as_written">true</Field>
+    <Field name="prescription_duration">P2M</Field>
+    <Field name="prescription_refill_info">once a month for three months</Field>
+    <Field name="prescription_instructions">Don't take them all at once!</Field>
+  </Model>
+</Models>

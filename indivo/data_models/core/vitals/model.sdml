@@ -1,0 +1,17 @@
+{
+    "__modelname__": "Vitals",
+    "date_measured": "Date",
+    "name": "String",
+    "name_type": "String",
+    "name_value": "String",
+    "name_abbrev": "String",
+    "value": "Number",
+    "unit": "String",
+    "unit_type": "String",
+    "unit_value": "String",
+    "unit_abbrev": "String",
+    "site": "String",
+    "position": "String",
+    "comments": "String"
+}
+
