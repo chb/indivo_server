@@ -43,6 +43,7 @@ General Interest
    API <api>
    Architecture Overview <overview>
    Authentication <authentication>
+   Data Models <data-models/index>
    Schemas <schemas/index>
 
 App Developers
@@ -59,6 +60,7 @@ App Developers
    Basic Data Formats <data-formats>
    Coding Systems <coding-systems>
    Complex Queries over Indivo Reports <query-api>
+   Data Models <data-models/index>
    Data Pipeline <data-pipeline>
    Experimental API <experimental-api>
    Messaging and Notifications <messaging>
@@ -78,7 +80,11 @@ You'll probably want to start with our
    Auditing <audit>
    Coding Systems <coding-systems>
    Connecting Indivo to a Hospital <hospital-connector>
+   Data Models <data-models/index>
+   Data-Modeling Languages <sdm>
+   Data Pipeline <data-pipeline>
    Localization <localization>
+   Transforms <transform>
    Sample Data <sample-data>
    Schemas <schemas/index>
 
@@ -98,12 +104,15 @@ Indivo Hackers
    Coding Systems <coding-systems>
    Complex Queries over Indivo Reports <query-api>
    Connecting Indivo to a Hospital <hospital-connector>
+   Data Models <data-models/index>
+   Data-Modeling Languages <sdm>
    Data Pipeline <data-pipeline>
    Experimental API <experimental-api>
    Localization <localization>
    Messaging and Notifications <messaging>
    Sample Data <sample-data>
    Schemas <schemas/index>
+   Transforms <transform>
    todos
 
 Indices and tables
