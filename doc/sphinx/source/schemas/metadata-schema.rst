@@ -5,10 +5,10 @@ Indivo Document Metadata Schema
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/metadata.xsd
+.. include:: /../../../indivo/schemas/metadata/doc-metadata/metadata.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/metadata.xml
+.. include:: /../../../indivo/schemas/metadata/doc-metadata/metadata.xml
    :literal:

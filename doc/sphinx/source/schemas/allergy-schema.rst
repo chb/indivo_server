@@ -5,10 +5,10 @@ See the schema for :doc:`codes-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/allergy.xsd
+.. include:: /../../../indivo/schemas/data/core/allergy/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/allergy.xml
+.. include:: /../../../indivo/schemas/data/core/allergy/allergy.xml
    :literal:

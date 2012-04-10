@@ -9,7 +9,7 @@ only the human-readable string.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/codes.xsd
+.. include:: /../../../indivo/schemas/data/common/codes.xsd
    :literal:
 
 * When a document comes into Indivo, its coded values may be expanded 

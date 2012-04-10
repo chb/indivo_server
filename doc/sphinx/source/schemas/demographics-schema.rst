@@ -3,10 +3,10 @@ Indivo Document Demographics Schema
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/demographics.xsd
+.. include:: /../../../indivo/schemas/data/core/demographics/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/demographics.xml
+.. include:: /../../../indivo/schemas/data/core/demographics/demographics.xml
    :literal:

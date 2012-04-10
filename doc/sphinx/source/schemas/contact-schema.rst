@@ -4,10 +4,10 @@ Indivo Document Contact Schema
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/contact.xsd
+.. include:: /../../../indivo/schemas/data/core/contact/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/contact.xml
+.. include:: /../../../indivo/schemas/data/core/contact/contact.xml
    :literal:

@@ -5,10 +5,10 @@ The Indivo Healthfeed includes notifications, represented by this schema:
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/notification.xsd
+.. include:: /../../../indivo/schemas/metadata/notification/notification.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/notification.xml
+.. include:: /../../../indivo/schemas/metadata/notification/notification.xml
    :literal:

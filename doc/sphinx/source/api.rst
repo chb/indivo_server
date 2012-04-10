@@ -155,6 +155,8 @@ Managing Documents
 Data stored in Indivo cannot by permanently deleted by default: the API enforces 
 only appending data, not fully replacing it or removing it.
 
+.. _reading-documents-API:
+
 Reading Documents
 ^^^^^^^^^^^^^^^^^
 
@@ -195,6 +197,8 @@ Reading Documents
 
    :http:get:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/versions/`
      List versions of a single document.
+
+.. _api-writing-documents:
 
 Writing Documents
 ^^^^^^^^^^^^^^^^^

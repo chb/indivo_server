@@ -6,10 +6,10 @@ See the schema for :doc:`metadata-schema` and specific
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/reporting.xsd
+.. include:: /../../../indivo/schemas/data/output/reporting/reporting.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/reporting.xml
+.. include:: /../../../indivo/schemas/data/output/reporting/reporting.xml
    :literal:

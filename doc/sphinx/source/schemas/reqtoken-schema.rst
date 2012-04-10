@@ -7,10 +7,10 @@ This schema makes use of the :doc:`pha-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/requesttoken.xsd
+.. include:: /../../../indivo/schemas/metadata/requesttoken/requesttoken.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/requesttoken.xml
+.. include:: /../../../indivo/schemas/metadata/requesttoken/requesttoken.xml
    :literal:

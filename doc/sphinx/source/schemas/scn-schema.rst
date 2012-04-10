@@ -10,10 +10,10 @@ See also :doc:`codes-schema` and :doc:`provider-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/simplenote.xsd
+.. include:: /../../../indivo/schemas/data/core/simplenote/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/simplenote.xml
+.. include:: /../../../indivo/schemas/data/core/simplenote/simplenote.xml
    :literal:

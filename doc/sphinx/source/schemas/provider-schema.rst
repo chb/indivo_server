@@ -5,5 +5,5 @@ A provider is typically an MD with an institution affiliation.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/provider.xsd
+.. include:: /../../../indivo/schemas/data/common/provider.xsd
    :literal:

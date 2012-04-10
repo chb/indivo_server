@@ -7,15 +7,15 @@ Can be wrapped into a set of Apps.
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/pha.xsd
+.. include:: /../../../indivo/schemas/metadata/pha/pha.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/pha.xml
+.. include:: /../../../indivo/schemas/metadata/pha/pha.xml
    :literal:
 
 Example of multiple apps:
 
-.. include:: /../../../schemas/metadata_schemas/phas.xml
+.. include:: /../../../indivo/schemas/metadata/pha/phas.xml
    :literal:

@@ -6,16 +6,16 @@ represented with the following schema.
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/message.xsd
+.. include:: /../../../indivo/schemas/metadata/message/message.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/message.xml
+.. include:: /../../../indivo/schemas/metadata/message/message.xml
    :literal:
 
 Another Example:
 
-.. include:: /../../../schemas/metadata_schemas/message2.xml
+.. include:: /../../../indivo/schemas/metadata/message/message2.xml
    :literal:
 

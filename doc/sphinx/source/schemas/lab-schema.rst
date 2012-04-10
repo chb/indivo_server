@@ -7,15 +7,15 @@ See also the schema for :doc:`codes-schema`, :doc:`values-schema`, and :doc:`pro
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/lab.xsd
+.. include:: /../../../indivo/schemas/data/core/lab/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/lab.xml
+.. include:: /../../../indivo/schemas/data/core/lab/lab.xml
    :literal:
 
 Another example, for a microbiology lab:
 
-.. include:: /../../../schemas/doc_schemas/lab2.xml
+.. include:: /../../../indivo/schemas/data/core/lab/lab2.xml
    :literal:

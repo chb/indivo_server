@@ -5,10 +5,10 @@ This schema describes report items returned in aggregate form.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/aggregatereport.xsd
+.. include:: /../../../indivo/schemas/data/output/aggregatereport/aggregatereport.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/aggregatereport.xml
+.. include:: /../../../indivo/schemas/data/output/aggregatereport/aggregatereport.xml
    :literal:

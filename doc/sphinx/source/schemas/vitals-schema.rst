@@ -9,10 +9,10 @@ See the schema for :doc:`codes-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/vitals.xsd
+.. include:: /../../../indivo/schemas/data/core/vitals/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/vitals.xml
+.. include:: /../../../indivo/schemas/data/core/vitals/vitals.xml
    :literal:

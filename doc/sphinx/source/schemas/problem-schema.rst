@@ -11,10 +11,10 @@ See the schema for :doc:`codes-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/problem.xsd
+.. include:: /../../../indivo/schemas/data/core/problem/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/problem.xml
+.. include:: /../../../indivo/schemas/data/core/problem/problem.xml
    :literal:

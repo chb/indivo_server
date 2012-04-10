@@ -5,10 +5,10 @@ See the schema for :doc:`codes-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/immunization.xsd
+.. include:: /../../../indivo/schemas/data/core/immunization/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/immunization.xml
+.. include:: /../../../indivo/schemas/data/core/immunization/immunization.xml
    :literal:

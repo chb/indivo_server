@@ -6,10 +6,10 @@ and available in this schema.
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/statushistory.xsd
+.. include:: /../../../indivo/schemas/metadata/statushistory/statushistory.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/statushistory.xml
+.. include:: /../../../indivo/schemas/metadata/statushistory/statushistory.xml
    :literal:

@@ -8,10 +8,10 @@ See also the schema for :doc:`codes-schema` and for :doc:`provider-schema`.
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/procedure.xsd
+.. include:: /../../../indivo/schemas/data/core/procedure/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/procedure.xml
+.. include:: /../../../indivo/schemas/data/core/procedure/procedure.xml
    :literal:

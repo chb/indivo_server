@@ -6,10 +6,10 @@ It is separate from a record.
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/account.xsd
+.. include:: /../../../indivo/schemas/metadata/account/account.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/account.xml
+.. include:: /../../../indivo/schemas/metadata/account/account.xml
    :literal:

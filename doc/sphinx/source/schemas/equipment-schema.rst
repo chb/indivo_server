@@ -3,10 +3,10 @@ Indivo Document Schema: Equipment
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/equipment.xsd
+.. include:: /../../../indivo/schemas/data/core/equipment/schema.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/doc_schemas/equipment.xml
+.. include:: /../../../indivo/schemas/data/core/equipment/equipment.xml
    :literal:

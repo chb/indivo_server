@@ -6,10 +6,10 @@ are there for indicating sharing relationships.
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/record.xsd
+.. include:: /../../../indivo/schemas/metadata/record/record.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/record.xml
+.. include:: /../../../indivo/schemas/metadata/record/record.xml
    :literal:

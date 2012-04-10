@@ -3,5 +3,5 @@ Indivo Data Values Schema
 
 Schema:
 
-.. include:: /../../../schemas/doc_schemas/values.xsd
+.. include:: /../../../indivo/schemas/data/common/values.xsd
    :literal:

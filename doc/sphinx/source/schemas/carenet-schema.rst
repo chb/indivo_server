@@ -7,10 +7,10 @@ whether sharing in this carenet was done explicitly, or via some implicit auto-s
 
 Schema:
 
-.. include:: /../../../schemas/metadata_schemas/carenet.xsd
+.. include:: /../../../indivo/schemas/metadata/carenet/carenet.xsd
    :literal:
 
 Example:
 
-.. include:: /../../../schemas/metadata_schemas/carenet.xml
+.. include:: /../../../indivo/schemas/metadata/carenet/carenet.xml
    :literal:
