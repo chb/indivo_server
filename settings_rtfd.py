@@ -1,31 +1,121 @@
-# Django settings for indivo project.
+# settings.py:
+#
+# Settings for the IndivoX Backend Server.
 
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
+###############################
+# For Instance Administrators #
+###############################
 
-# base URL for the app
+# Required Setup #
+##################
+
+# People who will get emailed when errors are raised
+# See https://docs.djangoproject.com/en/1.2/howto/error-reporting/
+# Use tuples of ('Full Name', 'email'), i.e.
+# ADMINS = (
+#    ('John Doe', 'jdoe@gmail.com'),
+# )
+ADMINS = (
+    )
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'REPLACEMENOW'
+
+# absolute filepath where indivo_server is installed
 import os
 APP_HOME = os.path.abspath(os.path.dirname(__file__))
 
-# URL prefix
+# Automatically create new records with sample data by default
+DEMO_MODE = False
+
+# which sample data to load when in demo mode. Maps desired record labels
+# to data profiles. 'Data profiles' correspond
+# to subfolders of SAMPLE_DATA_DIR
+DEMO_PROFILES = {
+    'Allergies':'patient_2',
+    'Probs': 'patient_665677',
+    'Meds': 'patient_736230',
+    }
+
+# Location for sample data
+SAMPLE_DATA_DIR = APP_HOME + '/sample_data'
+
+# URL prefix (where indivo_server will be accessible from the web)
 SITE_URL_PREFIX = "http://localhost:8000"
+
+# URL prefix for the UI server
+# (usually port 80 on the same machine)
+UI_SERVER_URL = 'http://fda.gping.org:8001'
+
+# Storage Settings
+DATABASES = {
+    'default':{
+        'ENGINE':'django.db.backends.postgresql_psycopg2', # '.postgresql_psycopg2', '.mysql', or '.oracle'
+        'NAME':'indivo',
+        'USER':'indivo',
+        'PASSWORD':'indivo',
+        'HOST':'', # Set to empty string for localhost.
+        'PORT':'', # Set to empty string for default.
+        },
+}
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+# In Indivo, all binary documents (pdf, etc.) are stored as files in MEDIA_ROOT
+# This storage could potentially grow large, so pick this location accordingly
+MEDIA_ROOT = APP_HOME + '/indivo_files/'
+
+# Email settings
+SEND_MAIL = False # Turn email on at all?
+EMAIL_HOST = ""
+EMAIL_PORT = 25
+EMAIL_FROM_ADDRESS = "Indivo <support@indivo.localhost>"
+EMAIL_SUPPORT_ADDRESS = "support@indivo.localhost"
+EMAIL_SUPPORT_NAME = "Indivo Support"
+
+# Timeout before reenabling a disabled account
+# in seconds. None if you don't want reenabling.
+# Accounts are disabled after 3 consecutive failed
+# logins.
+ACCOUNT_REENABLE_TIMEOUT = 1
+
+# Advanced Setup #
+##################
+
+# Default carenets for new records
+INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
 
 # Audit Settings
 AUDIT_LEVEL = 'HIGH' # 'HIGH', 'MED', 'LOW', 'NONE'
 AUDIT_OAUTH = True # Audit the calls used solely for the oauth dance?
 AUDIT_FAILURE = True # Audit the calls that return with unsuccessful status (4XX, 5XX)?
 
-ADMINS = (
-)
+# DataModel Settings
+CORE_DATAMODEL_DIRS = [APP_HOME + '/indivo/data_models/core',] # Directories for core datamodel definitions
+CONTRIB_DATAMODEL_DIRS = [APP_HOME + '/indivo/data_models/contrib',] # Directories for contributed datamodel definitions
+
+# XML Validation and Transformation settings
+VALIDATE_XML_SYNTAX = True # Validate all incoming XML docs for basic syntax?
+VALIDATE_XML = True # Validate XML docs to process against the Indivo schemas?
+CORE_SCHEMA_DIRS = [APP_HOME + '/indivo/schemas/data/core',] # Directories for core schemas
+CONTRIB_SCHEMA_DIRS = [APP_HOME + '/indivo/schemas/data/contrib',] # Directories for contributed schemas
+
+# logging
+import logging
+logging.basicConfig(level = logging.DEBUG, format = '%(asctime)s %(levelname)s %(message)s',
+                    filename = APP_HOME + '/indivo.log', filemode = 'a')
+
+#############################
+# For Indivo/Django Experts #
+#############################
+
+# excluse a URL pattern from access control
+INDIVO_ACCESS_CONTROL_EXCEPTION = "^/codes/"
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'indivo'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'indivo'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'indivo'         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -49,10 +139,6 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = APP_HOME + '/indivo_files/'
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -62,9 +148,6 @@ MEDIA_URL = ''
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'REPLACEMENOW'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -101,46 +184,11 @@ INSTALLED_APPS = (
     'south',
 )
 
-XSLT_STYLESHEET_LOC = APP_HOME + '/indivo/document_processing/stylesheets/'
-XSD_SCHEMA_LOC = APP_HOME + '/schemas/doc_schemas/'
-VALIDATE_XML_SYNTAX = True # Validate all incoming XML docs for basic syntax?
-VALIDATE_XML = True # Validate XML docs to process against the Indivo schemas?
-
-# the standard port for the UI server is 80 on the same machine
-UI_SERVER_URL = 'http://localhost'
-
 # cookie
-SESSION_COOKIE_NAME = "indivo_sessionid"
+SESSION_COOKIE_NAME = "indivo_server_sessionid"
 
 # auth
 LOGIN_URL = "/account/login"
 
 # no trailing slash just because
 APPEND_SLASH = False
-
-# email
-EMAIL_HOST = ""
-EMAIL_PORT = 25
-EMAIL_FROM_ADDRESS = "Indivo <support@indivo.localhost>"
-EMAIL_SUPPORT_ADDRESS = "support@indivo.localhost"
-EMAIL_SUPPORT_NAME = "Indivo Support"
-
-
-# excluse a URL pattern from access control
-INDIVO_ACCESS_CONTROL_EXCEPTION = "^/codes/"
-
-# logging
-import logging
-logging.basicConfig(level = logging.DEBUG, format = '%(asctime)s %(levelname)s %(message)s',
-	    filename = APP_HOME + '/indivo.log', filemode = 'a'
-	    )
-
-# send email?
-SEND_MAIL = False
-
-# default carenets for new records
-INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
-
-# timeout before reenabling a disabled account
-# time in seconds. None if you don't want reenabling
-ACCOUNT_REENABLE_TIMEOUT = None
