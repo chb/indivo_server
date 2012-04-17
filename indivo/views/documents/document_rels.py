@@ -11,7 +11,7 @@ from indivo.views.base import *
 from indivo.views.documents.document import _document_create, _render_documents, _get_document
 
 @marsloader()
-def get_documents_by_rel(request, record, document_id, rel, query_options, pha=None): # TODO: default order by did not match decorator's (id vs created_at).  Not currently used though
+def get_documents_by_rel(request, record, document_id, rel, query_options, pha=None):
   """ Get all documents related to the passed document_id by a relation of the passed relation-type.
 
   Includes relationships to other versions of *document_id*.

@@ -58,7 +58,7 @@ def audit_query(request, query_options,
   try:
     # Don't display record_id in the output if it wasn't in the query string.
     q.execute()
-    if q.query_filters.has_key('record_id') and not query_options['filters'].has_key('record_id'):  # TODO same danger if not using a copy of filters?
+    if q.query_filters.has_key('record_id') and not query_options['filters'].has_key('record_id'):
       del q.query_filters['record_id']
     
     return q.render(AUDIT_TEMPLATE)
@@ -71,7 +71,7 @@ def audit_query(request, query_options,
 ## Use Query API via audit_query #
 ##################################
 @marsloader()
-def audit_function_view(request, record, document_id, function_name, query_options): # TODO previous default status of None vs decorator's
+def audit_function_view(request, record, document_id, function_name, query_options):
   """ Return audits of calls to *function_name* touching *record* and *document_id*.
 
   Will return :http:statuscode:`200` with matching audits on succes, 
@@ -105,7 +105,7 @@ def audit_function_view(request, record, document_id, function_name, query_optio
 
 
 @marsloader()
-def audit_record_view(request, record, query_options): # TODO previous default status of None vs decorator's
+def audit_record_view(request, record, query_options):
   """ Return audits of calls touching *record*.
 
   Will return :http:statuscode:`200` with matching audits on succes, 

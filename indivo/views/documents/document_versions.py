@@ -96,7 +96,7 @@ def _document_version(request, record, document_id, pha=None, external_id=None):
 
 
 @marsloader()
-def document_versions(request, record, document_id, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
+def document_versions(request, record, document_id, query_options):
   """ Retrieve the versions of a document.
 
   **ARGUMENTS:**

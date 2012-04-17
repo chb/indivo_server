@@ -514,7 +514,7 @@ def _render_document(document):
 
 
 @marsloader()
-def app_document_list(request, pha, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
+def app_document_list(request, pha, query_options):
     """ List app-specific documents.
 
     Calls into :py:meth:`~indivo.views.documents.document.document_list`.
@@ -524,7 +524,7 @@ def app_document_list(request, pha, query_options): # TODO: default order_by mat
     return document_list(request, query_options, pha=pha)
 
 @marsloader()
-def record_document_list(request, record, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
+def record_document_list(request, record, query_options):
     """ List record-specific documents.
 
     Calls into :py:meth:`~indivo.views.documents.document.document_list`.
@@ -534,7 +534,7 @@ def record_document_list(request, record, query_options): # TODO: default order_
     return document_list(request, query_options, record=record)
 
 @marsloader()
-def record_app_document_list(request, record, pha, query_options): # TODO: default order_by matched what is in the decorator, but check with Dan
+def record_app_document_list(request, record, pha, query_options):
     """ List record-app-specific documents.
 
     Calls into :py:meth:`~indivo.views.documents.document.document_list`.
@@ -543,7 +543,7 @@ def record_app_document_list(request, record, pha, query_options): # TODO: defau
 
     return document_list(request, query_options, record=record, pha=pha)
 
-def document_list(request, query_options, record=None, pha=None): # TODO: default order_by matched what is in the decorator, but check with Dan
+def document_list(request, query_options, record=None, pha=None):
     """ List Indivo documents.
 
     **Arguments:**

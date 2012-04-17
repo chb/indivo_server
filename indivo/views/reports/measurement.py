@@ -52,7 +52,6 @@ def _measurement_list(request, query_options, lab_code,
   :http:statuscode:`400` if any invalid query parameters were passed.
 
   """
-  # TODO: revisit 
   # lab_code comes in as part of the url
   if lab_code:
       query_options['filters']['lab_code'] = lab_code
