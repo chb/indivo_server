@@ -189,3 +189,10 @@ LOGIN_URL = "/account/login"
 
 # no trailing slash just because
 APPEND_SLASH = False
+
+# custom serializations
+SERIALIZATION_MODULES = {
+    "indivo_python" : "indivo.serializers.python",
+    "indivo_xml": "indivo.serializers.xml_serializer"
+}
+
