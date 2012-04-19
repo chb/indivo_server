@@ -14,6 +14,10 @@ urlpatterns = patterns('',
     (r'^/documents/', include('indivo.urls.record_documents')),
     (r'^/reports/',   include('indivo.urls.record_reports')),
 
+    #TESTING
+    (r'^/problems/', MethodDispatcher({'GET': smart_problems})),                       
+
+
     # ownership
     (r'^/owner$', MethodDispatcher({
                 'GET' : record_get_owner,

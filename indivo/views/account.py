@@ -16,6 +16,7 @@ from django.http import HttpResponseBadRequest
 from django.db import IntegrityError
 from django.conf import settings
 from django.db.models import Q
+from oauth.oauth import HTTPRequest, OAuthRequest
 
 ACTIVE_STATE, UNINITIALIZED_STATE = 'active', 'uninitialized'
 
@@ -561,3 +562,46 @@ def account_create(request):
         return HttpResponseBadRequest("An account with email address %s already exists." % account_id)
     
     return render_template('account', {'account': new_account}, type='xml')
+
+def get_connect_credentials(request, account, pha):
+    """ Get oAuth credentials for an app to run in Connect mode.
+
+    Generates an access token for *pha* to run against the *record_id* specified in ``request.POST``, authorized by
+    *account*.
+    
+    """
+
+    try:
+        record_id = request.POST.get('record_id', None)
+        record = Record.objects.get(id=record_id)
+    except Record.DoesNotExist:
+        raise Http404
+    except Record.MultipleObjectsReturned:
+        raise Exception("Multiple records with same id--database is corrupt")
+
+    # Generate the tokens
+    from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
+    rest_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record, account=account)
+    connect_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record, account=account)
+    connect_token.connect_auth_p = True
+    connect_token.save()
+
+    # Generate a 2-legged oauth header for the rest token, based on the pha's start_url
+    url = utils.url_interpolate(pha.start_url_template, {'record_id':record_id, 'carenet_id':''})
+    request = HTTPRequest("GET", url, HTTPRequest.FORM_URLENCODED_TYPE, '', {})
+    oauth_request = OAuthRequest(consumer=pha,
+                                 token=None, # no access tokens: 2-legged request
+                                 http_request=request,
+                                 oauth_parameters={}) # TODO: set SMART/Indivo parameters when SMART-REST support is needed
+
+    oauth_request.sign()
+    auth_header = oauth_request.to_header()["Authorization"]
+
+    return render_template('connect_credentials', 
+                           { 'connect_token': connect_token,
+                             'rest_token': rest_token,
+                             'api_base': settings.SITE_URL_PREFIX,
+                             'oauth_header': auth_header,
+                             'app_email':pha.email}, 
+                           type='xml')
+                                 

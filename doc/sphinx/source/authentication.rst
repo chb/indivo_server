@@ -1,11 +1,22 @@
 Indivo Authentication
 =====================
 
-Calls to the :doc:`Indivo API <api>` are authenticated using `oAuth <http://oauth.net>`_. Here, we provide 
-details of exactly how Indivo uses oAuth, in particular the options that are supported and those that aren't.
+As of version 2.0, Indivo now permits three methods of authentication:
+
+* :ref:`Traditional oAuth <traditional-oauth>`
+* :ref:`In-browser Connect Authentication <connect-auth>` (a la. SMART CONNECT)
+* :ref:`Pre-generated REST Authentication <rest-auth>` (a la. SMART REST)
+
+.. _traditional-oauth:
+
+Indivo oAuth
+------------
+
+Here, we provide details of exactly how Indivo uses `oAuth <http://oauth.net>`_, in particular the options that are supported and 
+those that aren't.
 
 Specifics of our oAuth implementation
--------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 OAuth Section 5.2 defines three possible approaches to sending OAuth Protocol Parameters. In Indivo, we use 
 exclusively the `HTTP authorization header <http://oauth.net/core/1.0/#auth_header>`_, as defined by the 
@@ -55,7 +66,7 @@ In addition, we implement the following constraints:
   eventually be added.
 
 Body and Content-Type
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 By default, oAuth only signs the body of HTTP requests that are form-url-encoded. Indivo uses the 
 `oAuth Body Hash Extension <http://oauth.googlecode.com/svn/spec/ext/body_hash/1.0/drafts/4/spec.html>`_ to ensure 
@@ -64,10 +75,10 @@ Indivo also expects an additional parameter, ``oauth_content_type``, to certify 
 (and prevent content-sniffing attacks.)
 
 User Applications (PHAs)
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 PHA Registration
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 A PHA registers with Indivo using an Indivo-installation specific process, at the conclusion of which both Indivo and 
 the PHA agree on:
@@ -94,7 +105,7 @@ Indivo does not support a custom oAuth callback URL.
 .. _autonomous_apps:
 
 Autonomous Apps
-^^^^^^^^^^^^^^^
+"""""""""""""""
 
 An autonomous app is one that wants to access the user's record while the user is not connected. PHAs that qualify 
 include hospital data connectors, drug-interaction checkers, etc. There are very good reasons for PHAs to access a 
@@ -118,18 +129,18 @@ dance: the user 'enables' the app, and the app is then able to acquire access to
 case, these apps must declare their lack of UI at registration time, much like they declare their being autonomous or not. 
 Only autonomous apps can choose to forgo a UI.
 
-A non-autonomous app, on the other hand, is one that is meant to be used by whoever is logged in and has access to the record 
-in question. Depending on which user has launched the app, the app's permissions might differ. For example, when Alice uses 
-the Problems App within her record, she should see ''all'' of her problems. However, when Bob, her co-worker, uses the Problems 
-App to view Alice's record, he should see only those problems which Alice has chosen to let him see. Thus, a non-autonomous 
-app exists purely to proxy a human user's clicks and perform some visualization / data entry assistance functionality. 
-Non-autonomous apps are thus constrained to a carenet at the time that the user clicks on the app name to launch it. 
-When Bob launches the Problems App on Alice's record, the Problems App receives an access token that is constrained to 
-Alice's "Work" carenet, and the app can only access the problems Alice has made available within her Work carenet. All 
-access tokens for non-autonomous apps are valid only for the duration of a web session.
+A non-autonomous app, on the other hand, is one that is meant to be used by whoever is logged in and has access to the 
+record in question. Depending on which user has launched the app, the app's permissions might differ. For example, when 
+Alice uses the Problems App within her record, she should see ''all'' of her problems. However, when Bob, her co-worker, 
+uses the Problems App to view Alice's record, he should see only those problems which Alice has chosen to let him see. Thus,
+a non-autonomous app exists purely to proxy a human user's clicks and perform some visualization / data entry assistance 
+functionality. Non-autonomous apps are thus constrained to a carenet at the time that the user clicks on the app name to 
+launch it. When Bob launches the Problems App on Alice's record, the Problems App receives an access token that is 
+constrained to Alice's "Work" carenet, and the app can only access the problems Alice has made available within her Work 
+carenet. All access tokens for non-autonomous apps are valid only for the duration of a web session.
 
 Connecting a PHA to a Record
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""
 
 A user opts to add a PHA to her Indivo record by enabling it in the UI. At any subsequent point, when the user attempts 
 to use the PHA (i.e. by clicking on it in the UI), she is sent to the PHA's ``start URL`` with the ``indivo_record_id`` 
@@ -138,7 +149,7 @@ process. When the PHA begins the oAuth process, it should do so with the indicat
 when its ``start_url`` was accessed.
 
 Obtain a Request Token
-""""""""""""""""""""""
+''''''''''''''''''''''
 
 A PHA begins its access request for a user when the user visits the PHA's ``start URL``. While the user's browser awaits 
 a response, the PHA obtains from the Indivo Server a request token. This is accomplished by issuing a signed ``POST`` 
@@ -157,7 +168,7 @@ This call returns an oAuth token::
 The PHA is expected to store the Request Token and its correspondence to this specific user, likely in the web session.
 
 Authorize the Request Token
-"""""""""""""""""""""""""""
+'''''''''''''''''''''''''''
 
 Once it has obtained a request token, with the user's browser still waiting for a response, the PHA responds by redirecting 
 the user's browser to the User Authorization URL on an Indivo UI app, indicated in the request token response above, or by 
@@ -179,12 +190,12 @@ The user can choose to cancel the process, in which case no further requests are
 request token is discarded.
 
 Obtain an Access Token
-""""""""""""""""""""""
+''''''''''''''''''''''
 
 If the user agrees to connect with the PHA, Indivo redirects the user browser to the PHA's ``callback_url``, as specified 
-by the PHA at registration time. Appended to this ``callback_url`` are the ``oauth_token``, the request token that identifies 
-this authorization dance, and the ``oauth_verifier``. The PHA is encouraged to check that the ``oauth_token`` matches the 
-token stored in its web-session.
+by the PHA at registration time. Appended to this ``callback_url`` are the ``oauth_token``, the request token that 
+identifies this authorization dance, and the ``oauth_verifier``. The PHA is encouraged to check that the ``oauth_token`` 
+matches the token stored in its web-session.
 
 The PHA must now exchange the Request Token for an Access Token. This is accomplished using a 3-legged oAuth POST request, 
 with the request token and secret, to::
@@ -204,7 +215,7 @@ This token can then be used by the PHA to make 3-legged oAuth calls to Indivo. T
 which record this token is bound to, while the carenet indicates which portion of the system the PHA can access.
 
 Interact and Re-Auth
-""""""""""""""""""""
+''''''''''''''''''''
 
 At this point, the PHA has an access token, an access secret, an Indivo record ID, and an Indivo privacy group. These 
 credentials allow the PHA to make calls to the Indivo Server to obtain data from the given Indivo record. If the PHA 
@@ -213,7 +224,7 @@ provides a direct web interface to the user, this UI is delivered inside an IFRA
 A few days later, when the user returns to his Indivo record, he can click on any of the PHAs he has already authorized. 
 The PHA, however, does not know immediately who this user is. To communicate the user's identity to the PHA, Indivo simply 
 re-performs the oAuth dance, setting the IFRAME's URL to the PHA's starting point with the prescribed Indivo Record ID. 
-When the PHA redirects the IFRAME to the authorization page, Indivo notices that this record has already authorized the app, 
+When the PHA redirects the IFRAME to the authorization page, Indivo notices that this record has already authorized the app,
 and simply redirects the IFRAME immediately to the PHA's ``callback_url``. Thus, a complete oAuth process is re-performed, 
 and the PHA re-obtains an access token, access secret, Indivo record ID and privacy group.
 
@@ -221,18 +232,55 @@ The PHA should never assume that the access token and secret stay the same. The 
 key its data against is the Indivo Record ID.
 
 Admin Applications
-------------------
+^^^^^^^^^^^^^^^^^^
 
 Admin Applications contact the Indivo X server using 2-legged oAuth only, with just a consumer key and consumer secret.
 
 Chrome Applications
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 Most Indivo developers who only wish to write PHAs can safely ignore Chrome applications. Developers who wish to customize 
 the entire Indivo experience need to understand Chrome apps.
 
-The Indivo Chrome (User Interface) contacts the Indivo X server first using 2-legged oAuth to create a user-specific session 
+The Indivo Chrome (User Interface) contacts the Indivo X server first using 2-legged oAuth to create a user-specific session
 using the user's username and password. Indivo X responds with a fresh oAuth token and secret valid for the length of a 
-typical web session. Then all Indivo Chrome calls to the Indivo X server on behalf of a given user are made as 3-legged calls, 
-using the Indivo Chrome's consumer key and secret, and the specific session token and secret.
+typical web session. Then all Indivo Chrome calls to the Indivo X server on behalf of a given user are made as 3-legged 
+calls, using the Indivo Chrome's consumer key and secret, and the specific session token and secret.
 
+
+.. _connect-auth:
+
+In-Browser Connect Authentication
+---------------------------------
+
+Connect-style authentication enables applications running framed within the Indivo UI to make API calls solely using 
+javascript, without having to navigate the oAuth dance. Connect-style authentication works as follows:
+
+* When the Indivo UI app opens a user app within its iframe, it acquires a set of oAuth credentials that allows the UI app 
+  to make proxied API calls on behalf of the user app, using the API call 
+  :http:post:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/connect_credentials`.
+
+* The Indivo UI app additionally opens a channel to the iframe (using something like 
+  `jschannel <https://github.com/mozilla/jschannel>`_), so that the app can make client-side requests directly to the UI
+  app.
+
+* When the app wants to make an API call, it makes an unsigned request (in the client-side javascript) through its 
+  channel.
+
+* The UI app receives the request, signs it with the Connect credentials, and passes the request through to the backend
+  Indivo Server.
+
+* Indivo Server processes the request, and sends the results back to the UI app, which in turn passes them through the 
+  channel to the user app.
+
+Thus, the user app needs to perform no authentication when making API calls--it merely passes the calls through its 
+channel to the UI app (a process which we've already implemented in our javascript client) and receives the results. The
+security of the call is enforced in the channel, and by the tokens used by the UI Server to authenticate the call.
+
+
+.. _rest-auth:
+
+Pre-generated REST Authentication
+---------------------------------
+
+Coming Soon!

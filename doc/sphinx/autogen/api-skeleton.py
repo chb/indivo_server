@@ -112,6 +112,39 @@ CALLS=[{
 },
 {
     "method":"POST",
+    "path":"/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/connect_credentials",
+    "view_func_name":"get_connect_credentials",
+    "access_doc":"The Account owner.",
+    "url_params":{
+        'ACCOUNT_EMAIL':'The email identifier of the Indivo account to authorize the connect credentials',
+        'PHA_EMAIL':'The email identifier of the Indivo user app to grant access via the connect credentials',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        'record_id':'The identifier of the Indivo Record to which to grant access via the connect credentials',
+        },
+    "description":"Get oAuth credentials for an app to run in Connect mode.",
+    "return_desc":":http:statuscode:`200` with a set of credentials providing access for the app to the record, via :ref:`Connect-Style Authentication <connect-auth>` and via :ref:`Standard oAuth <traditional-oauth>` authentication. Additionally, the credentials include a precalculated oAuth Header that the app can use to access the record.",
+    "return_ex":'''
+<ConnectCredentials>
+  <App id="problems@apps.indivo.org" />
+  <ConnectToken>1QzyGdx13Da</ConnectToken>
+  <ConnectSecret>re3Qg4dxaf9</ConnectSecret>
+  <APIBase>http://your_indivo_instance.org:8000</APIBase>
+  <RESTToken>7qGer7dx4gC</RESTToken>
+  <RESTSecret>5JpXb0G2g4u</RESTSecret>
+  <OAuthHeader>OAuth realm="", oauth_version="1.0", oauth_consumer_key="problems%40apps.indivo.org", oauth_signature_method="HMAC-SHA1", oauth_nonce="VNGQuyvdHbGLsFXm2oIL", oauth_timestamp="1334848404", oauth_signature="HHpwLSSCxgRhYfWDw3uLdmjsyMk%3D"</OAuthHeader>
+  <ExpiresAt>2012-07-04T00:00:00Z</ExpiresAt>
+</ConnectCredentials>
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"POST",
     "path":"/accounts/{ACCOUNT_EMAIL}/authsystems/",
     "view_func_name":"account_authsystem_add",
     "access_doc":"Any admin app.",
@@ -1531,7 +1564,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "method":"GET",
     "path":"/carenets/{CARENET_ID}/record",
     "view_func_name":"carenet_record",
-    "access_doc":"Nobody",
+    "access_doc":"A principal in the carenet, in full control of the carenet's record, or any admin app.",
     "url_params":{
         'CARENET_ID':'The id string associated with the Indivo carenet',
         },
@@ -4763,6 +4796,61 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 ''',
     "deprecated": None,
     "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/problems",
+    "view_func_name":"smart_problems",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"FAKE FOR TESTING: GET SMART PROBLEMS",
+    "return_desc":"SMART RDF with some hard-coded problems.",
+    "return_ex":'''
+<rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1540505/problems/9fc8b2c3-bb55-4e31-a413-522dcb7dbea8">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+<belongsTo xmlns="http://smartplatforms.org/terms#" rdf:resource="http://sandbox-api.smartplatforms.org/records/1540505"/>
+<problemName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="iDPsDPss4953"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="iDPsDPss4953">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+<code xmlns="http://smartplatforms.org/terms#" rdf:resource="http://www.ihtsdo.org/snomed-ct/concepts/43339004"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.ihtsdo.org/snomed-ct/concepts/43339004">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+<title xmlns="http://purl.org/dc/terms/">Hypokalemia</title>
+<system xmlns="http://smartplatforms.org/terms#">http://www.ihtsdo.org/snomed-ct/concepts/</system>
+<identifier xmlns="http://purl.org/dc/terms/">43339004</identifier>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="iDPsDPss4953">
+<title xmlns="http://purl.org/dc/terms/">Hypokalemia</title>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1540505/problems/9fc8b2c3-bb55-4e31-a413-522dcb7dbea8">
+<startDate xmlns="http://smartplatforms.org/terms#">2005-12-30</startDate>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://www.ihtsdo.org/snomed-ct/concepts/43339004">
+<rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+</rdf:Description>
+   ...
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },

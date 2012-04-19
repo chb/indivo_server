@@ -22,6 +22,10 @@ def accountStateSetUp(test_cases_instance):
                                         sender=_self.account, recipient=_self.account)
     _self.attachment = _self.createAttachment(TEST_ATTACHMENTS, 0, attachment_num=1, message=_self.message)
 
+    # Create an app, and add it to the record
+    _self.pha = _self.createUserApp(TEST_USERAPPS, 0)
+    _self.addAppToRecord(record=_self.record, with_pha=_self.pha)
+
 class TransactionAccountInternalTests(TransactionInternalTests):
     
     def setUp(self):
@@ -339,6 +343,42 @@ class AccountInternalTests(InternalTests):
         self.assertEqual(set([r.get('id') for r in results]), 
                          set([self.account.email, search_account.email]))
         
+    def test_get_connect_credentials(self):
+
+        # Test a valid call
+        url = '/accounts/%s/apps/%s/connect_credentials'%(self.account.email, self.pha.email)
+        data = {'record_id': self.record.id}
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEqual(response.status_code, 200)
         
-        
-        
+        data = etree.XML(response.content)
+        self.assertEqual(self.pha.email, data.find('App').get('id', None))
+        self.assertEqual(settings.SITE_URL_PREFIX, data.findtext('APIBase'))
+
+        ct = data.findtext('ConnectToken')
+        cs = data.findtext('ConnectSecret')
+        self.assertNotRaises(Exception, AccessToken.objects.get, token=ct, token_secret=cs, connect_auth_p=True)
+
+        rt = data.findtext('RESTToken')
+        rs = data.findtext('RESTSecret')
+        self.assertNotRaises(Exception, AccessToken.objects.get, token=rt, token_secret=rs, connect_auth_p=False)
+
+        db_rt = AccessToken.objects.get(token=rt)
+        self.assertEqual(db_rt.expires_at, iso8601.parse_utc_date(data.findtext('ExpiresAt')))
+
+        # Get a 404 for invalid accounts, apps, and records
+        url = '/accounts/%s/apps/%s/connect_credentials'%('BOGUS_ACCOUNT', self.pha.email)
+        data = {'record_id': self.record.id}
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEqual(response.status_code, 404)
+
+        url = '/accounts/%s/apps/%s/connect_credentials'%(self.account.email, 'BOGUS_APP')
+        data = {'record_id': self.record.id}
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEqual(response.status_code, 404)
+
+        url = '/accounts/%s/apps/%s/connect_credentials'%(self.account.email, self.pha.email)
+        data = {'record_id': 'BOGUS_RECORD'}
+        response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
+        self.assertEqual(response.status_code, 404)
+

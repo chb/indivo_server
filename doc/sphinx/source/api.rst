@@ -816,6 +816,13 @@ backend Indivo server.
      pre-bound to a record, this ``record_id`` parameter must match, or this will 
      throw an error.
 
+   :http:post:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/connect_credentials`
+     Get credentials for :ref:`Connect-style Authentication <connect-auth>` for a
+     user app, and authorize them on behalf of an account.
+
+     This call will return tokens that can be used to sign future API calls by the
+     user app, proxied by the UI.
+
    :http:get:`/accounts/{ACCOUNT_ID}/check-secrets/{PRIMARY_SECRET}`
      Check the primary and secondary secrets of an account.
 

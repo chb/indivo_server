@@ -73,7 +73,8 @@ def load_access_rules():
            account_inbox_message_attachment_accept,
            account_message_archive,
            account_notifications,
-           account_permissions]
+           account_permissions,
+           get_connect_credentials,]
   AccessRule('Account Management No Admin App', 
              account_management_no_admin_app, views)           
 
@@ -95,7 +96,7 @@ def load_access_rules():
            record_set_owner,
            record_pha_setup,
            account_secret,
-           account_send_message]
+           account_send_message,]
   AccessRule('Account Management Admin App Only', 
              account_management_admin_app_only, views)
 
@@ -278,6 +279,7 @@ def load_access_rules():
            medication_list,
            procedure_list,
            problem_list,
+           smart_problems,
            equipment_list,
            vitals_list,
            lab_list,

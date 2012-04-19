@@ -17,6 +17,9 @@ urlpatterns = patterns('',
     # update info
     (r'^info-set$', MethodDispatcher({'POST': account_info_set})),
 
+    # get credentials for a connect-authenticated app
+    (r'^apps/(?P<pha_email>[^/]+)/connect_credentials$', MethodDispatcher({'POST': get_connect_credentials})),
+
     # auth systems
     (r'^authsystems/$', MethodDispatcher({'POST': account_authsystem_add})),
 

@@ -260,6 +260,9 @@ class AccessToken(Principal, Token):
   # if null, it never expires, so BE CAREFUL
   expires_at = models.DateTimeField(null = True)
 
+  # is this token being used for connect-style auth?
+  connect_auth_p = models.BooleanField(default=False)
+
   # make sure email is set 
   def save(self, *args, **kwargs):
     self.email = "%s@accesstokens.indivo.org" % self.token
