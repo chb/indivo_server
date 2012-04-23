@@ -110,6 +110,16 @@ class MachineAppModelUnitTests(InternalTests):
             parsed_m, parsed_c, app = self.buildAppFromManifest(MachineApp, manifest, credentials)
             self.assertValidAdminAppManifest(parsed_m, parsed_c, app, ui=True)
 
+    def test_to_manifest(self):
+        for manifest, credentials in TEST_ADMINAPP_MANIFESTS + TEST_UIAPP_MANIFESTS:
+            app = MachineApp.from_manifest(manifest, credentials, save=False)
+            parsed_m = simplejson.loads(manifest)
+            reparsed_m = simplejson.loads(app.to_manifest())
+
+            # The reparsed manifest should contain AT LEAST as much info as the original
+            for k, v in parsed_m.iteritems():
+                self.assertEqual(v, reparsed_m.get(k, None))
+
     def buildAppFromManifest(self, model_cls, manifest, credentials):
         parsed_m = simplejson.loads(manifest)
         parsed_c = simplejson.loads(credentials)

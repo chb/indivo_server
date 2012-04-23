@@ -97,6 +97,25 @@ class PHAModelUnitTests(InternalTests):
         for manifest, credentials in TEST_USERAPP_MANIFESTS:
             parsed_m, parsed_c, app = self.buildAppFromManifest(PHA, manifest, credentials)
             self.assertValidUserAppManifest(parsed_m, parsed_c, app)
+
+    def test_to_manifest(self):
+        for manifest, credentials in TEST_SMART_MANIFESTS:
+            app = PHA.from_manifest(manifest, credentials, save=False)
+            parsed_m = simplejson.loads(manifest)
+            reparsed_m = simplejson.loads(app.to_manifest(smart_only=True))
+
+            # The reparsed manifest should contain AT LEAST as much info as the original
+            for k, v in parsed_m.iteritems():
+                self.assertEqual(v, reparsed_m.get(k, None))
+
+        for manifest, credentials in TEST_USERAPP_MANIFESTS:
+            app = PHA.from_manifest(manifest, credentials, save=False)
+            parsed_m = simplejson.loads(manifest)
+            reparsed_m = simplejson.loads(app.to_manifest())
+
+            # The reparsed manifest should contain AT LEAST as much info as the original
+            for k, v in parsed_m.iteritems():
+                self.assertEqual(v, reparsed_m.get(k, None))
             
     def buildAppFromManifest(self, model_cls, manifest, credentials):
         parsed_m = simplejson.loads(manifest)

@@ -37,9 +37,9 @@ def get_version(request):
 def _get_version():
     return INDIVO_SERVER_RELEASE
 
-def _get_smart_version():
-    if SMART_COMPATIBILITY.has_key(INDIVO_SERVER_RELEASE):
-        return SMART_COMPATIBILITY[INDIVO_SERVER_RELEASE]
+def _get_smart_version(indivo_version):
+    if SMART_COMPATIBILITY.has_key(indivo_version):
+        return SMART_COMPATIBILITY[indivo_version]
     return ''
 
 def _get_indivo_version(smart_version):

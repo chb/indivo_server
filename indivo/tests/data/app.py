@@ -138,6 +138,7 @@ TEST_SMART_MANIFESTS = [
     "author" : "Josh Mandel, Children's Hospital Boston",
     "id" : "problem-list-test@apps.smartplatforms.org",
     "version" : ".1a",
+    "smart_version" : "0.4",
 
     "mode" : "ui",
     "scope": "record",

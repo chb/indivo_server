@@ -10,6 +10,7 @@ from base import Object, Principal, BaseModel, BaseMeta
 
 import urllib, datetime
 import indivo
+from indivo.lib.utils import render_template_raw
 
 try:
     from django.utils import simplejson
@@ -158,6 +159,42 @@ class PHA(OAuthApp):
       app.save()
     return app
 
+  def to_manifest(self, smart_only=False):
+      """ Produce a SMART-style manifest for the app.
+      
+      see :doc:`app-registration` for details on the manifest format.
+
+      If *smart_only* is True, only SMART-manifest compatible fields will be included in the output.
+
+      """
+      from indivo.views import _get_smart_version
+      smart_version = _get_smart_version(self.indivo_version)
+
+      output = {
+          "name": self.name,
+          "description": self.description,
+          "author": self.author,
+          "id": self.email,
+          "version": self.version,
+          "smart_version": smart_version,
+          "mode": "background" if self.is_autonomous else "ui",
+          "scope": "record",
+          "icon": self.icon_url,
+          "index": self.start_url_template,          
+          "requires": simplejson.loads(self.requirements),
+          }
+      if not smart_only:
+          output.update({
+                  "has_ui": self.has_ui,
+                  "frameable": self.frameable,
+                  "oauth_callback_url": self.callback_url,
+                  "indivo_version": self.indivo_version,
+                  })
+          if self.is_autonomous:
+              output['autonomous_reason'] = self.autonomous_reason
+                       
+      return simplejson.dumps(output)
+
   # Accesscontrol:
   # roles that PHAs could implement.
   def isInCarenet(self, carenet):
@@ -238,6 +275,31 @@ class MachineApp(OAuthApp):
     if save:
       app.save()
     return app
+
+  def to_manifest(self, smart_only=False):
+      """ Produce a SMART-style manifest for the app.
+      
+      see :doc:`app-registration` for details on the manifest format.
+      
+      If *smart_only* is True, only SMART-manifest compatible fields will be included in the output.
+
+      """
+      from indivo.views import _get_smart_version
+      smart_version = _get_smart_version(self.indivo_version)
+      output = {
+          "name": self.name,
+          "description": self.description,
+          "author": self.author,
+          "id": self.email,
+          "version": self.version,
+          "smart_version": smart_version,
+          }
+      if not smart_only:
+          output.update({
+                  "ui_app": self.app_type == 'chrome',
+                  "indivo_version": self.indivo_version,
+                  })
+      return simplejson.dumps(output)
 
   # Accesscontrol:
   # roles that a MachineApp could have
