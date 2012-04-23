@@ -2,7 +2,16 @@ from indivo.tests.internal_tests import InternalTests, enable_transactions
 from indivo.models import PHA
 from indivo.tests.data.record import TEST_RECORDS
 from indivo.tests.data.app import TEST_USERAPPS, TEST_AUTONOMOUS_APPS
+from indivo.tests.data.app import TEST_SMART_MANIFESTS, TEST_USERAPP_MANIFESTS 
 from indivo.tests.data.account import TEST_ACCOUNTS
+
+try:
+    from django.utils import simplejson
+except ImportError:
+    try:
+        import simplejson
+    except ImportError:
+        raise ImportError("Couldn't find an installation of SimpleJSON")
 
 from django.db import IntegrityError, transaction
 
@@ -69,3 +78,50 @@ class PHAModelUnitTests(InternalTests):
         
         # re-assert
         self.assertTrue(self.app.isInCarenet(self.carenet))
+
+    def test_from_manifest(self):    
+        all_manifests = TEST_SMART_MANIFESTS + TEST_USERAPP_MANIFESTS
+        
+        # test that save=False works
+        for manifest, credentials in all_manifests:
+            num_phas = PHA.objects.count()
+            app = PHA.from_manifest(manifest, credentials, save=False)
+            self.assertEqual(num_phas, PHA.objects.count())
+            
+        # should work with a SMART manifest
+        for manifest, credentials in TEST_SMART_MANIFESTS:
+            parsed_m, parsed_c, app = self.buildAppFromManifest(PHA, manifest, credentials)
+            self.assertValidUserAppManifest(parsed_m, parsed_c, app)
+
+        # Or with Indivo-specific manifest extensions
+        for manifest, credentials in TEST_USERAPP_MANIFESTS:
+            parsed_m, parsed_c, app = self.buildAppFromManifest(PHA, manifest, credentials)
+            self.assertValidUserAppManifest(parsed_m, parsed_c, app)
+            
+    def buildAppFromManifest(self, model_cls, manifest, credentials):
+        parsed_m = simplejson.loads(manifest)
+        parsed_c = simplejson.loads(credentials)
+        num_apps = model_cls.objects.count()
+        app = model_cls.from_manifest(manifest, credentials)
+        self.assertEqual(num_apps + 1, model_cls.objects.count())
+        return (parsed_m, parsed_c, app)
+    
+    def assertValidUserAppManifest(self, parsed_m, parsed_c, app):
+        self.assertEqual(parsed_c['consumer_key'], app.consumer_key)
+        self.assertEqual(parsed_c['consumer_secret'], app.secret)
+        self.assertEqual(parsed_m['name'], app.name)
+        self.assertEqual(parsed_m['id'], app.email)
+        self.assertEqual(parsed_m.get('index', ''), app.start_url_template)
+        self.assertEqual(parsed_m.get('oauth_callback_url',''), app.callback_url) # SMART apps won't define this
+        autonomous_p = parsed_m.get('mode', '') == 'background'
+        self.assertEqual(autonomous_p, app.is_autonomous)
+        self.assertEqual(parsed_m.get('autonomous_reason', ''), app.autonomous_reason) # SMART apps won't define this
+        has_ui_p = parsed_m['has_ui'] if parsed_m.has_key('has_ui') else parsed_m.has_key('index')
+        self.assertEqual(has_ui_p, app.has_ui)
+        frameable_p = parsed_m['frameable'] if parsed_m.has_key('frameable') else parsed_m.has_key('index')
+        self.assertEqual(frameable_p, app.frameable)
+        self.assertEqual(parsed_m.get('description', ''), app.description)
+        self.assertEqual(parsed_m.get('author', ''), app.author)
+        self.assertEqual(parsed_m.get('version', ''), app.version)
+        self.assertEqual(parsed_m.get('icon', ''), app.icon_url)
+        self.assertEqual(parsed_m.get('requires', {}), simplejson.loads(app.requirements))

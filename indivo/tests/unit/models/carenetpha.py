@@ -36,20 +36,3 @@ class CarenetPHAModelUnitTests(InternalTests):
             transaction.rollback()
         else:
             self.fail('Added an app to the same carenet twice')
-
-#    def test_random(self):
-#        import datetime
-#        args = {
-#            'date_onset':datetime.datetime.now(),
-#            'date_resolution':datetime.datetime.now(),
-#            'name': 'hello!',
-#            'name_type': 'word',
-#            'name_value': 'w7',
-#            'name_abbrev':'hi',
-#            'comments':'Pretty awesome!',
-#            'diagnosed_by': 'Me!',
-#            }
-#        from indivo.models import TestModel
-#        tm = TestModel.objects.create(**args)
-#        for k,v in args.items():
-#            self.assertEqual(getattr(tm, k), v)
