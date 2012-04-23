@@ -148,12 +148,12 @@ Indivo data models currently have the following layout on the filesystem::
       indivo/
             ...
           data_models/
-	      core/
-	          allergy/
-		      model.[sdml | py]
-		      example.[sdmj | sdmx | py]
-		   ...
-	      contrib/
+              core/
+                  allergy/
+                      model.[sdml | py]
+                      example.[sdmj | sdmx | py]
+                   ...
+              contrib/
 
 The ``indivo/data_models/core/`` directory contains all of our built-in data models, and you shouldn't modify it. 
 Since you are 'contributing' a data model to Indivo, add your data model to the ``indivo/data_models/contrib/`` directory. 
@@ -174,15 +174,15 @@ Simply:
         indivo/
               ...
             data_models/
-	        core/
-	            allergy/
-	  	        model.[sdml | py]
-			example.[sdmj | sdmx | py]
-  		     ...
-	        contrib/
-		    your_data_model/
-		        model.[sdml | py]
-			example.[sdmj | sdmx | py]
+                core/
+                    allergy/
+                        model.[sdml | py]
+                        example.[sdmj | sdmx | py]
+                     ...
+                contrib/
+                    your_data_model/
+                        model.[sdml | py]
+                        example.[sdmj | sdmx | py]
 
 Migrating the Database
 ^^^^^^^^^^^^^^^^^^^^^^
