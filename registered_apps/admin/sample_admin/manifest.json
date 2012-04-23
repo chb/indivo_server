@@ -1,0 +1,9 @@
+{
+    "name": "Sample Admin App",
+    "description" : "The reference Indivo UI App",
+    "author" : "Ben Adida, Travers Franckle, Arjun Sanyal, Pascal Pfiffner, Daniel Haas. Children's Hospital Boston",
+    "id" : "sample_admin_app@apps.indivo.org",
+    "version" : "2.0.0",
+    "indivo_version": "2.0.0",
+    "ui_app": false
+}

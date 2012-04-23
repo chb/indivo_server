@@ -32,9 +32,7 @@ DEMO_MODE = False
 # to data profiles. 'Data profiles' correspond
 # to subfolders of SAMPLE_DATA_DIR
 DEMO_PROFILES = {
-    'Allergies':'patient_2',
-    'Probs': 'patient_665677',
-    'Meds': 'patient_736230',
+    'John Doe':'patient_1',
     }
 
 # Location for sample data
@@ -45,15 +43,15 @@ SITE_URL_PREFIX = "http://localhost:8000"
 
 # URL prefix for the UI server
 # (usually port 80 on the same machine)
-UI_SERVER_URL = 'http://fda.gping.org:8001'
+UI_SERVER_URL = 'http://localhost'
 
 # Storage Settings
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.postgresql_psycopg2', # '.postgresql_psycopg2', '.mysql', or '.oracle'
         'NAME':'indivo',
-        'USER':'indivo',
-        'PASSWORD':'indivo',
+        'USER':'',
+        'PASSWORD':'',
         'HOST':'', # Set to empty string for localhost.
         'PORT':'', # Set to empty string for default.
         },
@@ -89,6 +87,13 @@ INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
 AUDIT_LEVEL = 'HIGH' # 'HIGH', 'MED', 'LOW', 'NONE'
 AUDIT_OAUTH = True # Audit the calls used solely for the oauth dance?
 AUDIT_FAILURE = True # Audit the calls that return with unsuccessful status (4XX, 5XX)?
+
+# Apps Settings
+APPS_DIRS = {
+    'ui': [APP_HOME + '/registered_apps/ui',],
+    'admin': [APP_HOME + '/registered_apps/admin',],
+    'user': [APP_HOME + '/registered_apps/user',],
+}
 
 # DataModel Settings
 CORE_DATAMODEL_DIRS = [APP_HOME + '/indivo/data_models/core',] # Directories for core datamodel definitions

@@ -17,7 +17,7 @@ including API calls related to:
 
 """
 
-from version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE
+from version import INDIVO_SERVER_VERSION, INDIVO_SERVER_RELEASE, SMART_COMPATIBILITY
 
 from account    import *
 from audit      import *
@@ -31,4 +31,20 @@ from shares     import *
 from django.http import HttpResponse
 def get_version(request): 
     """ Return the current version of Indivo."""
-    return HttpResponse(INDIVO_SERVER_RELEASE, mimetype="text/plain")
+    return HttpResponse(_get_version(), mimetype="text/plain")
+
+
+def _get_version():
+    return INDIVO_SERVER_RELEASE
+
+def _get_smart_version():
+    if SMART_COMPATIBILITY.has_key(INDIVO_SERVER_RELEASE):
+        return SMART_COMPATIBILITY[INDIVO_SERVER_RELEASE]
+    return ''
+
+def _get_indivo_version(smart_version):
+    for k,v in SMART_COMPATIBILITY.iteritems():
+        if v == smart_version:
+            return k
+
+    return None

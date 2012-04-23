@@ -1,0 +1,17 @@
+{
+  "name" : "Allergies",
+  "description" : "Display a list of allergies.",
+  "author" : "Arjun Sanyal, Children's Hospital Boston",
+  "id" : "allergies@apps.indivo.org",
+  "version" : "1.0.0",
+  "smart_version": "0.4",
+
+  "mode" : "ui",	
+  "scope": "record",
+  "has_ui": true,
+  "frameable": true,
+
+  "icon" :  "jmvc/ui/resources/images/app_icons_32/allergies.png",
+  "index": "/apps/allergies/start_auth?record_id={record_id}&amp;carenet_id={carenet_id}",
+  "oauth_callback_url": "/apps/allergies/after_auth"
+}

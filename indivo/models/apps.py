@@ -11,6 +11,14 @@ from base import Object, Principal, BaseModel, BaseMeta
 import urllib, datetime
 import indivo
 
+try:
+    from django.utils import simplejson
+except ImportError:
+    try:
+        import simplejson
+    except ImportError:
+        raise ImportError("Couldn't find an installation of SimpleJSON")
+
 ##
 ## OAuth Stuff
 ##
@@ -39,6 +47,18 @@ class OAuthApp(Principal):
   consumer_key = models.CharField(max_length=200)
   secret = models.CharField(max_length=60)
   name = models.CharField(max_length = 200)
+
+  # short description of the app
+  description = models.CharField(max_length=2000, null=True)
+
+  # author of the app
+  author = models.CharField(max_length=200, null=True)
+  
+  # version of the app
+  version = models.CharField(max_length=40, null=True)
+
+  # required Indivo version
+  indivo_version = models.CharField(max_length=40, null=True)
 
 ## HACK because of problem
 #OAuthApp = Principal
@@ -78,15 +98,65 @@ class PHA(OAuthApp):
   # we'll have some apps that are not frameable
   frameable = models.BooleanField(default=True)
 
-  # does the application have a document schema that it knows how to display well?
-  schema = models.ForeignKey('DocumentSchema', null = True)
+  # location of the app's icon
+  icon_url = models.CharField(max_length=500, null=True)
 
-  # short description of the app
-  description = models.CharField(max_length=2000, null=True)
+  # other requirements: datatypes, REST methods, codes, etc.
+  # represented as a JSON string suitable for dropping into
+  # a SMART manifest
+  requirements = models.TextField(null=True)
 
-  # privacy terms of use (XML)
-  # FIXME: probably change this field type to XMLField()
-  privacy_tou = models.TextField(null=True)
+  @classmethod
+  def from_manifest(cls, manifest, credentials, save=True):
+    """ Produce a PHA object from an app manifest.
+
+    Manifests should correspond to SMART manifest format 
+    (http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_Packaging_Applications_via_SMART_Manifest),
+    with some optional Indivo specific extensions, namely:
+
+    * *oauth_callback_url*: A callback URL for Indivo-style oAuth access
+    * *autonomous_reason*: An explanation for why the app requires offline access to patient records
+    * *has_ui*: ``true`` or ``false``, whether the app can be displayed in a browser.
+    * *frameable*: ``true`` or ``false``, whether the app should be loaded in an iframe in the Indivo UI.
+    * *indivo_version*: Required version of Indivo for compatibility
+    
+    Credentials should be JSON objects with two keys:
+
+    * *consumer_key*: The oAuth consumer key to use for the app
+    * *consumer_secret*: The oAuth consumer secret to use for the app
+
+    See :doc:`app-registration` for more details.
+
+    """
+
+    from indivo.views import _get_indivo_version
+    parsed_manifest = simplejson.loads(manifest)
+    parsed_credentials = simplejson.loads(credentials)
+    kwargs = {
+      'consumer_key': parsed_credentials['consumer_key'],
+      'secret': parsed_credentials['consumer_secret'],
+      'name': parsed_manifest['name'],
+      'email': parsed_manifest['id'],
+      'start_url_template': parsed_manifest.get('index', ''),
+      'callback_url': parsed_manifest.get('oauth_callback_url', ''),  # not used by SMART apps
+      'is_autonomous': parsed_manifest.get('mode', '') == 'background',
+      'autonomous_reason': parsed_manifest.get('autonomous_reason', ''),
+      'has_ui': parsed_manifest['has_ui'] if parsed_manifest.has_key('has_ui') \
+        else parsed_manifest.has_key('index'), # This may not be perfect
+      'frameable': parsed_manifest['frameable'] if parsed_manifest.has_key('frameable') \
+        else parsed_manifest.has_key('index'),
+      'description': parsed_manifest.get('description', ''),
+      'author': parsed_manifest.get('author', ''),
+      'version': parsed_manifest.get('version', ''),
+      'icon_url': parsed_manifest.get('icon', ''),
+      'indivo_version':parsed_manifest['indivo_version'] if parsed_manifest.has_key('indivo_version') \
+        else _get_indivo_version(parsed_manifest.get('smart_version', '')),
+      'requirements': simplejson.dumps(parsed_manifest.get('requires', {})),
+      }
+    app = cls(**kwargs)
+    if save:
+      app.save()
+    return app
 
   # Accesscontrol:
   # roles that PHAs could implement.
@@ -129,11 +199,45 @@ class MachineApp(OAuthApp):
   # in case we add new types in the future
   app_type = models.CharField(max_length = 100, choices = APP_TYPES, null = False)
 
-  # token and secret
-  # an admin app is an oauth consumer with one token and one secret
-  # which are repeated, as if it were an access token.
-  #token = models.CharField(max_length=16)
-  #secret = models.CharField(max_length=16)
+  @classmethod
+  def from_manifest(cls, manifest, credentials, save=True):
+    """ Produce a MachineApp object from an app manifest.
+
+    Manifests should correspond to SMART manifest format 
+    (http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_Packaging_Applications_via_SMART_Manifest),
+    with one required Indivo specific extensions, namely:
+    
+    * *ui_app*: ``true`` or ``false``. Whether the machineapp is a UIApp ('chrome app').
+    * *indivo_version*: Required version of Indivo for compatibility
+    
+    Credentials should be JSON objects with two keys:
+
+    * *consumer_key*: The oAuth consumer key to use for the app
+    * *consumer_secret*: The oAuth consumer secret to use for the app
+
+    See :doc:`app-registration` for more details.
+
+    """
+
+    from indivo.views import _get_indivo_version
+    parsed_manifest = simplejson.loads(manifest)
+    parsed_credentials = simplejson.loads(credentials)
+    kwargs = {
+      'consumer_key': parsed_credentials['consumer_key'],
+      'secret': parsed_credentials['consumer_secret'],
+      'name': parsed_manifest['name'],
+      'email': parsed_manifest['id'],
+      'app_type': 'chrome' if parsed_manifest['ui_app'] else 'admin',
+      'description': parsed_manifest.get('description', ''),
+      'author': parsed_manifest.get('author', ''),
+      'version': parsed_manifest.get('version', ''),
+      'indivo_version':parsed_manifest['indivo_version'] if parsed_manifest.has_key('indivo_version') \
+        else _get_indivo_version(parsed_manifest.get('smart_version', '')),
+      }
+    app = cls(**kwargs)
+    if save:
+      app.save()
+    return app
 
   # Accesscontrol:
   # roles that a MachineApp could have

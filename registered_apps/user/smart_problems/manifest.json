@@ -1,0 +1,19 @@
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
+
+    "mode" : "ui",
+    "scope": "record",
+
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+}

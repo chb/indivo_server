@@ -77,7 +77,7 @@ EMAIL_SUPPORT_NAME = "Indivo Support"
 ACCOUNT_REENABLE_TIMEOUT = None
 
 # Advanced Setup #
-#################
+##################
 
 # Default carenets for new records
 INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
@@ -86,6 +86,13 @@ INDIVO_DEFAULT_CARENETS = ['Family', 'Physicians', 'Work/School']
 AUDIT_LEVEL = 'HIGH' # 'HIGH', 'MED', 'LOW', 'NONE'
 AUDIT_OAUTH = True # Audit the calls used solely for the oauth dance?
 AUDIT_FAILURE = True # Audit the calls that return with unsuccessful status (4XX, 5XX)?
+
+# Apps Settings
+APPS_DIRS = {
+    'ui': [APP_HOME + '/registered_apps/ui',],
+    'admin': [APP_HOME + '/registered_apps/admin',],
+    'user': [APP_HOME + '/registered_apps/user',],
+}
 
 # DataModel Settings
 CORE_DATAMODEL_DIRS = [APP_HOME + '/indivo/data_models/core',] # Directories for core datamodel definitions

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../'))
 from django.db import connection, DatabaseError, IntegrityError
 
 from load_codingsystems import load_codingsystems
-from utils.importer import import_data
+from utils.importer import import_data, AppSyncer
 
 from optparse import OptionParser
 import subprocess
@@ -163,6 +163,7 @@ else:
         print "LOADING INITIAL INDIVO DATA..."
         try:
             import_data()
+            AppSyncer().sync()
             print "LOADED."
         except Exception as e:
             print str(e)

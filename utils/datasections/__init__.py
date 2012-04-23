@@ -14,6 +14,4 @@ setup_environ(settings)
 from accounts         import *
 from auth_systems     import *
 from document_schemas import *
-from machine_apps     import *
 from status_names     import *
-from user_apps        import *
