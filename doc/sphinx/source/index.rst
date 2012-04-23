@@ -64,6 +64,7 @@ App Developers
    Data Pipeline <data-pipeline>
    Experimental API <experimental-api>
    Messaging and Notifications <messaging>
+   Registering Apps with Indivo <app-registration>
    Sample Data <sample-data>
    Schemas <schemas/index>
 
@@ -84,9 +85,10 @@ You'll probably want to start with our
    Data-Modeling Languages <sdm>
    Data Pipeline <data-pipeline>
    Localization <localization>
-   Transforms <transform>
+   Registering Apps with Indivo <app-registration>
    Sample Data <sample-data>
    Schemas <schemas/index>
+   Transforms <transform>
 
 Indivo Hackers
 ^^^^^^^^^^^^^^
@@ -110,6 +112,7 @@ Indivo Hackers
    Experimental API <experimental-api>
    Localization <localization>
    Messaging and Notifications <messaging>
+   Registering Apps with Indivo <app-registration>
    Sample Data <sample-data>
    Schemas <schemas/index>
    Transforms <transform>
