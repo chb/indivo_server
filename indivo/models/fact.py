@@ -2,8 +2,28 @@ import uuid
 from django.db import models
 from indivo.models.base import BaseModel
 from indivo.models import Record, Document
+from indivo.fields import DummyField
+import copy
+
+class DataModelBase(models.base.ModelBase):
+  """ Subclass of the Django Model metaclass that handles Dummy Fields on Indivo Data Models. """
+
+  def __new__(cls, name, bases, attrs):
+    new_attrs = copy.copy(attrs)
+
+    for field_name, field_val in attrs.iteritems():
+      if isinstance(field_val, DummyField):
+        for suffix, new_field_args in field_val.__class__.replacements.iteritems():
+          new_name = "%s%s"%(field_name, suffix)
+          new_field = new_field_args[0](**new_field_args[1])
+          new_attrs[new_name] = new_field
+        del new_attrs[field_name]
+        
+    return super(DataModelBase, cls).__new__(cls, name, bases, new_attrs)
+
 
 class Fact(BaseModel):
+  __metaclass__ = DataModelBase
 
   id = models.CharField(max_length = 50, primary_key = True)
   created_at = models.DateTimeField(auto_now_add = True)
@@ -20,4 +40,3 @@ class Fact(BaseModel):
     if not self.id:
       self.id = str(uuid.uuid4())
     super(Fact, self).save(**kwargs)
-

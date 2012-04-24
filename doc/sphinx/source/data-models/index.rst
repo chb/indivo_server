@@ -54,6 +54,37 @@ definition might look like::
       
       # Additional fields here
 
+.. _custom-model-fields:
+
+Custom Django Model Fields
+""""""""""""""""""""""""""
+
+For modeling medical data, Indivo provides the following Field Subclasses:
+
+* :py:class:`indivo.fields.CodedValueField`: represents a coded data element. Coded elements are represented by three 
+  values:
+
+  * ``system``: the coding system used to represent the element.
+  * ``identifier``: the system-specific identifier that represents the element.
+  * ``title``: the human-readable title of the element.
+
+  ``CodedValueField`` represents these values as three separate database fields, with names formed from the original field
+  name and appended suffixes. So, for example, if you defined a data model::
+
+    from indivo.models import Fact
+    from django.db import models
+    from indivo.fields import CodedValue
+
+    class YourModel(Fact):
+        non_coded_field = models.CharField(max_length=200, null=True)
+        coded_element = CodedValueField()
+
+  then you are actually creating four fields: ``non_coded_field``, ``coded_element_system``, ``coded_element_identifier``, 
+  and ``coded_element_title``. When describing instances of your model (either when defining a
+  :ref:`transform output <transform-output-types>` or when referencing fields using 
+  :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+  ``coded_element`` field name.
+
 Simple Data Modeling Language (SDML)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -68,7 +99,7 @@ Feeling Lost?
 For help getting started, see our :ref:`core data models <core-data-models>`, below, each of which provide definitions 
 both in SDML and Django Model classes.
 
-.. _core-data-models:
+.. _queryable-fields:
 
 Data Models and the Query API
 -----------------------------
@@ -101,6 +132,16 @@ If the problems model were a bit more complicated, and had another field:
 
 You wouldn't be able to filter by *prescribed_med*, since that field is a relation to another model.
 
+The only exceptions to this rule are :ref:`custom Django Model Fields <custom-model-fields>`. Such fields are translated
+into fields with other names, as described above. Any of these fields may be used in the query API, but (for example), 
+when looking at a model with a CodedValue element such as: 
+
+* *problem_type*: CodedValue
+
+You would be able to filter by *problem_type_identifier*, *problem_type_title*, or *problem_type_system*, but not by
+*problem_type* itself. 
+
+.. _core-data-models:
 
 Core Data Models
 ----------------

@@ -47,10 +47,11 @@ Syntax
    * Number
    * String
    * Date
+   * :ref:`CodedValue <custom-model-fields>`
    * One-to-One
    * One-to-Many
 
-* The first three types are indicated by a simple string (i.e. ‘Number’ | ‘String’ | ‘Date’)
+* The first four types are indicated by a simple string (i.e. ‘Number’ | ‘String’ | ‘Date’ | 'CodedValue')
 
 * One-to-One fields are indicated by a sub-object, and may be nested arbitrarily::
   

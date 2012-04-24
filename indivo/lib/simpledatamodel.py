@@ -16,11 +16,13 @@ from django.db.models.fields import FieldDoesNotExist
 from indivo.models import Fact
 from lxml import etree
 from indivo.lib import iso8601
+from indivo.fields import CodedValueField
 
 SDM_TYPES = {
     'Date': (models.DateTimeField, {'null':True}),
     'String': (models.CharField, {'max_length': 255, 'null':True}),
     'Number': (models.FloatField, {'null':True}),
+    'CodedValue': (CodedValueField, {}),
 }
 
 MODEL_NAME_KEY = '__modelname__'
