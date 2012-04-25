@@ -1,17 +1,14 @@
 {% load template_utils %}<Problem xmlns="http://indivo.org/vocab/xml/documents#">
-  {% if fobj.date_onset %}
-    <dateOnset>{{ fobj.date_onset|format_iso8601_datetime }}</dateOnset>
+  {% if fobj.startDate %}
+    <dateOnset>{{ fobj.startDate|format_iso8601_datetime }}</dateOnset>
   {% endif %}
-  {% if fobj.date_resolution %}
-    <dateResolution>{{ fobj.date_resolution|format_iso8601_datetime }}</dateResolution>
+  {% if fobj.endDate %}
+    <dateResolution>{{ fobj.endDate|format_iso8601_datetime }}</dateResolution>
   {% endif %}
-  {% if fobj.name %}
-    <name{% if fobj.name_type %} type="{{ fobj.name_type }}" value="{{ fobj.name_value }}" abbrev="{{ fobj.name_abbrev|check_empty }}"{% endif %}>{{ fobj.name }}</name>
+  {% if fobj.name_title %}
+    <name{% if fobj.name_system %} type="{{ fobj.name_system }}" value="{{ fobj.name_identifier }}"{% endif %}>{{ fobj.name_title }}</name>
   {% endif %}
-  {% if fobj.comments %}
-    <comments>{{ fobj.comments }}</comments>
-  {% endif %}
-  {% if fobj.diagnosed_by %}
-    <diagnosedBy>{{ fobj.diagnosed_by }}</diagnosedBy>
+  {% if fobj.notes %}
+    <comments>{{ fobj.notes }}</comments>
   {% endif %}
 </Problem>

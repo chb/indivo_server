@@ -1,12 +1,9 @@
 <Models>
   <Model name="Problem">
-    <Field name="date_onset">2009-05-16T12:00:00Z</Field>
-    <Field name="date_resolution">2009-05-16T16:00:00Z</Field>
-    <Field name="name">Myocardial Infarction</Field>
-    <Field name="name_type">http://codes.indivo.org/problems/</Field>
-    <Field name="name_value">123</Field>
-    <Field name="name_abbrev">MI</Field>
-    <Field name="comments">Mild Heart Attack</Field>
-    <Field name="diagnosed_by">Dr. Mandl"</Field>
+    <Field name="startDate">2009-05-16T12:00:00Z</Field>
+    <Field name="endDate">2009-05-16T16:00:00Z</Field>
+    <Field name="name_title">Backache (Finding)</Field>
+    <Field name="name_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_identifier">161891005</Field>
   </Model>
 </Models>

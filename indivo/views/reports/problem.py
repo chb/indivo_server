@@ -13,9 +13,9 @@ from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
 from indivo.models import Problem
 
 PROBLEM_FILTERS = {
-  'problem_name' : ('name', STRING),
-  'date_onset': ('date_onset', DATE),
-  'date_resolution': ('date_resolution', DATE),
+  'name_title' : ('name_title', STRING),
+  'startDate': ('startDate', DATE),
+  'endDate': ('endDate', DATE),
   DEFAULT_ORDERBY : ('created_at', DATE)
 }
 

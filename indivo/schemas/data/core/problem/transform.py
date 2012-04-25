@@ -20,24 +20,15 @@ class Transform(BaseTransform):
         ret = {}
 
         # Get the date_onset
-        ret['date_onset'] = doc_etree.findText('dateOnset')
+        ret['startDate'] = doc_etree.findText('dateOnset')
         
         # Get the date_resolution
-        ret['date_resolution'] = doc_etree.findText('dateResolution')
+        ret['endDate'] = doc_etree.findText('dateResolution')
 
         # Get the name, name_type, name_value, name_abbrev
         name_node = doc_etree.find('name')
-        ret['name'] = name_node.text
-        ret['name_type'] = name_node.get('type')
-        ret['name_value'] = name_node.get('value')
-        ret['name_abbrev'] = name_node.get('abbrev')
-
-        # Get the Comments
-        ret['comments'] = doc_etree.findText('comments')
-
-        # Get the Diagnosed_by
-        ret['diagnosed_by'] = doc_etree.findText('diagnosedBy')
-        
-        import pdb;pdb.set_trace()
+        ret['name_title'] = name_node.text
+        ret['name_system'] = name_node.get('type')
+        ret['name_identifier'] = name_node.get('value')
 
         return ret

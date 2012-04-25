@@ -107,18 +107,18 @@ class ReportingInternalTests(InternalTests):
 
     def test_get_problems(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/problems/?group_by=problem_name&aggregate_by=count*problem_name&date_range=date_onset*2005-03-10T00:00:00Z*'%(record_id)
+        url = '/records/%s/reports/minimal/problems/?group_by=name_title&aggregate_by=count*name_title&date_range=startDate*2005-03-10T00:00:00Z*'%(record_id)
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)
 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-        url2 = '/records/%s/reports/minimal/problems/?problem_name=Myocardial%%20Infarction&date_group=date_onset*month&aggregate_by=count*problem_name&order_by=-date_onset'%(record_id)
+        url2 = '/records/%s/reports/minimal/problems/?name_title=Myocardial%%20Infarction&date_group=startDate*month&aggregate_by=count*name_title&order_by=-startDate'%(record_id)
         response = self.client.get(url2)
         self.assertEquals(response.status_code, 200)
 
-        url3 = '/records/%s/reports/minimal/problems/?order_by=date_onset'%(record_id)
+        url3 = '/records/%s/reports/minimal/problems/?order_by=startDate'%(record_id)
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 
