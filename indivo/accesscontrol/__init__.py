@@ -256,6 +256,7 @@ def load_access_rules():
            carenet_vitals_list,
            carenet_simple_clinical_notes_list,
            carenet_lab_list,
+           carenet_simple_data_model_list,
            carenet_document_list,
            carenet_document,
            carenet_document_meta]
@@ -281,6 +282,7 @@ def load_access_rules():
            equipment_list,
            vitals_list,
            lab_list,
+           simple_data_model_list,
            simple_clinical_notes_list,
            report_ccr,
            record_document_list,
