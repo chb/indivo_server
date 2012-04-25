@@ -19,6 +19,13 @@ def load_data_models(from_dir, target_module):
     loader = IndivoDataModelLoader(from_dir)
     loader.import_data_models(target_module)
     
+def attach_filter_fields(cls):
+    filters = {'created_at': ('created_at', 'date')}
+    for field in cls._meta.local_fields:
+        if field.serialize and field.rel is None:
+            filters[field.name] = (field.name, 'string' )
+    setattr(cls, 'filter_fields', filters)
+    
 class IndivoDataModelLoader(object):
     
     def __init__(self, top):
@@ -98,6 +105,7 @@ class IndivoDataModelLoader(object):
                     handler_func = self._discover_sdml_data_models
 
                 for name, cls in handler_func(dirpath, fileroot, ext):
+                    attach_filter_fields(cls)
                     yield (name, cls)
                 
     def _discover_python_data_models(self, dirpath, fileroot, ext):
