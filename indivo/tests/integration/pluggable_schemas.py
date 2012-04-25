@@ -52,7 +52,17 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
 
         # parse response and check against expected         
         response_json = json.loads(response.content)
-        self.assertEquals(len(response_json), 1) 
+        self.assertEquals(len(response_json), 1)
+        
+        # delete the document ids, since they won't be consistent 
+        test_med = response_json[0]
+        del test_med['__documentid__']
+        test_prescription = response_json[0]['prescription']
+        del test_prescription['__documentid__']
+        test_fill_1, test_fill_2 = response_json[0]['fills']
+        del test_fill_1['__documentid__']
+        del test_fill_2['__documentid__']
+        
         expected_json = json.loads(TEST_TESTMED_JSON)
         self.assertTrue(response_json == expected_json, "JSON does not match expected")
         
@@ -104,7 +114,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
-        
+
         # request TestMed report without specifying response_format
         response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id))
         self.assertEquals(response.status_code, 200)
@@ -112,6 +122,16 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # should get back JSON
         self.assertEquals(response.__getitem__('content-type'), 'application/json')
         response_json = json.loads(response.content)
+        
+        # delete the document ids, since they won't be consistent 
+        test_med = response_json[0]
+        del test_med['__documentid__']
+        test_prescription = response_json[0]['prescription']
+        del test_prescription['__documentid__']
+        test_fill_1, test_fill_2 = response_json[0]['fills']
+        del test_fill_1['__documentid__']
+        del test_fill_2['__documentid__']
+        
         expected_json = json.loads(TEST_TESTMED_JSON)
         self.assertTrue(response_json == expected_json, "JSON does not match expected")
         
@@ -136,10 +156,10 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         response_json = json.loads(response.content)
         self.assertTrue(len(response_json), 4)
 
-        # check to make sure Model name is correct, and that it has 13 fields        
+        # check to make sure Model name is correct, and that it has 14 fields        
         first_lab = response_json[0]
         self.assertEquals(first_lab['__modelname__'], 'Lab')
-        self.assertEquals(len(first_lab), 13)
+        self.assertEquals(len(first_lab), 14)
         
     def test_core_model_xml(self):
         #Add some sample Reports

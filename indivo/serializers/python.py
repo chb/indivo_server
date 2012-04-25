@@ -30,6 +30,7 @@ class Serializer(base.Serializer):
 
     def end_object(self, obj):
         self._current["__modelname__"] = smart_unicode(obj.__class__.__name__)
+        self._current["__documentid__"] = getattr(obj, 'document_id')
         self.objects.append(self._current)
         self._current = None
 

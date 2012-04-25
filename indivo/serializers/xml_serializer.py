@@ -38,7 +38,9 @@ class Serializer(base.Serializer):
         if not hasattr(obj, "_meta"):
             raise base.SerializationError("Non-model object (%s) encountered during serialization" % type(obj))
 
-        self.current = etree.Element("Model", name=smart_unicode(obj.__class__.__name__))
+        self.current = etree.Element("Model", 
+                                     name = smart_unicode(obj.__class__.__name__),
+                                     documentId = getattr(obj, 'document_id'))
         self.root.append(self.current)
         
 
