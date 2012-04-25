@@ -14,7 +14,9 @@ from indivo.lib.view_decorators import marsloader
 # map request content types to Model serialization methods
 SERIALIZATION_FORMAT_MAP = {
     'application/json': 'to_json',
-    'application/xml': 'to_xml'
+    'application/xml': 'to_xml',
+    'text/xml': 'to_xml',
+    'application/rdf+xml': 'to_rdf',
 }
 
 # serialize queryset to the requested format
