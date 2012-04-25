@@ -114,8 +114,7 @@ class SDMJDataUnitTests(TransactionInternalTests):
         self.required_classes = []
         
         # Load test Classes
-        klasses = [k for k in SDML(TEST_SDML_DOCS[0]).get_output()]
-        self.required_classes = self.load_classes(klasses)
+        self.required_classes = self.load_classes_from_sdml(TEST_SDML_DOCS[0])
 
     def tearDown(self):
         self.instance = None
@@ -214,8 +213,7 @@ class SDMXDataUnitTests(TransactionInternalTests):
         self.required_classes = []
         
         # Load test Classes
-        klasses = [k for k in SDML(TEST_SDML_DOCS[0]).get_output()]
-        self.required_classes = self.load_classes(klasses)
+        self.required_classes = self.load_classes_from_sdml(TEST_SDML_DOCS[0])
 
     def tearDown(self):
         self.instance = None

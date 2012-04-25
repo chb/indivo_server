@@ -5,9 +5,11 @@ from django.db.models.loading import cache
 
 from south.db import db
 
+from indivo.data_models import attach_filter_fields
 from indivo.models import *
 from indivo.tests.data import *
 from indivo.lib import iso8601
+from indivo.lib.simpledatamodel import SDML
 
 import functools
 import os
@@ -310,12 +312,15 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
     to test transactions. If you just need to deal with IntegrityErrors by
     calling rollback, see enable_transactions below. """
     
-    def load_classes(self, klasses):
+    def load_classes_from_sdml(self, sdml):
         added_classes = []
+        
+        klasses = [k for k in SDML(sdml).get_output()]
         
         # Make sure the classes are in indivo.models, so we can find them
         indivo_models_module = sys.modules['indivo.models']
         for klass in klasses:
+            attach_filter_fields(klass)
             added_classes.append(klass)
             klass.__module__ = 'indivo.models'
             klass.Meta.app_label = 'indivo'

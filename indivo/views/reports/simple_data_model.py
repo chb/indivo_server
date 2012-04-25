@@ -5,42 +5,35 @@
 .. moduleauthor:: Travers Franckle <travers.franckle@childrens.harvard.edu>
 
 """
-from django.core import serializers
 from django.db.models.loading import get_model
 from django.http import HttpResponseBadRequest, HttpResponse, Http404
-from django.utils import simplejson
 
-from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
-from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
-from indivo.serializers.json import IndivoJSONEncoder
+from indivo.lib.query import FactQuery
+from indivo.lib.view_decorators import marsloader
 
-def format_as_json(data):
-    data = serializers.serialize("indivo_python", data)
-    return simplejson.dumps(data, cls=IndivoJSONEncoder)
-
-def format_as_xml(data):
-    return serializers.serialize("indivo_xml", data)
-
-RESPONSE_FORMAT_MAP = {
-    'application/json': format_as_json,
-    'application/xml': format_as_xml
+# map request content types to Model serialization methods
+SERIALIZATION_FORMAT_MAP = {
+    'application/json': 'to_json',
+    'application/xml': 'to_xml'
 }
 
-def simple_data_model_list(*args, **kwargs):
-  """ List the lab data for a given record.
+# serialize queryset to the requested format
+def serialize(cls, format, queryset):
+    method = SERIALIZATION_FORMAT_MAP[format]
+    if hasattr(cls, method):
+        return getattr(cls, method)(queryset)
+    else:
+        return HttpResponseBadRequest("format not supported")
 
-  For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo.views.reports.lab._lab_list`.
+def simple_data_model_list(*args, **kwargs):
+  """ List the Model data for a given record.
 
   """
 
   return _simple_data_model_list(*args, **kwargs)
 
 def carenet_simple_data_model_list(*args, **kwargs):
-  """ List the lab data for a given carenet.
-
-  For 1:1 mapping of URLs to views. Just calls
-  :py:meth:`~indivo.views.reports.lab._lab_list`.
+  """ List the Model data for a given carenet.
 
   """
 
@@ -49,17 +42,17 @@ def carenet_simple_data_model_list(*args, **kwargs):
 @marsloader(query_api_support=True)
 def _simple_data_model_list(request, query_options, model_name,
               record=None, carenet=None):
-  """ List the lab objects matching the passed query parameters.
+  """ List the Model objects matching the passed query parameters.
   
   See :doc:`/query-api` for a listing of valid parameters.
 
-  Will return :http:statuscode:`200` with a list of labs on success,
+  Will return :http:statuscode:`200` with a list of Models on success,
   :http:statuscode:`400` if any invalid query parameters were passed.
 
   """
   # check requested format
   response_format = request.GET.get("response_format", 'application/json')
-  if not RESPONSE_FORMAT_MAP.has_key(response_format):
+  if not SERIALIZATION_FORMAT_MAP.has_key(response_format):
       # unsupported format
       return HttpResponseBadRequest("format not supported")
   
@@ -70,7 +63,8 @@ def _simple_data_model_list(request, query_options, model_name,
       raise Http404
 
   # build query
-  model_filters =  {DEFAULT_ORDERBY : ('created_at', DATE)} #TODO: need to implement: model_class.filter_fields 
+#{DEFAULT_ORDERBY : ('created_at', DATE)}
+  model_filters =  model_class.filter_fields # TODO: possible to make a lazy class property?
   q = FactQuery(model_class, 
                 model_filters,
                 query_options,
@@ -78,7 +72,7 @@ def _simple_data_model_list(request, query_options, model_name,
                 carenet)
   try:
       q.execute()
-      data = RESPONSE_FORMAT_MAP[response_format](q.results)
+      data = serialize(model_class, response_format, q.results)
       return HttpResponse(data, mimetype=response_format)
   except ValueError as e:
     return HttpResponseBadRequest(str(e))

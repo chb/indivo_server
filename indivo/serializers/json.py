@@ -38,7 +38,5 @@ class IndivoJSONEncoder(simplejson.JSONEncoder):
             return format_utc_date(o)
         elif isinstance(o, datetime.date):
             return format_utc_date(o, date_only=True) 
-        elif isinstance(o, decimal.Decimal):
-            return str(o)
         else:
             return super(IndivoJSONEncoder, self).default(o)

@@ -2,11 +2,10 @@
 Indivo custom XML serializer
 """
 import datetime
-from xml.dom import pulldom
+from lxml import etree
 
 from django.conf import settings
 from django.db import models
-from django.utils.xmlutils import SimplerXMLGenerator
 from django.utils.encoding import smart_unicode
 
 from indivo.lib.iso8601 import format_utc_date
@@ -17,28 +16,20 @@ class Serializer(base.Serializer):
     Serializes a QuerySet to XML.  Foreign Key and Many-to-Many fields are 
     processed as sub-objects. 
     
-    WARNING: currently does not detect cycles
     """
-
-    def indent(self, level):
-        if self.options.get('indent', None) is not None:
-            self.xml.ignorableWhitespace('\n' + ' ' * self.options.get('indent', None) * level)
 
     def start_serialization(self):
         """
-        Start serialization -- open the XML document and the root element.
+        Start serialization
         """
-        self.xml = SimplerXMLGenerator(self.stream, self.options.get("encoding", settings.DEFAULT_CHARSET))
-        self.xml.startDocument()
-        self.xml.startElement("Models", {})
+        self.root = etree.Element("Models")
+        self._current = None
 
     def end_serialization(self):
         """
         End serialization -- end the document.
         """
-        self.indent(0)
-        self.xml.endElement("Models")
-        self.xml.endDocument()
+        pass
 
     def start_object(self, obj):
         """
@@ -47,27 +38,23 @@ class Serializer(base.Serializer):
         if not hasattr(obj, "_meta"):
             raise base.SerializationError("Non-model object (%s) encountered during serialization" % type(obj))
 
-        self.indent(1)
-        self.xml.startElement("Model", {
-            "name" : smart_unicode(obj.__class__.__name__)
-        })
+        self.current = etree.Element("Model", name=smart_unicode(obj.__class__.__name__))
+        self.root.append(self.current)
+        
 
     def end_object(self, obj):
         """
         Called after handling all fields for an object.
         """
-        self.indent(1)
-        self.xml.endElement("Model")
+        pass
 
     def handle_field(self, obj, field):
         """
         Called to handle each field on an object (except for ForeignKeys and
         ManyToManyFields)
         """
-        self.indent(2)
-        self.xml.startElement("Field", {
-            "name" : field.name
-        })
+        field_element = etree.Element("Field", name=field.name)
+
         # Get a "string version" of the object's data.
         if getattr(obj, field.name) is not None:
             value = field._get_val_from_obj(obj)
@@ -77,46 +64,61 @@ class Serializer(base.Serializer):
                 value = format_utc_date(value, date_only=True)
             else:
                  value = field.value_to_string(obj)
-            self.xml.characters(value)
-        else:
-            self.xml.addQuickElement("None")
-
-        self.xml.endElement("Field")
+            field_element.text = value
+        
+        self.current.append(field_element)
 
     def handle_fk_field(self, obj, field):
         """
         Called to handle a ForeignKey (we need to treat them slightly
         differently from regular fields).
         """
-        self._start_relational_field(field)
+        field_element = etree.Element("Field", name=field.name)
         related = getattr(obj, field.name)
         if related is not None:
-            self.process_objects([related])
-        else:
-            self.xml.addQuickElement("None")
-        self.xml.endElement("Field")
+            new_serializer = Serializer()
+            self.options.update({'seen': self.seen})
+            parsed_results = new_serializer.serialize([related], **self.options)
+        if len(parsed_results) > 0:
+            # attach the first Model of the results
+            field_element.append(parsed_results[0])
+        
+        self.current.append(field_element)
 
     def handle_m2m_field(self, obj, field):
         """
-        Called to handle a ManyToManyField. Related objects are only
-        serialized as references to the object's PK (i.e. the related *data*
-        is not dumped, just the relation).
+        Called to handle a ManyToManyField. 
         """
+        field_element = etree.Element("Field", name=field.name)
+        
         if field.creates_table:
-            self._start_relational_field(field)
-            self.xml.startElement("Models")
-            self.process_objects(getattr(obj, field.name))
-            self.xml.endElement("Models")
-            self.xml.endElement("Field")
+            new_serializer = Serializer()
+            self.options.update({'seen': self.seen})
+            parsed_results = new_serializer.serialize(related, **self.options)
+        
+        if len(parsed_results) > 0:
+            # attach the returned Models
+            field_element.append(parsed_results)
+            
+        self.current.append(field_element)
 
-    def _start_relational_field(self, field):
-        """
-        Helper to output the <field> element for relational fields
-        """
-        self.indent(2)
-        self.xml.startElement("Field", {
-            "name" : field.name
-        })
+    def handle_o2m_field(self, obj, field_name):
+        field_element = etree.Element("Field", name=field_name)
+        
+        related_manager = getattr(obj, field_name)
+        related = related_manager.all()
+        new_serializer = Serializer()
+        self.options.update({'seen': self.seen})
+        parsed_results = new_serializer.serialize(related.iterator(), **self.options)
+        
+        if len(parsed_results) > 0:
+            # attach the returned Models
+            field_element.append(parsed_results)
+            
+        self.current.append(field_element) 
+
+    def getvalue(self):
+        return self.root
 
 class Deserializer(base.Deserializer):
     """

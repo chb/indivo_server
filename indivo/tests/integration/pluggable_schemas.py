@@ -6,10 +6,9 @@ import json
 from lxml import etree
 
 from indivo.document_processing import IndivoSchemaLoader
-from indivo.lib.simpledatamodel import SDML
 
 from indivo.tests.internal_tests import TransactionInternalTests
-from indivo.tests.data import TEST_ACCOUNTS, TEST_RECORDS, TEST_TESTMED_JSON, TEST_TESTMED_XML
+from indivo.tests.data import TEST_ACCOUNTS, TEST_RECORDS, TEST_TESTMED_JSON
 
 class PluggableSchemaIntegrationTests(TransactionInternalTests):
 
@@ -24,8 +23,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         
         # Add in TestMed class
         model_definition = open(os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/testmodel/model.sdml')).read()
-        klasses = [k for k in SDML(model_definition).get_output()]
-        self.required_classes = self.load_classes(klasses)
+        self.required_classes = self.load_classes_from_sdml(model_definition)
         
         # load the test schemas
         self.loader = IndivoSchemaLoader(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test'))
@@ -47,7 +45,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
-        
+
         # get a JSON encoded report on TestMed
         response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id), {'response_format':'application/json'})
         self.assertEquals(response.status_code, 200)
@@ -88,12 +86,12 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertTrue(test_prescription is not None, "prescription not found")
         self.assertEqual(test_prescription.find('Field[@name="prescribed_by_name"]').text, 'Kenneth D. Mandl')
         self.assertEqual(test_prescription.find('Field[@name="prescribed_on"]').text, '2010-09-30T00:00:00Z')
-        
+
         # test TestFill
-        test_fills = test_med.findall('./Field[@name="fills"]/Model')
+        test_fills = test_med.findall('./Field[@name="fills"]/Models/Model')
         self.assertEqual(len(test_fills), 2)
         self.assertEqual(test_fills[0].get("name"), "TestFill")
-        self.assertEqual(test_fills[0].find('Field[@name="supply_days"]').text, '2010-10-01T00:00:00Z')
+        self.assertEqual(float(test_fills[0].find('Field[@name="supply_days"]').text), 15.0)
         
     def test_nonexistent_model(self):  
         # get a JSON encoded report on a non-existent model

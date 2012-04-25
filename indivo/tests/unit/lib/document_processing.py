@@ -3,7 +3,6 @@ from StringIO import StringIO
 from lxml import etree
 from indivo.models import *
 from indivo.tests.data import TEST_DOCUMENT_PROCESSING_DOCS, TEST_SDML_DOCS
-from indivo.lib.simpledatamodel import SDML
 from indivo.tests.internal_tests import TransactionInternalTests
 from indivo.document_processing import *
 from indivo.document_processing.document_processing import *
@@ -17,8 +16,7 @@ class DocumentProcessingUnitTests(TransactionInternalTests):
         # Make sure the test class is in indivo.models, so we can find it
         indivo_models_module = sys.modules['indivo.models']
         model_definition = open(os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/testmodel/model.sdml')).read()
-        klasses = [k for k in SDML(model_definition).get_output()]
-        self.required_classes = self.load_classes(klasses)
+        self.required_classes = self.load_classes_from_sdml(model_definition)
         
         # load the test schema
         self.loader = IndivoSchemaLoader(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test'))
