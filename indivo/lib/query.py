@@ -65,6 +65,12 @@ TIME_INCRS = {
                     mysql:'%%m',},
     }
 
+FORMAT_STRS = {
+    postgresql_psycopg2: "to_char(\"%(field)s\", '%(format)s')",
+    oracle: "to_char(%(field)s, '%(format)s')",
+    mysql: "date_format(%(field)s, '%(format)s')",
+}
+
 OUTPUT_TEMPLATE = 'reports/report'
 AGGREGATE_TEMPLATE = 'reports/aggregate.xml'
 
@@ -252,11 +258,9 @@ class FactQuery(object):
                 group_field = self.valid_filters[self.date_group['field']][0]
                 date_incr = self.date_group['time_incr']
                 if TIME_INCRS.has_key(date_incr):
-                    format_str = TIME_INCRS[date_incr][DB_ENGINE]
-                    format_func = 'date_format' if DB_ENGINE == mysql else 'to_char'
-                    results = results.extra(select={date_incr:"%s(%s, '%s')"%(format_func,
-                                                                              group_field, 
-                                                                              format_str)})
+                    time_format = TIME_INCRS[date_incr][DB_ENGINE]
+                    format_str = FORMAT_STRS[DB_ENGINE]
+                    results = results.extra(select={date_incr:format_str%{"field":group_field, "format":time_format}})
 
                     # From now on, we look at the date-formatted string only
                     group_field = date_incr
