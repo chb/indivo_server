@@ -71,6 +71,10 @@ def marsloader(query_api_support = False):
         'date_group': parse_date_group,            
       }
       
+      ignore_map = {
+        'response_format': True              
+      }
+      
       # This should be abstracted
       # StatusName 'active' should always be available
       arg_defaults = {
@@ -100,6 +104,8 @@ def marsloader(query_api_support = False):
         try:
           if parse_map.has_key(arg):
               base_options[arg] = parse_map[arg](value)
+          elif ignore_map.has_key(arg):
+              pass
           else:
               # might be field-specific query parameter, allow individual reports to type-check
               report_specific_filters[arg] = value
