@@ -26,8 +26,8 @@ class CodedValueField(DummyField):
     """
 
     replacements = {
-        '_identifier': (models.CharField, {'max_length':255}),
-        '_title': (models.CharField, {'max_length':255}),
-        '_system': (models.CharField, {'max_length':255}),
+        '_identifier': (models.CharField, {'max_length':255, 'null':True}),
+        '_title': (models.CharField, {'max_length':255, 'null':True}),
+        '_system': (models.CharField, {'max_length':255, 'null':True}),
         }
     
