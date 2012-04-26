@@ -30,6 +30,7 @@ class Serializer(base.Serializer):
 
     def end_object(self, obj):
         self._current["__modelname__"] = smart_unicode(obj.__class__.__name__)
+        self._current["__documentid__"] = getattr(obj, 'document_id')
         self.objects.append(self._current)
         self._current = None
 
@@ -49,9 +50,9 @@ class Serializer(base.Serializer):
             new_serializer = Serializer()
             self.options.update({'seen': self.seen})
             related = new_serializer.serialize([related], **self.options)
+            # fk field should serialize as a single element list
             self._current[field.name] = (related[0] if related else None)
 
-    # TODO: m2m excluded by SDML?
     def handle_m2m_field(self, obj, field):
         if field.creates_table:
             related = getattr(obj, field.name)

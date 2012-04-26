@@ -1,2 +1,2 @@
-from old_style_integration import *
+from old_style_integration import OldStyleIntegrationTests
 from pluggable_schemas import PluggableSchemaIntegrationTests

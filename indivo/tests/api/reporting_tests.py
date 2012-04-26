@@ -2,6 +2,7 @@ from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from indivo.tests.data import *
 
+import json
 from lxml import etree
 
 DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
@@ -359,3 +360,20 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get(url)
         # Should see [{'aggregation': 1}]
         self.assertEquals(response.status_code, 200)
+
+    def test_get_generic_labs(self):
+        response = self.client.get('/records/%s/reports/Lab/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        
+        response_json = json.loads(response.content)
+        self.assertTrue(len(response_json), 4)
+
+        # check to make sure Model name is correct, and that it has 14 fields        
+        first_lab = response_json[0]
+        self.assertEquals(first_lab['__modelname__'], 'Lab')
+        self.assertEquals(len(first_lab), 14)
+
+    def test_get_generic_nonexistent(self):  
+        # get a JSON encoded report on a non-existent model
+        response = self.client.get('/records/%s/reports/DoesNotExist/'%(self.record.id), {'response_format':'application/json'})
+        self.assertEquals(response.status_code, 404)
