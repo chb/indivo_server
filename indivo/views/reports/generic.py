@@ -1,6 +1,6 @@
 """
-.. module:: views.reports.simple_data_model
-   :synopsis: Indivo view implementations for Simple Data Model reports
+.. module:: views.reports.generic
+   :synopsis: Indivo view implementations for generic reports over any Model
 
 .. moduleauthor:: Travers Franckle <travers.franckle@childrens.harvard.edu>
 
@@ -27,22 +27,22 @@ def serialize(cls, format, queryset):
     else:
         return HttpResponseBadRequest("format not supported")
 
-def simple_data_model_list(*args, **kwargs):
+def generic_list(*args, **kwargs):
   """ List the Model data for a given record.
 
   """
 
-  return _simple_data_model_list(*args, **kwargs)
+  return _generic_list(*args, **kwargs)
 
-def carenet_simple_data_model_list(*args, **kwargs):
+def carenet_generic_list(*args, **kwargs):
   """ List the Model data for a given carenet.
 
   """
 
-  return _simple_data_model_list(*args, **kwargs)
+  return _generic_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _simple_data_model_list(request, query_options, data_model,
+def _generic_list(request, query_options, data_model,
               record=None, carenet=None):
   """ List the Model objects matching the passed query parameters.
   

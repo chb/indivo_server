@@ -29,5 +29,5 @@ urlpatterns = patterns('',
   (r'^experimental/ccr$', 
    MethodDispatcher({'GET':report_ccr})),
   (r'^(?P<data_model>[^/]+)/$', 
-   MethodDispatcher({'GET':simple_data_model_list})),
+   MethodDispatcher({'GET':generic_list})),
 )
