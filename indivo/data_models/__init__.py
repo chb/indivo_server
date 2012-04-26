@@ -5,8 +5,11 @@ Indivo DataModels
 import os, sys, inspect
 from indivo.models import Fact
 from indivo.lib import simpledatamodel
+from indivo.serializers import DataModelSerializers
 
 MODULE_NAME = 'model'
+EXTRAS_NAME = 'extra'
+EXTRAS_EXT = '.py'
 MODULE_EXTENSIONS = ['.py', '.sdml']
 MODEL_MODULES = {
     'core':'indivo.data_models.core',
@@ -106,6 +109,7 @@ class IndivoDataModelLoader(object):
 
                 for name, cls in handler_func(dirpath, fileroot, ext):
                     attach_filter_fields(cls)
+                    self.process_data_model_extras(dirpath, cls)
                     yield (name, cls)
                 
     def _discover_python_data_models(self, dirpath, fileroot, ext):
@@ -143,6 +147,36 @@ class IndivoDataModelLoader(object):
         for cls in parser.get_output():
             yield (cls.__name__, cls)
                         
+    def process_data_model_extras(self, dirpath, model_class):
+        """ Processes extra options included in an extra.py file for a data model.
+
+        For now, this is just a set of serializer implementations.
+        
+        """
+
+        if os.path.exists(os.path.join(dirpath, "%s%s"%(EXTRAS_NAME, EXTRAS_EXT))):
+            
+            # add the extra.py file to the path
+            sys.path.insert(0, dirpath)
+
+            # import the module, if it exists
+            try:
+                module = __import__(EXTRAS_NAME)
+            except ImportError:
+                return # fail silently
+            
+            # unimport the module, and remove it from the path
+            del sys.modules[EXTRAS_NAME]
+            sys.path.pop(0)
+
+            # discover and process classes in the module
+            for name, cls in inspect.getmembers(module):
+
+                # Is it a Serializers class? Attach it.
+                if inspect.isclass(cls) and issubclass(cls, DataModelSerializers) \
+                        and cls != DataModelSerializers: # Necessary because issubclass(X, X) == True
+                    cls(model_class).attach_to_data_model()
+
 # Core data models
 from core import *
 
