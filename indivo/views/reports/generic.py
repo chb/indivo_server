@@ -42,7 +42,7 @@ def carenet_simple_data_model_list(*args, **kwargs):
   return _simple_data_model_list(*args, **kwargs)
 
 @marsloader(query_api_support=True)
-def _simple_data_model_list(request, query_options, model_name,
+def _simple_data_model_list(request, query_options, data_model,
               record=None, carenet=None):
   """ List the Model objects matching the passed query parameters.
   
@@ -59,13 +59,12 @@ def _simple_data_model_list(request, query_options, model_name,
       return HttpResponseBadRequest("format not supported")
   
   # look up model
-  model_class = get_model('indivo', model_name)
+  model_class = get_model('indivo', data_model)
   if model_class is None:
       # model not found
       raise Http404
 
   # build query
-#{DEFAULT_ORDERBY : ('created_at', DATE)}
   model_filters =  model_class.filter_fields # TODO: possible to make a lazy class property?
   q = FactQuery(model_class, 
                 model_filters,

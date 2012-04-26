@@ -18,4 +18,4 @@ from procedure              import *
 from simple_clinical_notes  import *
 from vitals                 import *
 from ccr                    import *
-from simple_data_model      import *
+from generic                import *

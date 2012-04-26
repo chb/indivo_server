@@ -283,18 +283,6 @@ class ReportingInternalTests(InternalTests):
             lab_type = report.findtext('.//{%s}dateMeasured' % NS)
             self.assertTrue(lab_type in ['2010-07-16T12:00:00Z', '1998-07-16T12:00:00Z'])
 
-    def test_get_labs_generic(self):
-        response = self.client.get('/records/%s/reports/Lab/'%(self.record.id))
-        self.assertEquals(response.status_code, 200)
-        
-        response_json = json.loads(response.content)
-        self.assertTrue(len(response_json), 4)
-
-        # check to make sure Model name is correct, and that it has 14 fields        
-        first_lab = response_json[0]
-        self.assertEquals(first_lab['__modelname__'], 'Lab')
-        self.assertEquals(len(first_lab), 14)
-
     def test_get_allergies(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/allergies/?group_by=allergen_type&aggregate_by=count*allergen_name&date_range=date_diagnosed*2004-03-10T00:00:00Z*'%(record_id)
@@ -373,7 +361,19 @@ class ReportingInternalTests(InternalTests):
         # Should see [{'aggregation': 1}]
         self.assertEquals(response.status_code, 200)
 
-    def test_get_nonexistent_generic(self):  
+    def test_get_generic_labs(self):
+        response = self.client.get('/records/%s/reports/Lab/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        
+        response_json = json.loads(response.content)
+        self.assertTrue(len(response_json), 4)
+
+        # check to make sure Model name is correct, and that it has 14 fields        
+        first_lab = response_json[0]
+        self.assertEquals(first_lab['__modelname__'], 'Lab')
+        self.assertEquals(len(first_lab), 14)
+
+    def test_get_generic_nonexistent(self):  
         # get a JSON encoded report on a non-existent model
         response = self.client.get('/records/%s/reports/DoesNotExist/'%(self.record.id), {'response_format':'application/json'})
         self.assertEquals(response.status_code, 404)
