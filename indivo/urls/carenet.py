@@ -59,5 +59,5 @@ urlpatterns = patterns('',
     (r'^/reports/minimal/measurements/(?P<lab_code>[^/]+)/$',
      MethodDispatcher({'GET':carenet_measurement_list})),
     (r'^/reports/(?P<data_model>[^/]+)/$', 
-     MethodDispatcher({'GET':carenet_simple_data_model_list})),
+     MethodDispatcher({'GET':carenet_generic_list})),
 )
