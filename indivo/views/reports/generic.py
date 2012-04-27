@@ -27,23 +27,24 @@ def serialize(cls, format, queryset):
     else:
         return HttpResponseBadRequest("format not supported")
 
-def generic_list(*args, **kwargs):
+@marsloader(query_api_support=True)
+def generic_list(request, query_options, data_model, record=None, carenet=None, response_format=None):
   """ List the Model data for a given record.
 
   """
 
-  return _generic_list(*args, **kwargs)
+  return _generic_list(request, query_options, data_model, record, carenet, response_format)
 
-def carenet_generic_list(*args, **kwargs):
+@marsloader(query_api_support=True)
+def carenet_generic_list(request, query_options, data_model, record=None, carenet=None, response_format=None):
   """ List the Model data for a given carenet.
 
   """
 
-  return _generic_list(*args, **kwargs)
+  return _generic_list(request, query_options, data_model, record, carenet, response_format)
 
-@marsloader(query_api_support=True)
-def _generic_list(request, query_options, data_model,
-              record=None, carenet=None):
+
+def _generic_list(request, query_options, data_model, record=None, carenet=None, response_format=None):
   """ List the Model objects matching the passed query parameters.
   
   See :doc:`/query-api` for a listing of valid parameters.
@@ -53,7 +54,9 @@ def _generic_list(request, query_options, data_model,
 
   """
   # check requested format
-  response_format = request.GET.get("response_format", 'application/json')
+  if not response_format:
+      response_format = request.GET.get("response_format", 'application/json')
+  
   if not SERIALIZATION_FORMAT_MAP.has_key(response_format):
       # unsupported format
       return HttpResponseBadRequest("format not supported")
