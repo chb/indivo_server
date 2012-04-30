@@ -15,19 +15,26 @@ class DataModelSerializers(object):
     Querysets passed into these methods will contain instances of the class specifed in the *data_model_cls* argument
     of the ``__init__()`` method.
 
+    Subclasses must also define one attribute:
+
+    * ``model_class_name``: a string describing the name of the data model it should be attached to, i.e. ``Problem``.
+
     In order to be called, the methods must be attached to that data model class by calling the 
     ``attach_to_data_model()`` method.
 
     """
 
-    def __init__(self, data_model_cls):
-        self.model_cls = data_model_cls
+    model_class_name = ''
 
-    def attach_to_data_model(self):
-        """ Add all of the defined methods as classmethods on ``self.model_cls``. """
+    @classmethod
+    def attach_to_data_model(cls, data_model_cls):
+        """ Add all of the defined methods as classmethods on ``data_model_cls``. """
+        
+        # Don't attach to anything other than our intended target model
+        if data_model_cls.__name__ != cls.model_class_name: return
 
         for attr_name in ATTACHABLE_ATTRS:
-            attr_val = getattr(self, attr_name, None)
+            attr_val = getattr(cls, attr_name, None)
             if attr_val:
                 # unbind the method from our class
                 unbound_func = attr_val.__func__
@@ -36,4 +43,4 @@ class DataModelSerializers(object):
                 cm = classmethod(lambda cls, *args, **kwargs: unbound_func(*args, **kwargs))
 
                 # And bind it to our data model
-                setattr(self.model_cls, attr_name, cm)
+                setattr(data_model_cls, attr_name, cm)

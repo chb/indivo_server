@@ -190,7 +190,7 @@ class IndivoDataModelLoader(object):
                 # Is it a Serializers class? Attach it.
                 if inspect.isclass(cls) and issubclass(cls, DataModelSerializers) \
                         and cls != DataModelSerializers: # Necessary because issubclass(X, X) == True
-                    cls(model_class).attach_to_data_model()
+                    cls.attach_to_data_model(model_class)
 
 # Core data models
 from core import *
