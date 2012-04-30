@@ -20,10 +20,10 @@ SERIALIZATION_FORMAT_MAP = {
 }
 
 # serialize queryset to the requested format
-def serialize(cls, format, queryset):
+def serialize(cls, format, queryset, result_count, record=None, carenet=None):
     method = SERIALIZATION_FORMAT_MAP[format]
     if hasattr(cls, method):
-        return getattr(cls, method)(queryset)
+        return getattr(cls, method)(queryset, result_count, record, carenet)
     else:
         return HttpResponseBadRequest("format not supported")
 
@@ -76,7 +76,7 @@ def _generic_list(request, query_options, data_model, record=None, carenet=None,
                 carenet)
   try:
       q.execute()
-      data = serialize(model_class, response_format, q.results)
+      data = serialize(model_class, response_format, q.results, q.trc, record, carenet)
       return HttpResponse(data, mimetype=response_format)
   except ValueError as e:
     return HttpResponseBadRequest(str(e))

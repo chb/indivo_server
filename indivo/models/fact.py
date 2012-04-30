@@ -51,12 +51,12 @@ class Fact(BaseModel):
       super(Fact, self).save(**kwargs)
 
     @classmethod
-    def to_json(cls, data):
-        data = serializers.serialize("indivo_python", data)
+    def to_json(cls, queryset, result_count, record=None, carenet=None):
+        data = serializers.serialize("indivo_python", queryset)
         return simplejson.dumps(data, cls=IndivoJSONEncoder)
       
     @classmethod
-    def to_xml(cls, data):
-        root = serializers.serialize("indivo_xml", data)
+    def to_xml(cls, queryset, result_count, record=None, carenet=None):
+        root = serializers.serialize("indivo_xml", queryset)
         return etree.tostring(root)
 

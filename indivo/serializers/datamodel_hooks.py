@@ -33,10 +33,7 @@ class DataModelSerializers(object):
                 unbound_func = attr_val.__func__
 
                 # Wrap it as a classmethod
-                def internal_classmethod(cls, *args, **kwargs):
-                    return unbound_func(*args, **kwargs)
-                internal_classmethod.__name__ = attr_name
-                internal_classmethod = classmethod(internal_classmethod)
+                cm = classmethod(lambda cls, *args, **kwargs: unbound_func(*args, **kwargs))
 
                 # And bind it to our data model
-                setattr(self.model_cls, attr_name, internal_classmethod)
+                setattr(self.model_cls, attr_name, cm)
