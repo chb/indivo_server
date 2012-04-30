@@ -1,6 +1,6 @@
 from indivo.tests.internal_tests import InternalTests
 from indivo.data_models import IndivoDataModelLoader, MODULE_NAME, MODULE_EXTENSIONS
-from indivo.models import Fact
+from indivo.models import Fact, Record
 
 from django.conf import settings
 
@@ -64,6 +64,16 @@ class DataModelLoaderUnitTests(InternalTests):
         # get the test modules, and make sure we imported them all
         self.test_loader.import_data_models(TEST_MODULE)
         self.assertModuleContains(TEST_MODULE, TEST_MODELS)
+
+        # make sure the serializers were loaded correctly
+        for model_name  in TEST_MODELS:
+            model_cls = getattr(TEST_MODULE, model_name, None)
+            rdf_ser = getattr(model_cls, 'to_rdf', None)
+            self.assertTrue(rdf_ser)
+
+            # Dummy input to the serializers, which produce dummy output
+            rdf_output = rdf_ser(model_cls.objects.none(), 0, Record())
+            self.assertTrue(rdf_output.startswith(model_name))
 
     def test_detect_model_dir(self):
         
