@@ -124,9 +124,16 @@ class IndivoDataModelLoader(object):
         except ImportError:
             return # fail silently
 
-        # now that we have the module, remove model.py from the path
-        # also 'unimport' the 'model' module, so the next datamodel can be imported correctly
+        # move the module, but still save it, so that we don't lose references to
+        # other modules imported by this one.
+        #
+        # The current namespace is just 'extra', since we imported straight
+        # from the parent directory. Rename it something more unique.
+        module_name = 'indivo.data_models.%s.%s'%(os.path.basename(dirpath),fileroot)
+        sys.modules[module_name] = module
         del sys.modules[fileroot]
+        
+        # remove the module from the path
         sys.path.pop(0)
 
         # discover and yield classes in the module
@@ -155,7 +162,7 @@ class IndivoDataModelLoader(object):
         """
 
         if os.path.exists(os.path.join(dirpath, "%s%s"%(EXTRAS_NAME, EXTRAS_EXT))):
-            
+
             # add the extra.py file to the path
             sys.path.insert(0, dirpath)
 
@@ -165,8 +172,16 @@ class IndivoDataModelLoader(object):
             except ImportError:
                 return # fail silently
             
-            # unimport the module, and remove it from the path
+            # move the module, but still save it, so that we don't lose references to
+            # other modules imported by this one.
+            #
+            # The current namespace is just 'extra', since we imported straight
+            # from the parent directory. Rename it something more unique.
+            module_name = 'indivo.data_models.%s.%s'%(model_class.__name__, EXTRAS_NAME)
+            sys.modules[module_name] = module
             del sys.modules[EXTRAS_NAME]
+
+            # remove the module from the path
             sys.path.pop(0)
 
             # discover and process classes in the module
