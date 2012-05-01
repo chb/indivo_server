@@ -125,9 +125,10 @@ that matches an SDML definition. The only difference is the form of the envelope
 SDMJ
 ^^^^
 
-SDMJ looks exactly like SDML, with three key differences:
+SDMJ looks exactly like SDML, with four key differences:
 
 * The datatypes in SDML ('Number', 'String', 'Date') are replaced by the datapoints in SDMJ
+* Each model has an attribute ``’__documentid__’``, specifying the ID of the source document
 * Since all attributes are optional, any attribute may be omitted in SDMJ.
 * In one-to-many attributes, SDMJ actually specifies multiple datapoints, instead of just defining a submodel in a list.
 
@@ -135,12 +136,14 @@ Here's an example SDMJ document matching the SDML definition above::
 
   {
       "__modelname__": "TestMedication",
+      "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
       "name": "ibuprofen",
       "date_started": "2010-10-01T00:00:00Z",
       "date_stopped": "2010-10-31T00:00:00Z",
       "brand_name": "Advil",
       "prescription": {
           "__modelname__": "TestPrescription",
+          "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
           "prescribed_by_name": "Kenneth D. Mandl",
           "prescribed_by_institution": "Children's Hospital Boston",
           "prescribed_on": "2010-09-30T00:00:00Z",
@@ -149,12 +152,14 @@ Here's an example SDMJ document matching the SDML definition above::
       "fills": [
           {
               "__modelname__": "TestFill",
+              "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
               "date_filled": "2010-10-01T00:00:00Z",
               "supply_days": "15",
               "filled_at_name": "CVS"
           },
           {
               "__modelname__": "TestFill",
+              "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
               "date_filled": "2010-10-16T00:00:00Z",
               "supply_days": "15",
               "filled_at_name": "CVS"
@@ -174,7 +179,8 @@ SDMX looks exactly like SDMJ, with the exceptions that:
 
 * It's XML
 * attribute-value pairs are represented as ``<Field name="attribute_name">attribute_value</Field>``
-* The ``__modelname__`` attribute is pulled out as a toplevel tag: ``<Model name="model_name">``
+* The ``__modelname__`` attribute is pulled out as a toplevel tag with ``documentId`` as an attribute: ``<Model name="model_name" documentId="id">``
+* Each ``<Model />`` tag contains an attribute ``documentId``, specifying the ID of the source document
 * In order to represent multiple toplevel datapoints, SDMX must always live under a root <Models> tag.
 
 Here's the same example document we just saw as SDMJ in SDMX form:

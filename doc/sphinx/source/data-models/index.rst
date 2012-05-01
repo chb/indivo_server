@@ -68,7 +68,7 @@ Feeling Lost?
 For help getting started, see our :ref:`core data models <core-data-models>`, below, each of which provide definitions 
 both in SDML and Django Model classes.
 
-.. _core-data-models:
+.. _queryable-fields:
 
 Data Models and the Query API
 -----------------------------
@@ -101,6 +101,7 @@ If the problems model were a bit more complicated, and had another field:
 
 You wouldn't be able to filter by *prescribed_med*, since that field is a relation to another model.
 
+.. _core-data-models:
 
 Core Data Models
 ----------------
