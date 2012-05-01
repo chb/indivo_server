@@ -177,6 +177,10 @@ class PatientGraph(object):
             pnode = BNode()
             g.add((pnode, RDF.type, SP['Problem']))
             g.add((pnode, SP['startDate'], Literal(prob.startDate)))      
+            if prob.endDate:
+                g.add((pnode, SP['endDate'], Literal(prob.endDate)))
+            if prob.notes:
+                g.add((pnode, SP['notes'], Literal(prob.notes)))
             g.add((pnode, SP['problemName'],
                    self.codedValue(SPCODE["SNOMED"],
                                    SNOMED_URI%prob.name_identifier,
