@@ -5,6 +5,8 @@ from indivo.tests.data.document import TEST_R_DOCS
 from indivo.fields import CodedValueField
 from django.db import models
 
+URI_PREFIX = "http://indivo.org/"
+
 class FactModelUnitTests(InternalTests):
     def setUp(self):
         super(FactModelUnitTests, self).setUp()
@@ -56,3 +58,14 @@ class FactModelUnitTests(InternalTests):
             self.assertTrue(valid_fields.has_key(field.name))
             self.assertTrue(isinstance(field, valid_fields[field.name]))
 
+    def test_uri(self):
+        args = {'record':self.record}
+        instance = Fact(**args)
+        instance.save() # because we'll need the fact to have an id
+        
+        # URI should have 'facts' in it by default
+        self.assertEqual(instance.uri(), URI_PREFIX + "records/%s/facts/%s"%(self.record.id, instance.id))
+
+        # But we can override it
+        self.assertEqual(instance.uri('medications'), URI_PREFIX + "records/%s/medications/%s"%(self.record.id, instance.id))
+                         

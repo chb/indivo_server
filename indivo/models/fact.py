@@ -56,6 +56,11 @@ class Fact(BaseModel):
     
     def __unicode__(self):
       return "%s %s" % (self.__class__.__name__, self.id)
+
+    def uri(self, modelname=None):
+        if not modelname:
+            modelname = self.__class__.__name__.lower() + 's'
+        return "http://indivo.org/records/%s/%s/%s"%(self.record.id, modelname, self.id)
     
     #Meta = BaseMeta(True)
     
