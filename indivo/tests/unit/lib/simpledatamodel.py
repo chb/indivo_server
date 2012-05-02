@@ -5,6 +5,7 @@ from indivo.tests.data import TEST_SDML_DOCS, TEST_SDMJ_DOCS, TEST_SDMX_DOCS
 from indivo.tests.data import INVALID_TEST_SDML_DOCS, INVALID_TEST_SDMJ_DOCS, INVALID_TEST_SDMX_DOCS
 from indivo.lib.simpledatamodel import SDML, SDMJData, SDMXData, SDMException
 from django.db import models
+from django.db.models.fields import FieldDoesNotExist
 from lxml import etree
 from StringIO import StringIO
 
@@ -95,29 +96,29 @@ class SDMLUnitTests(InternalTests):
             'pharmacy_adr_postalcode': models.CharField,
             'pharmacy_adr_region': models.CharField,
             'pharmacy_adr_street': models.CharField,
-            'provider_dea_number': models.CharField, # Provider fields should be expanded
-            'provider_ethnicity': models.CharField,
-            'provider_npi_number': models.CharField,
-            'provider_preferred_language': models.CharField,
-            'provider_race': models.CharField,
-            'provider_adr_country': models.CharField, # Address fields should be expanded (recursively, from Provider)
-            'provider_adr_city': models.CharField,
-            'provider_adr_postalcode': models.CharField,
-            'provider_adr_region': models.CharField,
-            'provider_adr_street': models.CharField,
-            'provider_bday': models.DateField,
-            'provider_email': models.EmailField,
-            'provider_name_family': models.CharField, # Name fields should be expanded (recursively, from Provider)
-            'provider_name_given': models.CharField,
-            'provider_name_prefix': models.CharField,
-            'provider_name_suffix': models.CharField,
-            'provider_gender': models.CharField,
-            'provider_tel_1_type': models.CharField, # Telephone fields should be expanded (recursively, from Provider)
-            'provider_tel_1_number': models.CharField, 
-            'provider_tel_1_preferred_p': models.BooleanField,
-            'provider_tel_2_type': models.CharField,
-            'provider_tel_2_number': models.CharField,
-            'provider_tel_2_preferred_p': models.BooleanField,               
+            'prescriber_dea_number': models.CharField, # Provider fields should be expanded
+            'prescriber_ethnicity': models.CharField,
+            'prescriber_npi_number': models.CharField,
+            'prescriber_preferred_language': models.CharField,
+            'prescriber_race': models.CharField,
+            'prescriber_adr_country': models.CharField, # Address fields should be expanded (recursively, from Prescriber)
+            'prescriber_adr_city': models.CharField,
+            'prescriber_adr_postalcode': models.CharField,
+            'prescriber_adr_region': models.CharField,
+            'prescriber_adr_street': models.CharField,
+            'prescriber_bday': models.DateField,
+            'prescriber_email': models.EmailField,
+            'prescriber_name_family': models.CharField, # Name fields should be expanded (recursively, from Prescriber)
+            'prescriber_name_given': models.CharField,
+            'prescriber_name_prefix': models.CharField,
+            'prescriber_name_suffix': models.CharField,
+            'prescriber_gender': models.CharField,
+            'prescriber_tel_1_type': models.CharField, # Telephone fields should be expanded (recursively, from Prescriber)
+            'prescriber_tel_1_number': models.CharField, 
+            'prescriber_tel_1_preferred_p': models.BooleanField,
+            'prescriber_tel_2_type': models.CharField,
+            'prescriber_tel_2_number': models.CharField,
+            'prescriber_tel_2_preferred_p': models.BooleanField,               
             }
         self.check_class_fields(fill_klass, fill_expected_fields)
 
@@ -139,7 +140,7 @@ class SDMLUnitTests(InternalTests):
             try:
                 field = klass._meta.get_field(field_name)
             except FieldDoesNotExist:
-                self.fail('SDML parsing did not produce field %s on % class'%(field_name, klass.__name__))
+                self.fail('SDML parsing did not produce field %s on class %s'%(field_name, klass.__name__))
             self.assertTrue(isinstance(field, field_class))
             
 class SDMJDataUnitTests(TransactionInternalTests):
