@@ -47,11 +47,17 @@ Syntax
    * Number
    * String
    * Date
-   * :ref:`CodedValue <custom-model-fields>`
+   * :py:class:`CodedValue <indivo.fields.CodedValueField>`
+   * :py:class:`ValueAndUnit <indivo.fields.ValueAndUnitField>`
+   * :py:class:`Address <indivo.fields.AddressField>`
+   * :py:class:`Name <indivo.fields.NameField>`
+   * :py:class:`Telephone <indivo.fields.TelephoneField>`
+   * :py:class:`Pharmacy <indivo.fields.PharmacyField>`
+   * :py:class:`Provider <indivo.fields.ProviderField>`
    * One-to-One
    * One-to-Many
 
-* The first four types are indicated by a simple string (i.e. ‘Number’ | ‘String’ | ‘Date’ | 'CodedValue')
+* All types but One-to-One and One-to-Many are indicated by a simple string (i.e. ‘Number’ | 'CodedValue' | 'Provider')
 
 * One-to-One fields are indicated by a sub-object, and may be nested arbitrarily::
   

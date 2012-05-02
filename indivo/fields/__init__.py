@@ -7,4 +7,5 @@ Medical Data via the Django ORM.
 
 """
 
-from dummy_fields import DummyField, CodedValueField
+from dummy_fields import DummyField, CodedValueField, ValueAndUnitField, AddressField
+from dummy_fields import NameField, TelephoneField, PharmacyField, ProviderField

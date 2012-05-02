@@ -17,7 +17,11 @@ TEST_SDML_DOCS = ['''
             "__modelname__": "TestFill2",
             "date_filled": "Date",
             "supply_days": "Number",
-            "filled_at_name": "String"
+            "filled_at_name": "String",
+            "code": "CodedValue",
+            "quantity": "ValueAndUnit",
+            "pharmacy": "Pharmacy",
+            "prescriber": "Provider"
             }]
 }
 ''',

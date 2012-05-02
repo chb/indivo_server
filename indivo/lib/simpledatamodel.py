@@ -16,13 +16,20 @@ from django.db.models.fields import FieldDoesNotExist
 from indivo.models import Fact
 from lxml import etree
 from indivo.lib import iso8601
-from indivo.fields import CodedValueField
+from indivo.fields import CodedValueField, ValueAndUnitField, AddressField
+from indivo.fields import NameField, TelephoneField, PharmacyField, ProviderField
 
 SDM_TYPES = {
     'Date': (models.DateTimeField, {'null':True}),
     'String': (models.CharField, {'max_length': 255, 'null':True}),
     'Number': (models.FloatField, {'null':True}),
     'CodedValue': (CodedValueField, {}),
+    'ValueAndUnit': (ValueAndUnitField, {}),
+    'Address': (AddressField, {}),
+    'Name': (NameField, {}),
+    'Telephone': (TelephoneField, {}),
+    'Pharmacy': (PharmacyField, {}),
+    'Provider': (ProviderField, {}),
 }
 
 MODEL_NAME_KEY = '__modelname__'

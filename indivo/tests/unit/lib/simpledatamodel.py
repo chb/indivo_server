@@ -83,6 +83,41 @@ class SDMLUnitTests(InternalTests):
             'date_filled': models.DateField,
             'supply_days': models.FloatField,
             'filled_at_name': models.CharField,
+            'code_identifier': models.CharField, # CodedValues should be expanded
+            'code_title': models.CharField,
+            'code_system': models.CharField,
+            'quantity_value': models.CharField, # ValueAndUnit fields should be expanded
+            'quantity_unit': models.CharField,
+            'pharmacy_ncpdpid': models.CharField, # Pharmacy fields should be expanded
+            'pharmacy_org': models.CharField,
+            'pharmacy_adr_country': models.CharField, # Address fields should be expanded (recursively, from Pharmacy)
+            'pharmacy_adr_city': models.CharField,
+            'pharmacy_adr_postalcode': models.CharField,
+            'pharmacy_adr_region': models.CharField,
+            'pharmacy_adr_street': models.CharField,
+            'provider_dea_number': models.CharField, # Provider fields should be expanded
+            'provider_ethnicity': models.CharField,
+            'provider_npi_number': models.CharField,
+            'provider_preferred_language': models.CharField,
+            'provider_race': models.CharField,
+            'provider_adr_country': models.CharField, # Address fields should be expanded (recursively, from Provider)
+            'provider_adr_city': models.CharField,
+            'provider_adr_postalcode': models.CharField,
+            'provider_adr_region': models.CharField,
+            'provider_adr_street': models.CharField,
+            'provider_bday': models.DateField,
+            'provider_email': models.EmailField,
+            'provider_name_family': models.CharField, # Name fields should be expanded (recursively, from Provider)
+            'provider_name_given': models.CharField,
+            'provider_name_prefix': models.CharField,
+            'provider_name_suffix': models.CharField,
+            'provider_gender': models.CharField,
+            'provider_tel_1_type': models.CharField, # Telephone fields should be expanded (recursively, from Provider)
+            'provider_tel_1_number': models.CharField, 
+            'provider_tel_1_preferred_p': models.BooleanField,
+            'provider_tel_2_type': models.CharField,
+            'provider_tel_2_number': models.CharField,
+            'provider_tel_2_preferred_p': models.BooleanField,               
             }
         self.check_class_fields(fill_klass, fill_expected_fields)
 

@@ -59,31 +59,62 @@ definition might look like::
 Custom Django Model Fields
 """"""""""""""""""""""""""
 
-For modeling medical data, Indivo provides the following Field Subclasses:
+For modeling medical data, Indivo provides some custom Field Subclasses. These fields represent their data as multiple 
+separate database fields, with names formed from the original field's name and some appended sufffixes (see the classes
+below for some examples). You should use these fields as if they were any other Django Model Field::
 
-* :py:class:`indivo.fields.CodedValueField`: represents a coded data element. Coded elements are represented by three 
-  values:
+  from indivo.models import Fact
+  from django.db import models
+  from indivo.fields import YourFavoriteFieldSubclass
 
-  * ``system``: the coding system used to represent the element.
-  * ``identifier``: the system-specific identifier that represents the element.
-  * ``title``: the human-readable title of the element.
+  class YourModel(Fact):
+      normal_field = models.CharField(max_length=200, null=True)
+      special_field = YourFavoriteFieldSubclass()
 
-  ``CodedValueField`` represents these values as three separate database fields, with names formed from the original field
-  name and appended suffixes. So, for example, if you defined a data model::
+Now YourModel has both a standard CharField, and also other fields defined by the Field Subclass. We define the following 
+Field Subclasses:
 
-    from indivo.models import Fact
-    from django.db import models
-    from indivo.fields import CodedValue
+.. autoclass:: indivo.fields.CodedValueField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
 
-    class YourModel(Fact):
-        non_coded_field = models.CharField(max_length=200, null=True)
-        coded_element = CodedValueField()
+.. autoclass:: indivo.fields.ValueAndUnitField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
 
-  then you are actually creating four fields: ``non_coded_field``, ``coded_element_system``, ``coded_element_identifier``, 
-  and ``coded_element_title``. When describing instances of your model (either when defining a
-  :ref:`transform output <transform-output-types>` or when referencing fields using 
-  :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
-  ``coded_element`` field name.
+.. autoclass:: indivo.fields.AddressField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.fields.NameField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.fields.TelephoneField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.fields.PharmacyField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.fields.ProviderField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
 
 Simple Data Modeling Language (SDML)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
