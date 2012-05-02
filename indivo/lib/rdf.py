@@ -174,7 +174,7 @@ class PatientGraph(object):
         g = self.g
 
         for prob in problems:
-            pnode = BNode()
+            pnode = URIRef(prob.uri())
             g.add((pnode, RDF.type, SP['Problem']))
             g.add((pnode, SP['startDate'], Literal(prob.startDate)))      
             if prob.endDate:
