@@ -240,7 +240,7 @@ class FactQuery(object):
             if self.valid_filters.has_key(self.group_by):          
                 group_field = self.valid_filters[self.group_by][0]
             else:
-                raise ValueError('Invalid grouping field for fact type %s: %s'%(model.__name__, group_by))
+                raise ValueError('Invalid grouping field for fact type %s: %s'%(self.model.__name__, group_by))
 
         # Handle the date group
         elif self.date_group:
