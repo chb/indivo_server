@@ -281,6 +281,7 @@ def load_access_rules():
            procedure_list,
            problem_list,
            smart_problems,
+           smart_medications,
            equipment_list,
            vitals_list,
            lab_list,

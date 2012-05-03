@@ -15,8 +15,8 @@ urlpatterns = patterns('',
     (r'^/reports/',   include('indivo.urls.record_reports')),
 
     #TESTING
-    (r'^/problems/', MethodDispatcher({'GET': smart_problems})),                       
-
+    (r'^/problems/', MethodDispatcher({'GET': smart_problems})),
+    (r'^/medications/', MethodDispatcher({'GET': smart_medications})),
 
     # ownership
     (r'^/owner$', MethodDispatcher({
