@@ -14,6 +14,7 @@ NUI_URI="http://purl.bioontology.org/ontology/NDFRT/%s"
 UNII_URI="http://fda.gov/UNII/%s"
 SNOMED_URI="http://purl.bioontology.org/ontology/SNOMEDCT/%s"
 LOINC_URI="http://purl.bioontology.org/ontology/LNC/%s"
+MED_PROV_URI="http://smartplatforms.org/terms/codes/MedicationProvenance#%s"
 
 # First Declare Name Spaces
 SP = Namespace("http://smartplatforms.org/terms#")
@@ -48,6 +49,9 @@ class PatientGraph(object):
         self.patient = BNode()
         g.add((self.patient, RDF.type, SP['MedicalRecord']))
 
+    def toRDF(self,format="xml"):
+        return self.g.serialize(format=format)
+
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""
         cvNode=BNode()
@@ -74,8 +78,133 @@ class PatientGraph(object):
         self.g.add((vNode, SP['unit'], Literal(units)))
         return vNode
 
-    def toRDF(self,format="xml"):
-        return self.g.serialize(format=format)
+    def address(self, obj, prefix):
+        suffixes = ['country', 'city', 'postalcode', 'region', 'street']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+
+        addrNode = BNode() 
+        self.g.add((addrNode, RDF.type, VCARD['Address']))
+
+        if fields['street']:
+            self.g.add((addrNode, VCARD['street-address'], Literal(fields['street'])))
+
+        if fields['city']:
+            self.g.add((addrNode, VCARD['locality'], Literal(fields['city'])))
+            
+        if fields['region']:
+            self.g.add((addrNode, VCARD['region'], Literal(fields['region'])))
+
+        if fields['postalcode']:
+            self.g.add((addrNode, VCARD['postal-code'], Literal(fields['postalcode'])))
+
+        if fields['country']:
+            self.g.add((addrNode, VCARD['country'], Literal(fields['country'])))
+
+        return addrNode
+
+    def telephone(self, obj, prefix):
+        suffixes = ['type', 'number', 'preferred_p']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+
+        tNode = BNode()
+        self.g.add((tNode, RDF.type, VCARD['Tel']))
+        
+        if fields['type']:
+            self.g.add((tNode, RDF.type, VCARD[getattr(obj, 'get_%s_type_display'%(prefix))()]))
+        if fields['preferred_p']:
+            self.g.add((tNode, RDF.type, VCARD['Pref']))
+        if fields['number']:
+            self.g.add((tNode, VCARD['value'], Literal(fields['number'])))
+
+        return tNode
+
+    def name(self, obj, prefix):
+        suffixes = ['family', 'given', 'prefix', 'suffix']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        
+        nNode = BNode()
+        self.g.add((nNode, RDF.type, VCARD['Name']))
+
+        if fields['family']:
+            self.g.add((nNode, VCARD['family-name'], Literal(fields['family'])))
+        if fields['given']:
+            self.g.add((nNode, VCARD['given-name'], Literal(fields['given'])))
+        if fields['prefix']:
+            self.g.add((nNode, VCARD['honorific-prefix'], Literal(fields['prefix'])))
+        if fields['suffix']:
+            self.g.add((nNode, VCARD['honorific-suffix'], Literal(fields['suffix'])))
+
+        return nNode
+
+    def pharmacy(self, obj, prefix):
+        suffixes = ['ncpdpid', 'org', 'adr_country', 'adr_city', 'adr_postalcode', 'adr_region', 'adr_street']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+
+        pNode = BNode()
+        self.g.add((pNode, RDF.type, SP['Pharmacy']))
+
+        if fields['ncpdpid']:
+            self.g.add((pNode, SP['ncpdpId'], Literal(fields['ncpdpid'])))
+        if fields['org']:
+            self.g.add((pNode, VCARD['organization-name'], Literal(fields['org'])))
+        addrNode = self.address(obj, "%s_adr"%prefix)
+        if addrNode:
+            self.g.add((pNode, VCARD['adr'], addrNode))
+        return pNode
+
+    def provider(self, obj, prefix):
+        suffixes = ['dea_number', 'ethnicity', 'npi_number', 'preferred_language', 'race', 'bday', 'email', 'gender']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+
+        pNode = BNode()
+        self.g.add((pNode, RDF.type, SP['Provider']))
+
+        self.g.add((pNode, VCARD['n'], self.name(obj, "%s_name"%prefix))) # name is required
+        if fields['dea_number']:
+            self.g.add((pNode, SP['deaNumber'], Literal(fields['dea_number'])))
+        if fields['ethnicity']:
+            self.g.add((pNode, SP['ethnicity'], Literal(fields['ethnicity'])))
+        if fields['npi_number']:
+            self.g.add((pNode, SP['npiNumber'], Literal(fields['npi_number'])))
+        if fields['preferred_language']:
+            self.g.add((pNode, SP['preferredLanguage'], Literal(fields['preferred_language'])))
+        if fields['race']:
+            self.g.add((pNode, SP['race'], Literal(fields['race'])))
+        if fields['bday']:
+            self.g.add((pNode, VCARD['bday'], Literal(fields['bday'])))
+        if fields['email']:
+            self.g.add((pNode, VCARD['email'], Literal(fields['email'])))
+        if fields['gender']:
+            self.g.add((pNode, FOAF['gender'], Literal(fields['gender'])))
+
+        addrNode = self.address(obj, "%s_adr"%prefix)
+        if addrNode:
+            self.g.add((pNode, VCARD['adr'], addrNode))
+
+        tel1Node = self.telephone(obj, "%s_tel_1"%prefix)
+        if tel1Node:
+            self.g.add((pNode, VCARD['tel'], tel1Node))
+
+        tel2Node = self.telephone(obj, "%s_tel_2"%prefix)
+        if tel2Node:
+            self.g.add((pNode, VCARD['tel'], tel2Node))
+
+        return pNode
+
+    def _obj_fields_by_name(self, obj, prefix, suffixes):
+        """ Given an object, returns a dictionary of its attributes based on prefix and suffixes.
+        
+        Specifically, the dictionary is of the form::
+        
+          {
+            'suffix': getattr(obj, prefix + '_' + suffix)
+          }
+          
+        for each suffix in suffixes.
+        
+        """
+
+        return dict([(s, getattr(obj, "%s_%s"%(prefix, s))) for s in suffixes])
 
     def addStatement(self, s):
         #      self.g.add((self.patient, SP['hasStatement'], s))
@@ -134,40 +263,101 @@ class PatientGraph(object):
         g.add((recordNode, DCTERMS['title'], Literal("My Hospital Record %s"%p.pid)))
         g.add((recordNode, DCTERMS['identifier'], Literal(p.pid)))
         g.add((recordNode, SP['system'], Literal("My Hospital Record")))
+
+    def medication(self, m):
+        """ Build a Medication, but don't add fills and don't link it to the patient. Returns the med node. """
+        g = self.g
+        if not m: return # no med
+
+        mNode = URIRef(m.uri())
+        g.add((mNode, RDF.type, SP['Medication']))
+        g.add((mNode, SP['drugName'], 
+               self.codedValue(
+                    SPCODE["RxNorm_Semantic"], 
+                    RXN_URI%m.drugName_identifier,
+                    m.drugName_title,
+                    RXN_URI%"",
+                    m.drugName_identifier)))
+        g.add((mNode, SP['startDate'], Literal(m.startDate)))
+        g.add((mNode, SP['instructions'], Literal(m.instructions))) 
+        if m.quantity_value and m.quantity_unit:
+            g.add((mNode, SP['quantity'], self.valueAndUnit(m.quantity_value, m.quantity_unit)))
+        if m.frequency_value and m.frequency_unit:
+            g.add((mNode, SP['frequency'], self.valueAndUnit(m.frequency_value, m.frequency_unit)))
+        if m.endDate:
+            g.add((mNode, SP['endDate'], Literal(m.endDate)))
+        if m.provenance_identifier and m.provenance_title and m.provenance_system:
+            g.add((mNode, SP['provenance'],
+                   self.codedValue(
+                        SPCODE['MedicationProvenance'],
+                        MED_PROV_URI%m.provenance_identifier,
+                        m.provenance_title,
+                        MED_PROV_URI%"",
+                        m.provenance_identifier)))
+        return mNode
         
     def addMedList(self, meds):
         """Adds a MedList to a patient's graph"""
-
-        # TODO: adopt to Indivo Meds Model
 
         g = self.g
         if not meds: return # no meds
 
         for m in meds:
-            mNode = BNode()
-            g.add((mNode, RDF.type, SP['Medication']))
-            g.add((mNode, SP['drugName'], self.codedValue(SPCODE["RxNorm_Semantic"], RXN_URI%m.rxn,m.name,RXN_URI%"",m.rxn)))
-            g.add((mNode,SP['startDate'],Literal(m.start)))
-            g.add((mNode,SP['instructions'],Literal(m.sig))) 
-            if m.qtt:
-                g.add((mNode,SP['quantity'],self.valueAndUnit(m.qtt,m.qttunit)))
-            if m.freq:
-                g.add((mNode,SP['frequency'],self.valueAndUnit(m.freq,m.frequnit)))
-
+            mNode = self.medication(m)
             self.addStatement(mNode)
 
             # Now,loop through and add fulfillments for each med
-            for fill in Refill.refill_list(m.pid,m.rxn):
-                rfNode = BNode()
-                g.add((rfNode,RDF.type,SP['Fulfillment']))
-                g.add((rfNode,DCTERMS['date'],Literal(fill.date)))
-                g.add((rfNode,SP['dispenseQuantity'], self.valueAndUnit(fill.q,"{tab}")))
-                
-                g.add((rfNode,SP['dispenseDaysSupply'],Literal(fill.days)))
-                
-                g.add((rfNode,SP['medication'],mNode)) # create bidirectional links
-                g.add((mNode,SP['fulfillment'],rfNode))
-                self.addStatement(rfNode)
+            for fill in m.fulfillments:
+                self.addFill(fill, medNode=mNode)
+
+    def addFill(self, fill, medNode=None, med_uri_only=True):
+        """ Build a Fill and add it to the patient graph, optionally linking it with a medication node. """
+        rfNode = URIRef(fill.uri('fullfillments'))
+        g.add((rfNode, RDF.type, SP['Fulfillment']))
+        g.add((rfNode, DCTERMS['date'], Literal(fill.date)))
+        g.add((rfNode, SP['dispenseDaysSupply'], Literal(fill.dispenseDaysSupply)))
+        if fill.pbm:
+            g.add((rfNode, SP['pbm'], Literal(fill.pbm)))
+
+        pharmNode = self.pharmacy(fill, 'pharmacy')
+        if pharmNode:
+            g.add((rfNode, SP['pharmacy'], pharmNode))
+
+        provNode = self.provider(fill, 'provider')
+        if provNode:
+            g.add((rfNode, SP['provider'], provNode))
+
+        if fill.quantityDispensed_value and fill.quantityDispensed_unit:
+            g.add((rfNode, SP['quantityDispensed'], self.valueAndUnit(fill.quantityDispensed_value,
+                                                                      fill.quantityDispensed_unit)))
+
+        if medNode: # link from medication to us
+            g.add((medNode, SP['fulfillment'], rfNode))
+
+        # link from us to medication, just a URI or a whole Node if required
+        if fill.medication and med_uri_only: 
+            g.add((rfNode, SP['medication'], URIRef(fill.medication.uri())))
+        elif fill.medication and not med_uri_only:
+            g.add((rfNode, SP['medication'], medNode))
+
+        self.addStatement(rfNode)
+    
+    def addFillList(self, fills):
+        """ Adds a FillList to a patient's graph. """
+        g = self.g
+        if not fills: return # no fills
+
+        addedMeds = {}
+        for f in fills:
+
+            # get the med node, creating it if we need to
+            medNode = addedMeds.get(f.medication.id, None)
+            if not medNode:
+                medNode = self.medication(f.medication)
+                self.addStatement(medNode)
+                addedMeds[f.medication.id] = medNode
+
+            self.addFill(f, medNode=medNode, med_uri_only=False)
 
     def addProblemList(self, problems):
         """Add problems to a patient's graph"""

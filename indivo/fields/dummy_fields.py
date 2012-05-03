@@ -146,7 +146,7 @@ class TelephoneField(DummyField):
 
     """
 
-    phone_number_type_choices = ( ('h', 'home'), ('w', 'work'), ('c', 'cell'), )
+    phone_number_type_choices = ( ('h', 'Home'), ('w', 'Work'), ('c', 'Cell'), )
 
     replacements = {
         '_type': (models.CharField, {'max_length':1, 'null':True, 'choices':phone_number_type_choices}),
