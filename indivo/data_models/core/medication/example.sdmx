@@ -30,11 +30,11 @@
           <Field name="provider_email">joshua.mandel@fake.emailserver.com</Field>
           <Field name="provider_name_given">Josuha</Field>
           <Field name="provider_name_family">Mandel</Field>
-          <Field name="provider_tel_1_type">work</Field>
+          <Field name="provider_tel_1_type">w</Field>
           <Field name="provider_tel_1_number">1-235-947-3452</Field>
-          <Field name="provider_tel_1_preferred_p: true,
+          <Field name="provider_tel_1_preferred_p">true</Field>
           <Field name="quantityDispensed_value">60</Field>
-          <Field name="quantityDispensed_unit">{tablet}"</Field>
+          <Field name="quantityDispensed_unit">{tablet}</Field>
         </Model>
         <Model name="Fill">
           <Field name="date">2007-04-14T04:00:00Z</Field>
@@ -51,11 +51,11 @@
           <Field name="provider_email">joshua.mandel@fake.emailserver.com</Field>
           <Field name="provider_name_given">Josuha</Field>
           <Field name="provider_name_family">Mandel</Field>
-          <Field name="provider_tel_1_type">work</Field>
+          <Field name="provider_tel_1_type">w</Field>
           <Field name="provider_tel_1_number">1-235-947-3452</Field>
-          <Field name="provider_tel_1_preferred_p: true,
+          <Field name="provider_tel_1_preferred_p">true</Field>
           <Field name="quantityDispensed_value">60</Field>
-          <Field name="quantityDispensed_unit">{tablet}"</Field>
+          <Field name="quantityDispensed_unit">{tablet}</Field>
         </Model>
       </Models>
     </Field>
