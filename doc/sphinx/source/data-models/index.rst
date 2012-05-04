@@ -130,8 +130,8 @@ Advanced Data-Model Tasks
 Adding Custom Serializers to Indivo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-By default, when returning data via the :doc:`generic reporting API <generic-reports>`, Indivo will attempt to serialize
-data as :ref:`SDMJ <sdmj>` or :ref:`SDMX <sdml>`, depending on the request response format. If you need your data to come
+By default, when returning data via the :doc:`generic reporting API </generic-reports>`, Indivo will attempt to serialize
+data as :ref:`SDMJ <sdmj>` or :ref:`SDMX <sdml>`, depending on the requested response format. If you need your data to come
 back in other formats, or if the default serializers aren't smart enough to represent your data model correctly, you can 
 implement custom serializers for the data model.
 
@@ -157,10 +157,10 @@ For example, here's a (non-functional) implementation of the serializers for the
           return '''<Problems>...bunch of problems here...</Problems>'''
 
       def to_json(queryset):
-          return '''[{'Problem': "data here"}, {'Problem': "More data here..."}]'''
+          return '''[{"Problem": "data here"}, {"Problem": "More data here..."}]'''
 
-      def to_rdf (queryset):
-          return '''<rdf:RDF><rdf:Description rdf:type='indivo:Problem'>...RDF data here...</rdf:Description></rdf:RDF>
+      def to_rdf(queryset):
+          return '''<rdf:RDF><rdf:Description rdf:type='indivo:Problem'>...RDF data here...</rdf:Description></rdf:RDF>'''
 
 A couple things to note:
 
