@@ -122,10 +122,80 @@ see :ref:`below <add-data-model>` for information on how to add data models to I
    vitals
    scn
 
+Advanced Data-Model Tasks
+-------------------------
+
+.. _custom-serializers:
+
+Adding Custom Serializers to Indivo
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default, when returning data via the :doc:`generic reporting API <generic-reports>`, Indivo will attempt to serialize
+data as :ref:`SDMJ <sdmj>` or :ref:`SDMX <sdml>`, depending on the request response format. If you need your data to come
+back in other formats, or if the default serializers aren't smart enough to represent your data model correctly, you can 
+implement custom serializers for the data model.
+
+Defining the Serializers
+""""""""""""""""""""""""
+
+Serializers for a data model are implemented as simple methods that take a Django queryset object, and return a serialized
+string. For a given data-model, you should define a subclass of :py:class:`indivo.serializers.DataModelSerializers`, and
+add your desired serializers as methods on the class. Currently, available serializers are:
+
+* ``to_xml(queryset)``: returns an XML string representing the model objects in *queryset*
+* ``to_json(queryset)``: returns a JSON string representing the model objects in *queryset*
+* ``to_rdf(queryset)``: returns an RDF/XML string representing the model objects in *queryset*
+
+For example, here's a (non-functional) implementation of the serializers for the Problems data-model::
+
+  from indivo.serializers import DataModelSerializers
+  
+  class ProblemSerializers(DataModelSerializers):
+      model_class_name = "Problem"
+
+      def to_xml(queryset):
+          return '''<Problems>...bunch of problems here...</Problems>'''
+
+      def to_json(queryset):
+          return '''[{'Problem': "data here"}, {'Problem': "More data here..."}]'''
+
+      def to_rdf (queryset):
+          return '''<rdf:RDF><rdf:Description rdf:type='indivo:Problem'>...RDF data here...</rdf:Description></rdf:RDF>
+
+A couple things to note:
+
+* The ``to_*()`` methods **DO NOT** take ``self`` as their first argument. Under the hood, we actually rip the methods
+  out of the serializers class and attach them directly to the data-model class.
+
+* The ``model_class_name`` attribute is required, and indicates which data-model the serializers should be attached to.
+
+Libraries for Serialization
+"""""""""""""""""""""""""""
+
+When serializing models, the following libraries can come in handy:
+
+* ``lxml.etree``: Our favorite XML manipulation library. See http://lxml.de/tutorial.html for the details. Lxml is required
+  for a running Indivo instance, so it will always be available for import (``from lxml import etree``).
+
+* ``simplejson``: Our favorite JSON manipulation library. See http://simplejson.readthedocs.org/en/latest/index.html. 
+  Django bundles a version of simplejson, which can be imported with ``from django.utils import simplejson``.
+
+* ``rdflib``: Our favorite RDF manipulation library. See http://readthedocs.org/docs/rdflib/en/latest/. RDFLib may not be
+  installed on all systems, so if you use it, make sure to install it first.
+
+Attaching the Serializers to a Data Model
+"""""""""""""""""""""""""""""""""""""""""
+
+Adding custom serializers to a data-model is simple: simply save your :py:class:`~indivo.serializers.DataModelSerializers`
+subclass to a file named ``extra.py``, and drop it into the directory where the data-model resides. More on the structure
+of those directories :ref:`below <add-data-model>`.
+
+Make sure to restart Indivo for your changes to take effect--but there's no need to *reset* Indivo.
+
 .. _add-data-model:
 
 Adding Custom Data-Models to Indivo
------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As of version 1.1 of Indivo X, we've added a feature that makes it much easier to add (in a drag-and-drop fashion)
 new supported data models to an instance of Indivo. Adding a new data model to Indivo involves:
@@ -135,13 +205,13 @@ new supported data models to an instance of Indivo. Adding a new data model to I
 * Migrating the database tables to support the new model
 
 Defining the Data Model
-^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""
 
 As you saw :ref:`above <data-model-definition-types>`, data models can be defined in two formats: SDML or Django model
 classes. Simply produce a definition in one of the two forms, and save it to a file named **model.sdml** or **model.py**.
 
 Dropping the Definition into the Filesystem
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""
 
 Indivo data models currently have the following layout on the filesystem::
 
@@ -149,12 +219,13 @@ Indivo data models currently have the following layout on the filesystem::
       indivo/
             ...
           data_models/
-	      core/
-	          allergy/
-		      model.[sdml | py]
-		      example.[sdmj | sdmx | py]
-		   ...
-	      contrib/
+              core/
+                  allergy/
+                      model.[sdml | py]
+                      example.[sdmj | sdmx | py]
+                      extra.py
+                    ...
+              contrib/
 
 The ``indivo/data_models/core/`` directory contains all of our built-in data models, and you shouldn't modify it. 
 Since you are 'contributing' a data model to Indivo, add your data model to the ``indivo/data_models/contrib/`` directory. 
@@ -169,24 +240,29 @@ Simply:
   **example.py**, and should be example instances of the data model as :ref:`SDMJ <sdmj>`, :ref:`SDMX <sdmx>`,
   or :term:`Fact objects <fact>` respectively. If present, they will help others use and document your data model.
 
+* Add an (optional) extras file to the directory. The file must be named **extra.py**, and may contain extra options
+  for your data-model, such as :ref:`custom serializers <custom-serializers>`.
+
 * Your final directory structure should now look something like::
 
     indivo_server/
         indivo/
               ...
             data_models/
-	        core/
-	            allergy/
-	  	        model.[sdml | py]
-			example.[sdmj | sdmx | py]
-  		     ...
-	        contrib/
-		    your_data_model/
-		        model.[sdml | py]
-			example.[sdmj | sdmx | py]
+                core/
+                    allergy/
+                        model.[sdml | py]
+                        example.[sdmj | sdmx | py]
+                        extra.py
+                      ...
+                contrib/
+                    your_data_model/
+                        model.[sdml | py]
+                        example.[sdmj | sdmx | py]
+                        extra.py
 
 Migrating the Database
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 
 Indivo relies on the `South migration tool <http://south.aeracode.org/>`_ to get the database synced with the latest data 
 models. Once you've dropped your data model into the filesystem, South should be able to detect the necessary changes.
@@ -212,7 +288,8 @@ Oracle, where the South tool is still in alpha. If the SQL looks reasonable, go 
 And you're all set!
 
 Next Steps
-^^^^^^^^^^
+""""""""""
+
 Make sure to restart Indivo for your changes to take effect.
 
 .. seealso::

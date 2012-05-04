@@ -48,7 +48,12 @@ Reports are formatted as :ref:`sdmx`
 Customization
 --------------------------------------------------------------------------------
 
-Description of customization goes here
+The selection of items for return in generic reports can already be customized 
+by taking advantage of the functionality made available throught the 
+:doc:`Query API <query-api>`. In order to customize the format in which those
+items are returned, you can 
+:ref:`implement custom serializers <custom-serializers>` for individual data
+models.
 
 Limitations
 --------------------------------------------------------------------------------
