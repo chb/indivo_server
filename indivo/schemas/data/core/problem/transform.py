@@ -38,6 +38,4 @@ class Transform(BaseTransform):
         # Get the Diagnosed_by
         ret['diagnosed_by'] = doc_etree.findText('diagnosedBy')
         
-        import pdb;pdb.set_trace()
-
         return ret
