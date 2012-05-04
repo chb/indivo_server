@@ -20,18 +20,21 @@ generic query string that determines paging and ordering of the results::
 * ``status`` can be used where applicable. It pertains to the status of documents 
   and can currently be set to one of three options: 'void', 'archived' or 'active'
 
-For minimal reports (url ends in ``/reports/minimal/{report_type}/``), we expose
-an expanded query interface, allowing for filtering, date constraints, 
-and aggregation. Note that this interface only makes sense to implement for 
-minimal reports, which function solely to retrieve and display fact objects. 
-The interface will not be implemented for any more complex report types that deal 
-with multiple fact objects (what would it mean for a CCR report to group by lab 
-type?). Other reports will still have access to the Beta2-style paging operations.
-The interface will be available for other API calls to implement as well (i.e. the
+For minimal (url ends in ``/reports/minimal/{report_type}/``) and 
+:doc:`generic <generic-reports>` reports, we expose an expanded query interface, 
+allowing for filtering, date constraints, and aggregation. Note that this interface 
+only makes sense to implement for reports that function solely to retrieve 
+and display fact objects. The interface will not be implemented for any more 
+complex report types that deal with multiple fact objects (what would it mean for 
+a CCR report to group by lab type?). Other reports will still have access to the 
+Beta2-style paging operations. The interface will be available for other API calls to implement as well (i.e. the
 Audit interface)
 
-Output Schemas
---------------
+Output
+------
+
+Minimal Reports
+^^^^^^^^^^^^^^^
 
 In the previous interface, reports were templated into schemas for output as 
 specified by :doc:`the Indivo Reporting Schema <schemas/reporting-schema>`. This output 
@@ -39,8 +42,43 @@ method will be preserved for queries that return sets of fact objects, but for
 queries that return aggregates or groups, we will output data according to the 
 :doc:`Indivo Aggregate Report Schema <schemas/aggregate-schema>`.
 
+Generic Reports
+^^^^^^^^^^^^^^^
+
+Non-Aggregate
+	:doc:`Generic Reports <generic-reports>` provide :ref:`sdmj` or :ref:`sdmx` 
+	output based on the requested response format. Please see the documentation 
+	for :ref:`response formats <response_formats>` for more information.
+	
+Aggregate
+	Also based on the requested :ref:`response format <response_formats>`
+
+* XML
+
+	Formatted according to the 
+	:doc:`Indivo Generic Aggregate Reports Schema <schemas/aggregate-generic-schema>`
+	
+* JSON
+
+	Formatted as :ref:`sdmj` with AggregateReport as the data model and without 
+	a ``__documentid__``. Below is an example of retrieving the max value using
+	the :ref:`date_group <query-date-operators>` operator ::
+	
+		[
+			{
+				"__modelname__": "AggregateReport",
+				"group": "2009-07",
+				"value": 1
+			}, {
+				"__modelname__": "AggregateReport",
+				"group": "2009-08",
+				"value": 4
+			}
+		]
+		
 Data Fields
 -----------
+
 As in ``order_by`` in the Beta2 interface, each report must expose a set of data 
 fields on which they may be filtered, grouped, or ordered. These fields are data-model
 dependent, and are explained :ref:`below <valid-query-fields>`.
@@ -108,6 +146,8 @@ to the aggregation schema, not the standard query schema**
 
   * ``count``: returns the total number of items passed. If ``{field}`` is 
     specified, only counts rows where <tt>{field}</tt> is not empty.
+
+.. _query-date-operators:
 
 Date-based Operators
 ^^^^^^^^^^^^^^^^^^^^
@@ -211,6 +251,15 @@ If omitted, the following query operators are assigned default values:
   aggregate queries**
 
 * ``status``: active
+
+.. _valid-query-fields:
+
+Valid Query Fields
+------------------
+
+With the new pluggable data models, valid query fields are defined by the data 
+models themselves. See the :ref:`Data Models documentation <queryable-fields>` 
+for a more complete explanation.
 
 Example Queries
 ---------------

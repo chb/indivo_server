@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="AggregateReport">
+    <xs:attribute name="value" type="xs:string" use="required" />
+    <xs:attribute name="group" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:element name="AggregateReports">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="AggregateReport" type="AggregateReport" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence> 
+    </xs:complexType>
+  </xs:element>
+  
+</xs:schema>

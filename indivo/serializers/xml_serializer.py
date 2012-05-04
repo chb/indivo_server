@@ -81,6 +81,9 @@ class Serializer(base.Serializer):
             new_serializer = Serializer()
             self.options.update({'seen': self.seen})
             parsed_results = new_serializer.serialize([related], **self.options)
+        else:
+            return
+
         if len(parsed_results) > 0:
             # attach the first Model of the results
             field_element.append(parsed_results[0])

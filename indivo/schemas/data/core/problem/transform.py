@@ -31,4 +31,7 @@ class Transform(BaseTransform):
         ret['name_system'] = name_node.get('type')
         ret['name_identifier'] = name_node.get('value')
 
+        # Get the notes
+        ret['notes'] = doc_etree.findText('comments')
+
         return ret

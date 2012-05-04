@@ -3,6 +3,9 @@ Indivo DataModels
 """
 
 import os, sys, inspect
+
+from django.db import models
+
 from indivo.models import Fact
 from indivo.lib import simpledatamodel
 from indivo.serializers import DataModelSerializers
@@ -23,10 +26,20 @@ def load_data_models(from_dir, target_module):
     loader.import_data_models(target_module)
     
 def attach_filter_fields(cls):
+    # all data models have a default created_at
     filters = {'created_at': ('created_at', 'date')}
+    
+    # find all viable local fields and add them as valid filters
     for field in cls._meta.local_fields:
         if field.serialize and field.rel is None:
-            filters[field.name] = (field.name, 'string' )
+            # determine field type, defaulting to string
+            field_type = 'string'
+            if isinstance(field, models.DateField) or isinstance(field, models.TimeField):
+                field_type = 'date'
+            elif isinstance(field, models.DecimalField) or isinstance(field, models.FloatField) or isinstance(field, models.IntegerField):
+                field_type = 'number'
+            # add to filters
+            filters[field.name] = (field.name, field_type )
     setattr(cls, 'filter_fields', filters)
     
 class IndivoDataModelLoader(object):

@@ -2,9 +2,11 @@ import os
 import settings
 import sys
 import json
+import datetime
 from lxml import etree
 
 from indivo.document_processing import IndivoSchemaLoader
+from indivo.lib.iso8601 import parse_utc_date as date
 from indivo.tests.internal_tests import TransactionInternalTests
 from indivo.tests.data import TEST_ACCOUNTS, TEST_RECORDS, TEST_TESTMED_JSON
 
@@ -113,7 +115,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertEquals(response.status_code, 200)
         
         # should get back JSON
-        self.assertEquals(response.__getitem__('content-type'), 'application/json')
+        self.assertEquals(response['content-type'], 'application/json')
         response_json = json.loads(response.content)
         
         # delete the document ids, since they won't be consistent 
@@ -155,3 +157,51 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertEqual(len(lab.findall('Field')), 12)
         self.assertEqual(lab.get('name'), 'Lab')
         
+    def test_sdmx_schema(self):
+
+        # Post an SDMX document that matches our TestMed datamodel
+        sdmx_doc = open(os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/testmodel/example.sdmx')).read()
+        url = "/records/%s/documents/"%self.record.id
+        response = self.client.post(url, data=sdmx_doc, content_type='application/xml')
+        self.assertEqual(response.status_code, 200)
+
+        # Now fetch the TestMed data elements, and expect to find our data
+        url ="/records/%s/reports/TestMed/?response_format=application/xml"%self.record.id
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        response_etree = etree.XML(response.content)
+        self.assertEqual(response_etree.tag, 'Models')
+
+        # Check the top-level TestMed
+        required_fields = {
+            'date_started': (date, datetime.datetime(year=2010, month=8, day=7)),
+            'name': (str, "MyMed"),
+            'brand_name': (str, "MyExpensiveMed"),
+            'frequency': (float, 4),
+            'prescription': None,
+            'fills': None
+            }
+        test_meds = response_etree.findall('Model')
+        self.assertEqual(len(test_meds), 1)
+        test_med_el = test_meds[0]
+        self.assertValidSDMXModel(test_med_el, {'name': 'TestMed'}, required_fields)
+        
+        # Check the Prescription Node
+        required_fields = {
+            'prescribed_by_name': (str, "Dr. Doktor"),
+            'prescribed_on': (date, datetime.datetime(year=2010, month=8, day=7, hour=11)),
+            }
+        scrip_node_models = test_med_el.find('Field[@name="prescription"]').findall('Model')
+        self.assertEqual(len(scrip_node_models), 1)
+        self.assertValidSDMXModel(scrip_node_models[0], {'name':'TestPrescription'}, required_fields)
+
+        # Check the Fill Node
+        required_fields = {
+            'date_filled': (date, datetime.datetime(year=2010, month=8, day=7, hour=16)),
+            'supply_days': (float, 30),
+            }
+        fill_node_models = test_med_el.find('Field[@name="fills"]').find('Models').findall('Model')
+        self.assertEqual(len(fill_node_models), 1)        
+        self.assertValidSDMXModel(fill_node_models[0], {'name':'TestFill'}, required_fields)
+

@@ -12,7 +12,6 @@ from indivo.lib.view_decorators import marsloader
 from indivo.lib.utils import render_template
 from indivo.lib.sharing_utils import carenet_facts_filter
 from indivo.models import *
-from reportutils import report_orderby_update
 
 import datetime
 

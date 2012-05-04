@@ -2407,6 +2407,104 @@ GIVE AN EXAMPLE OF A RETURN VALUE
 },
 {
     "method":"GET",
+    "path":"/carenets/{CARENET_ID}/reports/{DATA_MODEL}/",
+    "view_func_name":"carenet_generic_list",
+    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
+    "url_params":{
+        'CARENET_ID':'The id string associated with the Indivo carenet',
+        'DATA_MODEL':'The name of the data model to report on',
+        },
+    "query_opts":{
+        'status':'The account or document status to filter by',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
+        'order_by':'See :ref:`query-operators`',
+        'aggregate_by':'See :ref:`query-operators`',
+        'date_range':'See :ref:`query-operators`',
+        'date_group':'See :ref:`query-operators`',
+        'group_by':'See :ref:`query-operators`',
+        'limit':'See :ref:`query-operators`',
+        'offset':'See :ref:`query-operators`',
+        'response_format':'See :ref:`response_formats`',
+        },
+    "data_fields":{
+        },
+    "description":"List the DATA_MODEL(s) for a given carenet.",
+    "return_desc":":http:statuscode:`200` with a list of DATA_MODELs, or :http:statuscode:`400` if any invalid query parameters were passed.",
+    "return_ex":'''
+SDMX Example:  
+   {
+    "__modelname__": "TestMedication",
+    "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+    "name": "ibuprofen",
+    "date_started": "2010-10-01T00:00:00Z",
+    "date_stopped": "2010-10-31T00:00:00Z",
+    "brand_name": "Advil",
+    "prescription": {
+        "__modelname__": "TestPrescription",
+        "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+        "prescribed_by_name": "Kenneth D. Mandl",
+        "prescribed_by_institution": "Children's Hospital Boston",
+        "prescribed_on": "2010-09-30T00:00:00Z",
+        "prescribed_stop_on": "2010-10-31T00:00:00Z"
+    },
+    "fills": [
+        {
+            "__modelname__": "TestFill",
+            "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+            "date_filled": "2010-10-01T00:00:00Z",
+            "supply_days": "15",
+            "filled_at_name": "CVS"
+        },
+        {
+            "__modelname__": "TestFill",
+            "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+            "date_filled": "2010-10-16T00:00:00Z",
+            "supply_days": "15",
+            "filled_at_name": "CVS"
+        }
+    ]
+}
+
+SDMX Example:
+
+<Models>
+  <Model name="TestMedication" documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+    <Field name="date_started">2010-10-01T00:00:00Z</Field>
+    <Field name="name">ibuprofen</Field>
+    <Field name="brand_name">Advil</Field>
+    <Field name="date_stopped">2010-10-31T00:00:00Z</Field>
+    <Field name="prescription">
+      <Model name="TestPrescription"  documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+        <Field name="prescribed_by_name">Kenneth D. Mandl</Field>
+        <Field name="prescribed_by_institution">Children's Hospital Boston</Field>
+        <Field name="prescribed_on">2010-09-30T00:00:00Z</Field>
+        <Field name="prescribed_stop_on">2010-10-31T00:00:00Z</Field>
+      </Model>
+    </Field>
+    <Field name="fills">
+      <Models>
+        <Model name="TestFill"  documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+          <Field name="date_filled">2010-10-01T00:00:00Z</Field>
+          <Field name="supply_days">15</Field>
+          <Field name="filled_at_name">CVS</Field>
+        </Model>
+        <Model name="TestFill"  documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+          <Field name="date_filled">2010-10-16T00:00:00Z</Field>
+          <Field name="supply_days">15</Field>
+          <Field name="filled_at_name">CVS</Field>
+        </Model>
+      </Models>
+    </Field>
+  </Model>
+</Models>
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
     "path":"/codes/systems/",
     "view_func_name":"coding_systems_list",
     "access_doc":"Anybody",
@@ -5770,6 +5868,106 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   ...
 
 </Reports>
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/reports/{DATA_MODEL}/",
+    "view_func_name":"generic_list",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'DATA_MODEL':'The name of the data model to report on',
+        },
+    "query_opts":{
+        'status':'The account or document status to filter by',
+        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
+        'order_by':'See :ref:`query-operators`',
+        'aggregate_by':'See :ref:`query-operators`',
+        'date_range':'See :ref:`query-operators`',
+        'date_group':'See :ref:`query-operators`',
+        'group_by':'See :ref:`query-operators`',
+        'limit':'See :ref:`query-operators`',
+        'offset':'See :ref:`query-operators`',
+        'response_format':'See :ref:`response_formats`',
+        },
+    "data_fields":{
+        },
+    "description":"List the DATA_MODEL(s) for a given record.",
+    "return_desc":":http:statuscode:`200` with a list of DATA_MODELs, or :http:statuscode:`400` if any invalid query parameters were passed.",
+    "return_ex":'''  
+    
+SDMJ Example:
+
+   {
+    "__modelname__": "TestMedication",
+    "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+    "name": "ibuprofen",
+    "date_started": "2010-10-01T00:00:00Z",
+    "date_stopped": "2010-10-31T00:00:00Z",
+    "brand_name": "Advil",
+    "prescription": {
+        "__modelname__": "TestPrescription",
+        "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+        "prescribed_by_name": "Kenneth D. Mandl",
+        "prescribed_by_institution": "Children's Hospital Boston",
+        "prescribed_on": "2010-09-30T00:00:00Z",
+        "prescribed_stop_on": "2010-10-31T00:00:00Z"
+    },
+    "fills": [
+        {
+            "__modelname__": "TestFill",
+            "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+            "date_filled": "2010-10-01T00:00:00Z",
+            "supply_days": "15",
+            "filled_at_name": "CVS"
+        },
+        {
+            "__modelname__": "TestFill",
+            "__documentid__": "b1d83191-6edd-4aad-be4e-63117cd4c660",
+            "date_filled": "2010-10-16T00:00:00Z",
+            "supply_days": "15",
+            "filled_at_name": "CVS"
+        }
+    ]
+}
+
+SDMX Example:
+
+<Models>
+  <Model name="TestMedication" documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+    <Field name="date_started">2010-10-01T00:00:00Z</Field>
+    <Field name="name">ibuprofen</Field>
+    <Field name="brand_name">Advil</Field>
+    <Field name="date_stopped">2010-10-31T00:00:00Z</Field>
+    <Field name="prescription">
+      <Model name="TestPrescription"  documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+        <Field name="prescribed_by_name">Kenneth D. Mandl</Field>
+        <Field name="prescribed_by_institution">Children's Hospital Boston</Field>
+        <Field name="prescribed_on">2010-09-30T00:00:00Z</Field>
+        <Field name="prescribed_stop_on">2010-10-31T00:00:00Z</Field>
+      </Model>
+    </Field>
+    <Field name="fills">
+      <Models>
+        <Model name="TestFill"  documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+          <Field name="date_filled">2010-10-01T00:00:00Z</Field>
+          <Field name="supply_days">15</Field>
+          <Field name="filled_at_name">CVS</Field>
+        </Model>
+        <Model name="TestFill"  documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
+          <Field name="date_filled">2010-10-16T00:00:00Z</Field>
+          <Field name="supply_days">15</Field>
+          <Field name="filled_at_name">CVS</Field>
+        </Model>
+      </Models>
+    </Field>
+  </Model>
+</Models>
 ''',
     "deprecated": None,
     "added": None,

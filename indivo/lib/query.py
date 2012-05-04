@@ -246,7 +246,7 @@ class FactQuery(object):
             if self.valid_filters.has_key(self.group_by):          
                 group_field = self.valid_filters[self.group_by][0]
             else:
-                raise ValueError('Invalid grouping field for fact type %s: %s'%(model.__name__, group_by))
+                raise ValueError('Invalid grouping field for fact type %s: %s'%(self.model.__name__, group_by))
 
         # Handle the date group
         elif self.date_group:
@@ -291,7 +291,7 @@ class FactQuery(object):
                         raise ValueError('Cannot apply aggregate function %s (type %s) to field %s (type %s)'%(self.aggregate_by['operator'], agg_func_type, agg_field, agg_field_type))
 
                     agg_func = agg[0]
-                    agg_args = { 'aggregation': agg_func(self.valid_filters[agg_field][0])}
+                    agg_args = { 'aggregate_value': agg_func(self.valid_filters[agg_field][0])}
                 else:
                     raise ValueError('Invalid aggregation operator: %s'%(self.aggregate_by['operator']))
 

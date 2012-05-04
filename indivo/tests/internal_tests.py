@@ -17,6 +17,7 @@ import os.path
 import shutil
 import datetime
 from xml.dom import minidom
+from lxml import etree
 
 class IndivoTests(object):
     dependencies_loaded = False
@@ -76,6 +77,37 @@ class IndivoTests(object):
                 loadDataSection(ds_info[0], ds_info[1], model)
 
         self.dependencies_loaded = True
+
+    def assertValidSDMXModel(self, model_tag_el, model_tag_attrs, required_fields):
+        """ Test that the passed etree._Element validates against the passed arguments.
+
+        Namely, that:
+
+        * The Model tag has all of the attributes/values in **model_tag_attrs**, where
+          **model_tag_attrs** is a dict of ``{ 'attribute_name': 'attribute_value' }`` pairs.
+
+        * For each field in **required_fields**, a dict of 
+          ``{ 'field_name': (test_func, 'required_value') }`` entries, when ``test_func`` is applied
+          to the field named ``'field_name'`` on the Model tag, the output is ``'required_value'``.
+
+        if ``None`` is passed for a value in **required_fields** instead of a ``(test_func, 'required_value')``
+        tuple, then the field is checked for existence, but not for correctness.
+          
+        """
+
+        def check_required_fields(fields, required_fields):
+            self.assertEqual(len(fields), len(required_fields))
+            self.assertEqual(set([f.get('name') for f in fields]), set(required_fields.keys()))
+            for f in fields:
+                req_field = required_fields[f.get('name')]
+                if req_field:
+                    func, val = req_field
+                    self.assertEqual(func(f.text), val)
+                    
+        for attr_name, attr_val in model_tag_attrs.iteritems():
+            self.assertEqual(model_tag_el.get(attr_name), attr_val)
+        fields = model_tag_el.findall('Field')
+        check_required_fields(fields, required_fields)
 
     def assertTimeStampsAlmostEqual(self, first, second=None, **kwargs):
         """ Test that *first* (a datetime.datetime object) is close in time to *second*.

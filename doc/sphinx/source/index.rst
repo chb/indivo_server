@@ -110,6 +110,7 @@ Indivo Hackers
    Data-Modeling Languages <sdm>
    Data Pipeline <data-pipeline>
    Experimental API <experimental-api>
+   Generic Reports <generic-reports>
    Localization <localization>
    Messaging and Notifications <messaging>
    Registering Apps with Indivo <app-registration>

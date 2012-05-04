@@ -93,6 +93,7 @@ Reporting
 
    reporting-schema
    aggregate-schema
+   aggregate-generic-schema
 
 Special Documents
 ^^^^^^^^^^^^^^^^^
@@ -121,6 +122,7 @@ Medical Documents
    medication-schema
    equipment-schema
    scn-schema
+   sdmx-schema
 
 .. _add-schema:
 
