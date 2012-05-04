@@ -54,6 +54,8 @@ class PatientGraph(object):
 
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""
+        if not (codeclass or uri or title or system or identifier): return None
+
         cvNode=BNode()
         self.g.add((cvNode, RDF.type, SP['CodedValue']))
         self.g.add((cvNode, DCTERMS['title'], Literal(title)))
@@ -72,6 +74,8 @@ class PatientGraph(object):
 
     def valueAndUnit(self,value,units):
         """Adds a ValueAndUnit node to a graph; returns the node"""
+        if not value and not units: return None
+
         vNode = BNode()
         self.g.add((vNode, RDF.type, SP['ValueAndUnit']))
         self.g.add((vNode, SP['value'], Literal(value)))
@@ -81,6 +85,8 @@ class PatientGraph(object):
     def address(self, obj, prefix):
         suffixes = ['country', 'city', 'postalcode', 'region', 'street']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
 
         addrNode = BNode() 
         self.g.add((addrNode, RDF.type, VCARD['Address']))
@@ -105,13 +111,15 @@ class PatientGraph(object):
     def telephone(self, obj, prefix):
         suffixes = ['type', 'number', 'preferred_p']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
 
         tNode = BNode()
         self.g.add((tNode, RDF.type, VCARD['Tel']))
         
         if fields['type']:
             self.g.add((tNode, RDF.type, VCARD[getattr(obj, 'get_%s_type_display'%(prefix))()]))
-        if fields['preferred_p']:
+        if fields['preferred_p'] and fields['preferred_p']:
             self.g.add((tNode, RDF.type, VCARD['Pref']))
         if fields['number']:
             self.g.add((tNode, VCARD['value'], Literal(fields['number'])))
@@ -121,7 +129,9 @@ class PatientGraph(object):
     def name(self, obj, prefix):
         suffixes = ['family', 'given', 'prefix', 'suffix']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
-        
+        if not fields:
+            return None
+
         nNode = BNode()
         self.g.add((nNode, RDF.type, VCARD['Name']))
 
@@ -139,6 +149,8 @@ class PatientGraph(object):
     def pharmacy(self, obj, prefix):
         suffixes = ['ncpdpid', 'org', 'adr_country', 'adr_city', 'adr_postalcode', 'adr_region', 'adr_street']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
 
         pNode = BNode()
         self.g.add((pNode, RDF.type, SP['Pharmacy']))
@@ -155,6 +167,8 @@ class PatientGraph(object):
     def provider(self, obj, prefix):
         suffixes = ['dea_number', 'ethnicity', 'npi_number', 'preferred_language', 'race', 'bday', 'email', 'gender']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
 
         pNode = BNode()
         self.g.add((pNode, RDF.type, SP['Provider']))
@@ -204,7 +218,10 @@ class PatientGraph(object):
         
         """
 
-        return dict([(s, getattr(obj, "%s_%s"%(prefix, s))) for s in suffixes])
+        ret = dict([(s, getattr(obj, "%s_%s"%(prefix, s))) for s in suffixes])
+        if not reduce(lambda x, y: x or y, ret.values()): # return None if we found none of our fields
+            return None
+        return ret
 
     def addStatement(self, s):
         #      self.g.add((self.patient, SP['hasStatement'], s))
@@ -307,11 +324,12 @@ class PatientGraph(object):
             self.addStatement(mNode)
 
             # Now,loop through and add fulfillments for each med
-            for fill in m.fulfillments:
+            for fill in m.fulfillments.all().iterator():
                 self.addFill(fill, medNode=mNode)
 
     def addFill(self, fill, medNode=None, med_uri_only=True):
         """ Build a Fill and add it to the patient graph, optionally linking it with a medication node. """
+        g = self.g
         rfNode = URIRef(fill.uri('fullfillments'))
         g.add((rfNode, RDF.type, SP['Fulfillment']))
         g.add((rfNode, DCTERMS['date'], Literal(fill.date)))
