@@ -93,6 +93,7 @@ Reporting
 
    reporting-schema
    aggregate-schema
+   aggregate-generic-schema
 
 Special Documents
 ^^^^^^^^^^^^^^^^^

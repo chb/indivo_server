@@ -287,7 +287,7 @@ class FactQuery(object):
                         raise ValueError('Cannot apply aggregate function %s (type %s) to field %s (type %s)'%(self.aggregate_by['operator'], agg_func_type, agg_field, agg_field_type))
 
                     agg_func = agg[0]
-                    agg_args = { 'aggregation': agg_func(self.valid_filters[agg_field][0])}
+                    agg_args = { 'aggregate_value': agg_func(self.valid_filters[agg_field][0])}
                 else:
                     raise ValueError('Invalid aggregation operator: %s'%(self.aggregate_by['operator']))
 

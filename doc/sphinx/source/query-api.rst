@@ -45,10 +45,37 @@ queries that return aggregates or groups, we will output data according to the
 Generic Reports
 ^^^^^^^^^^^^^^^
 
-:doc:`Generic Reports <generic-reports>` provide :ref:`sdmj` and :ref:`sdmx` 
-output by default.  Please see the documentation on :ref:`response formats <response_formats>`
-for more information.
+Non-Aggregate
+	:doc:`Generic Reports <generic-reports>` provide :ref:`sdmj` or :ref:`sdmx` 
+	output based on the requested response format. Please see the documentation 
+	for :ref:`response formats <response_formats>` for more information.
+	
+Aggregate
+	Also based on the requested :ref:`response format <response_formats>`
 
+* XML
+
+	Formatted according to the 
+	:doc:`Indivo Generic Aggregate Reports Schema <schemas/aggregate-generic-schema>`
+	
+* JSON
+
+	Formatted as :ref:`sdmj` with AggregateReport as the data model and without 
+	a ``__documentid__``. Below is an example of retrieving the max value using
+	the :ref:`date_group <query-date-operators>` operator ::
+	
+		[
+			{
+				"__modelname__": "AggregateReport",
+				"group": "2009-07",
+				"value": 1
+			}, {
+				"__modelname__": "AggregateReport",
+				"group": "2009-08",
+				"value": 4
+			}
+		]
+		
 Data Fields
 -----------
 
@@ -119,6 +146,8 @@ to the aggregation schema, not the standard query schema**
 
   * ``count``: returns the total number of items passed. If ``{field}`` is 
     specified, only counts rows where <tt>{field}</tt> is not empty.
+
+.. _query-date-operators:
 
 Date-based Operators
 ^^^^^^^^^^^^^^^^^^^^
