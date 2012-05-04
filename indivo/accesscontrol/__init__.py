@@ -41,9 +41,10 @@ def load_access_rules():
     """Any principal in Indivo."""
     return principal.basicPrincipalRole()
   # WARNING: This gives request tokens and 'no-users' access to these. Is this a problem?
-  views = [get_version, # no-users should have access. Should reqtokens?
+  views = [get_version,
            all_phas,
-           pha] # should either have access?
+           pha,
+           smart_ontology,] 
   AccessRule('Basic Access', basic_access, views)
 
   # Account-related views

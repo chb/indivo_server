@@ -27,6 +27,7 @@ from pha        import *
 from record     import *
 from reports    import *
 from shares     import *
+from smart_container import *
 
 from django.http import HttpResponse
 def get_version(request): 
