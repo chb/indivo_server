@@ -121,6 +121,7 @@ Medical Documents
    medication-schema
    equipment-schema
    scn-schema
+   sdmx-schema
 
 .. _add-schema:
 

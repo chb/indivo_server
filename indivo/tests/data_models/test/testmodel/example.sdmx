@@ -1,0 +1,22 @@
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="TestMed">
+    <Field name="date_started">2010-08-07</Field>
+    <Field name="name">MyMed</Field>
+    <Field name="brand_name">MyExpensiveMed</Field>
+    <Field name="frequency">4</Field>
+    <Field name="prescription">
+      <Model name="TestPrescription">
+        <Field name="prescribed_by_name">Dr. Doktor</Field>
+        <Field name="prescribed_on">2010-08-07T11:00:00Z</Field>
+      </Model>
+    </Field>
+    <Field name="fills">
+      <Models>
+        <Model name="TestFill">
+          <Field name="date_filled">2010-08-07T16:00:00Z</Field>
+          <Field name="supply_days">30</Field>
+        </Model>
+      </Models>
+    </Field>
+  </Model>
+</Models>
