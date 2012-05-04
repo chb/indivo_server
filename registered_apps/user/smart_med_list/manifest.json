@@ -1,0 +1,19 @@
+{
+  "name" : "Med List",
+  "description" : "Display medications in a table or timeline view",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "med-list@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "mode" : "ui",	
+  "scope": "record",
+
+  "icon" : "http://fda.gping.org:8012/framework/med_list/icon.png",
+  "index": "http://fda.gping.org:8012/framework/med_list/index.html",
+  
+  "requires" : {
+       "http://smartplatforms.org/terms#Medication": {
+         "methods": ["GET"]
+       }
+  }
+}

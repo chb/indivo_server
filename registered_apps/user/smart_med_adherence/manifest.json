@@ -1,0 +1,20 @@
+{
+  "name" : "Med Adherence",
+  "description" : "Display Adherence History for Chronic Meds",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "med-adherence@apps.smartplatforms.org",
+  "version" : ".1a",
+  "intents": ["view_medications"],
+
+  "mode" : "ui",
+  "scope": "record",
+
+  "index" : "http://fda.gping.org:8012/framework/med_adherence/index.html",
+  "icon" :  "http://fda.gping.org:8012/framework/med_adherence/icon.png",
+  
+  "requires" : {
+       "http://smartplatforms.org/terms#Medication": {
+         "methods": ["GET"]
+       }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name" : "API Playground",
+  "description" : "Experiment with the SMART API in a controlled environment",
+  "author" : "Josh Mandel, Children's Hospital Boston",
+  "id" : "api-playground@apps.smartplatforms.org",
+  "version" : ".1a",
+
+  "mode" : "ui",	
+  "scope": "record",
+
+  "icon" :  "http://fda.gping.org:8012/framework/api_playground/icon.png",
+  "index":  "http://fda.gping.org:8012/framework/api_playground/index.html"
+}
