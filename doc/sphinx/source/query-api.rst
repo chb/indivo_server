@@ -44,12 +44,14 @@ queries that return aggregates or groups, we will output data according to the
 
 Generic Reports
 ^^^^^^^^^^^^^^^
-:ref:`Generic Reports <generic-reports>` provide :ref:`sdmj` and :ref:`sdmx` 
+
+:doc:`Generic Reports <generic-reports>` provide :ref:`sdmj` and :ref:`sdmx` 
 output by default.  Please see the documentation on :ref:`response formats <response_formats>`
 for more information.
 
 Data Fields
 -----------
+
 As in ``order_by`` in the Beta2 interface, each report must expose a set of data 
 fields on which they may be filtered, grouped, or ordered. These fields can be 
 found :ref:`below <valid-query-fields>`.
