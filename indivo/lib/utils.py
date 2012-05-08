@@ -114,7 +114,7 @@ def get_content_type(request):
 def django_json(func):
     def func_with_json_conversion(*args, **kwargs):
         return_value = func(*args, **kwargs)
-        return HttpResponse(simplejson.dumps(return_value), mimetype='text/plain')
+        return HttpResponse(simplejson.dumps(return_value), mimetype='application/json')
     functools.update_wrapper(func_with_json_conversion, func)
     return func_with_json_conversion
 
