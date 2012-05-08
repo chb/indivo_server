@@ -61,6 +61,16 @@ class OAuthApp(Principal):
   # required Indivo version
   indivo_version = models.CharField(max_length=40, null=True)
 
+  @classmethod
+  def queryset_as_manifests(cls, queryset, as_string=False, **manifest_args):
+      """ Return manifests for each app in the queryset, as a list or as a JSON string (if *as_string* is ``True``). """
+      manifest_args.update(as_string=False)
+      manifests = [obj.to_manifest(**manifest_args) for obj in queryset.iterator()]
+      if as_string:
+          return simplejson.dumps(manifests)
+      return manifests
+          
+
 ## HACK because of problem
 #OAuthApp = Principal
 
@@ -159,7 +169,7 @@ class PHA(OAuthApp):
       app.save()
     return app
 
-  def to_manifest(self, smart_only=False):
+  def to_manifest(self, smart_only=False, as_string=True):
       """ Produce a SMART-style manifest for the app.
       
       see :doc:`app-registration` for details on the manifest format.
@@ -192,8 +202,10 @@ class PHA(OAuthApp):
                   })
           if self.is_autonomous:
               output['autonomous_reason'] = self.autonomous_reason
-                       
-      return simplejson.dumps(output)
+      if as_string:
+          return simplejson.dumps(output)
+      else:
+          return output
 
   # Accesscontrol:
   # roles that PHAs could implement.
@@ -276,7 +288,7 @@ class MachineApp(OAuthApp):
       app.save()
     return app
 
-  def to_manifest(self, smart_only=False):
+  def to_manifest(self, smart_only=False, as_string=True):
       """ Produce a SMART-style manifest for the app.
       
       see :doc:`app-registration` for details on the manifest format.
@@ -299,7 +311,10 @@ class MachineApp(OAuthApp):
                   "ui_app": self.app_type == 'chrome',
                   "indivo_version": self.indivo_version,
                   })
-      return simplejson.dumps(output)
+      if as_string:
+          return simplejson.dumps(output)
+      else:
+          return output
 
   # Accesscontrol:
   # roles that a MachineApp could have

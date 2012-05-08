@@ -8,6 +8,9 @@ urlpatterns = patterns('',
     ## Application-Specific Data Storage
     ##
 
+    # Manifest for the app, SMART style
+    (r'^/manifest$', MethodDispatcher({'GET':pha}), {'smart_only': True}),
+
     # List of app-specific documents / create a doc
     (r'^/documents/$', 
       MethodDispatcher({ 'GET': app_document_list, 'POST': app_document_create})),

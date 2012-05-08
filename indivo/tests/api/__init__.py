@@ -4,3 +4,4 @@ from carenets_tests import CarenetInternalTests
 from oauth_tests import OauthInternalTests
 from records_tests import RecordInternalTests, TransactionRecordInternalTests
 from reporting_tests import ReportingInternalTests
+from smart_tests import SMARTInternalTests

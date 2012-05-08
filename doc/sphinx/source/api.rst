@@ -548,6 +548,14 @@ calls are now available:
    :http:get:`/records/{RECORD_ID}/medications/`
      List a patient's Medications as SMART RDF
 
+   :http:get:`/apps/{APP_ID}/manifest`
+   :http:get:`/apps/manifests/`
+     Get SMART-style JSON manifests for one or all apps registered with this 
+     instance of Indivo.
+
+   :http:get:`/ontology`
+     Get the ontology used by a SMART container
+
 Coding Systems
 --------------
 

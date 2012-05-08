@@ -18,25 +18,28 @@ from indivo.views.documents.document import _get_document
 from indivo.lib import iso8601
 import base64, hmac, datetime
 
-def all_phas(request):
+from django.utils import simplejson
+
+@utils.django_json
+def all_phas(request, smart_only=False):
     """ List all available userapps.
 
-    Will return :http:statuscode:`200` with an XML list of apps on success.
+    Will return :http:statuscode:`200` with a list of app manifests as JSON on success.
 
     """
 
-    phas = PHA.objects.all()
-    return render_template('phas', {'phas': phas}, type="xml")
-    
-def pha(request, pha):
+    return PHA.queryset_as_manifests(PHA.objects.all(), smart_only=smart_only)
+
+@utils.django_json
+def pha(request, pha, smart_only=False):
     """ Return a description of a single userapp.
 
-    Will return :http:statuscode:`200` with an XML description of the app 
+    Will return :http:statuscode:`200` with the app's JSON manifest
     on success.
     
     """
 
-    return render_template('pha', {'pha' : pha}, type="xml")
+    return pha.to_manifest(smart_only=smart_only, as_string=False)
 
 def app_record_list(request, pha):
     """ Return a list of all records that have this pha enabled.

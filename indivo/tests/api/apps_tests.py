@@ -1,9 +1,9 @@
-import django.test
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
 from indivo.tests.data import *
 from lxml import etree
 from urlparse import parse_qs
+from django.utils import simplejson
 
 class PHAInternalTests(InternalTests):
 
@@ -34,6 +34,25 @@ class PHAInternalTests(InternalTests):
 
     def tearDown(self):
         super(PHAInternalTests,self).tearDown()
+
+    def test_get_smart_manifests(self):
+        response = self.client.get('/apps/manifests/')
+        self.assertEqual(response.status_code, 200)
+        apps = simplejson.loads(response.content)
+        self.assertEqual(len(apps), 2)
+        app1, app2 = apps
+        if app1['name'] == self.app.name:
+            self.assertEqual(app1, self.app.to_manifest(smart_only=True, as_string=False))
+            self.assertEqual(app2, self.autonomous_app.to_manifest(smart_only=True, as_string=False))
+        else:
+            self.assertEqual(app2, self.app.to_manifest(smart_only=True, as_string=False))
+            self.assertEqual(app1, self.autonomous_app.to_manifest(smart_only=True, as_string=False))
+
+    def test_get_smart_manifest(self):
+        response = self.client.get('/apps/%s/manifest'%self.app.email)
+        self.assertEqual(response.status_code, 200)
+        app = simplejson.loads(response.content)
+        self.assertEqual(app, self.app.to_manifest(smart_only=True, as_string=False))
 
     def test_list_apps(self):
         response = self.client.get('/apps/')

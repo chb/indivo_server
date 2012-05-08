@@ -699,24 +699,79 @@ CALLS=[{
     "data_fields":{
         },
     "description":"List all available userapps.",
-    "return_desc":":http:statuscode:`200`, with a list of userapps.",
+    "return_desc":":http:statuscode:`200`, with a list of app manifests as JSON on success.",
     "return_ex":'''
-<Apps>
-  <App id="problems@apps.indivo.org">
-    <startURLTemplate>http://problems.indivo.org/auth/start?record_id={record_id}&amp;carenet_id={carenet_id}</startURLTemplate>
-    <name>Problem List</name>
-    <description>Managing your problem list</description>
-    <autonomous>false</autonomous>
-    <frameable>true</frameable>
-    <ui>true</ui>
-  </App>
+[
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
 
-  ...
+    "mode" : "ui",
+    "scope": "record",
 
-</Apps>
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+},
+
+... other apps ...
+
+]
 ''',
     "deprecated": None,
     "added": None,
+    "changed": ('2.0.0', 'Apps are now returned as JSON manifests, not XML'),
+
+},
+{
+    "method":"GET",
+    "path":"/apps/manifests/",
+    "view_func_name":"all_phas",
+    "access_doc":"Any principal in Indivo.",
+    "url_params":{
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"List all available userapps.",
+    "return_desc":"SMART-style manifests for each app.",
+    "return_ex":'''
+[
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
+
+    "mode" : "ui",
+    "scope": "record",
+
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+},
+
+... other apps ...
+
+]
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -755,20 +810,31 @@ CALLS=[{
     "data_fields":{
         },
     "description":"Return a description of a single userapp.",
-    "return_desc":":http:statuscode:`200`, with information about the userapp.",
+    "return_desc":":http:statuscode:`200`, with the app's JSON manifest",
     "return_ex":'''
-<App id="problems@apps.indivo.org">
-  <startURLTemplate>http://problems.indivo.org/auth/start?record_id={record_id}&amp;carenet_id={carenet_id}</startURLTemplate>
-  <name>Problem List</name>
-  <description>Managing your problem list</description>
-  <autonomous>false</autonomous>
-  <frameable>true</frameable>
-  <ui>true</ui>
-</App>
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
+
+    "mode" : "ui",
+    "scope": "record",
+
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+}
 ''',
     "deprecated": None,
     "added": None,
-    "changed": None,
+    "changed": ('2.0.0', 'Apps are now returned as JSON manifests, not XML'),
 
 },
 {
@@ -1116,6 +1182,46 @@ CALLS=[{
 },
 {
     "method":"GET",
+    "path":"/apps/{PHA_EMAIL}/manifest",
+    "view_func_name":"pha",
+    "access_doc":"Any principal in Indivo.",
+    "url_params":{
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Return a description of a single userapp.",
+    "return_desc":"A SMART-style manifest for the app.",
+    "return_ex":'''
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
+
+    "mode" : "ui",
+    "scope": "record",
+
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+}
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"GET",
     "path":"/apps/{PHA_EMAIL}/records/",
     "view_func_name":"app_record_list",
     "access_doc":"Any autonomous user app.",
@@ -1299,25 +1405,36 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "data_fields":{
         },
     "description":"List Apps within a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of applications in the carenet.",
+    "return_desc":":http:statuscode:`200` with manifests for the apps on success.",
     "return_ex":'''
-<Apps>
-  <App id="problems@apps.indivo.org">
-    <startURLTemplate>http://problems.indivo.org/auth/start?record_id={record_id}&amp;carenet_id={carenet_id}</startURLTemplate>
-    <name>Problem List</name>
-    <description>Managing your problem list</description>
-    <autonomous>false</autonomous>
-    <frameable>true</frameable>
-    <ui>true</ui>
-  </App>
+[
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
 
-  ...
+    "mode" : "ui",
+    "scope": "record",
 
-</Apps>
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+},
+
+... other apps ...
+
+]
 ''',
     "deprecated": None,
     "added": None,
-    "changed": None,
+    "changed": ('2.0.0', 'Apps are now returned as JSON manifests, not XML'),
 
 },
 {
@@ -2598,7 +2715,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 see http://sandbox-api.smartplatforms.org/ontology
 ''',
     "deprecated": None,
-    "added": ('2.0', ''),
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -2721,25 +2838,36 @@ see http://sandbox-api.smartplatforms.org/ontology
     "data_fields":{
         },
     "description":"List userapps bound to a given record.",
-    "return_desc":":http:statuscode:`200` with a list of userapps.",
+    "return_desc":":http:statuscode:`200` with a list of JSON manifests for the userapps.",
     "return_ex":'''
-<Apps>
-  <App id="problems@apps.indivo.org">
-    <startURLTemplate>http://problems.indivo.org/auth/start?record_id={record_id}&amp;carenet_id={carenet_id}</startURLTemplate>
-    <name>Problem List</name>
-    <description>Managing your problem list</description>
-    <autonomous>false</autonomous>
-    <frameable>true</frameable>
-    <ui>true</ui>
-  </App>
+[
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
 
-  ...
+    "mode" : "ui",
+    "scope": "record",
 
-</Apps>
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+},
+
+... other apps ...
+
+]
 ''',
     "deprecated": None,
     "added": None,
-    "changed": None,
+    "changed": ('2.0.0', 'Apps are now returned as JSON manifests, not XML'),
 
 },
 {
@@ -2779,20 +2907,31 @@ see http://sandbox-api.smartplatforms.org/ontology
     "data_fields":{
         },
     "description":"Get information about a given userapp bound to a record.",
-    "return_desc":":http:statuscode:`200` with information about the app, or :http:statuscode:`404` if the app isn't bound to the record.",
+    "return_desc":":http:statuscode:`200` with a JSON manifest for the app, or :http:statuscode:`404` if the app isn't bound to the record.",
     "return_ex":'''
-<App id="problems@apps.indivo.org">
-  <startURLTemplate>http://problems.indivo.org/auth/start?record_id={record_id}&amp;carenet_id={carenet_id}</startURLTemplate>
-  <name>Problem List</name>
-  <description>Managing your problem list</description>
-  <autonomous>false</autonomous>
-  <frameable>true</frameable>
-  <ui>true</ui>
-</App>
+{
+    "name" : "SMART Problems",
+    "description" : "Display problems in a table view",
+    "author" : "Josh Mandel, Children's Hospital Boston",
+    "id" : "problem-list@apps.smartplatforms.org",
+    "version" : ".1a",
+
+    "mode" : "ui",
+    "scope": "record",
+
+    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
+    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+  
+    "requires" : {
+        "http://smartplatforms.org/terms#Problem": {
+            "methods": ["GET"]
+        }
+    }
+}
 ''',
     "deprecated": None,
     "added": None,
-    "changed": None,
+    "changed": ('2.0.0', 'Apps are now returned as JSON manifests, not XML'),
 
 },
 {
@@ -4728,7 +4867,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 </rdf:RDF>
 ''',
     "deprecated": None,
-    "added": ('2.0', ''),
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -4923,7 +5062,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 </rdf:RDF>
 ''',
     "deprecated": None,
-    "added": ('2.0', ''),
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },

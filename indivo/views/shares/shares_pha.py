@@ -11,20 +11,16 @@ from indivo.views.base import *
 from django.http import HttpResponseBadRequest
 from django.core.exceptions import PermissionDenied
 
-
-def carenet_apps_list(request, carenet):
+@utils.django_json
+def carenet_apps_list(request, carenet, smart_only=False):
   """ List Apps within a given carenet.
 
-  Will return :http:statuscode:`200` with a list of apps on success.
+  Will return :http:statuscode:`200` with manifests for the apps on success.
   
   """
   
-  phas = [cnl.pha for cnl in CarenetPHA.objects.select_related().filter(
-                    carenet=carenet 
-                  ) 
-                  if cnl.pha is not None ]
-  return render_template('phas', {'phas' : phas}, type="xml")
-
+  phas = PHA.objects.filter(carenetpha__carenet=carenet)
+  return PHA.queryset_as_manifests(phas, smart_only=smart_only)
 
 def carenet_apps_create(request, carenet, pha):
   """ Add an app to a carenet

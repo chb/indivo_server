@@ -111,7 +111,7 @@ def record_search(request):
 
   return render_template('record_list', {'records':query}, type='xml')
                                          
-
+@utils.django_json
 def record_phas(request, record):
   """ List userapps bound to a given record.
 
@@ -121,8 +121,8 @@ def record_phas(request, record):
     explicitly declare themselves as supporting that namespace will
     be returned.
 
-  Will return :http:statuscode:`200` with the list of matching apps
-  on success.
+  Will return :http:statuscode:`200` with a list of JSON manifests
+  for the matching apps on success.
 
   """
 
@@ -135,16 +135,18 @@ def record_phas(request, record):
     phas = [pha for pha in phas if pha.schema == schema]
 
   # interpolate the the start_url_template into start_url
+  manifests = []
   for pha in phas:
     pha.start_url = utils.url_interpolate(pha.start_url_template, {'record_id' : record.id})
-  
-  return render_template('phas', {'phas':phas})
+    manifests.append(pha.to_manifest(as_string=False))
 
+  return manifests
 
+@utils.django_json
 def record_pha(request, record, pha):
   """ Get information about a given userapp bound to a record.
 
-  Will return :http:statuscode:`200` with information about the app on success,
+  Will return :http:statuscode:`200` with a JSON manifest for the app on success,
   :http:statuscode:`404` if the app isn't actually bound to the record.
 
   """
@@ -154,7 +156,7 @@ def record_pha(request, record, pha):
   except PHAShare.DoesNotExist:
     raise Http404
   pha.start_url = utils.url_interpolate(pha.start_url_template, {'record_id' : record.id})
-  return render_template('pha', {'pha':pha})
+  return pha.to_manifest(as_string=False)
 
 
 def record_notify(request, record):
