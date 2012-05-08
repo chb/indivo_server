@@ -307,12 +307,3 @@ Get the number of Hematology labs per month over the last year, ordered by date
   GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology&
   date_group=date_measured*month&aggregate_by=count*lab_type&
   order_by=-date_measured&date_range=date_measured*2010-03-10T00:00:00Z*
-
-.. _valid-query-fields:
-
-Valid Query Fields
-------------------
-
-With the new pluggable data models, valid query fields are defined by the data 
-models themselves.See the :ref:`Data Models documentation <queryable-fields>` 
-for a more complete explanation.

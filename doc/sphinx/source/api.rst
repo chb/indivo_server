@@ -520,14 +520,6 @@ results.
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/`
      List measurements for a given record.
 
-   :http:get:`/records/{RECORD_ID}/reports/minimal/medications/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/medications/`
-     List medications for a given record.
-
-   :http:get:`/records/{RECORD_ID}/reports/minimal/problems/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/problems/`
-     List problems for a given record.
-
    :http:get:`/records/{RECORD_ID}/reports/minimal/procedures/`
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/procedures/`
      List procedures for a given record.
@@ -542,6 +534,19 @@ results.
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/vitals/{CATEGORY}`
      List vital signs for a given record.
 
+SMART API Calls
+---------------
+
+As Indivo now supports the `SMART API <http://dev.smartplatforms.org/>`_, the following
+calls are now available:
+
+.. glossary::
+
+   :http:get:`/records/{RECORD_ID}/problems/`
+     List a patient's Problems as SMART RDF
+
+   :http:get:`/records/{RECORD_ID}/medications/`
+     List a patient's Medications as SMART RDF
 
 Coding Systems
 --------------

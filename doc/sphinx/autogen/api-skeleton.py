@@ -1971,163 +1971,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 },
 {
     "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/medications/",
-    "view_func_name":"carenet_medication_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the medication data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of medications, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Medication" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Medication xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateStarted>2009-02-05</dateStarted>
-        <name type="http://indivo.org/codes/meds#" abbrev="c2i" value="COX2 Inhibitor" />    
-        <brandName type="http://indivo.org/codes/meds#" abbrev="vioxx" value="Vioxx" />
-        <dose>
-          <value>3</value>
-          <unit type="http://indivo.org/codes/units#" value="pills" abbrev="p" />
-        </dose>
-        <route type="http://indivo.org/codes/routes#" value="PO">By Mouth</route>
-        <strength>
-          <value>100</value>
-          <unit type="http://indivo.org/codes/units#" value="mg" abbrev="mg">Milligrams</unit>
-        </strength>
-        <frequency type="http://indivo.org/codes/frequency#" value="daily">daily</frequency>
-
-        <prescription>
-          <by>
-            <name>Dr. Ken Mandl</name>
-            <institution>Children's Hospital Boston</institution>
-          </by>
-
-          <on>2009-02-01</on>
-          <stopOn>2010-01-31</stopOn>
-
-          <dispenseAsWritten>true</dispenseAsWritten>
-    
-          <!-- this duration means 2 months -->
-          <duration>P2M</duration>
-    
-          <!-- does this need more structure? -->
-          <refillInfo>once a month for 3 months</refillInfo>
-    
-          <instructions>don't take them all at once!</instructions>
-    
-        </prescription>
-      </Medication>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/problems/",
-    "view_func_name":"carenet_problem_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the problem data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of problems, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Problem" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Problem xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateOnset>2009-05-16T12:00:00</dateOnset>
-        <dateResolution>2009-05-16T16:00:00</dateResolution>
-        <name type="http://codes.indivo.org/problems/" value="123" abbrev="MI">Myocardial Infarction</name>
-        <comments>mild heart attack</comments>
-        <diagnosedBy>Dr. Mandl</diagnosedBy>
-      </Problem>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
     "path":"/carenets/{CARENET_ID}/reports/minimal/procedures/",
     "view_func_name":"carenet_procedure_list",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
@@ -2411,24 +2254,24 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "view_func_name":"carenet_generic_list",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
     "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
         'DATA_MODEL':'The name of the data model to report on',
+        'CARENET_ID':'The id string associated with the Indivo carenet',
         },
     "query_opts":{
         'status':'The account or document status to filter by',
         '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
+        'response_format':'See :ref:`response_formats`',
         'date_range':'See :ref:`query-operators`',
         'date_group':'See :ref:`query-operators`',
         'group_by':'See :ref:`query-operators`',
         'limit':'See :ref:`query-operators`',
         'offset':'See :ref:`query-operators`',
-        'response_format':'See :ref:`response_formats`',
         },
     "data_fields":{
         },
-    "description":"List the DATA_MODEL(s) for a given carenet.",
+    "description":"List the Model data for a given carenet.",
     "return_desc":":http:statuscode:`200` with a list of DATA_MODELs, or :http:statuscode:`400` if any invalid query parameters were passed.",
     "return_ex":'''
 SDMX Example:  
@@ -2735,6 +2578,27 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 ''',
     "deprecated": None,
     "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/ontology",
+    "view_func_name":"smart_ontology",
+    "access_doc":"Any principal in Indivo.",
+    "url_params":{
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Fetch the SMART ontology as RDF/XML.",
+    "return_desc":"An OWL file describing the SMART ontology.",
+    "return_ex":'''
+see http://sandbox-api.smartplatforms.org/ontology
+''',
+    "deprecated": None,
+    "added": ('2.0', ''),
     "changed": None,
 
 },
@@ -4758,6 +4622,117 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
 },
 {
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/medications/",
+    "view_func_name":"smart_medications",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"SMART-compatible alias for the generic list view on Medications, serialized as RDF.",
+    "return_desc":"SMART RDF describing the record's medications and fills",
+    "return_ex":'''
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+xmlns="http://smartplatforms.org/terms#"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/6f87c75f-63ba-4d76-b38c-aa4607e99a40">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
+<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
+<date xmlns="http://purl.org/dc/terms/">2009-08-05</date>
+<dispenseDaysSupply>10</dispenseDaysSupply>
+<medication rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7"/>
+<quantityDispensed rdf:nodeID="node16rk1fgdvx128115"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node16rk1fgdvx128115">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+<value>20</value>
+<unit>{tab}</unit>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/ontology/RXNORM/309309">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+<rdf:type rdf:resource="http://smartplatforms.org/terms/codes/RxNorm_Semantic"/>
+<title xmlns="http://purl.org/dc/terms/">Ciprofloxacin 500 MG Oral Tablet</title>
+<system>http://purl.bioontology.org/ontology/RXNORM/</system>
+<identifier xmlns="http://purl.org/dc/terms/">309309</identifier>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7">
+<startDate>2009-05-31</startDate>
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
+<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
+<instructions>1 bid</instructions>
+<drugName rdf:nodeID="node16rk1fgdvx128519"/>
+<frequency rdf:nodeID="node16rk1fgdvx128520"/>
+<quantity rdf:nodeID="node16rk1fgdvx128521"/>
+<fulfillment rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/89e3fbc6-3242-4633-b5c4-9efb78397322"/>
+<fulfillment rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/d5b563d2-2020-4c34-82ce-54a1ce6abe5e"/>
+<fulfillment rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/6f87c75f-63ba-4d76-b38c-aa4607e99a40"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node16rk1fgdvx128519">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+<title xmlns="http://purl.org/dc/terms/">Ciprofloxacin 500 MG Oral Tablet</title>
+<code rdf:resource="http://purl.bioontology.org/ontology/RXNORM/309309"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node16rk1fgdvx128520">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+<value>2</value>
+<unit>/d</unit>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node16rk1fgdvx128521">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+<value>1</value>
+<unit>{tablet}</unit>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/d5b563d2-2020-4c34-82ce-54a1ce6abe5e">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
+<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
+<date xmlns="http://purl.org/dc/terms/">2009-05-31</date>
+<dispenseDaysSupply>10</dispenseDaysSupply>
+<medication rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7"/>
+<quantityDispensed rdf:nodeID="node16rk1fgdvx127573"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node16rk1fgdvx127573">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+<value>20</value>
+<unit>{tab}</unit>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/89e3fbc6-3242-4633-b5c4-9efb78397322">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
+<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
+<date xmlns="http://purl.org/dc/terms/">2009-06-18</date>
+<dispenseDaysSupply>10</dispenseDaysSupply>
+<medication rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7"/>
+<quantityDispensed rdf:nodeID="node16rk1fgdvx128396"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="node16rk1fgdvx128396">
+<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+<value>20</value>
+<unit>{tab}</unit>
+</rdf:Description>
+
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.0', ''),
+    "changed": None,
+
+},
+{
     "method":"POST",
     "path":"/records/{RECORD_ID}/notifications/",
     "view_func_name":"record_notify",
@@ -4899,7 +4874,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 },
 {
     "method":"GET",
-    "path":"/records/{RECORD_ID}/problems",
+    "path":"/records/{RECORD_ID}/problems/",
     "view_func_name":"smart_problems",
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
@@ -4909,8 +4884,8 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
         },
     "data_fields":{
         },
-    "description":"FAKE FOR TESTING: GET SMART PROBLEMS",
-    "return_desc":"SMART RDF with some hard-coded problems.",
+    "description":"SMART-compatible alias for the generic list view on Problems, serialized as RDF.",
+    "return_desc":"SMART RDF describing the record's problems.",
     "return_ex":'''
 <rdf:RDF
 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -4948,7 +4923,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 </rdf:RDF>
 ''',
     "deprecated": None,
-    "added": ('2.0.0', ''),
+    "added": ('2.0', ''),
     "changed": None,
 
 },
@@ -5441,163 +5416,6 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 },
 {
     "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/medications/",
-    "view_func_name":"medication_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the medication data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of medications, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Medication" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Medication xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateStarted>2009-02-05</dateStarted>
-        <name type="http://indivo.org/codes/meds#" abbrev="c2i" value="COX2 Inhibitor" />    
-        <brandName type="http://indivo.org/codes/meds#" abbrev="vioxx" value="Vioxx" />
-        <dose>
-          <value>3</value>
-          <unit type="http://indivo.org/codes/units#" value="pills" abbrev="p" />
-        </dose>
-        <route type="http://indivo.org/codes/routes#" value="PO">By Mouth</route>
-        <strength>
-          <value>100</value>
-          <unit type="http://indivo.org/codes/units#" value="mg" abbrev="mg">Milligrams</unit>
-        </strength>
-        <frequency type="http://indivo.org/codes/frequency#" value="daily">daily</frequency>
-
-        <prescription>
-          <by>
-            <name>Dr. Ken Mandl</name>
-            <institution>Children's Hospital Boston</institution>
-          </by>
-
-          <on>2009-02-01</on>
-          <stopOn>2010-01-31</stopOn>
-
-          <dispenseAsWritten>true</dispenseAsWritten>
-    
-          <!-- this duration means 2 months -->
-          <duration>P2M</duration>
-    
-          <!-- does this need more structure? -->
-          <refillInfo>once a month for 3 months</refillInfo>
-    
-          <instructions>don't take them all at once!</instructions>
-    
-        </prescription>
-      </Medication>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/problems/",
-    "view_func_name":"problem_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the problem data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of problems, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Problem" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Problem xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateOnset>2009-05-16T12:00:00</dateOnset>
-        <dateResolution>2009-05-16T16:00:00</dateResolution>
-        <name type="http://codes.indivo.org/problems/" value="123" abbrev="MI">Myocardial Infarction</name>
-        <comments>mild heart attack</comments>
-        <diagnosedBy>Dr. Mandl</diagnosedBy>
-      </Problem>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
     "path":"/records/{RECORD_ID}/reports/minimal/procedures/",
     "view_func_name":"procedure_list",
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
@@ -5888,18 +5706,19 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
         'order_by':'See :ref:`query-operators`',
         'aggregate_by':'See :ref:`query-operators`',
+        'response_format':'See :ref:`response_formats`',
         'date_range':'See :ref:`query-operators`',
         'date_group':'See :ref:`query-operators`',
         'group_by':'See :ref:`query-operators`',
         'limit':'See :ref:`query-operators`',
         'offset':'See :ref:`query-operators`',
-        'response_format':'See :ref:`response_formats`',
         },
     "data_fields":{
         },
-    "description":"List the DATA_MODEL(s) for a given record.",
+    "description":"List the Model data for a given record.",
     "return_desc":":http:statuscode:`200` with a list of DATA_MODELs, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''  
+    "return_ex":'''
+  
     
 SDMJ Example:
 

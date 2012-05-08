@@ -115,11 +115,9 @@ Medical Documents
 
    allergy-schema
    immunization-schema
-   problem-schema
    vitals-schema
    procedure-schema
    lab-schema
-   medication-schema
    equipment-schema
    scn-schema
    sdmx-schema

@@ -33,16 +33,10 @@ def test_document_processing(IndivoClient):
     chrome_client.replace_document(document_id = doc_id, data=data.measurement01)
 
     medical_documents = [ 
-                          data.medication,
-                          data.medication_no_codes,
-                          data.medication2, 
                           data.immunization, 
                           data.lab01,
                           data.lab02,
                           data.lab03,
-                          data.problem,
-                          data.problem_no_code,
-                          data.problem_no_dates,
                           data.measurement00,
                           data.measurement01,
                           data.measurement02,
@@ -70,10 +64,7 @@ def test_document_processing(IndivoClient):
                 #chrome_client.read_allergies(parameters={'order_by':'creator'}),
                 chrome_client.read_allergies(),
                 #chrome_client.read_allergies(parameters={'limit':1, 'offset':2}),
-                chrome_client.read_problems(),
-                chrome_client.read_problems(parameters={'status':'archived'}),
                 chrome_client.read_immunizations(),
-                chrome_client.read_medications(),
                 chrome_client.read_vitals(),
                 chrome_client.read_vitals_category(category='weight'),
                 chrome_client.read_vitals_category(category='Blood_Pressure_Systolic'),

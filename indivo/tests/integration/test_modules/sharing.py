@@ -112,7 +112,6 @@ def test_sharing(IndivoClient):
 
     # Read carenet allergies
     assert_200(bob_chrome_client.read_carenet_allergies(carenet_id = carenet_id))
-    assert_200(bob_chrome_client.read_carenet_problems(carenet_id = carenet_id))
 
     # Read the contact document, this should work
     contact_doc = parse_xml(bob_chrome_client.read_carenet_special_document(carenet_id = carenet_id, special_document='contact'))

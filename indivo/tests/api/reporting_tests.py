@@ -106,39 +106,6 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 
-    def test_get_problems(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/problems/?group_by=name_title&aggregate_by=count*name_title&date_range=startDate*2005-03-10T00:00:00Z*'%(record_id)
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        url2 = '/records/%s/reports/minimal/problems/?name_title=Myocardial%%20Infarction&date_group=startDate*month&aggregate_by=count*name_title&order_by=-startDate'%(record_id)
-        response = self.client.get(url2)
-        self.assertEquals(response.status_code, 200)
-
-        url3 = '/records/%s/reports/minimal/problems/?order_by=startDate'%(record_id)
-        response = self.client.get(url3)
-        self.assertEquals(response.status_code, 200)
-
-    def test_get_medications(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/medications/?group_by=medication_brand_name&aggregate_by=count*medication_name&date_range=date_started*2005-03-10T00:00:00Z*'%(record_id)
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        url2 = '/records/%s/reports/minimal/medications/?medication_brand_name=Vioxx&date_group=date_started*month&aggregate_by=count*medication_name&order_by=-date_started&date_range=date_started*1990-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url2)
-        self.assertEquals(response.status_code, 200)
-
-        url3 = '/records/%s/reports/minimal/medications/?order_by=date_started&date_range=date_started*2009-02-17T03:00:00.02Z*'%(record_id)
-        response = self.client.get(url3)
-        self.assertEquals(response.status_code, 200)
 
     def test_get_measurements(self):
         record_id = self.record.id

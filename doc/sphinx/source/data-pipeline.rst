@@ -15,8 +15,8 @@ Let's start with some vocabulary:
 
    Schema
      A description of a format for data, which can also be used to validate that data. For example, our 
-     :doc:`Medication Schema <schemas/medication-schema>` defines the format of an Indivo Medication document, and can be 
-     used to determine whether an XML document is a valid Indivo Medication. In Indivo, we use schemas to define
+     :doc:`SDMX Schema <schemas/sdmx-schema>` defines the format of incoming data in our :ref:`SDMX <sdmx>` specification
+     language, and can be used to determine whether an XML document is valid SDMX. In Indivo, we use schemas to define
      the formats in which we accept data via the API, and validate that data as it comes in. Right now, schemas
      can only take the form of `XSDs <http://www.w3.org/XML/Schema>`_, since we accept input data only in XML
      form, but in the future this might change. More on Indivo schemas :doc:`here <schemas/index>`.
@@ -36,8 +36,7 @@ Let's start with some vocabulary:
      A definition of the format in which processed data is stored in Indivo's database. Each 'data model'
      corresponds to a type of clinical information. For example, our 
      :doc:`Medication Data Model <data-models/medication>` describes how we represent a processed medication
-     in the database. It is *NOT* the same as our :doc:`Medication Schema <schemas/medication-schema>`, which describes 
-     the XML form in which we accept data about medications. We currently accept 
+     in the database. We currently accept 
      :ref:`two types of data model definitions <data-model-definition-types>`. More on Indivo Data Models
      :doc:`here <data-models/index>`.
 

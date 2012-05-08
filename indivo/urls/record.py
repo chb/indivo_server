@@ -14,9 +14,9 @@ urlpatterns = patterns('',
     (r'^/documents/', include('indivo.urls.record_documents')),
     (r'^/reports/',   include('indivo.urls.record_reports')),
 
-    #TESTING
-    (r'^/problems/', MethodDispatcher({'GET': smart_problems})),
-    (r'^/medications/', MethodDispatcher({'GET': smart_medications})),
+    # SMART API Aliases
+    (r'^/problems/$', MethodDispatcher({'GET': smart_problems})),
+    (r'^/medications/$', MethodDispatcher({'GET': smart_medications})),
 
     # ownership
     (r'^/owner$', MethodDispatcher({

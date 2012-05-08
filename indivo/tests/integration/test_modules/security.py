@@ -8,6 +8,7 @@ import os, cgi, uuid
 import data
 
 from lxml import etree
+from django.utils import simplejson
 from utils import *
 
 PRD = 'prd'
@@ -60,7 +61,7 @@ def test_client_expect_no_access(client, record_id, document_id, run_special_adm
     assert_403(client.set_document_status(record_id=record_id, document_id=document_id, data='reason=void1&status=void'))
     assert_403(client.read_document_status_history(record_id=record_id, document_id=document_id))
 
-    reports = ['read_allergies', 'read_problems', 'read_immunizations', 'read_medications', 'read_vitals',
+    reports = ['read_allergies', 'read_immunizations', 'read_vitals',
                ['read_vitals_category', {'category': 'weight'}], 'read_equipment', 'read_procedures', ['read_measurements', {'lab_code':'HBA1C'}], 'read_labs']
     for report in reports:
         extra_params = {}
@@ -300,7 +301,7 @@ def test_security(IndivoClient):
 
     # should not be visible at this point
     def check_app():
-        app_list = xpath(parse_xml(chrome_client.get_carenet_apps(carenet_id = carenet_id)), '/Apps/App')
+        app_list = simplejson.loads(chrome_client.get_carenet_apps(carenet_id=carenet_id).response['response_data'])
         assert len(app_list) == 0, "some apps are in there:\n%s" % etree.tostring(app_list[0])
 
     # now add the app to the other carenet
