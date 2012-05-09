@@ -1,4 +1,4 @@
-{
+[{
     "__modelname__": "Allergy",
     "allergic_reaction_title": "Anaphylaxis",
     "allergic_reaction_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
@@ -12,4 +12,10 @@
     "severity_title": "Severe",
     "severity_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
     "severity_identifier": "24484000"
-}
+},
+{
+    "__modelname__": "AllergyExclusion",
+    "name_title": "No known allergies",
+    "name_identifier":"160244002",
+    "name_system": "http://purl.bioontology.org/ontology/SNOMEDCT"
+}]

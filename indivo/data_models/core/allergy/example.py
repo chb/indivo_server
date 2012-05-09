@@ -14,3 +14,9 @@ allergy_fact = Allergy(
     severity_system="http://purl.bioontology.org/ontology/SNOMEDCT/",
     severity_identifier="24484000",
     )
+
+allergy_exclusion = AllergyExclusion(
+    name_title="No known allergies",
+    name_identifier="160244002",
+    name_system="http://purl.bioontology.org/ontology/SNOMEDCT/",
+)

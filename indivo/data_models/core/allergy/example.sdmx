@@ -13,4 +13,9 @@
     <Field name="severity_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
     <Field name="severity_identifier">24484000</Field>
   </Model>
+  <Model name="AllergyExclusion">
+    <Field name="name_title">No known allergies</Field>
+    <Field name="name_identifier">160244002</Field>
+    <Field name = "name_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+  </Model>
 </Models>

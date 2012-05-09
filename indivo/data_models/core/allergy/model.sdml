@@ -1,4 +1,4 @@
-{
+[{
     "__modelname__": "Allergy",    
     "allergic_reaction": "CodedValue",
     "category": "CodedValue",
@@ -6,4 +6,8 @@
     "drug_class_allergen": "CodedValue",
     "food_allergen": "CodedValue",
     "severity": "CodedValue"
-}
+},
+{
+    "__modelname__": "AllergyExclusion",
+    "name": "CodedValue"
+}]
