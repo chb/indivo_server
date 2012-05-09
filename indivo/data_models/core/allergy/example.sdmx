@@ -1,15 +1,16 @@
 <Models>
   <Model name="Allergy">
-    <Field name="date_diagnosed">2009-05-16</Field>
-    <Field name="diagnosed_by">Children's Hospital Boston</Field>
-    <Field name="allergen_type">Drugs</Field>
-    <Field name="allergen_type_type">http://codes.indivo.org/codes/allergentypes/</Field>
-    <Field name="allergen_type_value">123</Field>
-    <Field name="allergen_name">Penicillin</Field>
-    <Field name="allergen_name_type">http://codes.indivo.org/codes/allergens/</Field>
-    <Field name="allergen_name_value">234</Field>
-    <Field name="allergen_name_abbrev">PCN</Field>
-    <Field name="reaction">Blue Rash</Field>
-    <Field name="specifics">This only happens on weekends</Field>
+    <Field name="allergic_reaction_title">Anaphylaxis</Field>
+    <Field name="allergic_reaction_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="allergic_reaction_identifier">39579001</Field>
+    <Field name="category_title">Drug allergy</Field>
+    <Field name="category_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="category_identifier">416098002</Field>
+    <Field name="drug_class_allergen_title">Sulfonamide Antibacterial</Field>
+    <Field name="drug_class_allergen_system">http://purl.bioontology.org/ontology/NDFRT/</Field>
+    <Field name="drug_class_allergen_identifier">N0000175503</Field>
+    <Field name="severity_title">Severe</Field>
+    <Field name="severity_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="severity_identifier">24484000</Field>
   </Model>
 </Models>

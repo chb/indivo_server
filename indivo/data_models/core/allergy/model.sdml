@@ -1,15 +1,9 @@
 {
-    "__modelname__": "Allergy",
-    "date_diagnosed": "Date",
-    "diagnosed_by": "String",
-    "allergen_type": "String",
-    "allergen_type_type": "String",
-    "allergen_type_value": "String",
-    "allergen_type_abbrev": "String",
-    "allergen_name": "String",
-    "allergen_name_type": "String",
-    "allergen_name_value": "String",
-    "allergen_name_abbrev": "String",
-    "reaction": "String",
-    "specifics": "String"
+    "__modelname__": "Allergy",    
+    "allergic_reaction": "CodedValue",
+    "category": "CodedValue",
+    "drug_allergen": "CodedValue",
+    "drug_class_allergen": "CodedValue",
+    "food_allergen": "CodedValue",
+    "severity": "CodedValue"
 }

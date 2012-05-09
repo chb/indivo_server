@@ -1,14 +1,15 @@
 {
     "__modelname__": "Allergy",
-    "date_diagnosed": "2009-05-16",
-    "diagnosed_by": "Children's Hospital Boston",
-    "allergen_type": "Drugs",
-    "allergen_type_type": "http://codes.indivo.org/codes/allergentypes/",
-    "allergen_type_value": "123",
-    "allergen_name": "Penicillin",
-    "allergen_name_type": "http://codes.indivo.org/codes/allergens/",
-    "allergen_name_value": "234",
-    "allergen_name_abbrev": "PCN",
-    "reaction": "Blue Rash",
-    "specifics": "This only happens on weekends."
+    "allergic_reaction_title": "Anaphylaxis",
+    "allergic_reaction_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
+    "allergic_reaction_identifier": "39579001",
+    "category_title": "Drug allergy",
+    "category_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
+    "category_identifier": "416098002",
+    "drug_class_allergen_title": "Sulfonamide Antibacterial",
+    "drug_class_allergen_system": "http://purl.bioontology.org/ontology/NDFRT/",
+    "drug_class_allergen_identifier": "N0000175503",
+    "severity_title": "Severe",
+    "severity_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
+    "severity_identifier": "24484000"
 }
