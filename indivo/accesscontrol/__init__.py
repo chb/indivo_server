@@ -277,6 +277,7 @@ def load_access_rules():
            immunization_list,
            allergy_list,
            procedure_list,
+           smart_allergies,
            smart_problems,
            smart_medications,
            equipment_list,
