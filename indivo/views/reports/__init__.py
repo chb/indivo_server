@@ -8,6 +8,7 @@ The views that implement reporting calls.
 """
 
 from allergy                import *
+from encounter              import *
 from equipment              import *
 from immunization           import *
 from lab                    import *

@@ -15,6 +15,7 @@ UNII_URI="http://fda.gov/UNII/%s"
 SNOMED_URI="http://purl.bioontology.org/ontology/SNOMEDCT/%s"
 LOINC_URI="http://purl.bioontology.org/ontology/LNC/%s"
 MED_PROV_URI="http://smartplatforms.org/terms/codes/MedicationProvenance#%s"
+ENC_TYPE_URI="http://smartplatforms.org/terms/codes/EncounterType#%s"
 
 # First Declare Name Spaces
 SP = Namespace("http://smartplatforms.org/terms#")
@@ -122,7 +123,7 @@ class PatientGraph(object):
         if fields['preferred_p'] and fields['preferred_p']:
             self.g.add((tNode, RDF.type, VCARD['Pref']))
         if fields['number']:
-            self.g.add((tNode, VCARD['value'], Literal(fields['number'])))
+            self.g.add((tNode, RDF['value'], Literal(fields['number'])))
 
         return tNode
 
@@ -145,6 +146,22 @@ class PatientGraph(object):
             self.g.add((nNode, VCARD['honorific-suffix'], Literal(fields['suffix'])))
 
         return nNode
+
+    def organization(self, obj, prefix):
+        suffixes = ['name', 'adr_country', 'adr_city', 'adr_postalcode', 'adr_region', 'adr_street']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
+
+        oNode = BNode()
+        self.g.add((oNode, RDF.type, SP['Organization']))
+
+        if fields['name']:
+            self.g.add((oNode, VCARD['organization-name'], Literal(fields['name'])))
+        addrNode = self.address(obj, "%s_adr"%prefix)
+        if addrNode:
+            self.g.add((oNode, VCARD['adr'], addrNode))
+        return oNode
 
     def pharmacy(self, obj, prefix):
         suffixes = ['ncpdpid', 'org', 'adr_country', 'adr_city', 'adr_postalcode', 'adr_region', 'adr_street']
@@ -396,6 +413,33 @@ class PatientGraph(object):
                                    SNOMED_URI%"",
                                    prob.name_identifier)))
             self.addStatement(pnode)
+            
+    def addEncounterList(self, encounters):
+        """Add encounters to a patient's graph"""
+        g = self.g
+
+        for encounter in encounters:
+            eNode = URIRef(encounter.uri())
+            g.add((eNode, RDF.type, SP['Encounter']))
+            g.add((eNode, SP['startDate'], Literal(encounter.startDate)))      
+            if encounter.endDate:
+                g.add((eNode, SP['endDate'], Literal(encounter.endDate)))
+                
+            orgNode = self.organization(encounter, 'facility')
+            if orgNode:
+                g.add((eNode, SP['organization'], orgNode))
+
+            provNode = self.provider(encounter, 'provider')
+            if provNode:
+                g.add((eNode, SP['provider'], provNode))
+                
+            g.add((eNode, SP['encounterType'],
+                   self.codedValue(SPCODE["EncounterType"],
+                                   ENC_TYPE_URI%encounter.encounterType_identifier,
+                                   encounter.encounterType_title,
+                                   ENC_TYPE_URI%"",
+                                   encounter.encounterType_identifier)))
+            self.addStatement(eNode)
 
     def addVitalSigns(self):
         """Add vitals to a patient's graph"""

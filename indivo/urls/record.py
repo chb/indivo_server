@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     # SMART API Aliases
     (r'^/problems/$', MethodDispatcher({'GET': smart_problems})),
     (r'^/medications/$', MethodDispatcher({'GET': smart_medications})),
+    (r'^/encounters/$', MethodDispatcher({'GET': smart_encounters})),
 
     # ownership
     (r'^/owner$', MethodDispatcher({
