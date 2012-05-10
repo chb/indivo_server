@@ -1,0 +1,8 @@
+{
+    "__modelname__": "Encounter",
+    "startDate": "Date",
+    "endDate": "Date",
+	"facility": "Organization",
+	"provider": "Provider",
+    "encounterType": "CodedValue"
+}

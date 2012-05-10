@@ -83,6 +83,25 @@ class AddressField(DummyField):
         '_street': (models.CharField, {'max_length':255, 'null':True}),
         }
 
+class OrganizationField(DummyField):
+    """ A field for representing an organization.
+
+    Creating an OrganizationField named 'organization', for example, will (under the hood) create two fields:
+    
+    * ``pharmacy_name``, the name of the organization
+    * ``organization_adr``, the address at which the organization is located (an :py:class:`~indivo.fields.AddressField`)
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``organization`` field name.
+
+    """
+    
+    replacements = {
+        '_name': (models.CharField, {'max_length':255, 'null':True}),
+        '_adr': (AddressField, {}),
+        }
 
 class PharmacyField(DummyField):
     """ A field for representing a pharmacy.

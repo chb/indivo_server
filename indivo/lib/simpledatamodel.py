@@ -18,6 +18,7 @@ from lxml import etree
 from indivo.lib import iso8601
 from indivo.fields import CodedValueField, ValueAndUnitField, AddressField
 from indivo.fields import NameField, TelephoneField, PharmacyField, ProviderField
+from indivo.fields import OrganizationField
 
 SDM_TYPES = {
     'Date': (models.DateTimeField, {'null':True}),
@@ -29,6 +30,7 @@ SDM_TYPES = {
     'Name': (NameField, {}),
     'Telephone': (TelephoneField, {}),
     'Pharmacy': (PharmacyField, {}),
+    'Organization': (OrganizationField, {}),
     'Provider': (ProviderField, {}),
 }
 

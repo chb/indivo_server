@@ -278,6 +278,7 @@ def load_access_rules():
            smart_allergies,
            smart_problems,
            smart_medications,
+           smart_encounters,
            equipment_list,
            vitals_list,
            lab_list,
