@@ -46,6 +46,7 @@
     <document_schema type='http://indivo.org/vocab/xml/documents#VitalSign' />
     <document_schema type='http://indivo.org/vocab/xml/documents#EncryptedDocument' />
     <document_schema type='http://indivo.org/vocab/xml/documents#Genotype' />
+    <document_schema type='http://indivo.org/vocab/xml/documents#Models' />
   </document_schemas>
   <machine_apps>
     <machine_app name='Sample Admin App' email='sample_admin_app@apps.indivo.org'>
