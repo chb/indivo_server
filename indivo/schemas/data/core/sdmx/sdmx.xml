@@ -1,4 +1,4 @@
-<Models>
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
   <Model name="TestMedication" documentId="b1d83191-6edd-4aad-be4e-63117cd4c660">
     <Field name="date_started">2010-10-01T00:00:00Z</Field>
     <Field name="name">ibuprofen</Field>
