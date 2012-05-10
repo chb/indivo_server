@@ -40,9 +40,9 @@ All of the default Indivo X document schemas are in a single namespace::
   http://indivo.org/vocab/xml/documents#
 
 The use of the trailing ``#`` enables simple RDF-like concatenation of namespace prefix and suffix to generate a single 
-type URL. For example, an ``Allergy`` in the Indivo documents namespace will have as its type::
+type URL. For example, an :doc:`SDMX <sdmx-schema>` document in the Indivo documents namespace will have as its type::
 
-  http://indivo.org/vocab/xml/documents#Allergy
+  http://indivo.org/vocab/xml/documents#Models
 
 Design Rationale for Inclusion vs. Relation
 -------------------------------------------
@@ -113,7 +113,6 @@ Medical Documents
 .. toctree::
    :maxdepth: 2
 
-   allergy-schema
    immunization-schema
    vitals-schema
    procedure-schema
@@ -160,18 +159,18 @@ Indivo schemas currently have the following layout on the filesystem::
       indivo/
             ...
           schemas/
-	      utils/
+              utils/
               metadata/
               data/
-	          common/
-	          output/
-	          core/
-	              allergy/
-		          schema.xsd
-		          transform.[xslt | py]
-		          allergy.xml
-		       ...
-	          contrib/
+                  common/
+                  output/
+                  core/
+                      sdmx/
+                          schema.xsd
+                          transform.[xslt | py]
+                          sdmx.xml
+                        ...
+                  contrib/
 
 The ``indivo/schemas/data/core/`` directory contains all of our built-in schemas, and you shouldn't modify it. Since you are
 'contributing' a schema to Indivo, add your schema to the ``indivo/schemas/data/contrib/`` directory. Simply:
@@ -199,21 +198,21 @@ The ``indivo/schemas/data/core/`` directory contains all of our built-in schemas
         indivo/
               ...
             schemas/
-	        utils/
-              	metadata/
-              	data/
-	            common/
-	            output/
-	            core/
-	                allergy/
-		            schema.xsd
-		            transform.[xslt | py]
-		            allergy.xml
-		         ...
-	            contrib/
-		        your_schema/
-			    schema.xsd
-			    transform.[xslt | py]
-			    your_example1.xml
-			    your_example2.xml
-			        ...
+                utils/
+                metadata/
+                data/
+                    common/
+                    output/
+                    core/
+                        sdmx/
+                            schema.xsd
+                            transform.[xslt | py]
+                            sdmx.xml
+                          ...
+                    contrib/
+                        your_schema/
+                            schema.xsd
+                            transform.[xslt | py]
+                            your_example1.xml
+                            your_exampl2.xml
+                              ...

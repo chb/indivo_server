@@ -500,10 +500,6 @@ results.
 
 .. glossary::
 
-   :http:get:`/records/{RECORD_ID}/reports/minimal/allergies/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/allergies/`
-     List allergies for a given record.
-
    :http:get:`/records/{RECORD_ID}/reports/minimal/equipment/`
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/equipment/`
      List equipment for a given record.
