@@ -250,7 +250,6 @@ def load_access_rules():
         or full_control(principal, carenet.record)
   views = [carenet_measurement_list,
            carenet_immunization_list,
-           carenet_allergy_list,
            carenet_procedure_list,
            carenet_equipment_list,
            carenet_vitals_list,
@@ -275,7 +274,6 @@ def load_access_rules():
         or full_control(principal, record)
   views = [measurement_list,
            immunization_list,
-           allergy_list,
            procedure_list,
            smart_allergies,
            smart_problems,

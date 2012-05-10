@@ -38,8 +38,6 @@ urlpatterns = patterns('',
     # Reporting Calls                      
     (r'^/reports/minimal/immunizations/$', 
      MethodDispatcher({'GET':carenet_immunization_list})), 
-    (r'^/reports/minimal/allergies/$',
-     MethodDispatcher({'GET':carenet_allergy_list})), 
     (r'^/reports/minimal/procedures/$',
      MethodDispatcher({'GET':carenet_procedure_list})), 
     (r'^/reports/minimal/labs/$',
