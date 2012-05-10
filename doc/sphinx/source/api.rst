@@ -557,6 +557,9 @@ calls are now available:
 
    :http:get:`/ontology`
      Get the ontology used by a SMART container
+     
+   :http:get:`/capabilities/`
+     Get the SMART capabilities for this instance of Indivo.
 
 Coding Systems
 --------------

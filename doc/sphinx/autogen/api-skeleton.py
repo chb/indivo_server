@@ -1272,6 +1272,43 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
 },
 {
+    "method":"GET",
+    "path":"/capabilities/",
+    "view_func_name":"smart_capabilities",
+    "access_doc":"Any principal in Indivo.",
+    "url_params":{
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"SMART Capabilities",
+    "return_desc":"JSON formatted SMART capabilities",
+    "return_ex":'''
+{
+    "http://smartplatforms.org/terms#Demographics": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Encounter": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#VitalSigns": {
+        "methods": [
+            "GET"
+        ]
+    }
+}
+''',
+    "deprecated": None,
+    "added": ("2.0.0", ""),
+    "changed": None,
+
+},
+{
     "method":"DELETE",
     "path":"/carenets/{CARENET_ID}",
     "view_func_name":"carenet_delete",

@@ -34,7 +34,8 @@ urlpatterns = patterns('',
     (r'^apps/(?P<pha_email>[^/]+)', include('indivo.urls.application')),
 
     # SMART container calls
-    (r'^ontology$', MethodDispatcher({'GET': smart_ontology})),                       
+    (r'^ontology$', MethodDispatcher({'GET': smart_ontology})),
+    (r'^capabilities/$', MethodDispatcher({'GET': smart_capabilities})),              
     
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static'}),

@@ -18,3 +18,86 @@ def smart_ontology(request):
 
     ontology = urllib2.urlopen(url).read()
     return HttpResponse(ontology, mimetype="application/rdf+xml")
+
+def smart_capabilities(request):
+    """SMART Capabilities"""
+    capabilites = '''{
+    "http://smartplatforms.org/terms#Alert": {
+        "methods": [
+            "POST"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Allergy": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#AppManifest": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Capabilities": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Demographics": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Encounter": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Fulfillment": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Immunization": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#LabResult": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Medication": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Ontology": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#Problem": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#User": {
+        "methods": [
+            "GET"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#UserPreferences": {
+        "methods": [
+            "DELETE", 
+            "GET", 
+            "PUT"
+        ]
+    }, 
+    "http://smartplatforms.org/terms#VitalSigns": {
+        "methods": [
+            "GET"
+        ]
+    }
+}'''
+    return HttpResponse(capabilites, mimetype='application/json')

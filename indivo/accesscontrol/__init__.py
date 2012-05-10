@@ -44,7 +44,8 @@ def load_access_rules():
   views = [get_version,
            all_phas,
            pha,
-           smart_ontology,] 
+           smart_ontology,
+           smart_capabilities,] 
   AccessRule('Basic Access', basic_access, views)
 
   # Account-related views
