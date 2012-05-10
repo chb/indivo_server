@@ -1730,74 +1730,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 },
 {
     "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/allergies/",
-    "view_func_name":"carenet_allergy_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the allergy data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of allergies, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="allergen_name" value="penicillin"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Allergy xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateDiagnosed>2009-05-16</dateDiagnosed>
-        <diagnosedBy>Children's Hospital Boston</diagnosedBy>
-        <allergen>
-          <type type="http://codes.indivo.org/codes/allergentypes/" value="drugs">Drugs</type>
-          <name type="http://codes.indivo.org/codes/allergens/" value="penicillin">Penicillin</name>
-        </allergen>
-        <reaction>blue rash</reaction>
-        <specifics>this only happens on weekends</specifics>
-      </Allergy>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
     "path":"/carenets/{CARENET_ID}/reports/minimal/equipment/",
     "view_func_name":"carenet_equipment_list",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
@@ -1825,7 +1757,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   <QueryParams>
     <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
     <Filters>
-      <Filter name="allergen_name" value="penicillin"/>
+      <Filter name="equipment_name" value="pacemaker"/>
     </Filters>
   </QueryParams>
   <Report>
@@ -1893,7 +1825,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   <QueryParams>
     <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
     <Filters>
-      <Filter name="allergen_name" value="penicillin"/>
+      <Filter name="vaccine_type" value="Hepatitis B"/>
     </Filters>
   </QueryParams>
   <Report>
@@ -2821,6 +2753,149 @@ see http://sandbox-api.smartplatforms.org/ontology
 ''',
     "deprecated": None,
     "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/allergies/",
+    "view_func_name":"smart_allergies",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"SMART allergy list, serialized as RDF/XML.",
+    "return_desc":"SMART RDF describing the record's allergies and allergy exclusions",
+    "return_ex":'''
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:sp="http://smartplatforms.org/terms#"
+>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/271807003">
+    <dcterms:title>skin rash</dcterms:title>
+    <dcterms:identifier>271807003</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/03059111-af61-4834-8234-befe5f5a2532/allergies/f8efc96a-7677-4b4f-9879-7fc6d6488d0b">
+    <sp:category rdf:nodeID="_865481f6-03ca-4707-8a89-ec468952efa5"/>
+    <sp:severity rdf:nodeID="_9f6a6981-1173-4041-8fa3-4462238ab8ae"/>
+    <sp:foodAllergen rdf:nodeID="_24be52e0-51a4-4d00-9654-25ae9e0ad2f4"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Allergy"/>
+    <sp:belongsTo rdf:nodeID="_f63e49ae-5071-4f99-a62d-329a2e23ce85"/>
+    <sp:allergicReaction rdf:nodeID="_7912ae70-da78-443f-a0b6-3f955b9e140a"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_865481f6-03ca-4707-8a89-ec468952efa5">
+    <dcterms:title>food allergy</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/414285001"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_e6301747-0618-4a74-9b52-d7b5f3745463">
+    <dcterms:title>drug allergy</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/416098002"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_b8361d90-8b1e-40cb-b892-80dcb4301d90">
+    <dcterms:title>mild</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/255604002"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/414285001">
+    <dcterms:title>food allergy</dcterms:title>
+    <dcterms:identifier>414285001</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/AllergyCategory"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_7912ae70-da78-443f-a0b6-3f955b9e140a">
+    <dcterms:title>anaphylaxis</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/39579001"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_9f6a6981-1173-4041-8fa3-4462238ab8ae">
+    <dcterms:title>severe</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/24484000"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/416098002">
+    <dcterms:title>drug allergy</dcterms:title>
+    <dcterms:identifier>416098002</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/AllergyCategory"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_2c0973ad-d7fd-4e7f-a6c2-5c625a54aea7">
+    <dcterms:title>skin rash</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/271807003"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/03059111-af61-4834-8234-befe5f5a2532/allergies/a4abf13b-ec73-4ae4-b0a2-9d71ab2ea368">
+    <sp:drugClassAllergen rdf:nodeID="_f06759ab-6668-4832-97da-0794d244d403"/>
+    <sp:category rdf:nodeID="_e6301747-0618-4a74-9b52-d7b5f3745463"/>
+    <sp:severity rdf:nodeID="_b8361d90-8b1e-40cb-b892-80dcb4301d90"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Allergy"/>
+    <sp:belongsTo rdf:nodeID="_f63e49ae-5071-4f99-a62d-329a2e23ce85"/>
+    <sp:allergicReaction rdf:nodeID="_2c0973ad-d7fd-4e7f-a6c2-5c625a54aea7"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/39579001">
+    <dcterms:title>anaphylaxis</dcterms:title>
+    <dcterms:identifier>39579001</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/255604002">
+    <dcterms:title>mild</dcterms:title>
+    <dcterms:identifier>255604002</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/AllergySeverity"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_24be52e0-51a4-4d00-9654-25ae9e0ad2f4">
+    <dcterms:title>peanut</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://fda.gov/UNII/QE1QX6B99R"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/NDFRT/N0000175503">
+    <dcterms:title>sulfonamide antibacterial</dcterms:title>
+    <dcterms:identifier>N0000175503</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/NDFRT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/NDFRT"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f06759ab-6668-4832-97da-0794d244d403">
+    <dcterms:title>sulfonamide antibacterial</dcterms:title>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/NDFRT/N0000175503"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f63e49ae-5071-4f99-a62d-329a2e23ce85">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://fda.gov/UNII/QE1QX6B99R">
+    <dcterms:title>peanut</dcterms:title>
+    <dcterms:identifier>QE1QX6B99R</dcterms:identifier>
+    <sp:system>http://fda.gov/UNII/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/UNII"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/24484000">
+    <dcterms:title>severe</dcterms:title>
+    <dcterms:identifier>24484000</dcterms:identifier>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/AllergySeverity"/>
+  </rdf:Description>
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -4708,6 +4783,90 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
 },
 {
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/encounters/",
+    "view_func_name":"smart_encounters",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"SMART-compatible alias for the generic list view on Encounters, serialized as RDF.",
+    "return_desc":"SMART RDF describing the record's encounters.",
+    "return_ex":'''
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:sp="http://smartplatforms.org/terms#"
+xmlns:v="http://www.w3.org/2006/vcard/ns#"
+>
+ <rdf:Description rdf:nodeID="_3cbdff64-dca3-4d80-95f4-979965de22f1">
+    <v:value>1-235-947-3452</v:value>
+    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Pref"/>
+    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Tel"/>
+    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Work"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://smartplatforms.org/terms/codes/EncounterType#ambulatory">
+    <sp:system>http://smartplatforms.org/terms/codes/EncounterType#</sp:system>
+    <dcterms:identifier>ambulatory</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/EncounterType"/>
+    <dcterms:title>Ambulatory encounter</dcterms:title>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_a958e1ce-a081-405b-80f6-d7cc22f23b9d">
+    <v:street-address>111 Lake Drive</v:street-address>
+    <v:locality>WonderCity</v:locality>
+    <v:country>Australia</v:country>
+    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Address"/>
+    <v:postal-code>5555</v:postal-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f954b2f9-a3f3-43b4-bca3-9fb22cf97aa6">
+    <sp:code rdf:resource="http://smartplatforms.org/terms/codes/EncounterType#ambulatory"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+    <dcterms:title>Ambulatory encounter</dcterms:title>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/f0768cfc-6409-4738-8a17-94166ed59cf7/encounters/b62219b7-39e9-4c29-80f9-df7401dd04fe">
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-05-16T12:00:00</sp:startDate>
+    <sp:encounterType rdf:nodeID="_f954b2f9-a3f3-43b4-bca3-9fb22cf97aa6"/>
+    <sp:organization rdf:nodeID="_f4b679e0-de53-4f1a-a5d6-fcbd856fe992"/>
+    <sp:provider rdf:nodeID="_23d08a80-dd42-451c-9155-9de0289d43bb"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Encounter"/>
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-05-16T16:00:00</sp:endDate>
+    <sp:belongsTo rdf:nodeID="_25fbfc9a-32a5-420f-abb1-52ba9780b7ef"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f83a8cd4-dc70-48f2-b134-e6c33e0402a2">
+    <v:family-name>Mandel</v:family-name>
+    <v:given-name>Josuha</v:given-name>
+    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Name"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_25fbfc9a-32a5-420f-abb1-52ba9780b7ef">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_23d08a80-dd42-451c-9155-9de0289d43bb">
+    <v:email>joshua.mandel@fake.emailserver.com</v:email>
+    <sp:npiNumber>5235235</sp:npiNumber>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Provider"/>
+    <sp:deaNumber>325555555</sp:deaNumber>
+    <v:tel rdf:nodeID="_3cbdff64-dca3-4d80-95f4-979965de22f1"/>
+    <v:n rdf:nodeID="_f83a8cd4-dc70-48f2-b134-e6c33e0402a2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f4b679e0-de53-4f1a-a5d6-fcbd856fe992">
+    <v:adr rdf:nodeID="_a958e1ce-a081-405b-80f6-d7cc22f23b9d"/>
+    <v:organization-name>Wonder Hospital</v:organization-name>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Organization"/>
+  </rdf:Description>
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
     "method":"POST",
     "path":"/records/{RECORD_ID}/inbox/{MESSAGE_ID}",
     "view_func_name":"record_send_message",
@@ -5197,74 +5356,6 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 },
 {
     "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/allergies/",
-    "view_func_name":"allergy_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the allergy data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of allergies, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="allergen_name" value="penicillin"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Allergy xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateDiagnosed>2009-05-16</dateDiagnosed>
-        <diagnosedBy>Children's Hospital Boston</diagnosedBy>
-        <allergen>
-          <type type="http://codes.indivo.org/codes/allergentypes/" value="drugs">Drugs</type>
-          <name type="http://codes.indivo.org/codes/allergens/" value="penicillin">Penicillin</name>
-        </allergen>
-        <reaction>blue rash</reaction>
-        <specifics>this only happens on weekends</specifics>
-      </Allergy>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
     "path":"/records/{RECORD_ID}/reports/minimal/equipment/",
     "view_func_name":"equipment_list",
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
@@ -5292,7 +5383,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <QueryParams>
     <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
     <Filters>
-      <Filter name="allergen_name" value="penicillin"/>
+      <Filter name="equipment_name" value="pacemaker"/>
     </Filters>
   </QueryParams>
   <Report>
@@ -5360,7 +5451,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <QueryParams>
     <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
     <Filters>
-      <Filter name="allergen_name" value="penicillin"/>
+      <Filter name="vaccine_type" value="Hepatitis B"/>
     </Filters>
   </QueryParams>
   <Report>

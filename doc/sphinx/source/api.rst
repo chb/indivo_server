@@ -538,11 +538,17 @@ calls are now available:
 
 .. glossary::
 
-   :http:get:`/records/{RECORD_ID}/problems/`
-     List a patient's Problems as SMART RDF
+   :http:get:`/records/{RECORD_ID}/allergies/`
+     List a patient's Allergies as SMART RDF
+
+   :http:get:`/records/{RECORD_ID}/encounters/`
+     List a patient's Encounters as SMART RDF
 
    :http:get:`/records/{RECORD_ID}/medications/`
      List a patient's Medications as SMART RDF
+
+   :http:get:`/records/{RECORD_ID}/problems/`
+     List a patient's Problems as SMART RDF
 
    :http:get:`/apps/{APP_ID}/manifest`
    :http:get:`/apps/manifests/`
