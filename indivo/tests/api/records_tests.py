@@ -719,13 +719,6 @@ class RecordInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         # ADD REPORTS
 
-    def test_get_record_allergies(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/allergies/'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # ADD REPORTS
-
     def test_get_record_equipment(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/equipment/'%(record_id)

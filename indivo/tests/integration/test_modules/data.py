@@ -1,3 +1,5 @@
+from indivo.tests import data
+
 doc_type = 'HBA1C'
 label = 'testing_label'
 external_doc_id = 'external_doc_test'
@@ -57,17 +59,10 @@ contact = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> 
 
 contact02 = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour the Second</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
 
-# an allergy with a bad date that should trigger a validation problem
-malformed_allergy_01 = "<Allergy xmlns='http://indivo.org/vocab/xml/documents#'> <dateDiagnosed>2009-05-</dateDiagnosed> <diagnosedBy>Children's Hospital Boston</diagnosedBy> <allergen> <type type='http://codes.indivo.org/codes/allergentypes/' value='drugs'>Drugs</type> <name type='http://codes.indivo.org/codes/allergens/' value='penicillin'>Penicillin</name> </allergen> <reaction>blue rash</reaction> <specifics>this only happens on weekends</specifics> </Allergy>"
-
 # an allergy with the wrong allergy schema, should fail too
-malformed_allergy_02 = "<Allergy xmlns='http://indivo.org/vocab/xml/documents#'> <dateDiagnosed>2009-05-12</dateDiagnosed> <allergen> <name>foo</name> <type type='http://codes.indivo.org/codes/allergentypes/' value='drugs'>Drugs</type> <name type='http://codes.indivo.org/codes/allergens/' value='penicillin'>Penicillin</name> </allergen> <reaction>blue rash</reaction> <specifics>this only happens on weekends</specifics> </Allergy>"
+malformed_allergy = data.reports.allergy._TEST_ALLERGIES_INVALID[0]
 
-allergy00 = "<Allergy xmlns='http://indivo.org/vocab/xml/documents#'> <dateDiagnosed>2009-05-16</dateDiagnosed> <diagnosedBy>Children's Hospital Boston</diagnosedBy> <allergen> <type type='http://codes.indivo.org/codes/allergentypes/' value='drugs'>Drugs</type> <name type='http://codes.indivo.org/codes/allergens/' value='penicillin'>Penicillin</name> </allergen> <reaction>blue rash</reaction> <specifics>this only happens on weekends</specifics> </Allergy>"
-allergy01 = "<Allergy xmlns='http://indivo.org/vocab/xml/documents#'> <dateDiagnosed>2009-05-16</dateDiagnosed> <diagnosedBy>Children's Hospital Boston</diagnosedBy> <allergen> <type type='http://codes.indivo.org/codes/allergentypes/' value='drugs'>Drugs</type> <name type='http://codes.indivo.org/codes/allergens/' value='penicillin'>Penicillin</name> </allergen> <reaction>red rash</reaction> <specifics>hello</specifics> </Allergy>"
-allergy02 = "<Allergy xmlns='http://indivo.org/vocab/xml/documents#'> <dateDiagnosed>2009-05-16</dateDiagnosed> <diagnosedBy>Children's Hospital Boston</diagnosedBy> <allergen> <type type='http://codes.indivo.org/codes/allergentypes/' value='drugs'>Drugs</type> <name type='http://codes.indivo.org/codes/allergens/' value='penicillin'>Penicillin</name> </allergen> <reaction>green rash</reaction> <specifics>world</specifics> </Allergy>"
-
-allergy_no_codes = "<Allergy xmlns='http://indivo.org/vocab/xml/documents#'> <dateDiagnosed>2009-05-16</dateDiagnosed> <diagnosedBy>Children's Hospital Boston</diagnosedBy> <allergen> <type>Drugs</type> <name>Penicillin</name> </allergen> <reaction>green rash</reaction> <specifics>world</specifics> </Allergy>"
+allergy = data.reports.allergy._TEST_ALLERGIES[0]
 
 immunization = "<Immunization xmlns='http://indivo.org/vocab/xml/documents#'> <dateAdministered>2009-05-16T00:00:00Z</dateAdministered> <administeredBy>Children's Hospital Boston</administeredBy> <vaccine> <type type='http://codes.indivo.org/codes/vaccinetypes/' value='hep-B' abbrev='hepb'>Hepatitis B</type> <manufacturer>Oolong Pharmaceuticals</manufacturer> <lot>AZ1234567</lot> <expiration>2009-06-01</expiration> </vaccine> <sequence>2</sequence> <anatomicSurface type='http://codes.indivo.org/codes/anatomicsurfaces/' value='shoulder' abbrev='shoulder'>Shoulder</anatomicSurface><adverseEvent>pain and rash</adverseEvent> </Immunization>"
 immunization2 = "<Immunization xmlns='http://indivo.org/vocab/xml/documents#'> <vaccine> <type type='http://codes.indivo.org/codes/vaccinetypes/' value='82' abbrev='adenovirus, NOS'>adenovirus vaccine, NOS</type> </vaccine> <sequence>2</sequence> </Immunization>"

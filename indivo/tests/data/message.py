@@ -88,7 +88,7 @@ _TEST_ATTACHMENTS = [
      'attachment_num': 1,
      'content': TEST_ALLERGIES[0]['content'],
      'size':len(TEST_ALLERGIES[0]['content']),
-     'type':'http://indivo.org/vocab/xml/documents#Allergy',
+     'type':'http://indivo.org/vocab/xml/documents#Models',
      },
     ]
 TEST_ATTACHMENTS = scope(_TEST_ATTACHMENTS, TestMessageAttachment)

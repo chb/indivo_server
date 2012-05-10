@@ -64,7 +64,7 @@ def test_document_handling(IndivoClient):
 
     assert_200(chrome_client.get_document_relate(rel_type='annotation'))
 
-    document_id = chrome_client.post_document(data=data.allergy01).response[PRD]['Document'][0]
+    document_id = chrome_client.post_document(data=data.allergy).response[PRD]['Document'][0]
     chrome_client.set_document_status(data='reason=allergy not correct&status=active')
 
     # this should fail
@@ -77,11 +77,8 @@ def test_document_handling(IndivoClient):
     chrome_client.read_documents(parameters={'type':'http://indivo.org/vocab/xml/documents#Problem'})
 
     # try out documents that should be wrong
-    assert_400(chrome_client.post_document(data = data.malformed_allergy_01), "Malformed Allergy - invalid datetime")
+    assert_400(chrome_client.post_document(data = data.malformed_allergy), "Malformed Allergy - wrong schema")
     
-    # FIXME: to be activated only once schema validation is being done
-    #assert_400(chrome_client.post_document(data = data.malformed_allergy_02), "Malformed Allergy - wrong schema")
-
     # Delete all documents related to this record
     # chrome_client.delete_documents()
 

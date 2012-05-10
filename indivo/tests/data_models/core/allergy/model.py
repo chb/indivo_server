@@ -1,28 +1,14 @@
-"""
-Indivo Model for Allergies
-"""
-
 from indivo.models import Fact
 from django.db import models
-from django.conf import settings
+from indivo.fields import CodedValueField
 
 class Allergy(Fact):
-  date_diagnosed = models.DateField(null=True)
-  diagnosed_by = models.CharField(max_length=32, null=True)
+    allergic_reaction = CodedValueField()
+    category = CodedValueField()
+    drug_allergen = CodedValueField()
+    drug_class_allergen = CodedValueField()
+    food_allergen = CodedValueField()
+    severity = CodedValueField()
 
-  allergen_type = models.CharField(max_length=200, null=True)
-  allergen_type_type = models.CharField(max_length=200, null=True)
-  allergen_type_value = models.CharField(max_length=200, null=True)
-  allergen_type_abbrev = models.CharField(max_length=200, null=True)
-
-  allergen_name = models.CharField(max_length=200)
-  allergen_name_type = models.CharField(max_length=200, null=True)
-  allergen_name_value = models.CharField(max_length=200, null=True)
-  allergen_name_abbrev = models.CharField(max_length=200, null=True)
-
-  reaction = models.CharField(max_length=128, null=True)
-  specifics = models.TextField(null=True)
-
-  def __unicode__(self):
-    return 'Allergy %s' % self.id
-
+class AllergyExclusion(Fact):
+    name = CodedValueField()

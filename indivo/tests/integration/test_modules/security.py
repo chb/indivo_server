@@ -61,7 +61,7 @@ def test_client_expect_no_access(client, record_id, document_id, run_special_adm
     assert_403(client.set_document_status(record_id=record_id, document_id=document_id, data='reason=void1&status=void'))
     assert_403(client.read_document_status_history(record_id=record_id, document_id=document_id))
 
-    reports = ['read_allergies', 'read_immunizations', 'read_vitals',
+    reports = ['read_immunizations', 'read_vitals',
                ['read_vitals_category', {'category': 'weight'}], 'read_equipment', 'read_procedures', ['read_measurements', {'lab_code':'HBA1C'}], 'read_labs']
     for report in reports:
         extra_params = {}
@@ -143,15 +143,15 @@ def test_security(IndivoClient):
 
     # put some documents into the first and second records
     chrome_client.create_session(data.account)
-    document_id = chrome_client.post_document(record_id=record_id, data=data.allergy00).response['prd']['Document'][0]
-    chrome_client.post_document(record_id=record_id, data=data.allergy01)
-    chrome_client.post_document(record_id=record_id, data=data.allergy02)
+    document_id = chrome_client.post_document(record_id=record_id, data=data.allergy).response['prd']['Document'][0]
+    chrome_client.post_document(record_id=record_id, data=data.allergy)
+    chrome_client.post_document(record_id=record_id, data=data.allergy)
 
     chrome_client = IndivoClient(data.chrome_consumer_key, data.chrome_consumer_secret)
     chrome_client.create_session(data.account02)
-    document2_id = chrome_client.post_document(record_id=record2_id, data=data.allergy00).response['prd']['Document'][0]
-    chrome_client.post_document(record_id=record2_id, data=data.allergy01)
-    chrome_client.post_document(record_id=record2_id, data=data.allergy02)
+    document2_id = chrome_client.post_document(record_id=record2_id, data=data.allergy).response['prd']['Document'][0]
+    chrome_client.post_document(record_id=record2_id, data=data.allergy)
+    chrome_client.post_document(record_id=record2_id, data=data.allergy)
 
 
     # other than the record owner, no one should have access

@@ -26,11 +26,11 @@ def test_appspecific(IndivoClient):
     pha_client = IndivoClient(data.app_email, data.app_secret)
 
     # store an app-specific document
-    appspecific_doc = parse_xml(pha_client.post_app_document_ext(app_id = data.app_email, external_id='foobar_partition_appspecific', data=data.allergy01))
+    appspecific_doc = parse_xml(pha_client.post_app_document_ext(app_id = data.app_email, external_id='foobar_partition_appspecific', data=data.allergy))
 
     # store an app-record-specific document
     pha_client.update_token(token)
-    apprecordspecific_doc = parse_xml(pha_client.put_recapp_document_ext(record_id = record_id, app_id = data.app_email, external_id='foobar_partition_apprecordspecific', data=data.allergy02))
+    apprecordspecific_doc = parse_xml(pha_client.put_recapp_document_ext(record_id = record_id, app_id = data.app_email, external_id='foobar_partition_apprecordspecific', data=data.allergy))
 
     # get it by metadata
     apprecordspecific_doc_check = parse_xml(pha_client.read_recapp_document_ext_meta(record_id = record_id, app_id = data.app_email, external_id='foobar_partition_apprecordspecific'))

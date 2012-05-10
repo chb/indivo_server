@@ -250,23 +250,6 @@ class ReportingInternalTests(InternalTests):
             lab_type = report.findtext('.//{%s}dateMeasured' % NS)
             self.assertTrue(lab_type in ['2010-07-16T12:00:00Z', '1998-07-16T12:00:00Z'])
 
-    def test_get_allergies(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/allergies/?group_by=allergen_type&aggregate_by=count*allergen_name&date_range=date_diagnosed*2004-03-10T00:00:00Z*'%(record_id)
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        url2 = '/records/%s/reports/minimal/allergies/?allergen_type=Drugs&date_group=date_diagnosed*month&aggregate_by=count*allergen_type&order_by=date_diagnosed&date_range=date_diagnosed*1990-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url2)
-        self.assertEquals(response.status_code, 200)
-
-        url3 = '/records/%s/reports/minimal/allergies/?allergen_type=Drugs&order_by=date_diagnosed&date_range=date_diagnosed*2000-03-10T00:00:00Z*&offset=1'%(record_id)
-        response = self.client.get(url3)
-        self.assertEquals(response.status_code, 200)
-
     def test_get_equipment(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/equipment/?group_by=equipment_vendor&aggregate_by=count*equipment_name&date_range=date_started*2004-03-10T00:00:00Z*'%(record_id)

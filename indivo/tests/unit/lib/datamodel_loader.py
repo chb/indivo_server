@@ -10,7 +10,9 @@ TEST_MODULE = sys.modules[__name__]
 
 CORE_MODELS = (
     'Allergy',
+    'AllergyExclusion',
     'Equipment',
+    'Fill',
     'Immunization',
     'Lab',
     'Measurement',

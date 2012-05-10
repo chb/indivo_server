@@ -23,7 +23,7 @@ def test_sharing(IndivoClient):
 
   def alice_setup(record_id, bob_account_id):
 
-    allergy_type = {'type' : 'http://indivo.org/vocab/xml/documents#Allergy'}
+    allergy_type = {'type' : 'http://indivo.org/vocab/xml/documents#Models'}
 
     alice_chrome_client = IndivoClient('chrome', 'chrome')
     alice_chrome_client.create_session(data.account)
@@ -45,13 +45,13 @@ def test_sharing(IndivoClient):
     carenet_id = alice_chrome_client.get_record_carenets().response[PRD]['Carenet'][0]
 
     # post four documents to Alice's record, 2 allergies and 2 immunizations
-    document_1_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy00)), "/Document/@id")[0]
-    document_2_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy01)), "/Document/@id")[0]
+    document_1_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy)), "/Document/@id")[0]
+    document_2_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy)), "/Document/@id")[0]
     document_3_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.immunization)), "/Document/@id")[0]
     document_4_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.immunization2)), "/Document/@id")[0]
 
     # and one more to test nevershare
-    document_5_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy02)), "/Document/@id")[0]
+    document_5_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy)), "/Document/@id")[0]
 
     # auto-share allergies
     alice_chrome_client.post_autoshare(data=allergy_type, carenet_id=carenet_id)
@@ -111,7 +111,8 @@ def test_sharing(IndivoClient):
     carenet_documents_list = bob_chrome_client.get_carenet_documents(carenet_id = carenet_id, parameters={'type': 'http://indivo.org/vocab/xml/documents#Allergy'}).response[PRD]['Document']
 
     # Read carenet allergies
-    assert_200(bob_chrome_client.read_carenet_allergies(carenet_id = carenet_id))
+    # TODO: replace with generic call
+    # assert_200(bob_chrome_client.read_carenet_allergies(carenet_id = carenet_id))
 
     # Read the contact document, this should work
     contact_doc = parse_xml(bob_chrome_client.read_carenet_special_document(carenet_id = carenet_id, special_document='contact'))

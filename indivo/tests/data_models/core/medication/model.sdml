@@ -1,0 +1,20 @@
+{
+    "__modelname__": "Medication",
+    "drugName": "CodedValue",
+    "endDate": "Date",
+    "frequency": "ValueAndUnit",
+    "instructions": "String",
+    "provenance": "CodedValue",
+    "quantity": "ValueAndUnit",
+    "startDate": "Date",
+    "fulfillments": [{
+        "__modelname__": "Fill",
+        "date": "Date",
+        "dispenseDaysSupply": "Number",
+        "pbm": "String",
+        "pharmacy": "Pharmacy",
+        "provider": "Provider",
+        "quantityDispensed": "ValueAndUnit"
+     }]
+
+}

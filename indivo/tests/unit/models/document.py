@@ -194,7 +194,7 @@ class DocumentModelUnitTests(InternalTests):
 
         # Replace the doc with bad XML, make sure it fails if validation is on
         malformed_xml = '<AwesomeTag>Stuff<WrongTag>'
-        invalid_xml = TEST_REPORTS_INVALID[1]['content']
+        invalid_xml = TEST_REPORTS_INVALID[0]['content']
 
         settings.VALIDATE_XML_SYNTAX = True
         self.assertRaises(ValueError, self.r_doc1.replace, malformed_xml, new_mimetype)
@@ -225,7 +225,7 @@ class DocumentModelUnitTests(InternalTests):
 
         # Make sure saving an invalid doc throws an error and doesn't produce any f_objs
         malformed_xml = '<Allergy>Stuff<WrongTag>'
-        invalid_xml = TEST_REPORTS_INVALID[1]['content']
+        invalid_xml = TEST_REPORTS_INVALID[0]['content']
         self.r_doc1.processed=False
 
         self.r_doc1.content = malformed_xml
