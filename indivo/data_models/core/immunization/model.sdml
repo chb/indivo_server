@@ -1,19 +1,9 @@
 {
     "__modelname__": "Immunization",
-    "date_administered": "Date",
-    "administered_by": "String",
-    "vaccine_type": "String",
-    "vaccine_type_type": "String",
-    "vaccine_type_value": "String",
-    "vaccine_type_abbrev": "String",
-    "vaccine_manufacturer": "String",
-    "vaccine_lot": "String",
-    "vaccine_expiration": "Date",
-    "sequence": "Number",
-    "anatomic_surface": "String",
-    "anatomic_surface_type": "String",
-    "anatomic_surface_value": "String",
-    "anatomic_surface_abbrev": "String",
-    "adverse_event": "String"
+    "date": "Date",
+    "administration_status": "CodedValue",
+    "product_class": "CodedValue",
+    "product_name": "CodedValue",
+    "refusal_reason": "CodedValue"
 }
 
