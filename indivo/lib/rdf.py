@@ -16,6 +16,10 @@ SNOMED_URI="http://purl.bioontology.org/ontology/SNOMEDCT/%s"
 LOINC_URI="http://purl.bioontology.org/ontology/LNC/%s"
 MED_PROV_URI="http://smartplatforms.org/terms/codes/MedicationProvenance#%s"
 ENC_TYPE_URI="http://smartplatforms.org/terms/codes/EncounterType#%s"
+IMM_STATUS_URI="http://smartplatforms.org/terms/codes/ImmunizationAdministrationStatus#%s"
+IMM_PROD_URI="http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#%s"
+IMM_CLASS_URI="http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=vg#%s"
+IMM_REFUSE_URI="http://smartplatforms.org/terms/codes/ImmunizationRefusalReason#%s"
 
 # First Declare Name Spaces
 SP = Namespace("http://smartplatforms.org/terms#")
@@ -52,6 +56,10 @@ class PatientGraph(object):
 
     def toRDF(self,format="xml"):
         return self.g.serialize(format=format)
+
+#####################################################
+### Helper Methods for reusable low-level objects ###
+#####################################################
 
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""
@@ -222,6 +230,10 @@ class PatientGraph(object):
 
         return pNode
 
+################################
+### Low-level helper methods ###
+################################
+
     def _obj_fields_by_name(self, obj, prefix, suffixes):
         """ Given an object, returns a dictionary of its attributes based on prefix and suffixes.
         
@@ -243,6 +255,10 @@ class PatientGraph(object):
     def addStatement(self, s):
         #      self.g.add((self.patient, SP['hasStatement'], s))
         self.g.add((s, SP['belongsTo'], self.patient))
+
+###############################
+### Top-level node addition ###
+###############################
 
     def addDemographics(self, record):
         """ Adds patient Demographics info to the graph. """
@@ -486,36 +502,59 @@ class PatientGraph(object):
             
             self.addStatement(vnode)
 
-    def addImmunizations(self):
+    def addImmunizationList(self, immunizations):
         """Add immunizations to a patient's graph"""
-
-        # TODO: Adapt to Indivo Immunizations
-       
         g = self.g
 
-        if not self.pid in Immunizations.immunizations: return # No immunizations to add
+        for i in immunizations:
 
-        for i in Immunizations.immunizations[self.pid]:
+            inode = URIRef(i.uri())
+            g.add((inode, RDF.type, SP['Immunization']))
 
-            inode = BNode()
-            self.addStatement(inode)
-            g.add((inode,RDF.type,SP['Immunization']))
-            g.add((inode,dcterms.date, Literal(v.timestamp)))
-            g.add((inode, sp.administrationStatus, ontology_service.coded_value(g, URIRef(i.administration_status))))
+            g.add((inode, dcterms.date, Literal(i.date)))
+            g.add((inode, SP['administrationStatus'],
+                   self.codedValue(
+                        SPCODE["ImmunizationAdministrationStatus"],
+                        IMM_STATUS_URI%i.administration_status_identifier,
+                        i.administration_status_title,
+                        IMM_STATUS_URI%"",
+                        i.administration_status_identifier)))
+            g.add((inode, SP['productName'],
+                   self.codedValue(
+                        SP['ImmunizationProduct'],
+                        IMM_PROD_URI%i.product_name_identifier,
+                        i.product_name_title,
+                        IMM_PROD_URI%"",
+                        i.product_name_identifier)))
+        
+            if i.product_class_title and i.product_class_identifier:
+                g.add((inode, SP['productClass'],
+                       self.codedValue(
+                            SP['ImmunizationClass'],
+                            IMM_CLASS_URI%i.product_class_identifier,
+                            i.product_class_title,
+                            IMM_CLASS_URI%"",
+                            i.product_class_identifier)))
+                                
+            if i.product_class_2_title and i.product_class_2_identifier:
+                g.add((inode, SP['productClass'],
+                       self.codedValue(
+                            SP['ImmunizationClass'],
+                            IMM_CLASS_URI%i.product_class_2_identifier,
+                            i.product_class_2_title,
+                            IMM_CLASS_URI%"",
+                            i.product_class_2_identifier)))
             
-            if i.refusal_reason:
-                g.add((inode, sp.refusalReason, ontology_service.coded_value(g, URIRef(i.refusal_reason))))
-
-            cvx_system, cvx_id = i.cvx.rsplit("#",1)
-            g.add((inode, sp.productName, self.codedValue(SPCODE["ImmunizationProduct"],URIRef(i.cvx), i.cvx_title, cvx_system+"#", cvx_id)))
-
-            if (i.vg):
-                vg_system, vg_id = i.vg.rsplit("#",1)
-                g.add((inode, sp.productClass, self.codedValue(SPCODE["ImmunizationClass"],URIRef(i.vg), i.vg_title, vg_system+"#", vg_id)))
-
-            if (i.vg2):
-                vg2_system, vg2_id = i.vg2.rsplit("#",1)
-                g.add((inode, sp.productClass, self.codedValue(SPCODE["ImmunizationClass"],URIRef(i.vg2), i.vg2_title, vg2_system+"#", vg2_id)))
+            if i.refusal_reason_title and i.refusal_reason_identifier:
+                g.add((inode, SP['refusalReason'], 
+                       self.codedValue(
+                            SP['ImmunizationRefusalReason'],
+                            IMM_REFUSE_URI%i.refusal_reason_identifier,
+                            i.refusal_reason_title,
+                            IMM_REFUSE_URI%"",
+                            i.refusal_reason_identifier)))
+                            
+            self.addStatement(inode)
 
     def addLabResults(self):
         """Adds Lab Results to the patient's graph"""
