@@ -105,19 +105,32 @@ class Migration(SchemaMigration):
         },
         'indivo.allergy': {
             'Meta': {'object_name': 'Allergy', '_ormbases': ['indivo.Fact']},
-            'allergen_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'allergen_name_abbrev': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'allergen_name_type': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'allergen_name_value': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'allergen_type': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'allergen_type_abbrev': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'allergen_type_type': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'allergen_type_value': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'date_diagnosed': ('django.db.models.fields.DateField', [], {'null': 'True'}),
-            'diagnosed_by': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True'}),
+            'allergic_reaction_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'allergic_reaction_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'allergic_reaction_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'category_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'category_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'category_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'drug_allergen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'drug_allergen_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'drug_allergen_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'drug_class_allergen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'drug_class_allergen_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'drug_class_allergen_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'fact_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['indivo.Fact']", 'unique': 'True', 'primary_key': 'True'}),
-            'reaction': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True'}),
-            'specifics': ('django.db.models.fields.TextField', [], {'null': 'True'})
+            'food_allergen_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'food_allergen_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'food_allergen_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'severity_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'severity_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'severity_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'})
+        },
+        'indivo.allergyexclusion': {
+            'Meta': {'object_name': 'AllergyExclusion', '_ormbases': ['indivo.Fact']},
+            'fact_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['indivo.Fact']", 'unique': 'True', 'primary_key': 'True'}),
+            'name_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'name_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'name_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'})
         },
         'indivo.audit': {
             'Meta': {'object_name': 'Audit'},
@@ -303,9 +316,9 @@ class Migration(SchemaMigration):
         'indivo.fact': {
             'Meta': {'object_name': 'Fact'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'document': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'allergy'", 'null': 'True', 'to': "orm['indivo.Document']"}),
+            'document': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.Document']", 'null': 'True'}),
             'id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'primary_key': 'True'}),
-            'record': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'allergy'", 'null': 'True', 'to': "orm['indivo.Record']"})
+            'record': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['indivo.Record']", 'null': 'True'})
         },
         'indivo.fill': {
             'Meta': {'object_name': 'Fill', '_ormbases': ['indivo.Fact']},
