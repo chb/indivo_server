@@ -20,6 +20,15 @@ class Migration(SchemaMigration):
         # Adding field 'Immunization.product_class_title'
         db.add_column('indivo_immunization', 'product_class_title', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
 
+        # Adding field 'Immunization.product_class_2_identifier'
+        db.add_column('indivo_immunization', 'product_class_2_identifier', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Immunization.product_class_2_system'
+        db.add_column('indivo_immunization', 'product_class_2_system', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
+        # Adding field 'Immunization.product_class_2_title'
+        db.add_column('indivo_immunization', 'product_class_2_title', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
+
         # Adding field 'Immunization.product_name_identifier'
         db.add_column('indivo_immunization', 'product_name_identifier', self.gf('django.db.models.fields.CharField')(max_length=255, null=True), keep_default=False)
 
@@ -61,6 +70,15 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Immunization.product_class_title'
         db.delete_column('indivo_immunization', 'product_class_title')
+
+        # Deleting field 'Immunization.product_class_2_identifier'
+        db.delete_column('indivo_immunization', 'product_class_2_identifier')
+
+        # Deleting field 'Immunization.product_class_2_system'
+        db.delete_column('indivo_immunization', 'product_class_2_system')
+
+        # Deleting field 'Immunization.product_class_2_title'
+        db.delete_column('indivo_immunization', 'product_class_2_title')
 
         # Deleting field 'Immunization.product_name_identifier'
         db.delete_column('indivo_immunization', 'product_name_identifier')
@@ -412,6 +430,9 @@ class Migration(SchemaMigration):
             'product_class_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'product_class_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'product_class_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'product_class_2_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'product_class_2_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'product_class_2_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'product_name_identifier': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'product_name_system': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'product_name_title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),

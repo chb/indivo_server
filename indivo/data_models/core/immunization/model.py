@@ -6,5 +6,6 @@ class Immunization(Fact):
     date = models.DateTimeField(null=True)
     administration_status = CodedValueField()
     product_class = CodedValueField()
+    product_class_2 = CodedValueField()
     product_name = CodedValueField()
     refusal_reason = CodedValueField()
