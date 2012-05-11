@@ -20,5 +20,5 @@ class FillSerializers(DataModelSerializers):
             record = carenet.record
 
         graph = PatientGraph(record)
-        graph.addFillList(queryset.iterator)
+        graph.addFillList(queryset.iterator())
         return graph.toRDF()

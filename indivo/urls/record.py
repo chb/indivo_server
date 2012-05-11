@@ -14,12 +14,6 @@ urlpatterns = patterns('',
     (r'^/documents/', include('indivo.urls.record_documents')),
     (r'^/reports/',   include('indivo.urls.record_reports')),
 
-    # SMART API Aliases
-    (r'^/allergies/$', MethodDispatcher({'GET': smart_allergies})),
-    (r'^/problems/$', MethodDispatcher({'GET': smart_problems})),
-    (r'^/medications/$', MethodDispatcher({'GET': smart_medications})),
-    (r'^/encounters/$', MethodDispatcher({'GET': smart_encounters})),
-
     # ownership
     (r'^/owner$', MethodDispatcher({
                 'GET' : record_get_owner,
@@ -49,5 +43,10 @@ urlpatterns = patterns('',
     (r'^/inbox/(?P<message_id>[^/]+)$', MethodDispatcher({
                 'POST': record_send_message})),
     (r'^/inbox/(?P<message_id>[^/]+)/attachments/(?P<attachment_num>[^/]+)$', MethodDispatcher({
-                'POST' : record_message_attach}))
+                'POST' : record_message_attach})),
+
+    # SMART API Aliases
+    (r'^/allergies/$', MethodDispatcher({'GET': smart_allergies})), # requires a custom view due to AllergyExclusions
+    (r'^/(?P<model_name>[^/]+)/$', MethodDispatcher({'GET': smart_generic})),
+
 )
