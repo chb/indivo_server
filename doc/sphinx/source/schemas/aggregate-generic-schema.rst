@@ -1,5 +1,5 @@
 Indivo Generic Aggregate Reports Schema
-==============================
+=======================================
 
 This schema describes report items returned in XML aggregate form from 
 :doc:`Generic Reports <../generic-reports>`.
