@@ -558,6 +558,20 @@ calls are now available:
    :http:get:`/capabilities/`
      Get the SMART capabilities for this instance of Indivo.
 
+Generic Reports
+---------------
+
+Indivo provides the ability to run 'generic' reports over all :doc:`data models <data-models/index>`.
+These reports support the :doc:`API Query Interface <query-api>`, and provide an 
+out of the box solution for reporting over core and contributed data models, 
+with the possibility for :ref:`customization <response_format_customization>`.
+
+.. glossary::
+
+	:http:get:`/records/{RECORD_ID}/reports/{DATA_MODEL}/`
+	:http:get:`/carenets/{CARENET_ID}/reports/{DATA_MODEL}/`
+
+
 Coding Systems
 --------------
 
