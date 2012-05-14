@@ -64,8 +64,8 @@ malformed_allergy = data.reports.allergy._TEST_ALLERGIES_INVALID[0]
 
 allergy = data.reports.allergy._TEST_ALLERGIES[0]
 
-immunization = "<Immunization xmlns='http://indivo.org/vocab/xml/documents#'> <dateAdministered>2009-05-16T00:00:00Z</dateAdministered> <administeredBy>Children's Hospital Boston</administeredBy> <vaccine> <type type='http://codes.indivo.org/codes/vaccinetypes/' value='hep-B' abbrev='hepb'>Hepatitis B</type> <manufacturer>Oolong Pharmaceuticals</manufacturer> <lot>AZ1234567</lot> <expiration>2009-06-01</expiration> </vaccine> <sequence>2</sequence> <anatomicSurface type='http://codes.indivo.org/codes/anatomicsurfaces/' value='shoulder' abbrev='shoulder'>Shoulder</anatomicSurface><adverseEvent>pain and rash</adverseEvent> </Immunization>"
-immunization2 = "<Immunization xmlns='http://indivo.org/vocab/xml/documents#'> <vaccine> <type type='http://codes.indivo.org/codes/vaccinetypes/' value='82' abbrev='adenovirus, NOS'>adenovirus vaccine, NOS</type> </vaccine> <sequence>2</sequence> </Immunization>"
+immunization = data.reports.immunization._TEST_IMMUNIZATIONS[0]
+
 measurement00 = "<HBA1C xmlns='http://indivo.org/vocab/xml/documents#' value='1.77' unit='percent' datetime='2009-07-22T01:00:00.000Z' />"
 measurement01 = "<HBA1C xmlns='http://indivo.org/vocab/xml/documents#' value='2.13' unit='percent' datetime='2009-06-17T03:00:00.034Z' />"
 measurement02 = "<HBA1C xmlns='http://indivo.org/vocab/xml/documents#' value='3.13' unit='percent' datetime='2009-06-17T03:00:00Z' />"

@@ -113,7 +113,6 @@ Medical Documents
 .. toctree::
    :maxdepth: 2
 
-   immunization-schema
    vitals-schema
    procedure-schema
    lab-schema

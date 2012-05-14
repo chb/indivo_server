@@ -48,7 +48,7 @@ def test_sharing(IndivoClient):
     document_1_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy)), "/Document/@id")[0]
     document_2_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy)), "/Document/@id")[0]
     document_3_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.immunization)), "/Document/@id")[0]
-    document_4_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.immunization2)), "/Document/@id")[0]
+    document_4_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.immunization)), "/Document/@id")[0]
 
     # and one more to test nevershare
     document_5_id = xpath(parse_xml(alice_chrome_client.post_document(data=data.allergy)), "/Document/@id")[0]
@@ -66,7 +66,8 @@ def test_sharing(IndivoClient):
 
     # immunizations are individually shared (well only one of them)
     alice_chrome_client.post_carenet_document(document_id = document_3_id, carenet_id=carenet_id)
-    
+    alice_chrome_client.delete_carenet_document(record_id=record_id, document_id=document_4_id, carenet_id=carenet_id)
+
     # Alice shares her contact document(s) with the carenet
     contact_doc = parse_xml(alice_chrome_client.read_documents(record_id = record_id, parameters={'type':'Contact'}))
     for doc_id in xpath(contact_doc, '/Documents/Document/@id'):

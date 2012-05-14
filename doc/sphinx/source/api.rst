@@ -504,10 +504,6 @@ results.
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/equipment/`
      List equipment for a given record.
 
-   :http:get:`/records/{RECORD_ID}/reports/minimal/immunizations/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/immunizations/`
-     List immunizations for a given record.
-
    :http:get:`/records/{RECORD_ID}/reports/minimal/labs/`
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/labs/`
      List lab results for a given record.

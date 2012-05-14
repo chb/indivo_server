@@ -57,11 +57,6 @@ def test_document_processing(IndivoClient):
         raise Exception("problem posting a document: %s" + response.response['response_data'])
 
     reports = [ 
-                #chrome_client.read_allergies(parameters={'offset':1}),
-                #chrome_client.read_allergies(parameters={'order_by':'creator'}),
-                #chrome_client.read_allergies(),
-                #chrome_client.read_allergies(parameters={'limit':1, 'offset':2}),
-                chrome_client.read_immunizations(),
                 chrome_client.read_vitals(),
                 chrome_client.read_vitals_category(category='weight'),
                 chrome_client.read_vitals_category(category='Blood_Pressure_Systolic'),

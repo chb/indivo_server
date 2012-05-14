@@ -124,23 +124,6 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
         
-    def test_get_immunizations(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/immunizations/?group_by=vaccine_type&aggregate_by=count*date_administered&date_range=date_administered*2005-03-10T00:00:00Z*'%(record_id)
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        url2 = '/records/%s/reports/minimal/immunizations/?vaccine_type=Hepatitis%%20B&date_group=date_administered*month&aggregate_by=count*vaccine_type&order_by=date_administered&date_range=date_administered*1990-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url2)
-        self.assertEquals(response.status_code, 200)
-
-        url3 = '/records/%s/reports/minimal/immunizations/?vaccine_type=adenovirus%%20vaccine,%%20NOS&order_by=date_administered&date_range=date_administered*2000-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url3)
-        self.assertEquals(response.status_code, 200)
-
     def test_get_labs(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/labs/?group_by=lab_type&aggregate_by=count*lab_test_name&date_range=date_measured*2010-03-10T00:00:00Z*'%(record_id)

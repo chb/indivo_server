@@ -2,18 +2,12 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#" xmlns:indivo="http://indivo.org/vocab/xml/documents#"
 elementFormDefault="qualified">
 
-  <include schemaLocation="allergy.xsd" />
   <include schemaLocation="asthmaactionplan.xsd" />
   <include schemaLocation="contact.xsd" />
   <include schemaLocation="demographics.xsd" />
   <include schemaLocation="equipment.xsd" />
-  <include schemaLocation="immunization.xsd" />
-
   <include schemaLocation="lab.xsd" />
   <include schemaLocation="labreport.xsd" />
-
-  <include schemaLocation="medication.xsd" />
-  <include schemaLocation="problem.xsd" />
   <include schemaLocation="procedure.xsd" />
   <include schemaLocation="schoolform.xsd" />
   <include schemaLocation="simplenote.xsd" />

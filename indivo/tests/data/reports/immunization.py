@@ -2,29 +2,23 @@ from base import report_content_to_test_docs
 
 _TEST_IMMUNIZATIONS = [
     """
-<Immunization xmlns='http://indivo.org/vocab/xml/documents#'>
-  <dateAdministered>2009-05-16T00:00:00Z</dateAdministered>
-  <administeredBy>Children's Hospital Boston</administeredBy>
-  <vaccine>
-    <type type='http://codes.indivo.org/codes/vaccinetypes/' value='hep-B' abbrev='hepb'>Hepatitis B</type>
-    <manufacturer>Oolong Pharmaceuticals</manufacturer>
-    <lot>AZ1234567</lot>
-    <expiration>2009-06-01</expiration>
-  </vaccine>
-  <sequence>2</sequence>
-  <anatomicSurface type='http://codes.indivo.org/codes/anatomicsurfaces/' value='shoulder' abbrev='shoulder'>Shoulder</anatomicSurface>
-  <adverseEvent>pain and rash</adverseEvent>
-</Immunization>
-""",
-
-"""
-<Immunization xmlns='http://indivo.org/vocab/xml/documents#'> 
-  <dateAdministered>2008-05-12T00:00:00Z</dateAdministered>
-  <vaccine>
-    <type type='http://codes.indivo.org/codes/vaccinetypes/' value='82' abbrev='adenovirus, NOS'>adenovirus vaccine, NOS</type>
-  </vaccine>
-  <sequence>2</sequence>
-</Immunization>
+<Models xmlns='http://indivo.org/vocab/xml/documents#'>
+  <Model name="Immunization">
+    <Field name="date">2009-05-16T12:00:00Z</Field>
+    <Field name="administration_status_title">Not Administered</Field>
+    <Field name="administration_status_system">http://smartplatforms.org/terms/codes/ImmunizationAdministrationStatus#</Field>
+    <Field name="administration_status_identifier">notAdministered</Field> 
+    <Field name="product_class_title">TYPHOID</Field>
+    <Field name="product_class_system">http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=vg#</Field>
+    <Field name="product_class_identifier">TYPHOID</Field>
+    <Field name="product_name_title">typhoid, oral</Field>
+    <Field name="product_name_system">http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#</Field>
+    <Field name="product_name_identifier">25</Field>
+    <Field name="refusal_reason_title">Allergy to vaccine/vaccine components, or allergy to eggs</Field>
+    <Field name="refusal_reason_system">http://smartplatforms.org/terms/codes/ImmunizationRefusalReason#</Field>
+    <Field name="refusal_reason_identifier">allergy</Field>
+  </Model>
+</Models>
 """,
 ]
 

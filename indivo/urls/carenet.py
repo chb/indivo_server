@@ -36,8 +36,6 @@ urlpatterns = patterns('',
       MethodDispatcher({ 'GET' : carenet_app_permissions })),
 
     # Reporting Calls                      
-    (r'^/reports/minimal/immunizations/$', 
-     MethodDispatcher({'GET':carenet_immunization_list})), 
     (r'^/reports/minimal/procedures/$',
      MethodDispatcher({'GET':carenet_procedure_list})), 
     (r'^/reports/minimal/labs/$',
