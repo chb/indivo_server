@@ -538,17 +538,18 @@ calls are now available:
 
 .. glossary::
 
-   :http:get:`/records/{RECORD_ID}/allergies/`
-     List a patient's Allergies as SMART RDF
-
-   :http:get:`/records/{RECORD_ID}/encounters/`
-     List a patient's Encounters as SMART RDF
-
-   :http:get:`/records/{RECORD_ID}/medications/`
-     List a patient's Medications as SMART RDF
-
-   :http:get:`/records/{RECORD_ID}/problems/`
-     List a patient's Problems as SMART RDF
+   :http:get:`/records/{RECORD_ID}/{MODEL_NAME}/`
+     Get a SMART RDF list of a patient's medical data of type ``MODEL_NAME``. Available types are:
+     
+     * ``allergies``
+     * ``demographics``
+     * ``encounters``
+     * ``fulfillments``
+     * ``immunizations``
+     * ``lab_results``
+     * ``medications``
+     * ``problems``
+     * ``vital_signs``
 
    :http:get:`/apps/{APP_ID}/manifest`
    :http:get:`/apps/manifests/`

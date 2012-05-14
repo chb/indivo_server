@@ -1304,7 +1304,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 }
 ''',
     "deprecated": None,
-    "added": ("2.0.0", ""),
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -4820,90 +4820,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
 },
 {
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/encounters/",
-    "view_func_name":"smart_encounters",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"SMART-compatible alias for the generic list view on Encounters, serialized as RDF.",
-    "return_desc":"SMART RDF describing the record's encounters.",
-    "return_ex":'''
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF
-xmlns:dcterms="http://purl.org/dc/terms/"
-xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-xmlns:sp="http://smartplatforms.org/terms#"
-xmlns:v="http://www.w3.org/2006/vcard/ns#"
->
- <rdf:Description rdf:nodeID="_3cbdff64-dca3-4d80-95f4-979965de22f1">
-    <v:value>1-235-947-3452</v:value>
-    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Pref"/>
-    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Tel"/>
-    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Work"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://smartplatforms.org/terms/codes/EncounterType#ambulatory">
-    <sp:system>http://smartplatforms.org/terms/codes/EncounterType#</sp:system>
-    <dcterms:identifier>ambulatory</dcterms:identifier>
-    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
-    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/EncounterType"/>
-    <dcterms:title>Ambulatory encounter</dcterms:title>
-  </rdf:Description>
-  <rdf:Description rdf:nodeID="_a958e1ce-a081-405b-80f6-d7cc22f23b9d">
-    <v:street-address>111 Lake Drive</v:street-address>
-    <v:locality>WonderCity</v:locality>
-    <v:country>Australia</v:country>
-    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Address"/>
-    <v:postal-code>5555</v:postal-code>
-  </rdf:Description>
-  <rdf:Description rdf:nodeID="_f954b2f9-a3f3-43b4-bca3-9fb22cf97aa6">
-    <sp:code rdf:resource="http://smartplatforms.org/terms/codes/EncounterType#ambulatory"/>
-    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
-    <dcterms:title>Ambulatory encounter</dcterms:title>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://indivo.org/records/f0768cfc-6409-4738-8a17-94166ed59cf7/encounters/b62219b7-39e9-4c29-80f9-df7401dd04fe">
-    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-05-16T12:00:00</sp:startDate>
-    <sp:encounterType rdf:nodeID="_f954b2f9-a3f3-43b4-bca3-9fb22cf97aa6"/>
-    <sp:organization rdf:nodeID="_f4b679e0-de53-4f1a-a5d6-fcbd856fe992"/>
-    <sp:provider rdf:nodeID="_23d08a80-dd42-451c-9155-9de0289d43bb"/>
-    <rdf:type rdf:resource="http://smartplatforms.org/terms#Encounter"/>
-    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-05-16T16:00:00</sp:endDate>
-    <sp:belongsTo rdf:nodeID="_25fbfc9a-32a5-420f-abb1-52ba9780b7ef"/>
-  </rdf:Description>
-  <rdf:Description rdf:nodeID="_f83a8cd4-dc70-48f2-b134-e6c33e0402a2">
-    <v:family-name>Mandel</v:family-name>
-    <v:given-name>Josuha</v:given-name>
-    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Name"/>
-  </rdf:Description>
-  <rdf:Description rdf:nodeID="_25fbfc9a-32a5-420f-abb1-52ba9780b7ef">
-    <rdf:type rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
-  </rdf:Description>
-  <rdf:Description rdf:nodeID="_23d08a80-dd42-451c-9155-9de0289d43bb">
-    <v:email>joshua.mandel@fake.emailserver.com</v:email>
-    <sp:npiNumber>5235235</sp:npiNumber>
-    <rdf:type rdf:resource="http://smartplatforms.org/terms#Provider"/>
-    <sp:deaNumber>325555555</sp:deaNumber>
-    <v:tel rdf:nodeID="_3cbdff64-dca3-4d80-95f4-979965de22f1"/>
-    <v:n rdf:nodeID="_f83a8cd4-dc70-48f2-b134-e6c33e0402a2"/>
-  </rdf:Description>
-  <rdf:Description rdf:nodeID="_f4b679e0-de53-4f1a-a5d6-fcbd856fe992">
-    <v:adr rdf:nodeID="_a958e1ce-a081-405b-80f6-d7cc22f23b9d"/>
-    <v:organization-name>Wonder Hospital</v:organization-name>
-    <rdf:type rdf:resource="http://smartplatforms.org/terms#Organization"/>
-  </rdf:Description>
-</rdf:RDF>
-''',
-    "deprecated": None,
-    "added": ('2.0.0', ''),
-    "changed": None,
-
-},
-{
     "method":"POST",
     "path":"/records/{RECORD_ID}/inbox/{MESSAGE_ID}",
     "view_func_name":"record_send_message",
@@ -4953,117 +4869,6 @@ xmlns:v="http://www.w3.org/2006/vcard/ns#"
 ''',
     "deprecated": None,
     "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/medications/",
-    "view_func_name":"smart_medications",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"SMART-compatible alias for the generic list view on Medications, serialized as RDF.",
-    "return_desc":"SMART RDF describing the record's medications and fills",
-    "return_ex":'''
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF
-xmlns="http://smartplatforms.org/terms#"
-xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-
-<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/6f87c75f-63ba-4d76-b38c-aa4607e99a40">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
-<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
-<date xmlns="http://purl.org/dc/terms/">2009-08-05</date>
-<dispenseDaysSupply>10</dispenseDaysSupply>
-<medication rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7"/>
-<quantityDispensed rdf:nodeID="node16rk1fgdvx128115"/>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="node16rk1fgdvx128115">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
-<value>20</value>
-<unit>{tab}</unit>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://purl.bioontology.org/ontology/RXNORM/309309">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
-<rdf:type rdf:resource="http://smartplatforms.org/terms/codes/RxNorm_Semantic"/>
-<title xmlns="http://purl.org/dc/terms/">Ciprofloxacin 500 MG Oral Tablet</title>
-<system>http://purl.bioontology.org/ontology/RXNORM/</system>
-<identifier xmlns="http://purl.org/dc/terms/">309309</identifier>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7">
-<startDate>2009-05-31</startDate>
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Medication"/>
-<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
-<instructions>1 bid</instructions>
-<drugName rdf:nodeID="node16rk1fgdvx128519"/>
-<frequency rdf:nodeID="node16rk1fgdvx128520"/>
-<quantity rdf:nodeID="node16rk1fgdvx128521"/>
-<fulfillment rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/89e3fbc6-3242-4633-b5c4-9efb78397322"/>
-<fulfillment rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/d5b563d2-2020-4c34-82ce-54a1ce6abe5e"/>
-<fulfillment rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/6f87c75f-63ba-4d76-b38c-aa4607e99a40"/>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="node16rk1fgdvx128519">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
-<title xmlns="http://purl.org/dc/terms/">Ciprofloxacin 500 MG Oral Tablet</title>
-<code rdf:resource="http://purl.bioontology.org/ontology/RXNORM/309309"/>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="node16rk1fgdvx128520">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
-<value>2</value>
-<unit>/d</unit>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="node16rk1fgdvx128521">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
-<value>1</value>
-<unit>{tablet}</unit>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/d5b563d2-2020-4c34-82ce-54a1ce6abe5e">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
-<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
-<date xmlns="http://purl.org/dc/terms/">2009-05-31</date>
-<dispenseDaysSupply>10</dispenseDaysSupply>
-<medication rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7"/>
-<quantityDispensed rdf:nodeID="node16rk1fgdvx127573"/>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="node16rk1fgdvx127573">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
-<value>20</value>
-<unit>{tab}</unit>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1557780/fulfillments/89e3fbc6-3242-4633-b5c4-9efb78397322">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Fulfillment"/>
-<belongsTo rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780"/>
-<date xmlns="http://purl.org/dc/terms/">2009-06-18</date>
-<dispenseDaysSupply>10</dispenseDaysSupply>
-<medication rdf:resource="http://sandbox-api.smartplatforms.org/records/1557780/medications/49826864-005e-482b-992b-6468b197f2c7"/>
-<quantityDispensed rdf:nodeID="node16rk1fgdvx128396"/>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="node16rk1fgdvx128396">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
-<value>20</value>
-<unit>{tab}</unit>
-</rdf:Description>
-
-</rdf:RDF>
-''',
-    "deprecated": None,
-    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -5204,61 +5009,6 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 ''',
     "deprecated": None,
     "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/problems/",
-    "view_func_name":"smart_problems",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"SMART-compatible alias for the generic list view on Problems, serialized as RDF.",
-    "return_desc":"SMART RDF describing the record's problems.",
-    "return_ex":'''
-<rdf:RDF
-xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-
-<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1540505/problems/9fc8b2c3-bb55-4e31-a413-522dcb7dbea8">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
-<belongsTo xmlns="http://smartplatforms.org/terms#" rdf:resource="http://sandbox-api.smartplatforms.org/records/1540505"/>
-<problemName xmlns="http://smartplatforms.org/terms#" rdf:nodeID="iDPsDPss4953"/>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="iDPsDPss4953">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
-<code xmlns="http://smartplatforms.org/terms#" rdf:resource="http://www.ihtsdo.org/snomed-ct/concepts/43339004"/>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://www.ihtsdo.org/snomed-ct/concepts/43339004">
-<rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
-<title xmlns="http://purl.org/dc/terms/">Hypokalemia</title>
-<system xmlns="http://smartplatforms.org/terms#">http://www.ihtsdo.org/snomed-ct/concepts/</system>
-<identifier xmlns="http://purl.org/dc/terms/">43339004</identifier>
-</rdf:Description>
-
-<rdf:Description rdf:nodeID="iDPsDPss4953">
-<title xmlns="http://purl.org/dc/terms/">Hypokalemia</title>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://sandbox-api.smartplatforms.org/records/1540505/problems/9fc8b2c3-bb55-4e31-a413-522dcb7dbea8">
-<startDate xmlns="http://smartplatforms.org/terms#">2005-12-30</startDate>
-</rdf:Description>
-
-<rdf:Description rdf:about="http://www.ihtsdo.org/snomed-ct/concepts/43339004">
-<rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
-</rdf:Description>
-   ...
-</rdf:RDF>
-''',
-    "deprecated": None,
-    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -6155,6 +5905,171 @@ SDMX Example:
 ''',
     "deprecated": ('1.0', 'Use :http:delete:`/records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}` instead.'),
     "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/{MODEL_NAME}/",
+    "view_func_name":"smart_generic",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'MODEL_NAME':'The name of the SMART data_model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API#Record_Calls>`_',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"SMART-compatible alias for the generic list view: returns data_models serialized as SMART RDF.",
+    "return_desc":":http:statuscode:`200` with SMART RDF/XML for all items matching **MODEL_NAME** belonging to the record.",
+    "return_ex":'''
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:sp="http://smartplatforms.org/terms#"
+>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/03426213-a50b-4df8-8585-e951fad99898">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_93f4ebe0-e5dd-4b45-80c1-a1b118871457"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2007-06-02T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_8e568a92-ab2c-4400-902f-5aa5685b0bdf">
+    <dcterms:title>Hyperlipidemia</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/55822004"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/651c297e-364c-4df8-b22d-280fd805d1fa">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_ec4d16cf-1f3d-4463-9872-d4494cf44327"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2007-01-22T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/165084003">
+    <dcterms:title>Clinical finding</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>165084003</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/5fb3e8e1-e65f-42f3-bc52-cd4040dbeca8">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_46c3aa8e-bc89-4012-8aa2-f1aadee29aac"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2007-09-26T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_93f4ebe0-e5dd-4b45-80c1-a1b118871457">
+    <dcterms:title>Chronic non-suppurative otitis media</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/21186006"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/82271004">
+    <dcterms:title>Injury of head</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>82271004</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/8e474cad-c6b2-46d9-853d-10a02d84ed16">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_5602c2a0-875e-48ee-b6fb-350a32aeb39c"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2007-01-28T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c">
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/399963005">
+    <dcterms:title>Abrasion or friction burn of other, multiple, and unspecified sites, without mention of infection</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>399963005</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/21186006">
+    <dcterms:title>Chronic non-suppurative otitis media</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>21186006</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/7c885267-4a2b-49e8-bee3-c3aaef1512e3">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_8e568a92-ab2c-4400-902f-5aa5685b0bdf"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-09-20T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_46c3aa8e-bc89-4012-8aa2-f1aadee29aac">
+    <dcterms:title>Acute bronchitis</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/10509002"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/34649000">
+    <dcterms:title>Closed fracture of malar AND/OR maxillary bones</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>34649000</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_5602c2a0-875e-48ee-b6fb-350a32aeb39c">
+    <dcterms:title>Closed fracture of malar AND/OR maxillary bones</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/34649000"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/c9708111-36d1-4255-84bc-6c4819864e00">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_f60a3485-ba2c-4f11-9e73-2af6b0621904"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2007-01-22T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f0fde196-8295-4cd6-b2ee-b08e39832e63">
+    <dcterms:title>Clinical finding</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/165084003"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_f60a3485-ba2c-4f11-9e73-2af6b0621904">
+    <dcterms:title>Injury of head</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/82271004"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="_ec4d16cf-1f3d-4463-9872-d4494cf44327">
+    <dcterms:title>Abrasion or friction burn of other, multiple, and unspecified sites, without mention of infection</dcterms:title>
+    <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/399963005"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/10509002">
+    <dcterms:title>Acute bronchitis</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>10509002</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c/problems/bbd612b9-3a47-4d62-b913-5cab6d8cc8cf">
+    <sp:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-09-13T00:00:00</sp:endDate>
+    <sp:problemName rdf:nodeID="_f0fde196-8295-4cd6-b2ee-b08e39832e63"/>
+    <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2004-09-20T00:00:00</sp:startDate>
+    <sp:belongsTo rdf:resource="http://indivo.org/records/8f5fb6c3-e065-41db-9be2-0c1fa4a97e2c"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Problem"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/55822004">
+    <dcterms:title>Hyperlipidemia</dcterms:title>
+    <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    <dcterms:identifier>55822004</dcterms:identifier>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+  </rdf:Description>
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
