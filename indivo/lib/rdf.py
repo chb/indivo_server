@@ -282,7 +282,7 @@ class PatientGraph(object):
             inode = URIRef(i.uri())
             g.add((inode, RDF.type, SP['Immunization']))
 
-            g.add((inode, dcterms.date, Literal(i.date)))
+            g.add((inode, DCTERMS['date'], Literal(i.date)))
             g.add((inode, SP['administrationStatus'],
                    self.codedValue(
                         SPCODE["ImmunizationAdministrationStatus"],
