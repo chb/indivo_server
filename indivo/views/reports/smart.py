@@ -6,7 +6,7 @@
 
 """
 
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, Http404
 from indivo.lib.view_decorators import DEFAULT_ORDERBY
 from indivo.lib.query import FactQuery
 from indivo.lib.rdf import PatientGraph
@@ -43,7 +43,7 @@ def smart_generic(request, record, model_name):
     default_query_args = get_default_query_args()
     data_model_name = SMART_URLS_TO_DATAMODELS.get(model_name, None)
     if not data_model_name:
-        return HttpResponseBadRequest('Invalid SMART datamodel: %s'%model_name)
+        raise Http404
     return _generic_list(request, default_query_args, data_model_name, response_format="application/rdf+xml", record=record)
 
 def smart_allergies(request, record):
