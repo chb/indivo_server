@@ -20,6 +20,8 @@ IMM_STATUS_URI="http://smartplatforms.org/terms/codes/ImmunizationAdministration
 IMM_PROD_URI="http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=cvx#%s"
 IMM_CLASS_URI="http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=vg#%s"
 IMM_REFUSE_URI="http://smartplatforms.org/terms/codes/ImmunizationRefusalReason#%s"
+INDIVO_RECORD_URI="http://indivo.org/records/%s"
+INDIVO_VOCAB_URI="http://indivo.org/vocab/documents#%s"
 
 # First Declare Name Spaces
 SP = Namespace("http://smartplatforms.org/terms#")
@@ -51,7 +53,7 @@ class PatientGraph(object):
         g.bind('foaf', FOAF)
         g.bind('v', VCARD)
         
-        self.patient = BNode()
+        self.patient = URIRef(INDIVO_RECORD_URI%record.id)
         g.add((self.patient, RDF.type, SP['MedicalRecord']))
 
     def toRDF(self,format="xml"):
