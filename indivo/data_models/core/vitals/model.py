@@ -1,18 +1,26 @@
 from indivo.models import Fact
 from django.db import models
+from indivo.fields import BloodPressureField, VitalSignField, CodedValueField, OrganizationField, ProviderField
 
-class Vitals(Fact):
-    date_measured = models.DateTimeField(null=True)
-    name = models.CharField(max_length=100)
-    name_type = models.CharField(max_length=80, null=True)
-    name_value = models.CharField(max_length=40, null=True)
-    name_abbrev = models.CharField(max_length=20, null=True)
-    value = models.FloatField()
-    unit = models.CharField(max_length=100)
-    unit_type = models.CharField(max_length=80, null=True)
-    unit_value = models.CharField(max_length=40, null=True)
-    unit_abbrev = models.CharField(max_length=20, null=True)
-    site = models.CharField(max_length=40, null=True)
-    position = models.CharField(max_length=40, null=True)
-    comments = models.TextField(null=True)
+class VitalSigns(Fact):
+    date = models.DateTimeField(null=True)
+    encounter = models.ForeignKey('Encounter', null=True)
+    bp = BloodPressureField()
+    bmi = VitalSignField()
+    heart_rate = VitalSignField()
+    height = VitalSignField()
+    oxygen_saturation = VitalSignField()
+    respiratory_rate = VitalSignField()
+    temperature = VitalSignField()
+    weight = VitalSignField()
 
+class Encounter(Fact):
+  startDate = models.DateTimeField(null=True)
+  endDate = models.DateTimeField(null=True)
+  facility = OrganizationField()
+  provider = ProviderField()
+  encounterType = CodedValueField()
+
+    
+    
+    
