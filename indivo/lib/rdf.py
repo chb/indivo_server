@@ -206,71 +206,54 @@ class PatientGraph(object):
         g = self.g
 
         for encounter in encounters:
-            eNode = URIRef(encounter.uri())
-            g.add((eNode, RDF.type, SP['Encounter']))
-            g.add((eNode, SP['startDate'], Literal(encounter.startDate)))      
-            if encounter.endDate:
-                g.add((eNode, SP['endDate'], Literal(encounter.endDate)))
-                
-            orgNode = self.organization(encounter, 'facility')
-            if orgNode:
-                g.add((eNode, SP['organization'], orgNode))
-
-            provNode = self.provider(encounter, 'provider')
-            if provNode:
-                g.add((eNode, SP['provider'], provNode))
-                
-            g.add((eNode, SP['encounterType'],
-                   self.codedValue(SPCODE["EncounterType"],
-                                   ENC_TYPE_URI%encounter.encounterType_identifier,
-                                   encounter.encounterType_title,
-                                   ENC_TYPE_URI%"",
-                                   encounter.encounterType_identifier)))
+            eNode = self.encounter(encounter)
             self.addStatement(eNode)
 
-    def addVitalSigns(self):
+    def addVitalsList(self, vitals):
         """Add vitals to a patient's graph"""
-
-        # TODO: adapt to Indivo Vitals
         g = self.g
-        if not self.pid in VitalSigns.vitals: return # No vitals to add
 
-        for v in VitalSigns.vitals[self.pid]:
-            vnode = BNode()
-            self.addStatement(vnode)
-            g.add((vnode,RDF.type,SP['VitalSigns']))
-            g.add((vnode,dcterms.date, Literal(v.timestamp)))
+        for v in vitals:
+            vnode = URIRef(v.uri('vital_signs'))
+            g.add((vnode, RDF.type, SP['VitalSigns']))
+            g.add((vnode, DCTERMS['date'], Literal(v.date)))
 
-            enode = BNode()
-            g.add((enode,RDF.type,SP['Encounter']))
-            g.add((vnode,SP.encounter, enode))
-            g.add((enode,SP.startDate, Literal(v.start_date)))
-            g.add((enode,SP.endDate, Literal(v.end_date)))
+            enode = self.encounter(v.encounter)
+            self.addStatement(enode)
+            g.add((vnode, SP['encounter'], enode))
 
-            if v.encounter_type == 'ambulatory':
-                etype = ontology_service.coded_value(g, URIRef("http://smartplatforms.org/terms/codes/EncounterType#ambulatory"))
-                g.add((enode, SP.encounterType, etype))
+            bpNode = self.bloodPressure(v, 'bp')
+            if bpNode:
+                g.add((vnode, SP['bloodPressure'], bpNode))
+
+            bmiNode = self.vital(v, 'bmi')
+            if bmiNode:
+                g.add((vnode, SP['bodyMassIndex'], bmiNode))
+
+            hrNode = self.vital(v, 'heart_rate')
+            if hrNode:
+                g.add((vnode, SP['heartRate'], hrNode))
+
+            hNode = self.vital(v, 'height')
+            if hNode:
+                g.add((vnode, SP['height'], hNode))
+
+            osNode = self.vital(v, 'oxygen_saturation')
+            if osNode:
+                g.add((vnode, SP['oxygenSaturation'], osNode))
+                
+            rrNode = self.vital(v, 'respiratory_rate')
+            if rrNode:
+                g.add((vnode, SP['respiratoryRate'], rrNode))
+                
+            tNode = self.vital(v, 'temperature')
+            if tNode:
+                g.add((vnode, SP['temperature'], tNode))
+
+            wNode = self.vital(v, 'weight')
+            if wNode:
+                g.add((vnode, SP['weight'], wNode))
         
-            def attachVital(vt, p):
-                ivnode = BNode()
-                if hasattr(v, vt['name']):
-                    val = getattr(v, vt['name'])
-                    g.add((ivnode, sp.value, Literal(val)))
-                    g.add((ivnode, RDF.type, sp.VitalSign))
-                    g.add((ivnode, sp.unit, Literal(vt['unit'])))
-                    g.add((ivnode, sp.vitalName, ontology_service.coded_value(g, URIRef(vt['uri']))))
-                    g.add((p, sp[vt['predicate']], ivnode))
-                return ivnode
-
-            for vt in VitalSigns.vitalTypes:
-                attachVital(vt, vnode)
-
-            if v.systolic:
-                bpnode = BNode()
-                g.add((vnode, sp.bloodPressure, bpnode))
-                attachVital(VitalSigns.systolic, bpnode)
-                attachVital(VitalSigns.diastolic, bpnode)
-            
             self.addStatement(vnode)
 
     def addImmunizationList(self, immunizations):
@@ -447,6 +430,32 @@ class PatientGraph(object):
     ### Helper Methods for reusable low-level objects ###
     #####################################################
 
+    def encounter(self, encounter):
+        """Build an Encounter, but don't link it to a patient graph"""
+        g = self.g
+
+        eNode = URIRef(encounter.uri())
+        g.add((eNode, RDF.type, SP['Encounter']))
+        g.add((eNode, SP['startDate'], Literal(encounter.startDate)))      
+        if encounter.endDate:
+            g.add((eNode, SP['endDate'], Literal(encounter.endDate)))
+                
+        orgNode = self.organization(encounter, 'facility')
+        if orgNode:
+            g.add((eNode, SP['organization'], orgNode))
+
+        provNode = self.provider(encounter, 'provider')
+        if provNode:
+            g.add((eNode, SP['provider'], provNode))
+                
+        g.add((eNode, SP['encounterType'],
+               self.codedValue(SPCODE["EncounterType"],
+                               ENC_TYPE_URI%encounter.encounterType_identifier,
+                               encounter.encounterType_title,
+                               ENC_TYPE_URI%"",
+                               encounter.encounterType_identifier)))
+        return eNode
+
     def medication(self, m):
         """ Build a Medication, but don't add fills and don't link it to the patient. Returns the med node. """
         g = self.g
@@ -498,6 +507,20 @@ class PatientGraph(object):
         self.g.add((cNode, SP['system'], Literal(system)))
         self.g.add((cNode, DCTERMS['identifier'], Literal(identifier)))
         return cvNode
+
+    def codedValueFromObj(self, obj, prefix, codeclass):
+        suffixes = ['identifier', 'title', 'system']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
+
+        return self.codedValue(
+            codeclass,
+            fields['system'] + fields['identifier'],
+            fields['title'],
+            fields['system'],
+            fields['identifier'],
+            )
 
     def valueAndUnit(self,value,units):
         """Adds a ValueAndUnit node to a graph; returns the node"""
@@ -647,6 +670,52 @@ class PatientGraph(object):
             self.g.add((pNode, VCARD['tel'], tel2Node))
 
         return pNode
+
+    def vital(self, obj, prefix):
+        suffixes = ['unit', 'value']
+        fields = self._obj_fields_by_name(obj, prefix, suffixes)
+        if not fields:
+            return None
+
+        vNode = BNode()
+        self.g.add((vNode, RDF.type, SP['VitalSign']))
+
+        if fields['unit']:
+            self.g.add((vNode, SP['unit'], Literal(fields['unit'])))
+        if fields['value']:
+            self.g.add((vNode, SP['value'], Literal(fields['value'])))
+
+        nameNode = self.codedValueFromObj(obj, "%s_name"%prefix, SPCODE['VitalSign'])
+        if nameNode:
+            self.g.add((vNode, SP['vitalName'], nameNode))
+
+        return vNode
+
+    def bloodPressure(self, obj, prefix):
+        bpNode = BNode()
+        self.g.add((bpNode, RDF.type, SP['BloodPressure']))
+        
+        sysNode = self.vital(obj, "%s_systolic"%prefix)
+        if sysNode:
+            self.g.add((bpNode, SP['systolic'], sysNode))
+
+        diaNode = self.vital(obj, "%s_diastolic"%prefix)
+        if diaNode:
+            self.g.add((bpNode, SP['diastolic'], diaNode))
+
+        posNode = self.codedValueFromObj(obj, "%s_position"%prefix, SPCODE['BloodPressureBodyPosition'])
+        if posNode:
+            self.g.add((bpNode, SP['bodyPosition'], posNode))
+
+        siteNode = self.codedValueFromObj(obj, "%s_site"%prefix, SPCODE['BloodPressureBodySite'])
+        if siteNode:
+            self.g.add((bpNode, SP['bodySite'], siteNode))
+
+        methodNode = self.codedValueFromObj(obj, "%s_method"%prefix, SPCODE['BloodPressureMethod'])
+        if methodNode:
+            self.g.add((bpNode, SP['method'], methodNode))
+
+        return bpNode
 
     ################################
     ### Low-level helper methods ###
