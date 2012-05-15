@@ -215,3 +215,50 @@ class ProviderField(DummyField):
         '_gender': (models.CharField, {'max_length':255, 'null':True, 'choices':gender_choices}),
         }
     
+class VitalSignField(DummyField):
+    """ A field for representing a single measurement of a vital sign. 
+
+    Creating a VitalSignField named 'bp', for example, will (under the hood) create the fields:
+
+    * ``bp_unit``, the unit of the measurement
+    * ``bp_value``, the value of the measurement
+    * ``bp_name``, the name of the measurement (a :py:class:`~indivo.fields.CodedValueField`)
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``bp`` field name.
+
+    """
+    
+    replacements = {
+        '_unit': (models.CharField, {'max_length':255, 'null':True}),
+        '_value': (models.FloatField, {'null':True}),
+        '_name': (CodedValueField, {}),
+        }
+
+class BloodPressureField(DummyField):
+    """ A field for representing a blood pressure measurement. 
+
+    Creating a BloodPressureField named 'bp', for example, will (under the hood) create the fields:
+
+    * ``bp_position``, the position in which the measurement was taken (a :py:class:`~indivo.fields.CodedValueField`)
+    * ``bp_site``, the site on the body at which the measurement was taken (a :py:class:`~indivo.fields.CodedValueField`)
+    * ``bp_method``, the method of the measurement (a :py:class:`~indivo.fields.CodedValueField`)
+    * ``bp_diastolic``, the diastolic blood pressure (a :py:class:`~indivo.fields.VitalSignField`)
+    * ``bp_systolic``, the systolic blood pressure (a :py:class:`~indivo.fields.VitalSignField`)
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``bp`` field name.
+
+    """
+    
+    replacements = {
+        '_position': (CodedValueField, {}),
+        '_site': (CodedValueField, {}),
+        '_method': (CodedValueField, {}),
+        '_diastolic': (VitalSignField, {}),
+        '_systolic': (VitalSignField, {}),
+        }

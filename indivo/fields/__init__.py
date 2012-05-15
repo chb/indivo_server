@@ -9,4 +9,4 @@ Medical Data via the Django ORM.
 
 from dummy_fields import DummyField, CodedValueField, ValueAndUnitField, AddressField
 from dummy_fields import NameField, TelephoneField, PharmacyField, ProviderField
-from dummy_fields import OrganizationField
+from dummy_fields import OrganizationField, BloodPressureField, VitalSignField
