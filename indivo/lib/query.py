@@ -226,7 +226,7 @@ class FactQuery(object):
                 if self.date_range['end_date']:
                     filter_args['%s__lte'%(self.valid_filters[self.date_range['field']][0])] = self.date_range['end_date']
             else:
-                raise ValueError('Invalid date range filter for fact type %s: %s'%(self.model.__name__, date_range['field']))
+                raise ValueError('Invalid date range filter for fact type %s: %s'%(self.model.__name__, self.date_range['field']))
 
         if self.status:
             filter_args['document__status'] = self.status
