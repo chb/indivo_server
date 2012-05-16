@@ -12,6 +12,7 @@ CORE_MODELS = (
     'Allergy',
     'AllergyExclusion',
     'Equipment',
+    'Encounter',
     'Fill',
     'Immunization',
     'Lab',
@@ -20,7 +21,7 @@ CORE_MODELS = (
     'Problem',
     'Procedure',
     'SimpleClinicalNote',
-    'Vitals',
+    'VitalSigns',
     )
 
 CORE_DIRS = (

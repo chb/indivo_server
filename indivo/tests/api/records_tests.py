@@ -755,17 +755,6 @@ class RecordInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         # ADD REPORTS
 
-    def test_get_record_vitals(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/vitals/'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # ADD REPORTS
-
-    def test_get_record_vitals_by_category(self):
-        # NOT IMPLEMENTED YET
-        pass
-
     def test_record_search(self):
         url = '/records/search?label=%s'
 

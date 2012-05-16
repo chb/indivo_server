@@ -116,6 +116,18 @@ Field Subclasses:
    :no-private-members:
    :no-show-inheritance:
 
+.. autoclass:: indivo.fields.VitalSignField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.fields.BloodPressureField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
 Simple Data Modeling Language (SDML)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

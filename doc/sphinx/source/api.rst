@@ -520,12 +520,6 @@ results.
    :http:get:`/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/`
      List clinical notes for a given record.
 
-   :http:get:`/records/{RECORD_ID}/reports/minimal/vitals/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/vitals/`
-   :http:get:`/records/{RECORD_ID}/reports/minimal/vitals/{CATEGORY}/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/vitals/{CATEGORY}`
-     List vital signs for a given record.
-
 SMART API Calls
 ---------------
 
@@ -535,10 +529,9 @@ calls are now available:
 .. glossary::
 
    :http:get:`/records/{RECORD_ID}/{MODEL_NAME}/`
-     Get a SMART RDF list of a patient's medical data of type ``MODEL_NAME``. Available types are:
+     Get a SMART RDF list of a patient's medical data of type ``MODEL_NAME``. Available data models are:
      
      * ``allergies``
-     * ``demographics``
      * ``encounters``
      * ``fulfillments``
      * ``immunizations``
@@ -546,7 +539,7 @@ calls are now available:
      * ``medications``
      * ``problems``
      * ``vital_signs``
-
+     
    :http:get:`/apps/{APP_ID}/manifest`
    :http:get:`/apps/manifests/`
      Get SMART-style JSON manifests for one or all apps registered with this 
@@ -568,9 +561,9 @@ with the possibility for :ref:`customization <response_format_customization>`.
 
 .. glossary::
 
-	:http:get:`/records/{RECORD_ID}/reports/{DATA_MODEL}/`
-	:http:get:`/carenets/{CARENET_ID}/reports/{DATA_MODEL}/`
-
+   :http:get:`/records/{RECORD_ID}/reports/{DATA_MODEL}/`
+   :http:get:`/carenets/{CARENET_ID}/reports/{DATA_MODEL}/`
+     List a patient's medical data.
 
 Coding Systems
 --------------

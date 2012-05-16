@@ -113,7 +113,6 @@ Medical Documents
 .. toctree::
    :maxdepth: 2
 
-   vitals-schema
    procedure-schema
    lab-schema
    equipment-schema

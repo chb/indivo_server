@@ -1,0 +1,20 @@
+{
+    "__modelname__": "VitalSigns",
+    "date": "Date",
+    "encounter": {
+        "__modelname__": "Encounter",
+        "startDate": "Date",
+        "endDate": "Date",
+	    "facility": "Organization",
+	    "provider": "Provider",
+        "encounterType": "CodedValue"
+        },
+    "bp": "BloodPressure",
+    "bmi": "VitalSign",
+    "heart_rate": "VitalSign",
+    "height": "VitalSign",
+    "oxygen_saturation": "VitalSign",
+    "respiratory_rate": "VitalSign",
+    "temperature": "VitalSign",
+    "weight": "VitalSign"
+}

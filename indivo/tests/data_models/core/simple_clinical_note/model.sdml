@@ -1,0 +1,20 @@
+{
+    "__modelname__": "SimpleClinicalNote",
+    "date_of_visit": "Date",
+    "finalized_at": "Date",
+    "visit_type": "String",
+    "visit_type_type": "String",
+    "visit_type_value": "String",
+    "visit_type_abbrev": "String",
+    "visit_location": "String",
+    "specialty": "String",
+    "specialty_type": "String",
+    "specialty_value": "String",
+    "specialty_abbrev": "String",
+    "signed_at": "Date",
+    "provider_name": "String",
+    "provider_institution": "String",
+    "chief_complaint": "String",
+    "content": "String"
+}
+

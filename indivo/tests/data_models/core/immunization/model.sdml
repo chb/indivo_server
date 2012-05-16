@@ -1,0 +1,10 @@
+{
+    "__modelname__": "Immunization",
+    "date": "Date",
+    "administration_status": "CodedValue",
+    "product_class": "CodedValue",
+    "product_class_2": "CodedValue",
+    "product_name": "CodedValue",
+    "refusal_reason": "CodedValue"
+}
+

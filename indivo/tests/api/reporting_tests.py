@@ -26,52 +26,6 @@ class ReportingInternalTests(InternalTests):
     def tearDown(self):
         super(ReportingInternalTests,self).tearDown()
 
-    # TODO: ADD BETTER TESTS OF RESPONSE DATA, NOT JUST 200s
-
-    def test_get_vitals(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/vitals/?group_by=category&aggregate_by=min*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        url2 = '/records/%s/reports/minimal/vitals/weight%%20test/?category=Blood%%20Pressure%%20Systolic&date_group=date_measured*month&aggregate_by=sum*value&order_by=date_measured'%(record_id)
-        response = self.client.get(url2)
-        self.assertEquals(response.status_code, 200)
-
-        url3 = '/records/%s/reports/minimal/vitals/?order_by=-created_at&date_measured=2009-05-16T15:23:21Z'%(record_id)
-        response = self.client.get(url3)
-        self.assertEquals(response.status_code, 200)
-        
-        # find by specific value
-        url = '/records/%s/reports/minimal/vitals/?value=185.0'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        # Check values
-        xml = etree.XML(response.content)
-        reports = xml.findall('.//{%s}VitalSign' % NS)
-        self.assertEqual(len(reports), 1)
-        
-        for report in reports:
-            vital_value = report.findtext('.//{%s}value' % NS)
-            self.assertEquals(float(vital_value), 185)
-        
-        # find by specific values
-        url = '/records/%s/reports/minimal/vitals/?value=185.0|145'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        # Check values
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}VitalSign' % NS)
-        self.assertEqual(len(reports), 2)
-        
-        for report in reports:
-            vital_value = report.findtext('.//{%s}value' % NS)
-            self.assertTrue(float(vital_value) in [185, 145])
-
     def test_get_simple_clinical_notes(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/simple-clinical-notes/?group_by=specialty&aggregate_by=count*provider_name&date_range=date_of_visit*2005-03-10T00:00:00Z*'%(record_id)

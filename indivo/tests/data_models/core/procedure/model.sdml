@@ -1,0 +1,14 @@
+{
+    "__modelname__": "Procedure",
+    "date_performed": "Date",
+    "name": "String",
+    "name_type": "String",
+    "name_value": "String",
+    "name_abbrev": "String",
+    "provider_name": "String",
+    "provider_institution": "String",
+    "location": "String",
+    "comments": "String"
+}
+
+

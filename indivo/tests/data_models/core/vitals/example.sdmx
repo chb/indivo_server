@@ -1,7 +1,3 @@
-from base import report_content_to_test_docs
-
-_TEST_VITALS = [
-    """
 <Models>
   <Model name="VitalSigns">
     <Field name="date">2009-05-16T12:00:00Z</Field>
@@ -83,7 +79,3 @@ _TEST_VITALS = [
     <Field name="weight_name_identifier">3141-9</Field>
   </Model>
 </Models>
-""",
-]
-
-TEST_VITALS = report_content_to_test_docs(_TEST_VITALS)

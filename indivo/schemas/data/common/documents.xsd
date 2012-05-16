@@ -11,6 +11,5 @@ elementFormDefault="qualified">
   <include schemaLocation="procedure.xsd" />
   <include schemaLocation="schoolform.xsd" />
   <include schemaLocation="simplenote.xsd" />
-  <include schemaLocation="vitals.xsd" />
 
 </schema>

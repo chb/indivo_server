@@ -39,7 +39,7 @@ def report_ccr(request, record=None, carenet=None):
                                        Immunization.objects.select_related().filter(record=record, 
                                                                                     document__status=active_status))
   vitalsigns = carenet_facts_filter(carenet,
-                                    Vitals.objects.select_related().filter(record=record, 
+                                    VitalSigns.objects.select_related().filter(record=record, 
                                                                            document__status=active_status))
 
 

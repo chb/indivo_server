@@ -12,7 +12,6 @@ VALID_CORE_SCHEMAS = {
     'lab': NS+'Lab',
     'procedure': NS+'Procedure',
     'simplenote': NS+'SimpleClinicalNote',
-    'vitals': NS+'VitalSign',
     }
 
 INVALID_CORE_SCHEMAS = (

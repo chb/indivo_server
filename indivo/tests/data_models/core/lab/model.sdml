@@ -1,0 +1,16 @@
+{
+    "__modelname__": "Lab",
+    "date_measured": "Date",
+    "lab_name": "String",
+    "lab_address": "String",
+    "lab_type": "String",
+    "lab_comments": "String",
+    "first_panel_name": "String",
+    "first_lab_test_name": "String",
+    "first_lab_test_value": "String",
+    "normal_range_minimum": "String",
+    "normal_range_maximum": "String",
+    "non_critical_range_minimum": "String",
+    "non_critical_range_maximum": "String"
+}
+

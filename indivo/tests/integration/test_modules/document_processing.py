@@ -45,7 +45,7 @@ def test_document_processing(IndivoClient):
                           data.equipment02,
                           data.vital_sign,
                           data.vital_sign,
-                          data.vital_sign2,
+                          data.vital_sign,
                           data.procedure,
                           data.procedure_no_code,
                           data.clinical_note
@@ -57,10 +57,6 @@ def test_document_processing(IndivoClient):
         raise Exception("problem posting a document: %s" + response.response['response_data'])
 
     reports = [ 
-                chrome_client.read_vitals(),
-                chrome_client.read_vitals_category(category='weight'),
-                chrome_client.read_vitals_category(category='Blood_Pressure_Systolic'),
-                #chrome_client.read_vitals_category(category='weight%20test', debug=True),
                 chrome_client.read_equipment(),
                 chrome_client.read_procedures(),
                 #chrome_client.read_measurements(lab_code='HBA1C', parameters={'limit':1})
