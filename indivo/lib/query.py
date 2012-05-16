@@ -325,7 +325,7 @@ class FactQuery(object):
 
             # Handle special cases of aggregation and grouping
             if self.aggregate_by and order_by_field_ext == self.aggregate_by['field']:
-                order_by_field = 'aggregation'
+                order_by_field = 'aggregate_value'
             elif self.group_by and order_by_field_ext != self.group_by:
                 raise ValueError('OrderBy fields in aggregations may only refer to the grouping field or the aggregation field. Your field was: %s'%(self.order_by))
             elif self.date_group and order_by_field_ext != self.date_group['field']:

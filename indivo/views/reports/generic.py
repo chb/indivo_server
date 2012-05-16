@@ -13,6 +13,7 @@ from django.utils import simplejson
 
 from indivo.lib.query import FactQuery
 from indivo.lib.view_decorators import marsloader
+from indivo.serializers.json import IndivoJSONEncoder
 
 # map request content types to Model serialization types
 SERIALIZATION_FORMAT_MAP = {
@@ -83,7 +84,7 @@ def aggregate_json(query):
         
         results.append(row)
         
-    return simplejson.dumps(results)
+    return simplejson.dumps(results, cls=IndivoJSONEncoder)
     
 def aggregate_xml(query):
     """Serialize an aggregate query's results to an XML string"""

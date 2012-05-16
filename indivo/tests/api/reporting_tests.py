@@ -266,32 +266,31 @@ class ReportingInternalTests(InternalTests):
         #      and there are only 2 of them; making meaningful queries difficult.
         
         # group_by, aggregate_by, date_range (json format)
-        url = '/records/%s/reports/vitals/?group_by=name&aggregate_by=min*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?group_by=weight_unit&aggregate_by=avg*weight_value&date_range=date*2005-03-10T00:00:00Z*'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         
         # Check aggregate report
         response_json = json.loads(response.content)
-        self.assertEqual(len(response_json), 2)      
+        self.assertEqual(len(response_json), 1)      
         self.assertEqual(response_json[0]['__modelname__'], 'AggregateReport')
-        self.assertTrue(float(response_json[0]['value']) in [185, 145])
-        self.assertTrue(response_json[0]['group'] in ['weight test', 'Blood Pressure Systolic'])
-        self.assertTrue(float(response_json[1]['value']) in [185, 145])
+        self.assertEqual(float(response_json[0]['value']), 75.8)
+        self.assertEqual(response_json[0]['group'], 'kg')
 
         # group_by, aggregate_by, date_range (xml format)
-        url = '/records/%s/reports/vitals/?group_by=name&aggregate_by=min*value&date_range=date_measured*2005-03-10T00:00:00Z*&response_format=application/xml'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?group_by=weight_unit&aggregate_by=avg*weight_value&date_range=date*2005-03-10T00:00:00Z*&response_format=application/xml'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         
         xml = etree.XML(response.content)
         reports = xml.findall('.//AggregateReport')
-        self.assertEqual(len(reports), 2)
+        self.assertEqual(len(reports), 1)
         # check aggregate results
-        self.assertTrue(float(reports[0].get('value')) in [185, 145])
-        self.assertTrue(reports[0].get('group') in ['Blood Pressure Systolic', 'weight test'])
+        self.assertEqual(float(reports[0].get('value')), 75.8)
+        self.assertEqual(reports[0].get('group'), 'kg')
 
         # string {field}, date_group, aggregate_by, order_by
-        url = '/records/%s/reports/vitals/?date_group=date_measured*month&aggregate_by=sum*value&order_by=date_measured'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?date_group=date*month&aggregate_by=min*date&order_by=date'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         
@@ -299,52 +298,50 @@ class ReportingInternalTests(InternalTests):
         response_json = json.loads(response.content)
         self.assertEqual(len(response_json), 2)      
         self.assertEqual(response_json[0]['__modelname__'], 'AggregateReport')
-        self.assertTrue(float(response_json[0]['value']) in [185, 145])
+        self.assertEqual(response_json[0]['value'], '2009-05-16T12:00:00Z')
         self.assertEqual(response_json[0]['group'], '2009-05')
         self.assertEqual(response_json[1]['__modelname__'], 'AggregateReport')
-        self.assertTrue(float(response_json[1]['value']) in [185, 145])
-        self.assertEqual(response_json[1]['group'], '2009-05')
+        self.assertEqual(response_json[1]['value'], '2010-05-16T12:00:00Z')
+        self.assertEqual(response_json[1]['group'], '2010-05')
         
         # date {field}
-        url = '/records/%s/reports/vitals/?date_measured=2009-05-16T15:23:21Z'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?date=2009-05-16T12:00:00Z'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         
-        response_json = json.loads(response.content)
-        self.assertEqual(len(response_json), 2)      
-        self.assertEqual(response_json[0]['date_measured'], '2009-05-16T15:23:21Z')
-        self.assertEqual(response_json[1]['date_measured'], '2009-05-16T15:23:21Z')
-        
-        # string {field}
-        url = '/records/%s/reports/vitals/?name=weight test'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
         response_json = json.loads(response.content)
         self.assertEqual(len(response_json), 1)      
-        self.assertEqual(response_json[0]['name'], 'weight test')
+        self.assertEqual(response_json[0]['date'], '2009-05-16T12:00:00Z')
+        
+        # string {field}
+        url = '/records/%s/reports/vitalsigns/?weight_name_title=Body weight'%(record_id)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        response_json = json.loads(response.content)
+        self.assertEqual(len(response_json), 2)      
+        self.assertEqual(response_json[0]['weight_name_title'], 'Body weight')
+        self.assertEqual(response_json[1]['weight_name_title'], 'Body weight')
         
         # number {field}
-        url = '/records/%s/reports/vitals/?value=185.0'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?weight_value=70.8'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         
         # Check values
         response_json = json.loads(response.content)
         self.assertEqual(len(response_json), 1)
-        
-        self.assertEquals(float(response_json[0]['value']), 185)
+        self.assertEquals(float(response_json[0]['weight_value']), 70.8)
         
         # number {field} with multiple values
-        url = '/records/%s/reports/vitals/?value=185.0|145'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?weight_value=70.8|80.8'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
         # Check values
         response_json = json.loads(response.content)
         self.assertEqual(len(response_json), 2)
-        
         for vital in response_json:
-            self.assertTrue(float(vital['value']) in [185, 145])
+            self.assertTrue(float(vital['weight_value']) in [70.8, 80.8])
 
 
     def test_get_generic_nonexistent(self):  
