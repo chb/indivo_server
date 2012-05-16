@@ -8,12 +8,10 @@ The views that implement reporting calls.
 """
 
 from equipment              import *
-from immunization           import *
 from lab                    import *
 from measurement            import *
 from procedure              import *
 from simple_clinical_notes  import *
-from vitals                 import *
 from ccr                    import *
 from generic                import *
 from smart                  import *
