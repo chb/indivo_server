@@ -56,6 +56,48 @@ class ValueAndUnitField(DummyField):
         '_unit': (models.CharField, {'max_length':255, 'null':True}),
         }
 
+class ValueRangeField(DummyField):
+    """ A field for representing a range of values.
+
+    Creating a ValueRangeField named 'normal_range', for example, will (under the hood) create the fields:
+    
+    * ``normal_range_max``, the maximum value of the range (a :py:class:`~indivo.fields.ValueAndUnitField`)
+    * ``normal_range_min``, the minimum value of the range (a :py:class:`~indivo.fields.ValueAndUnitField`)
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``normal_range`` field name.
+
+    """
+    
+    replacements = {
+        '_max': (ValueAndUnitField, {}),
+        '_min': (ValueAndUnitField, {}),
+        }
+
+class QuantitativeResultField(DummyField):
+    """ A field for representing a quantitative result, and expected ranges for that result.
+
+    Creating a QuantitativeResultField named 'lab_result', for example, will (under the hood) create the fields:
+    
+    * ``lab_result_non_critical_range``, the range outside of which results are 'critical' (a :py:class:`~indivo.fields.ValueRangeField`)
+    * ``lab_result_normal_range``, the range outside of which results are 'abnormal' (a :py:class:`~indivo.fields.ValueRangeField`)
+    * ``lab_result_value``, the actual result (a :py:class:`~indivo.fields.ValueAndUnitField`)
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``lab_result`` field name.
+
+    """
+    
+    replacements = {
+        '_non_critical_range': (ValueRangeField, {}),
+        '_normal_range': (ValueRangeField, {}),
+        '_value': (ValueAndUnitField, {}),
+        }
+
 class AddressField(DummyField):
     """ A field for representing a physical address.
 

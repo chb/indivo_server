@@ -19,6 +19,7 @@ from indivo.lib import iso8601
 from indivo.fields import CodedValueField, ValueAndUnitField, AddressField
 from indivo.fields import NameField, TelephoneField, PharmacyField, ProviderField
 from indivo.fields import OrganizationField, BloodPressureField, VitalSignField
+from indivo.fields import QuantitativeResultField, ValueRangeField
 
 SDM_TYPES = {
     'Date': (models.DateTimeField, {'null':True}),
@@ -34,6 +35,8 @@ SDM_TYPES = {
     'Provider': (ProviderField, {}),
     'VitalSign': (VitalSignField, {}),
     'BloodPressure': (BloodPressureField, {}),
+    'QuantitativeResult': (QuantitativeResultField, {}),
+    'ValueRange': (ValueRangeField, {}),
 }
 
 MODEL_NAME_KEY = '__modelname__'

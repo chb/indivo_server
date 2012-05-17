@@ -128,6 +128,19 @@ Field Subclasses:
    :no-private-members:
    :no-show-inheritance:
 
+.. autoclass:: indivo.fields.ValueRangeField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.fields.QuantitativeResultField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+
 Simple Data Modeling Language (SDML)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
