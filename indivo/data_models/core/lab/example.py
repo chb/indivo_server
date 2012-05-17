@@ -42,5 +42,7 @@ lab_fact = LabResult(
 
     collected_by_name_family="Finnialispi",
     collected_by_name_given="Tad",
+
+    collected_by_role="Lab Specialist",
     )
 

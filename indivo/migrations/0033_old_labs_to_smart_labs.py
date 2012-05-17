@@ -47,6 +47,7 @@ class Migration(SchemaMigration):
             ('collected_by_name_suffix', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
             ('collected_by_name_family', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
             ('collected_by_name_prefix', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
+            ('collected_by_role', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
         ))
         db.send_create_signal('indivo', ['LabResult'])
 
@@ -417,6 +418,7 @@ class Migration(SchemaMigration):
             'collected_by_org_adr_region': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'collected_by_org_adr_street': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'collected_by_org_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'collected_by_role': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'fact_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['indivo.Fact']", 'unique': 'True', 'primary_key': 'True'}),
             'narrative_result': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'notes': ('django.db.models.fields.CharField', [], {'max_length': '600', 'null': 'True'}),

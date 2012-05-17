@@ -40,6 +40,8 @@
 
     <Field name="collected_by_name_family">Finnialispi</Field>
     <Field name="collected_by_name_given">Tad</Field>
+
+    <Field name="collected_by_role">Lab Specialist</Field>
   </Model>
 </Models>
 

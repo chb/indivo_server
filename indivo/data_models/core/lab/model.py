@@ -13,3 +13,4 @@ class LabResult(Fact):
     collected_at = models.DateTimeField(null=True)
     collected_by_org = OrganizationField()
     collected_by_name = NameField()
+    collected_by_role = models.CharField(max_length=255, null=True)

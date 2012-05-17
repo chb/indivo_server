@@ -9,6 +9,7 @@
     "quantitative_result": "QuantitativeResult",
     "collected_at": "Date",
     "collected_by_org": "Organization",
-    "collected_by_name": "Name"
+    "collected_by_name": "Name",
+    "collected_by_role": "String"
 }
 
