@@ -22,6 +22,8 @@ IMM_CLASS_URI="http://www2a.cdc.gov/nip/IIS/IISStandards/vaccines.asp?rpt=vg#%s"
 IMM_REFUSE_URI="http://smartplatforms.org/terms/codes/ImmunizationRefusalReason#%s"
 INDIVO_RECORD_URI="http://indivo.org/records/%s"
 INDIVO_VOCAB_URI="http://indivo.org/vocab/documents#%s"
+LAB_INTERP_URI="http://smartplatforms.org/terms/codes/LabResultInterpretation#%s"
+LAB_STATUS_URI="http://smartplatforms.org/terms/codes/LabStatus#%s"
 
 # First Declare Name Spaces
 SP = Namespace("http://smartplatforms.org/terms#")
@@ -310,47 +312,91 @@ class PatientGraph(object):
                             
             self.addStatement(inode)
 
-    def addLabResults(self):
+    def addLabList(self, labs):
         """Adds Lab Results to the patient's graph"""
-       
-        # TODO: Adapt to Indivo LabResults
-
         g = self.g
-        if not self.pid in Lab.results: return  #No labs
-        for lab in Lab.results[self.pid]:
-            lNode = BNode()
-            g.add((lNode,RDF.type,SP['LabResult']))
-            g.add((lNode,SP['labName'],
-                   self.codedValue(SPCODE["LOINC"], LOINC_URI%lab.code,lab.name,LOINC_URI%"",lab.code)))
 
-            if lab.scale=='Qn':
-                qNode = BNode()
-                g.add((qNode,RDF.type,SP['QuantitativeResult']))
-                g.add((qNode,SP['valueAndUnit'],
-                       self.valueAndUnit(lab.value,lab.units)))
+        for lab in labs:
+            lNode = URIRef(lab.uri('lab_results'))
+            g.add((lNode, RDF.type, SP['LabResult']))
 
-                # Add Range Values
-                rNode = BNode()
-                g.add((rNode,RDF.type,SP['ValueRange']))
-                g.add((rNode,SP['minimum'],
-                       self.valueAndUnit(lab.low,lab.units)))
-                g.add((rNode,SP['maximum'],
-                       self.valueAndUnit(lab.high,lab.units)))
-                g.add((qNode,SP['normalRange'],rNode)) 
-                g.add((lNode,SP['quantitativeResult'],qNode))
+            g.add((lNode , SP['labName'],
+                   self.codedValue(
+                        SPCODE["LOINC"], 
+                        LOINC_URI%lab.test_name_identifier,
+                        lab.test_name_title,
+                        LOINC_URI%"",
+                        lab.test_name_identifier)))
+            
+            if lab.abnormal_interpretation_title and lab.abnormal_interpretation_identifier:
+                g.add((lNode, SP['abnormalInterpretation'], 
+                       self.codedValue(
+                            SPCODE['LabResultInterpretation'],
+                            LAB_INTERP_URI%lab.abnormal_interpretation_identifier,
+                            lab.abnormal_interpretation_title,
+                            LAB_INTERP_URI%"",
+                            lab.abnormal_interpretation_identifier)))
 
-            if lab.scale=='Ord': # Handle an Ordinal Result  
-                qNode = BNode()
-                g.add((qNode,RDF.type,SP['NarrativeResult']))
-                g.add((qNode,SP['value'],Literal(lab.value)))
-                g.add((lNode,SP['narrativeResult'],qNode))
+            if lab.accession_number:
+                g.add((lNode, SP['accessionNumber'], Literal(lab.accession_number)))
 
-            aNode = BNode()
-            g.add((aNode,RDF.type,SP['Attribution']))
-            g.add((aNode,SP['startDate'],Literal(lab.date)))
-            g.add((lNode,SP['specimenCollected'],aNode))
+            if lab.status_title and lab.status_identifier:
+                g.add((lNode, SP['labStatus'],
+                       self.codedValue(
+                            SPCODE['LabResultStatus'],
+                            LAB_STATUS_URI%lab.status_identifier,
+                            lab.status_title,
+                            LAB_STATUS_URI%"",
+                            lab.status_identifier)))
 
-            g.add((lNode,SP['externalID'],Literal(lab.acc_num)))      
+            if lab.narrative_result:
+                nrNode = BNode()
+                g.add((nrNode, RDF.type, SP['NarrativeResult']))
+                g.add((nrNode, SP['value'], Literal(lab.narrative_result)))
+                g.add((lNode, SP['narrativeResult'], nrNode))
+
+            if lab.notes:
+                g.add((lNode, SP['notes'], Literal(lab.notes)))
+
+            qrNode = self.quantitativeResult(lab, 'quantitative_result')
+            if qrNode:
+                g.add((lNode, SP['quantitativeResult'], qrNode))
+
+            # Add the specimenCollected node, but only if its subNodes should be added.
+            # Implemented with booleans which are set to True by the child 
+            # if the parent node should be added
+            add_attr = False
+            attrNode = BNode()
+            g.add((attrNode, RDF.type, SP['Attribution']))
+            if lab.collected_at:
+                add_attr = True
+                g.add((attrNode, SP['startDate'], Literal(lab.collected_at)))
+                
+            add_participant = False
+            pNode = BNode()
+            g.add((pNode, RDF.type, SP['Participant']))
+            if lab.collected_by_role:
+                add_participant = True
+                g.add((pNode, SP['role'], Literal(lab.collected_by_role)))
+            oNode = self.organization(lab, 'collected_by_org')
+            if oNode:
+                add_participant = True
+                g.add((pNode, SP['organization'], oNode))            
+            personNode = BNode()
+            g.add((personNode, RDF.type, SP['Person'])) 
+            nameNode = self.name(lab, 'collected_by_name')
+            if nameNode:
+                add_participant = True
+                g.add((personNode, VCARD['n'], nameNode))
+                g.add((pNode, SP['person'], personNode))
+
+            if add_participant:
+                add_attr = True
+                g.add((attrNode, SP['participant'], pNode))
+
+            if add_attr:
+                g.add((lNode, SP['specimenCollected'], attrNode))
+
             self.addStatement(lNode)
 
     def addAllergyExclusions(self, exclusions):
@@ -531,6 +577,49 @@ class PatientGraph(object):
         self.g.add((vNode, SP['value'], Literal(value)))
         self.g.add((vNode, SP['unit'], Literal(units)))
         return vNode
+
+    def valueAndUnitFromObj(self, obj, prefix):
+        val = getattr(obj, '%s_value'%prefix, None)
+        unit = getattr(obj, '%s_unit'%prefix, None)
+        return self.valueAndUnit(val, unit)
+
+    def valueRange(self, obj, prefix):
+        """Adds a ValueRange node to a graph; returns the node"""
+        vrNode = BNode()
+        self.g.add((vrNode, RDF.type, SP['ValueRange']))
+
+        minNode = self.valueAndUnitFromObj(obj, "%s_min"%prefix)
+        if minNode:
+            self.g.add((vrNode, SP['minimum'], minNode))
+
+        maxNode = self.valueAndUnitFromObj(obj, "%s_max"%prefix)
+        if maxNode:
+            self.g.add((vrNode, SP['maximum'], minNode))
+            
+        if not minNode and not maxNode:
+            return None
+        return vrNode
+
+    def quantitativeResult(self, obj, prefix):
+        """Adds a QuantitativeResult node to a graph; returns the node"""
+        qrNode = BNode()
+        self.g.add((qrNode, RDF.type, SP['QuantitativeResult']))
+
+        ncrNode = self.valueRange(obj, '%s_non_critical_range'%prefix)
+        if ncrNode:
+            self.g.add((qrNode, SP['nonCriticalRange'], ncrNode))
+
+        nrNode = self.valueRange(obj, '%s_normal_range'%prefix)
+        if nrNode:
+            self.g.add((qrNode, SP['normalRange'], nrNode))
+
+        vuNode = self.valueAndUnitFromObj(obj, '%s_value'%prefix)
+        if vuNode:
+            self.g.add((qrNode, SP['valueAndUnit'], vuNode))
+
+        if vuNode:
+            return qrNode
+        return None
 
     def address(self, obj, prefix):
         suffixes = ['country', 'city', 'postalcode', 'region', 'street']
@@ -716,7 +805,7 @@ class PatientGraph(object):
             self.g.add((bpNode, SP['method'], methodNode))
 
         return bpNode
-
+    
     ################################
     ### Low-level helper methods ###
     ################################

@@ -19,7 +19,7 @@ SMART_URLS_TO_DATAMODELS = {
     'allergies': 'Allergy',
     'fulfillments': 'Fill', 
     'immunizations': 'Immunization',
-    'lab_results': 'Lab',
+    'lab_results': 'LabResult',
     'medications': 'Medication',
     'vital_signs': 'VitalSigns',
 }
