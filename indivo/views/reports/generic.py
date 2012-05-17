@@ -48,7 +48,7 @@ def serialize(cls, format, query, record=None, carenet=None):
     if hasattr(cls, method):
         return getattr(cls, method)(queryset, result_count, record, carenet)
     else:
-        return HttpResponseBadRequest("format not supported")
+        raise ValueError("format not supported")
 
 def serialize_as_aggregate(format, query):
     """Serialize an aggregate query to the requested format"""
@@ -59,10 +59,8 @@ def serialize_as_aggregate(format, query):
         results = aggregate_xml(query)
     elif serialization_type == 'json':
         results = aggregate_json(query)
-    elif serialization_type == 'rdf':
-        pass
     else:
-        return HttpResponseBadRequest("format not supported")
+        raise ValueError("format not supported")
     
     return results
 
