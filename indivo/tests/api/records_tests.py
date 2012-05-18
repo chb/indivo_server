@@ -5,7 +5,7 @@ from indivo.tests.data import *
 from django.utils.http import urlencode
 from lxml import etree
 
-DOCUMENT_TYPE = 'Lab'
+DOCUMENT_TYPE = 'Models'
 AUDIT_FUNC_NAME = 'record_app_specific_document'
 CARENET_LABEL = 'New Carenet'
 REL = 'annotation'
@@ -722,13 +722,6 @@ class RecordInternalTests(InternalTests):
     def test_get_record_equipment(self):
         record_id = self.record.id
         url = '/records/%s/reports/minimal/equipment/'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # ADD REPORTS
-
-    def test_get_record_labs(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/labs/'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # ADD REPORTS

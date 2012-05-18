@@ -114,7 +114,6 @@ Medical Documents
    :maxdepth: 2
 
    procedure-schema
-   lab-schema
    equipment-schema
    scn-schema
    sdmx-schema

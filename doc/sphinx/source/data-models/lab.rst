@@ -1,5 +1,5 @@
-Indivo Data Model: Lab
-======================
+Indivo Data Model: LabResult
+============================
 
 Model Definition
 ----------------

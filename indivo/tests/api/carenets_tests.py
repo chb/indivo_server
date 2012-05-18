@@ -211,12 +211,3 @@ class CarenetInternalTests(InternalTests):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-    def test_get_carenet_labs(self):
-        c_id = self.shared_carenet.id
-        url = '/carenets/%s/reports/minimal/labs/'%(c_id)
-
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)

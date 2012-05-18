@@ -76,116 +76,7 @@ class ReportingInternalTests(InternalTests):
 
         url3 = '/records/%s/reports/minimal/measurements/HBA1C/?order_by=date_measured&date_range=date_measured*2009-06-17T03:00:00.02Z*'%(record_id)
         response = self.client.get(url3)
-        self.assertEquals(response.status_code, 200)
-        
-    def test_get_labs(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/labs/?group_by=lab_type&aggregate_by=count*lab_test_name&date_range=date_measured*2010-03-10T00:00:00Z*'%(record_id)
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-        
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # should see {['lab_type': u'1,25-Dihydroxy Vitamin D', 'aggregation': 1}]
-        # check result size
-        xml = etree.XML(response.content)
-        reports = xml.findall('.//{%s}AggregateReport' % NS)
-        self.assertEqual(len(reports), 1)
-        # check aggregate results
-        self.assertEqual(reports[0].get('value'), '1')
-        self.assertEqual(reports[0].get('group'), '1,25-Dihydroxy Vitamin D')
-
-        url = '/records/%s/reports/minimal/labs/?lab_type=hematology&date_group=date_measured*month&aggregate_by=count*lab_type&order_by=date_measured&date_range=date_measured*1990-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # Should see [{'aggregation': 1, u'month': u'1998-07'}, {'aggregation': 1, u'month': u'2009-07'}]
-        # check result size
-        xml = etree.XML(response.content)
-        reports = xml.findall('.//{%s}AggregateReport' % NS)
-        self.assertEqual(len(reports), 2)
-        # check aggregate results
-        self.assertEqual(reports[0].get('value'), '1')
-        self.assertEqual(reports[0].get('group'), '1998-07')
-        self.assertEqual(reports[1].get('value'), '1')
-        self.assertEqual(reports[1].get('group'), '2009-07')
-
-        url = '/records/%s/reports/minimal/labs/?lab_type=hematology&order_by=date_measured&date_range=date_measured*2000-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # should see 1 lab from 2009-07
-        # check result size
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}LabReport' % NS)
-        self.assertEqual(len(reports), 1)
-        # make sure results fall within our date_range
-        min_date = self.validateIso8601('2000-03-10T00:00:00Z')
-        for report in reports:
-            date_measured = report.findtext('.//{%s}dateMeasured' % NS)
-            date_measured = self.validateIso8601(date_measured)
-            self.assertTrue(date_measured >= min_date)
-
-        url = '/records/%s/reports/minimal/labs/?lab_type=hematology&order_by=date_measured&date_range=date_measured*1995-03-10T00:00:00Z*'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # check result size
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}LabReport' % NS)
-        self.assertEqual(len(reports), 2)
-        # make sure results fall within our date_range
-        min_date = self.validateIso8601('1995-03-10T00:00:00Z')
-        for report in reports:
-            date_measured = report.findtext('.//{%s}dateMeasured' % NS)
-            date_measured = self.validateIso8601(date_measured)
-            self.assertTrue(date_measured >= min_date)
-        
-        url = '/records/%s/reports/minimal/labs/?lab_type=hematology|1,25-Dihydroxy Vitamin D'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        
-        # Ensure that we retrieved 3 labs of the correct lab_type
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}LabReport' % NS)
-        self.assertEqual(len(reports), 3)
-        
-        for report in reports:
-            lab_type = report.findtext('.//{%s}labType' % NS)
-            self.assertTrue(lab_type in ['hematology', '1,25-Dihydroxy Vitamin D'])
-            
-        url = '/records/%s/reports/minimal/labs/?lab_type=hematology|nonexistentlabtype'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        
-        # Ensure that we retrieved 2 labs of the correct lab_type
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}LabReport' % NS)
-        self.assertEqual(len(reports), 2)
-        
-        for report in reports:
-            lab_type = report.findtext('.//{%s}labType' % NS)
-            self.assertTrue(lab_type in ['hematology', 'nonexistentlabtype'])
-            
-        url = '/records/%s/reports/minimal/labs/?lab_type=nonexistentlabtype1|nonexistentlabtype2|nonexistentlabtype3'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        
-        # Ensure that we retrieved 0 labs
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}LabReport' % NS)
-        self.assertEqual(len(reports), 0)
-        
-        # find by specific dates
-        url = '/records/%s/reports/minimal/labs/?date_measured=2010-07-16T12:00:00Z|1998-07-16T12:00:00Z'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-        # Ensure that we retrieved 1 lab with the correct date_measured
-        xml = etree.fromstring(response.content)
-        reports = xml.findall('.//{%s}LabReport' % NS)
-        self.assertEqual(len(reports), 1)
-        
-        for report in reports:
-            lab_type = report.findtext('.//{%s}dateMeasured' % NS)
-            self.assertTrue(lab_type in ['2010-07-16T12:00:00Z', '1998-07-16T12:00:00Z'])
+        self.assertEquals(response.status_code, 200)        
 
     def test_get_equipment(self):
         record_id = self.record.id
@@ -249,16 +140,16 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
 
     def test_get_generic_labs(self):
-        response = self.client.get('/records/%s/reports/Lab/'%(self.record.id))
+        response = self.client.get('/records/%s/reports/LabResult/'%(self.record.id))
         self.assertEquals(response.status_code, 200)
         
         response_json = json.loads(response.content)
-        self.assertTrue(len(response_json), 4)
+        self.assertTrue(len(response_json), 1)
 
-        # check to make sure Model name is correct, and that it has 14 fields        
+        # check to make sure Model name is correct, and that it has 36 fields        
         first_lab = response_json[0]
-        self.assertEquals(first_lab['__modelname__'], 'Lab')
-        self.assertEquals(len(first_lab), 14)
+        self.assertEquals(first_lab['__modelname__'], 'LabResult')
+        self.assertEquals(len(first_lab), 36)
 
     def test_generic_query_api(self):
         record_id = self.record.id

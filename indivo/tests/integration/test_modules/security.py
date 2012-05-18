@@ -62,7 +62,7 @@ def test_client_expect_no_access(client, record_id, document_id, run_special_adm
     assert_403(client.read_document_status_history(record_id=record_id, document_id=document_id))
 
     reports = ['read_equipment', 'read_procedures', 
-               ['read_measurements', {'lab_code':'HBA1C'}], 'read_labs']
+               ['read_measurements', {'lab_code':'HBA1C'}]]
     for report in reports:
         extra_params = {}
         if type(report) == list:

@@ -312,7 +312,7 @@ CALLS=[{
     <subject>your test results are looking good</subject>
     <severity>normal</severity>
     <record id="123" />
-    <attachment num="1" type="http://indivo.org/vocab/xml/documents#Lab" size="12546" />
+    <attachment num="1" type="http://indivo.org/vocab/xml/documents#Models" size="12546" />
   </Message>
 
   ...
@@ -378,7 +378,7 @@ CALLS=[{
  It seems you'll live forever!</body>
   <severity>normal</severity>
   <record id="123" />
-  <attachment num="1" type="http://indivo.org/vocab/xml/documents#Lab" size="12546" />
+  <attachment num="1" type="http://indivo.org/vocab/xml/documents#Models" size="12546" />
 </Message>
 ''',
     "deprecated": None,
@@ -1799,7 +1799,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   </QueryParams>
   <Report>
     <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
+      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Models" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
         <createdAt>2011-05-02T17:48:13Z</createdAt>
         <creator id="mymail@mail.ma" type="Account">
           <fullname>full name</fullname>
@@ -1826,97 +1826,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
   ...
 
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/labs/",
-    "view_func_name":"carenet_lab_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the lab data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of labs, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="lab_type" value="hematology"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <LabReport xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateMeasured>1998-07-16T12:00:00Z</dateMeasured>
-        <labType>hematology</labType>
-        <laboratory>
-          <name>Quest</name>
-          <address>300 Longwood Ave, Boston MA 02215</address>
-        </laboratory>
-        <comments>was looking pretty sick</comments>
-        <firstPanelName>CBC</firstPanelName>
-      </LabReport>
-    </Item>
-  </Report>
-  <Report>
-    <Meta>
-      <Document id="1b7270a6-5925-450c-9273-5a74386cef63" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="c1be22813ab83f6b3858878a802f372eef754fcdd285e44a5fdb7387d6ee3667" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="1b7270a6-5925-450c-9273-5a74386cef63"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <LabReport xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateMeasured>2009-07-16T12:00:00Z</dateMeasured>
-        <labType>hematology</labType>
-        <laboratory>
-          <name>Quest</name>
-          <address>300 Longwood Ave, Boston MA 02215</address>
-        </laboratory>
-        <comments>was looking pretty sick</comments>
-        <firstPanelName>CBC</firstPanelName>
-      </LabReport>
-    </Item>
-  </Report>
 </Reports>
 ''',
     "deprecated": None,
@@ -4972,7 +4881,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   </QueryParams>
   <Report>
     <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
+      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Models" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
         <createdAt>2011-05-02T17:48:13Z</createdAt>
         <creator id="mymail@mail.ma" type="Account">
           <fullname>full name</fullname>
@@ -4999,97 +4908,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
   ...
 
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/labs/",
-    "view_func_name":"lab_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the lab data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of labs, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="lab_type" value="hematology"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <LabReport xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateMeasured>1998-07-16T12:00:00Z</dateMeasured>
-        <labType>hematology</labType>
-        <laboratory>
-          <name>Quest</name>
-          <address>300 Longwood Ave, Boston MA 02215</address>
-        </laboratory>
-        <comments>was looking pretty sick</comments>
-        <firstPanelName>CBC</firstPanelName>
-      </LabReport>
-    </Item>
-  </Report>
-  <Report>
-    <Meta>
-      <Document id="1b7270a6-5925-450c-9273-5a74386cef63" type="http://indivo.org/vocab/xml/documents#Lab" size="1653" digest="c1be22813ab83f6b3858878a802f372eef754fcdd285e44a5fdb7387d6ee3667" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="1b7270a6-5925-450c-9273-5a74386cef63"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <LabReport xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateMeasured>2009-07-16T12:00:00Z</dateMeasured>
-        <labType>hematology</labType>
-        <laboratory>
-          <name>Quest</name>
-          <address>300 Longwood Ave, Boston MA 02215</address>
-        </laboratory>
-        <comments>was looking pretty sick</comments>
-        <firstPanelName>CBC</firstPanelName>
-      </LabReport>
-    </Item>
-  </Report>
 </Reports>
 ''',
     "deprecated": None,

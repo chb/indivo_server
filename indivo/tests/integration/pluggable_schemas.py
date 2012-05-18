@@ -145,17 +145,17 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         #Add some sample Reports
         self.loadTestReports(record=self.record)
         
-        response = self.client.get('/records/%s/reports/Lab/'%(self.record.id), {'response_format':'application/xml'})
+        response = self.client.get('/records/%s/reports/LabResult/'%(self.record.id), {'response_format':'application/xml'})
         self.assertEquals(response.status_code, 200)
         
          # parse response and check          
         response_xml = etree.XML(response.content)
         labs = response_xml.findall('./Model')
-        self.assertEqual(len(labs), 4)
+        self.assertEqual(len(labs), 1)
         lab = labs[0]
         
-        self.assertEqual(len(lab.findall('Field')), 12)
-        self.assertEqual(lab.get('name'), 'Lab')
+        self.assertEqual(len(lab.findall('Field')), 34)
+        self.assertEqual(lab.get('name'), 'LabResult')
         
     def test_sdmx_schema(self):
 

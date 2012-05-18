@@ -1,5 +1,5 @@
 <Models>
-  <Model name"LabResult">
+  <Model name="LabResult">
     <Field name="abnormal_interpretation_title">Normal</Field>
     <Field name="abnormal_interpretation_system">http://smartplatforms.org/terms/codes/LabResultInterpretation#</Field>
     <Field name="abnormal_interpretation_identifier">normal</Field>
@@ -29,7 +29,7 @@
     <Field name="quantitative_result_value_value">140</Field> 
     <Field name="quantitative_result_value_unit">mEq/L</Field>
 
-    <Field name="collected_at=date("2010-12-27T17:00:00Z"), 
+    <Field name="collected_at">2010-12-27T17:00:00Z</Field>
 
     <Field name="collected_by_org_name">City Lab</Field>
     <Field name="collected_by_org_adr_country">USA</Field>

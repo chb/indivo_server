@@ -8,7 +8,6 @@ The views that implement reporting calls.
 """
 
 from equipment              import *
-from lab                    import *
 from measurement            import *
 from procedure              import *
 from simple_clinical_notes  import *

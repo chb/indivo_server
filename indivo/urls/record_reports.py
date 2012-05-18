@@ -6,8 +6,6 @@ from indivo.lib.utils import MethodDispatcher
 urlpatterns = patterns('',
   (r'^minimal/measurements/(?P<lab_code>[^/]+)/$', 
    MethodDispatcher({'GET':measurement_list})),
-  (r'^minimal/labs/$', 
-   MethodDispatcher({'GET':lab_list})),
   (r'^minimal/procedures/$', 
    MethodDispatcher({'GET':procedure_list})),
   (r'^minimal/equipment/$', 

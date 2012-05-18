@@ -34,9 +34,7 @@ def test_document_processing(IndivoClient):
 
     medical_documents = [ 
                           data.immunization, 
-                          data.lab01,
-                          data.lab02,
-                          data.lab03,
+                          data.lab,
                           data.measurement00,
                           data.measurement01,
                           data.measurement02,
@@ -61,7 +59,6 @@ def test_document_processing(IndivoClient):
                 chrome_client.read_procedures(),
                 #chrome_client.read_measurements(lab_code='HBA1C', parameters={'limit':1})
                 chrome_client.read_measurements(lab_code='HBA1C'),
-                chrome_client.read_labs(),
                 chrome_client.read_ccr_experimental(),
               ]
 

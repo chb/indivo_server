@@ -1,5 +1,5 @@
-Indivo Data Model: Vitals
-=========================
+Indivo Data Model: VitalSigns
+=============================
 
 Model Definition
 ----------------

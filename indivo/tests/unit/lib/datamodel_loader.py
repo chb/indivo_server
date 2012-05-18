@@ -15,7 +15,7 @@ CORE_MODELS = (
     'Encounter',
     'Fill',
     'Immunization',
-    'Lab',
+    'LabResult',
     'Measurement',
     'Medication',
     'Problem',
