@@ -367,14 +367,12 @@ class PatientGraph(object):
             # if the parent node should be added
             add_attr = False
             attrNode = BNode()
-            g.add((attrNode, RDF.type, SP['Attribution']))
             if lab.collected_at:
                 add_attr = True
                 g.add((attrNode, SP['startDate'], Literal(lab.collected_at)))
                 
             add_participant = False
             pNode = BNode()
-            g.add((pNode, RDF.type, SP['Participant']))
             if lab.collected_by_role:
                 add_participant = True
                 g.add((pNode, SP['role'], Literal(lab.collected_by_role)))
@@ -383,18 +381,20 @@ class PatientGraph(object):
                 add_participant = True
                 g.add((pNode, SP['organization'], oNode))            
             personNode = BNode()
-            g.add((personNode, RDF.type, SP['Person'])) 
             nameNode = self.name(lab, 'collected_by_name')
             if nameNode:
                 add_participant = True
+                g.add((personNode, RDF.type, SP['Person'])) 
                 g.add((personNode, VCARD['n'], nameNode))
                 g.add((pNode, SP['person'], personNode))
 
             if add_participant:
                 add_attr = True
+                g.add((pNode, RDF.type, SP['Participant']))
                 g.add((attrNode, SP['participant'], pNode))
 
             if add_attr:
+                g.add((attrNode, RDF.type, SP['Attribution']))
                 g.add((lNode, SP['specimenCollected'], attrNode))
 
             self.addStatement(lNode)
@@ -586,7 +586,6 @@ class PatientGraph(object):
     def valueRange(self, obj, prefix):
         """Adds a ValueRange node to a graph; returns the node"""
         vrNode = BNode()
-        self.g.add((vrNode, RDF.type, SP['ValueRange']))
 
         minNode = self.valueAndUnitFromObj(obj, "%s_min"%prefix)
         if minNode:
@@ -598,12 +597,13 @@ class PatientGraph(object):
             
         if not minNode and not maxNode:
             return None
+
+        self.g.add((vrNode, RDF.type, SP['ValueRange']))
         return vrNode
 
     def quantitativeResult(self, obj, prefix):
         """Adds a QuantitativeResult node to a graph; returns the node"""
         qrNode = BNode()
-        self.g.add((qrNode, RDF.type, SP['QuantitativeResult']))
 
         ncrNode = self.valueRange(obj, '%s_non_critical_range'%prefix)
         if ncrNode:
@@ -618,6 +618,7 @@ class PatientGraph(object):
             self.g.add((qrNode, SP['valueAndUnit'], vuNode))
 
         if vuNode:
+            self.g.add((qrNode, RDF.type, SP['QuantitativeResult']))
             return qrNode
         return None
 
