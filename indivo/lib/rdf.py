@@ -277,7 +277,7 @@ class PatientGraph(object):
                         i.administration_status_identifier)))
             g.add((inode, SP['productName'],
                    self.codedValue(
-                        SP['ImmunizationProduct'],
+                        SPCODE['ImmunizationProduct'],
                         IMM_PROD_URI%i.product_name_identifier,
                         i.product_name_title,
                         IMM_PROD_URI%"",
@@ -286,7 +286,7 @@ class PatientGraph(object):
             if i.product_class_title and i.product_class_identifier:
                 g.add((inode, SP['productClass'],
                        self.codedValue(
-                            SP['ImmunizationClass'],
+                            SPCODE['ImmunizationClass'],
                             IMM_CLASS_URI%i.product_class_identifier,
                             i.product_class_title,
                             IMM_CLASS_URI%"",
@@ -295,7 +295,7 @@ class PatientGraph(object):
             if i.product_class_2_title and i.product_class_2_identifier:
                 g.add((inode, SP['productClass'],
                        self.codedValue(
-                            SP['ImmunizationClass'],
+                            SPCODE['ImmunizationClass'],
                             IMM_CLASS_URI%i.product_class_2_identifier,
                             i.product_class_2_title,
                             IMM_CLASS_URI%"",
@@ -304,7 +304,7 @@ class PatientGraph(object):
             if i.refusal_reason_title and i.refusal_reason_identifier:
                 g.add((inode, SP['refusalReason'], 
                        self.codedValue(
-                            SP['ImmunizationRefusalReason'],
+                            SPCODE['ImmunizationRefusalReason'],
                             IMM_REFUSE_URI%i.refusal_reason_identifier,
                             i.refusal_reason_title,
                             IMM_REFUSE_URI%"",
