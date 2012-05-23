@@ -511,22 +511,23 @@ class PatientGraph(object):
             g.add((mNode, SP['endDate'], Literal(m.endDate)))
         if m.provenance_identifier and m.provenance_title and m.provenance_system:
             g.add((mNode, SP['provenance'],
-                   self.codedValue(
-                        SPCODE['MedicationProvenance'],
-                        MED_PROV_URI%m.provenance_identifier,
-                        m.provenance_title,
-                        MED_PROV_URI%"",
-                        m.provenance_identifier)))
+                   self.code(m.provenance_title,
+                             MED_PROV_URI%"",
+                             m.provenance_identifier,
+                             [SPCODE['MedicationProvenance']])))
         return mNode
 
-    def code(self, title, system, identifier):
+    def code(self, title, system, identifier, classes=[]):
         """ Adds a Code to the graph and returns node """
-        cNode = BNode()
+        cNode = URIRef(system+identifier)
         self.g.add((cNode, RDF.type, SP['Code']))
         self.g.add((cNode, DCTERMS['title'], Literal(title)))
         self.g.add((cNode, SP['system'], Literal(system)))
         self.g.add((cNode, DCTERMS['identifier'], Literal(identifier)))
-        
+
+        # Add additional types: the general "Code" and specific, e.g. "BloodPressureCode"        
+        for c in classes:
+            self.g.add((cNode, RDF.type, c))
         return cNode
 
     def codedValue(self,codeclass,uri,title,system,identifier):
@@ -536,17 +537,10 @@ class PatientGraph(object):
         cvNode=BNode()
         self.g.add((cvNode, RDF.type, SP['CodedValue']))
         self.g.add((cvNode, DCTERMS['title'], Literal(title)))
-        
-        cNode=URIRef(uri)
+
+        cNode=self.code(title, system, identifier, classes=[codeclass])
         self.g.add((cvNode, SP['code'], cNode))
 
-        # Two types:  the general "Code" and specific, e.g. "BloodPressureCode"
-        self.g.add((cNode, RDF.type, codeclass))
-        self.g.add((cNode, RDF.type, SP['Code']))
-
-        self.g.add((cNode, DCTERMS['title'], Literal(title)))
-        self.g.add((cNode, SP['system'], Literal(system)))
-        self.g.add((cNode, DCTERMS['identifier'], Literal(identifier)))
         return cvNode
 
     def codedValueFromObj(self, obj, prefix, codeclass):
