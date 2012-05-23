@@ -364,7 +364,6 @@ class AccountInternalTests(InternalTests):
         self.assertNotRaises(Exception, AccessToken.objects.get, token=rt, token_secret=rs, connect_auth_p=False)
 
         db_rt = AccessToken.objects.get(token=rt)
-        import pdb;pdb.set_trace()
         self.assertEqual(db_rt.expires_at, iso8601.parse_utc_date(data.findtext('ExpiresAt')))
 
         # Get a 404 for invalid accounts, apps, and records
