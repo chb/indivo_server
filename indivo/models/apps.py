@@ -143,25 +143,39 @@ class PHA(OAuthApp):
     from indivo.views import _get_indivo_version
     parsed_manifest = simplejson.loads(manifest)
     parsed_credentials = simplejson.loads(credentials)
+
+    # expand relative urls to be relative to the UI
+    start_url = parsed_manifest.get('index', '')
+    if start_url and not start_url.startswith('http'):
+        start_url = "%s%s"%(settings.UI_SERVER_URL, start_url)
+
+    callback_url = parsed_manifest.get('oauth_callback_url', '')
+    if callback_url and not callback_url.startswith('http'):
+        callback_url = "%s%s"%(settings.UI_SERVER_URL, callback_url)
+
+    icon_url = parsed_manifest.get('icon', '')
+    if icon_url and not icon_url.startswith('http'):
+        icon_url = "%s%s"%(settings.UI_SERVER_URL, icon_url)
+
     kwargs = {
       'consumer_key': parsed_credentials['consumer_key'],
       'secret': parsed_credentials['consumer_secret'],
       'name': parsed_manifest['name'],
       'email': parsed_manifest['id'],
-      'start_url_template': parsed_manifest.get('index', ''),
-      'callback_url': parsed_manifest.get('oauth_callback_url', ''),  # not used by SMART apps
+      'start_url_template': start_url,
+      'callback_url': callback_url,
       'is_autonomous': parsed_manifest.get('mode', '') == 'background',
       'autonomous_reason': parsed_manifest.get('autonomous_reason', ''),
       'has_ui': parsed_manifest['has_ui'] if parsed_manifest.has_key('has_ui') \
-        else parsed_manifest.has_key('index'), # This may not be perfect
+          else parsed_manifest.has_key('index'), # This may not be perfect
       'frameable': parsed_manifest['frameable'] if parsed_manifest.has_key('frameable') \
-        else parsed_manifest.has_key('index'),
+          else parsed_manifest.has_key('index'),
       'description': parsed_manifest.get('description', ''),
       'author': parsed_manifest.get('author', ''),
       'version': parsed_manifest.get('version', ''),
-      'icon_url': parsed_manifest.get('icon', ''),
-      'indivo_version':parsed_manifest['indivo_version'] if parsed_manifest.has_key('indivo_version') \
-        else _get_indivo_version(parsed_manifest.get('smart_version', '')),
+      'icon_url': icon_url,
+      'indivo_version': parsed_manifest['indivo_version'] if parsed_manifest.has_key('indivo_version') \
+          else _get_indivo_version(parsed_manifest.get('smart_version', '')),
       'requirements': simplejson.dumps(parsed_manifest.get('requires', {})),
       }
     app = cls(**kwargs)
@@ -186,13 +200,15 @@ class PHA(OAuthApp):
           "author": self.author,
           "id": self.email,
           "version": self.version,
-          "smart_version": smart_version,
           "mode": "background" if self.is_autonomous else "ui",
           "scope": "record",
           "icon": self.icon_url,
           "index": self.start_url_template,          
           "requires": simplejson.loads(self.requirements),
           }
+      if smart_version:
+          output["smart_version"] = smart_version
+
       if not smart_only:
           output.update({
                   "has_ui": self.has_ui,
