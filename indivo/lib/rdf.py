@@ -55,9 +55,6 @@ class PatientGraph(object):
         g.bind('foaf', FOAF)
         g.bind('v', VCARD)
         
-        self.patient = URIRef(INDIVO_RECORD_URI%record.id)
-        g.add((self.patient, RDF.type, SP['MedicalRecord']))
-
     ########################
     ### Public Interface ###
     ########################
@@ -649,7 +646,7 @@ class PatientGraph(object):
     def telephone(self, obj, prefix):
         suffixes = ['type', 'number', 'preferred_p']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
-        if not fields:
+        if not fields or not fields['number']:
             return None
 
         tNode = BNode()
@@ -828,4 +825,4 @@ class PatientGraph(object):
         return ret
 
     def addStatement(self, s):
-        self.g.add((s, SP['belongsTo'], self.patient))
+        self.g.add((s, SP['belongsTo'], URIRef(INDIVO_RECORD_URI%self.record.id)))
