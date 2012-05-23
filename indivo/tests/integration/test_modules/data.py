@@ -54,11 +54,70 @@ doc18 = "<Document id='HELLOWORLD18' xmlns='http://indivo.org/vocab#'></Document
 doc19 = "<Document id='HELLOWORLD19' xmlns='http://indivo.org/vocab#'></Document>"
 doc20 = "<Document id='HELLOWORLD20' xmlns='http://indivo.org/vocab#'></Document>"
 
-demographics = '''<Demographics xmlns="http://indivo.org/vocab/xml/documents#"> <foo>bar</foo></Demographics>'''
-contact = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
-
-contact02 = '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> <name> <fullName>Sebastian Rockwell Cotour the Second</fullName> <givenName>Sebastian</givenName> <familyName>Cotour</familyName> </name> <email type="personal"> <emailAddress>scotour@hotmail.com</emailAddress> </email> <email type="work"> <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> </email> <address type="home"> <streetAddress>15 Waterhill Ct.</streetAddress> <postalCode>53326</postalCode> <locality>New Brinswick</locality> <region>Montana</region> <country>US</country> <timeZone>-7GMT</timeZone> </address> <location type="home"> <latitude>47N</latitude> <longitude>110W</longitude> </location> <phoneNumber type="home">5212532532</phoneNumber> <phoneNumber type="work">6217233734</phoneNumber> <instantMessengerName protocol="aim">scotour</instantMessengerName> </Contact>'''
-
+demographics = '''<?xml version="1.0" encoding="utf-8" ?>
+                    <Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+                        <dateOfBirth>1939-11-15</dateOfBirth>
+                        <gender>male</gender>
+                        <email>test@fake.org</email>
+                        <ethnicity>Scottish</ethnicity>
+                        <preferredLanguage>english</preferredLanguage>
+                        <race>caucasian</race>
+                        <Name>
+                            <familyName>Wayne</familyName>
+                            <givenName>Bruce</givenName>
+                            <prefix>Mr</prefix>
+                            <suffix>Jr</suffix>
+                        </Name>
+                        <Telephone>
+                            <type>h</type>
+                            <number>555-5555</number>
+                            <preferred>true</preferred>
+                        </Telephone>
+                        <Telephone>
+                            <type>c</type>
+                            <number>555-6666</number>
+                        </Telephone>
+                        <Address>
+                            <country>USA</country>
+                            <city>Gotham</city>
+                            <postalCode>90210</postalCode>
+                            <region>secret</region>
+                            <street>1007 Mountain Drive</street>
+                        </Address>
+                    </Demographics>'''
+                    
+demographics2 = '''<?xml version="1.0" encoding="utf-8" ?>
+                    <Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+                        <dateOfBirth>1939-11-15</dateOfBirth>
+                        <gender>male</gender>
+                        <email>test@fake.org</email>
+                        <ethnicity>Scottish</ethnicity>
+                        <preferredLanguage>english</preferredLanguage>
+                        <race>caucasian</race>
+                        <Name>
+                            <familyName>McTest</familyName>
+                            <givenName>Steve</givenName>
+                            <prefix>Mr</prefix>
+                            <suffix>Jr</suffix>
+                        </Name>
+                        <Telephone>
+                            <type>home</type>
+                            <number>555-5555</number>
+                            <preferred>true</preferred>
+                        </Telephone>
+                        <Telephone>
+                            <type>cell</type>
+                            <number>555-6666</number>
+                        </Telephone>
+                        <Address>
+                            <country>USA</country>
+                            <city>Gotham</city>
+                            <postalCode>90210</postalCode>
+                            <region>secret</region>
+                            <street>1007 Mountain Drive</street>
+                        </Address>
+                    </Demographics>'''
+                    
 # an allergy with the wrong allergy schema, should fail too
 malformed_allergy = data.reports.allergy._TEST_ALLERGIES_INVALID[0]
 

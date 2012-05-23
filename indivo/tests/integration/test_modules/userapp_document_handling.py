@@ -8,7 +8,7 @@ def test_userapp_document_handling(IndivoClient):
 
   try:
     admin_client = IndivoClient(data.machine_app_email, data.machine_app_secret)
-    record_id = admin_client.create_record(data=data.contact).response[PRD]['Record'][0]
+    record_id = admin_client.create_record(data=data.demographics).response[PRD]['Record'][0]
     admin_client.set_app_id(data.app_email)
     admin_client.get_version()
 

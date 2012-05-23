@@ -6,8 +6,7 @@ from base import *
 from no_user import *
 from accounts import *
 from apps import *
-from demographics import *
-from contacts import *
+from demographics import Demographics
 from status import *
 from records_and_documents import *
 from document_relationships import *

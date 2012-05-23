@@ -49,4 +49,7 @@ urlpatterns = patterns('',
     (r'^/allergies/$', MethodDispatcher({'GET': smart_allergies})), # requires a custom view due to AllergyExclusions
     (r'^/(?P<model_name>[^/]+)/$', MethodDispatcher({'GET': smart_generic})),
 
+    # Demographics
+    (r'^/demographics$', MethodDispatcher({'POST': set_demographics, 'PUT': set_demographics, 'GET': read_demographics})),
+
 )

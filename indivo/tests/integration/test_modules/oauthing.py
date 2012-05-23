@@ -7,7 +7,7 @@ def test_oauthing(IndivoClient):
 
   admin_client = IndivoClient(data.machine_app_email, data.machine_app_secret)
   admin_client.set_app_id(data.app_email)
-  record_id = admin_client.create_record(data=data.contact).response['prd']['Record'][0]
+  record_id = admin_client.create_record(data=data.demographics).response['prd']['Record'][0]
   admin_client.set_record_owner(data=data.account['account_id'])
 
   # try setting up with two setup documents, to make sure that's possible

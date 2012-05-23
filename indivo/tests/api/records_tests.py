@@ -44,14 +44,14 @@ def recordStateSetUp(test_cases_instance):
     # Create a record-specific doc with an external id
     _self.rs_docs.append(_self.createDocument(TEST_R_DOCS, 0, record=_self.record))
 
-    # Create a contact and demographics doc
-    _self.rs_docs.append(_self.createDocument(TEST_CONTACTS, 0, record=_self.record))
+    # Create a demographics doc and set on the record
+    _self.rs_docs.append(_self.createDocument(TEST_DEMOGRAPHICS_DOCS, 0, record=_self.record))
 
-    _self.rs_docs.append(_self.createDocument(TEST_DEMOGRAPHICS, 0, record=_self.record))
-
-    # Set our record's special docs
-    _self.record.demographics = _self.rs_docs[3]
-    _self.record.contact = _self.rs_docs[2]
+    demographics = Demographics.from_xml(_self.rs_docs[2].content)
+    demographics.document = _self.rs_docs[2] 
+    demographics.save()
+    _self.record.demographics = demographics
+    _self.record.demographics.save()
     _self.record.save()
 
     # The message we will send (not yet in the DB)
@@ -129,13 +129,13 @@ class RecordInternalTests(InternalTests):
     def test_create_record_ext(self):
         principal_email = self.account.email
         url='/records/external/%s/%s'%(principal_email, TEST_RECORDS[5]['external_id'])
-        response = self.client.put(url, data=TEST_CONTACTS[0]['content'], content_type='text/xml')
+        response = self.client.put(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         # Check for label, contact doc, etc.
 
     def test_create_record(self):
         url = '/records/' 
-        response = self.client.post(url, data=TEST_CONTACTS[0]['content'], content_type='text/xml')
+        response = self.client.post(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         # Check for label, contact doc, etc.
 
@@ -583,25 +583,23 @@ class RecordInternalTests(InternalTests):
         response = self.client.delete(url)
         self.assertEquals(response.status_code, 200)
 
-    def test_get_special_doc(self):
+    def test_get_demographics(self):
         record_id = self.record.id
-        for doc_type in SPECIAL_DOCS.keys():
-            url = '/records/%s/documents/special/%s'%(record_id, doc_type)
-            response = self.client.get(url)
-            self.assertEquals(response.status_code, 200)
+        url = '/records/%s/demographics'%(record_id)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
 
-    def test_set_special_doc(self):
+    def test_set_demographics(self):
         record_id = self.record.id
-        for doc_type, doc in SPECIAL_DOCS.iteritems():
-            url = '/records/%s/documents/special/%s'%(record_id, doc_type)
-            
-            # post
-            response = self.client.post(url, data=doc, content_type='text/xml')
-            self.assertEquals(response.status_code, 200)
+        url = '/records/%s/demographics'%(record_id)
+        
+        # post
+        response = self.client.post(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 200)
 
-            # put, should have same behavior
-            response = self.client.post(url, data=doc, content_type='text/xml')
-            self.assertEquals(response.status_code, 200)
+        # put, should have same behavior TODO: comment does not match code
+        response = self.client.post(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 200)
 
     def test_get_record_info(self):
         record_id = self.record.id

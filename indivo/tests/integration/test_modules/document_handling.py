@@ -13,12 +13,12 @@ def test_document_handling(IndivoClient):
     # Create Admin client
     admin_client = IndivoClient(data.machine_app_email, data.machine_app_secret)
     admin_client.set_app_id(data.app_email)
-    record_id = admin_client.create_record(data=data.contact).response[PRD]['Record'][0]
+    record_id = admin_client.create_record(data=data.demographics).response[PRD]['Record'][0]
     admin_client.set_record_owner(data=data.account['account_id'])
 
     # Create a new record by external ID, twice.
-    record_id_1 = etree.XML(admin_client.put_record_ext(principal_email = data.machine_app_email, external_id = 'record_ext_foobar', data=data.contact).response[RESP_DATA]).attrib['id']
-    record_id_2 = etree.XML(admin_client.put_record_ext(principal_email = data.machine_app_email, external_id = 'record_ext_foobar', data=data.contact).response[RESP_DATA]).attrib['id']
+    record_id_1 = etree.XML(admin_client.put_record_ext(principal_email = data.machine_app_email, external_id = 'record_ext_foobar', data=data.demographics).response[RESP_DATA]).attrib['id']
+    record_id_2 = etree.XML(admin_client.put_record_ext(principal_email = data.machine_app_email, external_id = 'record_ext_foobar', data=data.demographics).response[RESP_DATA]).attrib['id']
     if record_id_1 != record_id_2:
       raise Exception("record creation with external ID not idempotent")
 

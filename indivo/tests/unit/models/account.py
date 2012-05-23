@@ -20,7 +20,7 @@ class AccountModelUnitTests(InternalTests):
         self.u_account = self.createUninitializedAccount(TEST_ACCOUNTS, 2)
 
         # And its record
-        self.u_record = self.createRecord(TEST_RECORDS, 1, owner=self.u_account)
+        self.u_record = self.createRecord(TEST_RECORDS, 2, owner=self.u_account)
 
         # A fully shared record
         self.fs_record = self.createRecord(TEST_RECORDS, 5) # owned by TEST_ACCOUNTS[0] by default

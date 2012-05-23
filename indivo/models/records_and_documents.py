@@ -27,8 +27,7 @@ class Record(Object):
   # for lightweight distributed transaction control
   # nullable for those who don't want to consider it
   external_id = models.CharField(max_length = 250, null = True, unique=True)
-
-  # basic demographic information, this will be XML or possibly RDF
+  demographics = models.OneToOneField('Demographics', null = True)
 
   @classmethod
   def prepare_external_id(cls, local_external_id, principal_email):
@@ -97,10 +96,6 @@ class Record(Object):
                               num_attachments     = num_attachments,
                               severity            = severity)
 
-
-  contact = models.ForeignKey('Document', related_name='the_record_for_contact', null=True)
-  demographics = models.ForeignKey('Document', related_name='the_record_for_demographics', null=True)
-
   def notify(self, pha, content, document_id=None, app_url=None):
     # make sure that the document belongs to the record
     document = None
@@ -137,8 +132,6 @@ class DocumentSchema(Object):
   stylesheet = models.ForeignKey('Document', null=True, related_name='stylesheet')
   internal_p = models.BooleanField(default=True)
   
-  CONTACTS = None
-
   DEFAULT_REL_NAMESPACE = 'http://indivo.org/vocab/documentrels#'
 
   @classmethod
@@ -151,19 +144,6 @@ class DocumentSchema(Object):
     else:
       return "%s%s" % (cls.DEFAULT_REL_NAMESPACE, rel)
     
-  @classmethod
-  def setup(cls):
-    try:
-      cls.CONTACTS = cls.objects.get(type='Contacts')
-    except:
-      # SZ: What makes this call special?  Why not do a try/except rollback for all calls, if not, why for this one?
-      # Because we 'know' it should be there?
-      from django.db import transaction
-      try:
-        transaction.rollback()
-      except:
-        pass
-
   @property
   def uri(self):
     return self.type
@@ -415,5 +395,3 @@ class Document(Object):
 
     if save_again:
       self.save()
-
-DocumentSchema.setup()

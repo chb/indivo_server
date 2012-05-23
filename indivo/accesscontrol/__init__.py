@@ -263,7 +263,7 @@ def load_access_rules():
     """A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or any admin app."""
     return carenet_doc_access(principal, carenet) \
         or principal.isType('MachineApp')
-  views = [read_special_document_carenet]
+  views = [read_demographics_carenet]
   AccessRule('Carenet Special Doc Access', carenet_special_doc_access, views)
 
   def record_doc_access(principal, record, **unused_args):
@@ -315,8 +315,8 @@ def load_access_rules():
     """A user app with access to the record, a principal in full control of the record, or any admin app."""
     return record_doc_access(principal, record) \
         or principal.isType("MachineApp")
-  views = [read_special_document, # should PHAs be able to do this?
-           save_special_document]
+  views = [read_demographics, # should PHAs be able to do this?
+           set_demographics]
   AccessRule('Record Special Doc Access', record_special_doc_access, views)
 
   def record_doc_sharing_access(principal, record, **unused_args):

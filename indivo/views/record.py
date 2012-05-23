@@ -288,8 +288,8 @@ def record_create_ext(request, principal_email=None, external_id=None):
 def _record_create(request, principal_email=None, external_id=None):
   """ Create an Indivo record.
 
-  request.POST must contain raw XML that is a valid Indivo Contact
-  document (see :doc:`/schemas/contact-schema`).
+  request.POST must contain raw XML that is a valid Indivo Demographics
+  document (see :doc:`/schemas/demographics-schema`).
   
   This call will create a new record containing the following 
   information:
@@ -297,17 +297,17 @@ def _record_create(request, principal_email=None, external_id=None):
   * *creator*: Corresponds to ``request.principal``.
 
   * *label*: The full name of the new record, specified in the
-    contact document.
+    demographics document.
 
   * *owner*: Corresponds to ``request.principal``.
 
   * *external_id* An external identifier for the record, if 
     passed in.
 
-  Additionally, this call will create a Contact document for the record.
+  Additionally, this call will create a Demographics document for the record.
 
   Will return :http:statuscode:`200` with information about the record on
-  success, :http:statuscode:`400` if the contact data in request.POST was
+  success, :http:statuscode:`400` if the demographics data in request.POST was
   empty or invalid XML.
   
   """
@@ -317,7 +317,10 @@ def _record_create(request, principal_email=None, external_id=None):
   try:
     etree.XML(xml_data)
   except:
-    return HttpResponseBadRequest("Contact XML not valid")
+    return HttpResponseBadRequest("Demographics XML not valid")
+
+  demographics = Demographics.from_xml(xml_data)
+  label = demographics.name_given + demographics.name_family
 
   record_external_id = Record.prepare_external_id(external_id, principal_email)
     
@@ -326,23 +329,23 @@ def _record_create(request, principal_email=None, external_id=None):
       external_id = record_external_id,
       defaults = {
         'creator' : request.principal,
-        'label' : Contacts.from_xml(xml_data).full_name,
+        'label' : label,
         'owner' : request.principal})
   else:
     record = Record.objects.create(
       external_id = record_external_id,
       creator = request.principal,
-      label = Contacts.from_xml(xml_data).full_name,
+      label = label,
       owner = request.principal)
     created_p = True
 
-  # only set up the new contact document if the record is new
+  # only set up the new demographics document if the record is new
   # otherwise just return the existing record
   if created_p:
     # Create default carenets for this particular record
     record.create_default_carenets()
 
-    # Create the contact document
+    # Create the demographics document
     # use the same external ID as for the record
     # since those are distinct anyways
     doc_external_id = record_external_id
@@ -353,8 +356,10 @@ def _record_create(request, principal_email=None, external_id=None):
                             content     = xml_data,
                             external_id = doc_external_id)
       
-    # save the contact document as the special contact doc
-    record.contact = doc
+    # set up demographics model and add it to the record
+    demographics.document = doc
+    demographics.save()
+    record.demographics = demographics
     record.save()
 
   return render_template('record', {'record' : record}, type='xml')

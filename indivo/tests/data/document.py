@@ -150,79 +150,99 @@ _TEST_A_DOCS = [
 ]
 TEST_A_DOCS = scope(_TEST_A_DOCS, TestDocument)
 
-_TEST_DEMOGRAPHICS = [
+_TEST_DEMOGRAPHICS_DOCS = [
     {'label':'demo1',
-     'content':'<Demographics xmlns="http://indivo.org/vocab/xml/documents#"> <foo>bar</foo></Demographics>',
-     'record': None, 
-     },
+     'record':None,
+     'content':'''<Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+                    <dateOfBirth>1939-11-15</dateOfBirth>
+                    <gender>male</gender>
+                    <email>test@fake.org</email>
+                    <ethnicity>Scottish</ethnicity>
+                    <preferredLanguage>english</preferredLanguage>
+                    <race>caucasian</race>
+                    <Name>
+                        <familyName>Wayne</familyName>
+                        <givenName>Bruce</givenName>
+                        <prefix>Mr</prefix>
+                        <suffix>Jr</suffix>
+                    </Name>
+                    <Telephone>
+                        <type>h</type>
+                        <number>555-5555</number>
+                        <preferred>true</preferred>
+                    </Telephone>
+                    <Telephone>
+                        <type>c</type>
+                        <number>555-6666</number>
+                    </Telephone>
+                    <Address>
+                        <country>USA</country>
+                        <city>Gotham</city>
+                        <postalCode>90210</postalCode>
+                        <region>secret</region>
+                        <street>1007 Mountain Drive</street>
+                    </Address>
+                </Demographics>'''},  
+    {'label':'demo1',
+     'record':None,
+     'content':'''<Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+                    <dateOfBirth>1975-01-19</dateOfBirth>
+                    <gender>female</gender>
+                    <email>test2@fake.org</email>
+                    <ethnicity>Scottish</ethnicity>
+                    <preferredLanguage>english</preferredLanguage>
+                    <race>caucasian</race>
+                    <Name>
+                        <familyName>Testerson</familyName>
+                        <givenName>Test</givenName>
+                    </Name>
+                    <Telephone>
+                        <type>h</type>
+                        <number>555-5555</number>
+                        <preferred>true</preferred>
+                    </Telephone>
+                    <Telephone>
+                        <type>c</type>
+                        <number>555-6666</number>
+                    </Telephone>
+                    <Address>
+                        <country>USA</country>
+                        <city>Gotham</city>
+                        <postalCode>90210</postalCode>
+                        <region>secret</region>
+                        <street>1007 Mountain Drive</street>
+                    </Address>
+                </Demographics>'''},
+    {'label':'demo1',
+     'record':None,
+     'content':'''<Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+                    <dateOfBirth>1985-06-01</dateOfBirth>
+                    <gender>female</gender>
+                    <email>test3@fake.org</email>
+                    <ethnicity>Scottish</ethnicity>
+                    <preferredLanguage>english</preferredLanguage>
+                    <race>caucasian</race>
+                    <Name>
+                        <familyName>McGee</familyName>
+                        <givenName>Testy</givenName>
+                    </Name>
+                    <Telephone>
+                        <type>h</type>
+                        <number>555-5555</number>
+                        <preferred>true</preferred>
+                    </Telephone>
+                    <Telephone>
+                        <type>c</type>
+                        <number>555-6666</number>
+                    </Telephone>
+                    <Address>
+                        <country>USA</country>
+                        <city>Gotham</city>
+                        <postalCode>90210</postalCode>
+                        <region>secret</region>
+                        <street>1007 Mountain Drive</street>
+                    </Address>
+                </Demographics>'''},
 ]
-TEST_DEMOGRAPHICS = scope(_TEST_DEMOGRAPHICS, TestDocument)
+TEST_DEMOGRAPHICS_DOCS = scope(_TEST_DEMOGRAPHICS_DOCS, TestDocument)
 
-_TEST_CONTACTS = [
-    {'label':'cont1',
-     'record': None, 
-     'content': '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> 
-                     <name> 
-                       <fullName>Sebastian Rockwell Cotour</fullName> 
-                       <givenName>Sebastian</givenName> 
-                       <familyName>Cotour</familyName> 
-                     </name> 
-                     <email type="personal"> 
-                       <emailAddress>scotour@hotmail.com</emailAddress> 
-                     </email> 
-                     <email type="work"> 
-                       <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> 
-                     </email> 
-                     <address type="home"> 
-                       <streetAddress>15 Waterhill Ct.</streetAddress> 
-                       <postalCode>53326</postalCode> 
-                       <locality>New Brinswick</locality> 
-                       <region>Montana</region> 
-                       <country>US</country> 
-                       <timeZone>-7GMT</timeZone> 
-                     </address> 
-                     <location type="home"> 
-                       <latitude>47N</latitude> 
-                       <longitude>110W</longitude> 
-                     </location> 
-                     <phoneNumber type="home">5212532532</phoneNumber> 
-                     <phoneNumber type="work">6217233734</phoneNumber> 
-                     <instantMessengerName protocol="aim">scotour</instantMessengerName> 
-                   </Contact>'''
-     },
-    {'label':'cont2',
-     'record': None,
-     'content': '''<Contact id="5326" xmlns="http://indivo.org/vocab/xml/documents#"> 
-                     <name> 
-                       <fullName>Sebastian Rockwell Cotour the Second</fullName> 
-                       <givenName>Sebastian</givenName> 
-                       <familyName>Cotour</familyName> 
-                     </name> 
-                     <email type="personal"> 
-                       <emailAddress>scotour@hotmail.com</emailAddress> 
-                     </email> 
-                     <email type="work"> 
-                       <emailAddress>sebastian.cotour@childrens.harvard.edu</emailAddress> 
-                     </email> 
-                     <address type="home"> 
-                       <streetAddress>15 Waterhill Ct.</streetAddress> 
-                       <postalCode>53326</postalCode> 
-                       <locality>New Brinswick</locality> 
-                       <region>Montana</region> 
-                       <country>US</country> 
-                       <timeZone>-7GMT</timeZone> 
-                     </address> 
-                     <location type="home"> 
-                       <latitude>47N</latitude> 
-                       <longitude>110W</longitude> 
-                     </location> 
-                     <phoneNumber type="home">5212532532</phoneNumber> 
-                     <phoneNumber type="work">6217233734</phoneNumber> 
-                     <instantMessengerName protocol="aim">scotour</instantMessengerName> 
-                   </Contact>'''
-     },
-]
-TEST_CONTACTS = scope(_TEST_CONTACTS, TestDocument)
-
-# For iterating over special docs
-SPECIAL_DOCS = {'contact':_TEST_CONTACTS[0]['content'], 'demographics':_TEST_DEMOGRAPHICS[0]['content']}

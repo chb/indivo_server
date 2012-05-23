@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Demographics xmlns="http://indivo.org/vocab/xml/documents#">
-    <dateOfBirth>2001-05-15</dateOfBirth>
-    <dateOfDeath>2095-10-11</dateOfDeath>
-    <gender>Male</gender>
-    <ethnicity>Basque</ethnicity>
-    <language>EN</language>
-    <maritalStatus>Single</maritalStatus>
-    <employmentStatus>Unemployed</employmentStatus>
-    <employmentIndustry>Textiles</employmentIndustry>
-    <occupation>Tailor</occupation>
-    <religion>Jewish</religion>
-    <income>12,000 USD</income>
-    <highestEducation>High School</highestEducation>
-    <organDonor>false</organDonor>
+    <dateOfBirth>1939-11-15</dateOfBirth>
+    <gender>male</gender>
+    <email>test@fake.org</email>
+    <ethnicity>Scottish</ethnicity>
+    <preferredLanguage>english</preferredLanguage>
+    <race>caucasian</race>
+    <Name>
+        <familyName>Wayne</familyName>
+        <givenName>Bruce</givenName>
+        <prefix>Mr</prefix>
+        <suffix>Jr</suffix>
+    </Name>
+    <Telephone>
+        <type>h</type>
+        <number>555-5555</number>
+        <preferred>true</preferred>
+    </Telephone>
+    <Telephone>
+        <type>c</type>
+        <number>555-6666</number>
+    </Telephone>
+    <Address>
+        <country>USA</country>
+        <city>Gotham</city>
+        <postalCode>90210</postalCode>
+        <region>secret</region>
+        <street>1007 Mountain Drive</street>
+    </Address>
 </Demographics>

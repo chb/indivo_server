@@ -64,61 +64,49 @@ class PatientGraph(object):
 
     def toRDF(self,format="xml"):
         return self.g.serialize(format=format)
-
+    
     def addDemographics(self, record):
         """ Adds patient Demographics info to the graph. """
+        g = self.g
+        demographics = record.demographics
 
-        # TODO: Implement with Indivo demographics model
-        pNode = BNode()
-        self.addStatement(pNode)
-        g.add((pNode,RDF.type,SP.Demographics))
+        dNode = URIRef(demographics.uri())
+        g.add((dNode, RDF.type, SP['Demographics']))
+        
+        # simple required
+        g.add((dNode, VCARD['bday'], Literal(demographics.bday)))
+        g.add((dNode, FOAF['gender'], Literal(demographics.gender)))    
+        
+        # simple optional
+        if demographics.ethnicity:
+            g.add((dNode, SP['ethnicity'], Literal(demographics.ethnicity)))
+        if demographics.preferred_language:
+            g.add((dNode, SP['preferredLanguage'], Literal(demographics.preferred_language)))
+        if demographics.race:
+            g.add((dNode, SP['race'], Literal(demographics.race)))
+        if demographics.email:
+            g.add((dNode, SP['email'], Literal(demographics.email)))
        
-        nameNode = BNode()
-        g.add((pNode, VCARD['n'], nameNode))
-        g.add((nameNode,RDF.type, VCARD['Name']))
-        g.add((nameNode,VCARD['given-name'],Literal(p.fname)))
-        g.add((nameNode,VCARD['additional-name'],Literal(p.initial)))
-        g.add((nameNode,VCARD['family-name'],Literal(p.lname)))
+        # compound required
+        self.g.add((dNode, VCARD['n'], self.name(demographics, "name")))
+        g.add((dNode, SP['medicalRecordNumber'],
+               self.code("Indivo Record %s"%record.id,
+                         "Indivo Record",
+                         INDIVO_RECORD_URI%record.id)))
         
-        addrNode = BNode() 
-        g.add((pNode, VCARD['adr'], addrNode))
-        g.add((addrNode, RDF.type, VCARD['Address']))
-        g.add((addrNode, RDF.type, VCARD['Home']))
-        g.add((addrNode, RDF.type, VCARD['Pref']))
-        g.add((addrNode,VCARD['street-address'],Literal(p.street)))
-        if len(p.apartment) > 0: g.add((addrNode,VCARD['extended-address'],Literal(p.apartment)))
-        g.add((addrNode,VCARD['locality'],Literal(p.city)))
-        g.add((addrNode,VCARD['region'],Literal(p.region)))
-        g.add((addrNode,VCARD['postal-code'],Literal(p.pcode)))
-        g.add((addrNode,VCARD['country'],Literal(p.country)))
-      
-        if len(p.home) > 0:
-            homePhoneNode = BNode() 
-            g.add((pNode, VCARD['tel'], homePhoneNode))
-            g.add((homePhoneNode, RDF.type, VCARD['Tel']))
-            g.add((homePhoneNode, RDF.type, VCARD['Home']))
-            g.add((homePhoneNode, RDF.type, VCARD['Pref']))
-            g.add((homePhoneNode,RDF.value,Literal(p.home)))
-           
-        if len(p.cell) > 0:
-            cellPhoneNode = BNode() 
-            g.add((pNode, VCARD['tel'], cellPhoneNode))
-            g.add((cellPhoneNode, RDF.type, VCARD['Tel']))
-            g.add((cellPhoneNode, RDF.type, VCARD['Cell']))
-            if len(p.home) == 0: g.add((cellPhoneNode, RDF.type, VCARD['Pref']))
-            g.add((cellPhoneNode,RDF.value,Literal(p.cell)))
-      
-        g.add((pNode,FOAF['gender'],Literal(p.gender)))
-        g.add((pNode,VCARD['bday'],Literal(p.dob)))
-        g.add((pNode,VCARD['email'],Literal(p.email)))
+        # compound optional           
+        addrNode = self.address(demographics, "adr")
+        if addrNode:
+            self.g.add((dNode, VCARD['adr'], addrNode))
+        tel1Node = self.telephone(demographics, "tel_1")
+        if tel1Node:
+            self.g.add((dNode, VCARD['tel'], tel1Node))
+        tel2Node = self.telephone(demographics, "tel_2")
+        if tel2Node:
+            self.g.add((dNode, VCARD['tel'], tel2Node))
 
-        recordNode = BNode()
-        g.add((pNode,SP['medicalRecordNumber'],recordNode))
-        g.add((recordNode, RDF.type, SP['Code']))
-        g.add((recordNode, DCTERMS['title'], Literal("My Hospital Record %s"%p.pid)))
-        g.add((recordNode, DCTERMS['identifier'], Literal(p.pid)))
-        g.add((recordNode, SP['system'], Literal("My Hospital Record")))
-        
+        self.addStatement(dNode)
+
     def addMedList(self, meds):
         """Adds a MedList to a patient's graph"""
 
@@ -533,6 +521,16 @@ class PatientGraph(object):
                         MED_PROV_URI%"",
                         m.provenance_identifier)))
         return mNode
+
+    def code(self, title, system, identifier):
+        """ Adds a Code to the graph and returns node """
+        cNode = BNode()
+        self.g.add((cNode, RDF.type, SP['Code']))
+        self.g.add((cNode, DCTERMS['title'], Literal(title)))
+        self.g.add((cNode, SP['system'], Literal(system)))
+        self.g.add((cNode, DCTERMS['identifier'], Literal(identifier)))
+        
+        return cNode
 
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""

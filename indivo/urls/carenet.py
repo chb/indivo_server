@@ -46,4 +46,7 @@ urlpatterns = patterns('',
      MethodDispatcher({'GET':carenet_measurement_list})),
     (r'^/reports/(?P<data_model>[^/]+)/$', 
      MethodDispatcher({'GET':carenet_generic_list})),
+
+    # Demographics                       
+    (r'^/demographics$', MethodDispatcher({'GET': read_demographics_carenet})),
 )

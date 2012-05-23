@@ -1,21 +1,63 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://indivo.org/vocab/xml/documents#">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:indivo="http://indivo.org/vocab/xml/documents#"
+           elementFormDefault="qualified" 
+           targetNamespace="http://indivo.org/vocab/xml/documents#">
+  
+  <xs:complexType name="Name">
+    <xs:sequence>
+      <xs:element name="familyName" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="givenName" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="prefix" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="suffix" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:simpleType name="PhoneType">
+    <xs:restriction base="xs:normalizedString">
+      <xs:enumeration value="h"/>
+      <xs:enumeration value="w"/>
+      <xs:enumeration value="c"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="GenderType">
+    <xs:restriction base="xs:normalizedString">
+      <xs:enumeration value="female"/>
+      <xs:enumeration value="male"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="Telephone">
+    <xs:sequence>
+      <xs:element name="type" type="indivo:PhoneType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="number" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="preferred" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="Address">
+    <xs:sequence>
+      <xs:element name="country" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="postalCode" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="region" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="street" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+  
   <xs:element name="Demographics">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="dateOfBirth" type="xs:date" minOccurs="0" />
-        <xs:element name="dateOfDeath" type="xs:date" minOccurs="0" />
-        <xs:element name="gender" type="xs:string" minOccurs="0" />
-        <xs:element name="ethnicity" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="language" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="maritalStatus" type="xs:string" minOccurs="0" />
-        <xs:element name="employmentStatus" type="xs:string" minOccurs="0" />
-        <xs:element name="employmentIndustry" type="xs:string" minOccurs="0" />
-        <xs:element name="occupation" type="xs:string" minOccurs="0" />
-        <xs:element name="religion" type="xs:string" minOccurs="0" />
-        <xs:element name="income" type="xs:string" minOccurs="0" />
-        <xs:element name="highestEducation" type="xs:string" minOccurs="0" />
-        <xs:element name="organDonor" type="xs:boolean" minOccurs="0" />
+        <xs:element name="dateOfBirth" type="xs:date" minOccurs="1" />
+        <xs:element name="gender" type="indivo:GenderType" minOccurs="1" />
+        <xs:element name="email" type="xs:string" minOccurs="0" />
+        <xs:element name="ethnicity" type="xs:string" minOccurs="0" />
+        <xs:element name="preferredLanguage" type="xs:string" minOccurs="0" />
+        <xs:element name="race" type="xs:string" minOccurs="0" />
+        <xs:element name="Name" type="indivo:Name" minOccurs="1"/>
+        <xs:element name="Telephone" type="indivo:Telephone" minOccurs="0" maxOccurs="2" />
+        <xs:element name="Address" type="indivo:Address" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

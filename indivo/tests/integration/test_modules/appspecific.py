@@ -19,7 +19,7 @@ def test_appspecific(IndivoClient):
     admin_client = IndivoClient(data.machine_app_email, data.machine_app_secret)
 
     # create a record and authorize a PHA to access it
-    record = parse_xml(admin_client.create_record(data=data.contact))
+    record = parse_xml(admin_client.create_record(data=data.demographics))
     record_id = xpath(record, '/Record/@id')[0]
     token = admin_client.setup_app(record_id=record_id, app_id=data.app_email).response['prd']
 
@@ -55,7 +55,7 @@ def test_appspecific(IndivoClient):
     check_lists()
     
     # create a second record and authorize the PHA again
-    record_2 = parse_xml(admin_client.create_record(data=data.contact))
+    record_2 = parse_xml(admin_client.create_record(data=data.demographics))
     record_id_2 = xpath(record, '/Record/@id')[0]
     token = admin_client.setup_app(record_id=record_id_2, app_id=data.app_email).response['prd']
 

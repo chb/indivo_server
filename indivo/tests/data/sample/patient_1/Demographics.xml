@@ -1,4 +1,21 @@
-<ns0:Demographics xmlns:ns0="http://indivo.org/vocab/xml/documents#">
-   <ns0:dateOfBirth>1998-05-06</ns0:dateOfBirth>
-   <ns0:gender>male</ns0:gender>
-</ns0:Demographics>
+<Demographics xmlns="http://indivo.org/vocab/xml/documents#">
+    <dateOfBirth>1939-11-15</dateOfBirth>
+    <gender>male</gender>
+    <email>last_test2@gmail.com</email>
+    <Name>
+        <familyName>last_test2</familyName>
+        <givenName>test2</givenName>
+    </Name>
+    <Telephone>
+        <type>h</type>
+        <number>555-5555</number>
+        <preferred>true</preferred>
+    </Telephone>
+    <Address>
+        <country>USA</country>
+        <city>Boston</city>
+        <postalCode>02115</postalCode>
+        <region>MA</region>
+        <street>301 Longwood Ave</street>
+    </Address>
+</Demographics>

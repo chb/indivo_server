@@ -11,10 +11,6 @@ urlpatterns = patterns(
      MethodDispatcher({'GET' : carenet_document_meta})),
     (r'^(?P<document_id>[^/]+)$',       
      MethodDispatcher({'GET' : carenet_document })), 
-
-    # special documents
-    (r'^special/(?P<special_document>[^/]+)$', MethodDispatcher(
-            {'GET' : read_special_document_carenet})),
 )
 
 """

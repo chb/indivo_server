@@ -3,11 +3,6 @@
   <xs:element name="Record">
     <xs:complexType>
       <xs:sequence>
-	<xs:element name="contact" minOccurs="1" maxOccurs="1">
-	  <xs:complexType>
-	    <xs:attribute name="document_id" type="xs:string" use="required" />
-	  </xs:complexType>
-	</xs:element>
 
 	<xs:element name="demographics" minOccurs="1" maxOccurs="1">
 	  <xs:complexType>

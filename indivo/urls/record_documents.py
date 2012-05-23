@@ -74,10 +74,4 @@ urlpatterns = patterns('',
       MethodDispatcher({'PUT' : document_create_by_rel_with_ext_id, 
                         'POST': document_create_by_rel_with_ext_id})),    
 
-    # special documents
-    (r'^special/(?P<special_document>[^/]+)$', MethodDispatcher(
-            {'GET' : read_special_document,
-             'PUT' : save_special_document,
-             'POST': save_special_document}))
-
 )

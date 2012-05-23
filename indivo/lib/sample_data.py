@@ -11,6 +11,8 @@ from django.db import transaction
 import os
 import glob
 
+from indivo.models import Demographics
+
 SUPPORTED_DOCUMENT_TYPES = {
     '.xml': 'application/xml',
     '.pdf': 'application/pdf',
@@ -65,7 +67,6 @@ class IndivoDataLoader(object):
             profile_2/
                ...
             profile_n/
-              Contact.xml # An optional contact document.
               Demographics.xml # An optional demographics document.
 
               doc_1.xml # XML Data to load goes here.
@@ -119,18 +120,17 @@ class IndivoDataLoader(object):
     def load_special_docs(self, data_dir, record, save=True):
         """ Load the special docs in *data_dir* into *record*. """
 
-        contact_raw = self._get_named_doc(data_dir, 'Contact.xml')
         demographics_raw = self._get_named_doc(data_dir, 'Demographics.xml')
-        
-        if contact_raw:
-            contact_doc = self._document_create(self.creator, contact_raw, 
-                                                pha=None, record=record)
-            record.contact = contact_doc
         
         if demographics_raw:
             demographics_doc = self._document_create(self.creator, demographics_raw, 
                                                      pha=None, record=record)
-            record.demographics = demographics_doc
+            demographics = Demographics.from_xml(demographics_raw)
+            demographics.document = demographics_doc
+            if save:
+                # need to save demographics first for Django ORM
+                demographics.save()
+            record.demographics = demographics
         
         if save:
             record.save()

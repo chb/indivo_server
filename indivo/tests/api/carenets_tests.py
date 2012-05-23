@@ -52,16 +52,16 @@ class CarenetInternalTests(InternalTests):
         #Create another record-specific doc that isn't shared yet
         self.unshared_doc = self.createDocument(TEST_R_DOCS, 7, record=self.shared_record)
 
-        # Set up our record's sepcial docs and add them to our carenet
-        contact = self.createDocument(TEST_CONTACTS, 0, record=self.shared_record)
-        demographics = self.createDocument(TEST_DEMOGRAPHICS, 0, record=self.shared_record)
-        
+        # Set up our record's demographics and add the document to our carenet
+        demographics_doc = self.createDocument(TEST_DEMOGRAPHICS_DOCS, 0, record=self.shared_record)
+        demographics_doc.save() 
+        demographics = Demographics.from_xml(TEST_DEMOGRAPHICS_DOCS[0]['content'])
+        demographics.document = demographics_doc
+        demographics.save()
         self.shared_record.demographics = demographics
-        self.shared_record.contact = contact
         self.shared_record.save()
 
-        self.addDocToCarenet(demographics, self.shared_carenet)
-        self.addDocToCarenet(contact, self.shared_carenet)
+        self.addDocToCarenet(demographics_doc, self.shared_carenet)
 
     def tearDown(self):
         super(CarenetInternalTests,self).tearDown()
@@ -163,12 +163,11 @@ class CarenetInternalTests(InternalTests):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-    def test_get_carenet_special_document(self):
+    def test_get_carenet_demographics(self):
         c_id = self.shared_carenet.id
-        for doc_type in SPECIAL_DOCS.keys():
-            url = '/carenets/%s/documents/special/%s'%(c_id, doc_type)
-            response = self.client.get(url)
-            self.assertEquals(response.status_code, 200)
+        url = '/carenets/%s/demographics'%(c_id)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
 
     def test_get_carenet_equipment(self):
         c_id = self.shared_carenet.id

@@ -20,23 +20,6 @@ class Carenet(Object):
     app_label = INDIVO_APP_LABEL
     unique_together = (("name","record"))
 
-  # special documents
-  
-  def __get_special_doc(self, special_doc_name):
-    """
-    look at the special document and see if it's visible in this carenet
-    """
-    candidate_doc = getattr(self.record, special_doc_name)
-
-    if not candidate_doc:
-      return None
-
-    # check that it's in this carenet
-    if self.contains_doc(candidate_doc):
-      return candidate_doc
-    else:
-      return None
-
   def add_doc(self, doc):
     """
     add the doc to the carenet
@@ -53,13 +36,19 @@ class Carenet(Object):
     return len(self.carenetdocument_set.filter(document = doc)) > 0
 
   @property
-  def contact(self):
-    return self.__get_special_doc('contact')
-
-  @property
   def demographics(self):
-    return self.__get_special_doc('demographics')
+    """look at the demographics document and see if it's visible in this carenet"""
+    demographics = getattr(self.record, 'demographics')
+    if not demographics or not demographics.document:
+      return None
 
+    candidate_doc = demographics.document
+
+    # check that it's in this carenet
+    if self.contains_doc(candidate_doc):
+      return demographics
+    else:
+      return None
 
 class CarenetDocument(Object):
   carenet   = models.ForeignKey('Carenet',      null=False)

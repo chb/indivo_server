@@ -14,7 +14,6 @@ VALID_CORE_SCHEMAS = {
     }
 
 INVALID_CORE_SCHEMAS = (
-    'contact',
     'demographics',
     )
 
@@ -30,7 +29,7 @@ class IndivoSchemaDirUnitTests(InternalTests):
         self.valid_instance_py = IndivoSchemaDir(os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid_py'))
 
         # An invalid directory having a schema but no transform
-        self.invalid_instance_schema = IndivoSchemaDir(os.path.join(settings.CORE_SCHEMA_DIRS[0], 'contact'))
+        self.invalid_instance_schema = IndivoSchemaDir(os.path.join(settings.CORE_SCHEMA_DIRS[0], 'demographics'))
 
         # An invalid directory having neither a schema nor a transform
         self.invalid_instance_empty = IndivoSchemaDir(os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'bad_dir'))
@@ -71,7 +70,7 @@ class IndivoSchemaDirUnitTests(InternalTests):
         schema_path = os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid_py/schema.xsd')
         self.assertEqual(self.valid_instance_py.get_full_schema_path(), schema_path)
         
-        schema_path = os.path.join(settings.CORE_SCHEMA_DIRS[0], 'contact/schema.xsd')
+        schema_path = os.path.join(settings.CORE_SCHEMA_DIRS[0], 'demographics/schema.xsd')
         self.assertEqual(self.invalid_instance_schema.get_full_schema_path(), schema_path)
 
         self.assertEqual(self.invalid_instance_empty.get_full_schema_path(), None)
@@ -99,7 +98,7 @@ class SchemaLoaderUnitTests(InternalTests):
             schema_dir = IndivoSchemaLoader.detect_schema_dir(os.path.join(settings.CORE_SCHEMA_DIRS[0], dirname))
             self.assertTrue(schema_dir.is_valid())
 
-        # Make sure the core schemas without transforms (contact, demographics, etc.) don't show up
+        # Make sure the core schemas without transforms (demographics, etc.) don't show up
         # as valid document processing schemas
         for dirname in INVALID_CORE_SCHEMAS:
             schema_dir = IndivoSchemaLoader.detect_schema_dir(os.path.join(settings.CORE_SCHEMA_DIRS[0], dirname))

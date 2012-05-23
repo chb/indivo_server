@@ -9,41 +9,9 @@ from django.utils import simplejson
 from indivo.lib.query import DATE, STRING, NUMBER
 from indivo.lib.utils import LazyProperty
 from indivo.models import Record, Document
-from indivo.models.base import BaseModel
+from indivo.models.base import BaseModel, DataModelBase
 from indivo.serializers.json import IndivoJSONEncoder
-from indivo.fields import DummyField
 
-import copy
-
-class DataModelBase(models.base.ModelBase):
-    """ Subclass of the Django Model metaclass that handles Dummy Fields on Indivo Data Models. """
-
-    def __new__(cls, name, bases, attrs):
-
-        def replace_field(fields_dict, field_name, field):
-            new_fields_dict = copy.copy(fields_dict)
-            
-            # build the new fields to replace the old field with
-            for suffix, new_field_params in field.__class__.replacements.iteritems():
-                new_name = "%s%s"%(field_name, suffix)
-                new_field_class, new_field_kwargs = new_field_params
-                new_field = new_field_class(**new_field_kwargs)
-                new_fields_dict[new_name] = new_field
-
-                # recurse if the new field is actually a replaceable DummyField
-                if issubclass(new_field_class, DummyField):
-                    new_fields_dict = replace_field(new_fields_dict, new_name, new_field)
-
-            del new_fields_dict[field_name]
-            return new_fields_dict
-
-        # Iterate over the fields in the model, and replace all of the dummy fields
-        new_attrs = copy.copy(attrs)
-        for field_name, field_val in attrs.iteritems():
-            if isinstance(field_val, DummyField):
-                new_attrs = replace_field(new_attrs, field_name, field_val)
-        
-        return super(DataModelBase, cls).__new__(cls, name, bases, new_attrs)
 
 class Fact(BaseModel):
     __metaclass__ = DataModelBase

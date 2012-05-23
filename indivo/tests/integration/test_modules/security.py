@@ -96,7 +96,7 @@ def test_account_admin_calls(client, account_id):
 
     assert_403(client.account_search(data = {'contact_email':  'foo@foo.com'}))
 
-    assert_403(client.put_record_ext(principal_email = data.machine_app_email, external_id = 'record_ext_foobar', data=data.contact))
+    assert_403(client.put_record_ext(principal_email = data.machine_app_email, external_id = 'record_ext_foobar', data=data.demographics))
 
     assert_403(client.message_account(account_id = account_id, data = {'subject':'foo', 'body':'bar'}))
 
@@ -132,13 +132,13 @@ def test_security(IndivoClient):
     ##
     admin_client = IndivoClient(data.machine_app_email, data.machine_app_secret)
     admin_client.set_app_id(data.app_email)
-    record_id = admin_client.create_record(data=data.contact).response[PRD]['Record'][0]
+    record_id = admin_client.create_record(data=data.demographics).response[PRD]['Record'][0]
     admin_client.post_document(record_id=record_id, data=data.doc01)
     admin_client.set_record_owner(data=account_id)
 
     # create another different record and put some docs in it
     chrome_client = IndivoClient(data.chrome_consumer_key, data.chrome_consumer_secret)
-    record2_id = chrome_client.create_record(data=data.contact).response[PRD]['Record'][0]
+    record2_id = chrome_client.create_record(data=data.demographics).response[PRD]['Record'][0]
     chrome_client.set_record_owner(record_id = record2_id, data= account_id_2)
 
     # put some documents into the first and second records
@@ -161,7 +161,7 @@ def test_security(IndivoClient):
     ##
     bogus_client = IndivoClient("foo","bar")
 
-    assert_403(bogus_client.create_record(data=data.contact))
+    assert_403(bogus_client.create_record(data=data.demographics))
 
     test_client_expect_no_access(bogus_client, record_id, document_id)
 
@@ -272,7 +272,7 @@ def test_security(IndivoClient):
     owner = create_account('security-account-owner@indivo.org', 'owner','owner-password')
     friend = create_account('security-account-sharer@indivo.org', 'friend', 'friend-password')
 
-    record_id = admin_client.create_record(data=data.contact).response[PRD]['Record'][0]
+    record_id = admin_client.create_record(data=data.demographics).response[PRD]['Record'][0]
     admin_client.set_record_owner(record_id = record_id, data=owner)
 
     chrome_client = login_as('owner', 'owner-password')

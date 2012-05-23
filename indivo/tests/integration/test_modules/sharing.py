@@ -34,7 +34,7 @@ def test_sharing(IndivoClient):
 
     # Alice posts a document
     # (We save the first doc instead of zero 
-    #   due to the contact doc already in alice's account)
+    #   due to the demographics doc already in alice's account)
     alice_chrome_client.post_document(data=data.doc01)
     document_id = alice_chrome_client.read_documents().response[PRD]['Document'][1]
 
@@ -68,9 +68,9 @@ def test_sharing(IndivoClient):
     alice_chrome_client.post_carenet_document(document_id = document_3_id, carenet_id=carenet_id)
     alice_chrome_client.delete_carenet_document(record_id=record_id, document_id=document_4_id, carenet_id=carenet_id)
 
-    # Alice shares her contact document(s) with the carenet
-    contact_doc = parse_xml(alice_chrome_client.read_documents(record_id = record_id, parameters={'type':'Contact'}))
-    for doc_id in xpath(contact_doc, '/Documents/Document/@id'):
+    # Alice shares her demographics document(s) with the carenet
+    demographics_doc = parse_xml(alice_chrome_client.read_documents(record_id = record_id, parameters={'type':'Demographics'}))
+    for doc_id in xpath(demographics_doc, '/Documents/Document/@id'):
       alice_chrome_client.post_carenet_document(record_id = record_id, document_id = doc_id, carenet_id = carenet_id)
 
     # Alice adds bob_account_id to carenet[0]
@@ -98,6 +98,7 @@ def test_sharing(IndivoClient):
     assert_403(bob_chrome_client.get_record_carenets(record_id=record_id))
 
     # Bob should be able to read the allowed docs
+
     for doc_id in allowed_docs:
       assert_200(bob_chrome_client.get_carenet_document(carenet_id = carenet_id, document_id = doc_id))
 
@@ -115,10 +116,11 @@ def test_sharing(IndivoClient):
     # TODO: replace with generic call
     # assert_200(bob_chrome_client.read_carenet_allergies(carenet_id = carenet_id))
 
-    # Read the contact document, this should work
-    contact_doc = parse_xml(bob_chrome_client.read_carenet_special_document(carenet_id = carenet_id, special_document='contact'))
-    contact_name = xpath(contact_doc, '/ns:Contact/ns:name/ns:fullName/text()', namespaces={'ns':'http://indivo.org/vocab/xml/documents#'})
-    assert(contact_name)
+    # Read the demographics document, this should work
+    resp = bob_chrome_client.call('GET', '/carenets/%s/demographics'%carenet_id, options={'parameters':{'response_format':'application/xml'}} )
+    demographics_doc = parse_xml(resp)
+    family_name = xpath(demographics_doc, '/Models/Model/Field[@name="name_family"]/text()')
+    assert(family_name)
 
     bob_chrome_client.get_account_permissions(account_id=bob_account_id)
     bob_chrome_client.get_carenet_account_permissions(carenet_id= carenet_id,
@@ -137,7 +139,7 @@ def test_sharing(IndivoClient):
     admin_client.set_app_id(data.app_email)
 
     # Create a record for Alice and set her at the owner
-    record_id = admin_client.create_record(data=data.contact).response[PRD]['Record'][0]
+    record_id = admin_client.create_record(data=data.demographics).response[PRD]['Record'][0]
     admin_client.set_record_owner(data=data.account['account_id'])
 
     # Create a basic set of carenets
@@ -162,7 +164,7 @@ def test_sharing(IndivoClient):
   # Alice gives Bob the document_id that she'd like to share with him
   #   Even though Alice gives Bob a document_id, Bob has the ability
   #   to read all documents within the carenet that Alice added him to
-  # 2010-09-13 now Alice also shares her contact URL and we check
+  # 2010-09-13 now Alice also shares her demographics URL and we check
   #    that Bob can read it at the special URL
   carenet_id, allowed_documents, disallowed_documents = alice_setup(record_id, bob_account_id)
   return bob_setup(bob_account_id, record_id, carenet_id, allowed_documents, disallowed_documents)

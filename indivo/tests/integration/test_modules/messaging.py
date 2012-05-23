@@ -17,7 +17,7 @@ def test_messaging(IndivoClient):
 
     account_id = admin_client.create_account(data.account03)[PRD]['Account'][0]
     admin_client.add_auth_system(account_id=account_id, data={'system':'password', 'username':data.account03['username'], 'password':data.account03['user_pass']})
-    record_id = admin_client.create_record(data=data.contact).response['prd']['Record'][0]
+    record_id = admin_client.create_record(data=data.demographics).response['prd']['Record'][0]
 
     admin_client.set_record_owner(data=account_id)
     admin_client.setup_app(record_id=record_id, app_id=data.app_email)
