@@ -20,6 +20,23 @@ from . import REGISTERED_SCHEMAS
 DEFAULT_PREFIX= "http://indivo.org/vocab/xml/documents#"
 ETREE_NS_RE = re.compile(r'{(?P<ns>.*?)}')
 
+# Mimetypes that we shouldn't treat as binary
+# Only covering the most common cases here--expand as needed
+TEXT_MIMETYPES = [
+  'application/xml',
+  'text/xml',
+  'text/plain', 
+  'application/json',
+  'text/html',
+]
+
+# Mimetypes that represent XML
+# We can validate XML Syntax for these types
+XML_MIMETYPES = [
+  'application/xml',
+  'text/xml',
+]
+
 # subclass of utils.LazyProperty which returns None if the object is binary
 class NonBinaryLazyProperty(LazyProperty):
   def __get__(self, obj, _=None):
@@ -46,12 +63,13 @@ class DocumentProcessing(object):
   def __init__(self, content, mime_type):
 
     # if mime_type is null, we assume it's XML
-    self.is_binary      = (mime_type and mime_type != 'application/xml' and mime_type != 'text/xml')
+    self.is_binary = (mime_type and mime_type not in TEXT_MIMETYPES)
+    self.is_xml = mime_type in XML_MIMETYPES
     self.content = content
     self.processed_facts = []
 
     # Validate basic XML Syntax, if required
-    if not self.is_binary and settings.VALIDATE_XML_SYNTAX:
+    if self.is_xml and settings.VALIDATE_XML_SYNTAX:
       self.validate_xml_syntax() 
 
   def process(self):
