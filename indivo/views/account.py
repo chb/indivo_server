@@ -564,10 +564,10 @@ def account_create(request):
     return render_template('account', {'account': new_account}, type='xml')
 
 def get_connect_credentials(request, account, pha):
-    """ Get oAuth credentials for an app to run in Connect mode.
+    """ Get oAuth credentials for an app to run in Connect or SMART REST mode.
 
-    Generates an access token for *pha* to run against the *record_id* specified in ``request.POST``, authorized by
-    *account*.
+    Generates access tokens for *pha* to run against the *record_id* specified in ``request.POST``, authorized by
+    *account*. Generates 2 tokens: one for SMART Connect use, and one for SMART REST use.
     
     """
 
@@ -589,11 +589,18 @@ def get_connect_credentials(request, account, pha):
     # Generate a 2-legged oauth header for the rest token, based on the pha's start_url
     url = utils.url_interpolate(pha.start_url_template, {'record_id':record_id, 'carenet_id':''})
     request = HTTPRequest("GET", url, HTTPRequest.FORM_URLENCODED_TYPE, '', {})
+    oauth_params = {
+        'smart_container_api_base': settings.SITE_URL_PREFIX,
+        'smart_oauth_token': rest_token.token,
+        'smart_oauth_token_secret': rest_token.token_secret,
+        'smart_user_id': account.email,
+        'smart_app_id': pha.email,
+        'smart_record_id': record_id,
+        }
     oauth_request = OAuthRequest(consumer=pha,
                                  token=None, # no access tokens: 2-legged request
                                  http_request=request,
-                                 oauth_parameters={}) # TODO: set SMART/Indivo parameters when SMART-REST support is needed
-
+                                 oauth_parameters=oauth_params)
     oauth_request.sign()
     auth_header = oauth_request.to_header()["Authorization"]
 

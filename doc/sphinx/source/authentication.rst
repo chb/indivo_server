@@ -253,7 +253,7 @@ calls, using the Indivo Chrome's consumer key and secret, and the specific sessi
 In-Browser Connect Authentication
 ---------------------------------
 
-Connect-style authentication enables applications running framed within the Indivo UI to make API calls solely using 
+Connect-style authentication enables user applications running framed within the Indivo UI to make API calls solely using 
 javascript, without having to navigate the oAuth dance. Connect-style authentication works as follows:
 
 * When the Indivo UI app opens a user app within its iframe, it acquires a set of oAuth credentials that allows the UI app 
@@ -283,4 +283,15 @@ security of the call is enforced in the channel, and by the tokens used by the U
 Pre-generated REST Authentication
 ---------------------------------
 
-Coming Soon!
+Pre-generated REST Authentication enables user applications running framed within the Indivo UI to acquire oAuth access tokens
+that can be used sign 3-legged API calls (as with standard Indivo oAuth) without having to navigate the oAuth dance. The
+authentication process is as follows:
+
+* When the Indivo UI app opens a user app within its iframe, it acquires and preauthorizes an access token for the app, using
+  the API call :http:post:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/connect_credentials`.
+
+* The UI app then appends a `well-formed oAuth header <http://tools.ietf.org/html/rfc5849>`_ containing the access token to 
+  the user app's start url. The format of the header (and required parameters) are described 
+  `in the SMART documentation <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_Container_Javascript_Libraries#App_Instance_Credentials>`_.
+
+* The user app extracts the access token and indivo record ID from the oauth header, and uses it to sign subsequent API calls.
