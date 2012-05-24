@@ -50,6 +50,6 @@ urlpatterns = patterns('',
     (r'^/(?P<model_name>[^/]+)/$', MethodDispatcher({'GET': smart_generic})),
 
     # Demographics
-    (r'^/demographics$', MethodDispatcher({'POST': set_demographics, 'PUT': set_demographics, 'GET': read_demographics})),
+    (r'^/demographics$', MethodDispatcher({'PUT': set_demographics, 'GET': read_demographics})),
 
 )
