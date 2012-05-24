@@ -15,6 +15,29 @@ from indivo.lib.iso8601 import parse_utc_date
 from indivo.lib.rdf import PatientGraph
 from indivo.serializers.json import IndivoJSONEncoder
 
+FIELDS = ('bday', 
+          'email', 
+          'ethnicity', 
+          'gender', 
+          'preferred_language', 
+          'race', 
+          'name_given', 
+          'name_suffix', 
+          'name_family', 
+          'name_prefix', 
+          'tel_2_type', 
+          'tel_2_preferred_p', 
+          'tel_2_number', 
+          'adr_region', 
+          'adr_country', 
+          'adr_postalcode', 
+          'adr_city', 
+          'adr_street', 
+          'tel_1_type', 
+          'tel_1_preferred_p', 
+          'tel_1_number'
+          )
+
 class Demographics(BaseModel):
     """ SMART style demographics """
     __metaclass__ = DataModelBase
@@ -93,12 +116,12 @@ class Demographics(BaseModel):
         
     def as_json(self):
         """JSON string representation of Demographics instance"""
-        data = serializers.serialize("indivo_python", [self])
+        data = serializers.serialize("indivo_python", [self], fields=FIELDS)
         return simplejson.dumps(data, cls=IndivoJSONEncoder)
     
     def as_xml(self):
         """XML string representation of Demographics instance"""
-        root = serializers.serialize("indivo_xml", [self])
+        root = serializers.serialize("indivo_xml", [self], fields=FIELDS)
         return etree.tostring(root)
     
     def as_rdf(self):
