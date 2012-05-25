@@ -184,6 +184,8 @@ class DocumentProcessing(object):
     try:
       if self.transform_func:
         return self.transform_func(self.content_etree)
+    except ValueError:
+      raise
     except Exception:
       pass
     
