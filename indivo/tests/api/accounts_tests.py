@@ -382,3 +382,30 @@ class AccountInternalTests(InternalTests):
         response = self.client.post(url, data=urlencode(data), content_type='application/x-www-form-urlencoded')
         self.assertEqual(response.status_code, 404)
 
+    def test_get_user_preferences(self):
+        url = '/accounts/%s/apps/%s/preferences'%(self.account.email, self.pha.email)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, '') # No preferences
+    
+    def test_set_user_preferences(self):
+        url = '/accounts/%s/apps/%s/preferences'%(self.account.email, self.pha.email)
+        data = 'MYPREFERENCESDOC'
+        response = self.client.put(url, data=data, content_type='text/plain')
+        self.assertEqual(response.status_code, 200)
+
+        # check that the preferences doc is in the database
+        doc_id = Document.prepare_external_id("%s_USER_PREFERENCES"%self.account.id, 
+                                              self.pha, pha_specific=True, record_specific=False)
+        self.assertTrue(Document.objects.filter(external_id=doc_id, pha=self.pha).exists())
+        self.assertEqual(Document.objects.get(external_id=doc_id, pha=self.pha).content, data)
+
+    def test_delete_user_preferences(self):
+        url = '/accounts/%s/apps/%s/preferences'%(self.account.email, self.pha.email)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+
+        # check that there is no preferences doc in the database
+        doc_id = Document.prepare_external_id("%s_USER_PREFERENCES"%self.account.id, 
+                                              self.pha, pha_specific=True, record_specific=False)
+        self.assertFalse(Document.objects.filter(external_id=doc_id, pha=self.pha).exists())

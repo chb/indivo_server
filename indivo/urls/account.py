@@ -20,6 +20,12 @@ urlpatterns = patterns('',
     # get credentials for a connect-authenticated app
     (r'^apps/(?P<pha_email>[^/]+)/connect_credentials$', MethodDispatcher({'POST': get_connect_credentials})),
 
+    # User Preferences (SMART)
+    (r'^apps/(?P<pha_email>[^/]+)/preferences$', 
+     MethodDispatcher({'GET': get_user_preferences,
+                       'PUT': set_user_preferences,
+                       'DELETE': delete_user_preferences,})),
+
     # auth systems
     (r'^authsystems/$', MethodDispatcher({'POST': account_authsystem_add})),
 

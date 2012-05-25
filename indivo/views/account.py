@@ -612,3 +612,40 @@ def get_connect_credentials(request, account, pha):
                              'app_email':pha.email}, 
                            type='xml')
                                  
+USER_PREFS_EXTID = "%s_USER_PREFERENCES"
+
+def get_user_preferences(request, account, pha):
+    """ Get app-specific User Preferences for an account.
+
+    We're just storing these as app-specific documents with a specific external ID.
+    ID is "{account_id}_USER_PREFERENCES". Note that this will be further prepared
+    by :py:meth:`~indivo.models.Document.prepare_external_id` before insertion into
+    the database.
+
+    """
+
+    prefs_doc = _get_prefs_doc(account, pha)
+    return HttpResponse(prefs_doc.content if prefs_doc else '', mimetype="text/plain")
+
+def set_user_preferences(request, account, pha):
+    """ Set app-specific User Preferences for an account.
+
+    Overrides all existing preferences.
+
+    """
+
+    from indivo.views.documents.document import app_document_create_or_update_ext
+    return app_document_create_or_update_ext(request, pha, USER_PREFS_EXTID%account.id)
+
+def delete_user_preferences(request, account, pha):
+    """ Delete all app-specific User Preferences for an account. """
+    prefs_doc = _get_prefs_doc(account, pha)
+    if prefs_doc:
+        prefs_doc.delete()
+    return DONE
+
+def _get_prefs_doc(account, pha):
+    from indivo.models import Document
+    from indivo.views.documents.document import _get_document
+    prepared_id = Document.prepare_external_id(USER_PREFS_EXTID%account.id, pha, pha_specific=True, record_specific=False)
+    return _get_document(pha=pha, external_id=prepared_id)

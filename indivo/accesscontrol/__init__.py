@@ -76,7 +76,10 @@ def load_access_rules():
            account_message_archive,
            account_notifications,
            account_permissions,
-           get_connect_credentials,]
+           get_connect_credentials,
+           get_user_preferences,
+           set_user_preferences,
+           delete_user_preferences,]
   AccessRule('Account Management No Admin App', 
              account_management_no_admin_app, views)           
 
