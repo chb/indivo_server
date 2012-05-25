@@ -593,12 +593,8 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         url = '/records/%s/demographics'%(record_id)
         
-        # post
-        response = self.client.post(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
-        self.assertEquals(response.status_code, 200)
-
-        # put, should have same behavior TODO: comment does not match code
-        response = self.client.post(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
+        # put
+        response = self.client.put(url, data=TEST_DEMOGRAPHICS_DOCS[0]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
     def test_get_record_info(self):
