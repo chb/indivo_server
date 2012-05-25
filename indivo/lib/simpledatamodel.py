@@ -341,6 +341,16 @@ class SDMJData(SDMJ):
                             value = float(raw_value)
                         except Exception as e:
                             raise SDMDataException("SDM data for field %s should have been numeric: got %s instead"%(fieldname, raw_value))
+
+                    elif isinstance(model_field, models.BooleanField) or isinstance(model_field, models.NullBooleanField):
+                        if raw_value.lower() == 'true':
+                            value = True
+                        elif raw_value.lower() == 'false':
+                            value = False
+                        elif raw_value == True or raw_value == False:
+                            value = raw_value
+                        else:
+                            raise SDMDataException("SDM data for field %s should have been boolean: got %s instead"%(fieldname, raw_value))
                     else:
                         value = raw_value
  
@@ -516,6 +526,15 @@ class SDMXData(object):
                             value = float(raw_value)
                         except Exception as e:
                             raise SDMDataException("SDM data for field %s should have been numeric: got %s instead"%(fieldname, raw_value))
+                    elif isinstance(model_field, models.BooleanField) or isinstance(model_field, models.NullBooleanField):
+                        if raw_value.lower() == 'true':
+                            value = True
+                        elif raw_value.lower() == 'false':
+                            value = False
+                        elif raw_value == True or raw_value == False:
+                            value = raw_value
+                        else:
+                            raise SDMDataException("SDM data for field %s should have been boolean: got %s instead"%(fieldname, raw_value))
                     else:
                         value = raw_value
  
