@@ -106,7 +106,12 @@ class PHAModelUnitTests(InternalTests):
 
             # The reparsed manifest should contain AT LEAST as much info as the original
             for k, v in parsed_m.iteritems():
-                self.assertEqual(v, reparsed_m.get(k, None))
+                
+                # URIs might have been expanded if they were relative
+                if k in ['index', 'oauth_callback_url', 'icon']:
+                    self.assertTrue(reparsed_m.get(k, None).endswith(v))
+                else:
+                    self.assertEqual(v, reparsed_m.get(k, None))
 
         for manifest, credentials in TEST_USERAPP_MANIFESTS:
             app = PHA.from_manifest(manifest, credentials, save=False)
@@ -115,7 +120,12 @@ class PHAModelUnitTests(InternalTests):
 
             # The reparsed manifest should contain AT LEAST as much info as the original
             for k, v in parsed_m.iteritems():
-                self.assertEqual(v, reparsed_m.get(k, None))
+
+                # URIs might have been expanded if they were relative
+                if k in ['index', 'oauth_callback_url', 'icon']:
+                    self.assertTrue(reparsed_m.get(k, None).endswith(v))
+                else:
+                    self.assertEqual(v, reparsed_m.get(k, None))
             
     def buildAppFromManifest(self, model_cls, manifest, credentials):
         parsed_m = simplejson.loads(manifest)
@@ -130,8 +140,8 @@ class PHAModelUnitTests(InternalTests):
         self.assertEqual(parsed_c['consumer_secret'], app.secret)
         self.assertEqual(parsed_m['name'], app.name)
         self.assertEqual(parsed_m['id'], app.email)
-        self.assertEqual(parsed_m.get('index', ''), app.start_url_template)
-        self.assertEqual(parsed_m.get('oauth_callback_url',''), app.callback_url) # SMART apps won't define this
+        self.assertTrue(app.start_url_template.endswith(parsed_m.get('index', ''))) # Might have been expanded if it was a relative URI
+        self.assertTrue(app.callback_url.endswith(parsed_m.get('oauth_callback_url',''))) # SMART apps won't define this
         autonomous_p = parsed_m.get('mode', '') == 'background'
         self.assertEqual(autonomous_p, app.is_autonomous)
         self.assertEqual(parsed_m.get('autonomous_reason', ''), app.autonomous_reason) # SMART apps won't define this
@@ -142,5 +152,5 @@ class PHAModelUnitTests(InternalTests):
         self.assertEqual(parsed_m.get('description', ''), app.description)
         self.assertEqual(parsed_m.get('author', ''), app.author)
         self.assertEqual(parsed_m.get('version', ''), app.version)
-        self.assertEqual(parsed_m.get('icon', ''), app.icon_url)
+        self.assertTrue(app.icon_url.endswith(parsed_m.get('icon', ''))) # Might have been expanded if it was a relative URI
         self.assertEqual(parsed_m.get('requires', {}), simplejson.loads(app.requirements))
