@@ -234,7 +234,12 @@ class Principal(Object):
     return self.id == other.id
 
 class DataModelBase(models.base.ModelBase):
-    """ Subclass of the Django Model metaclass that handles Dummy Fields on Indivo Data Models. """
+    """ Subclass of the Django Model metaclass that handles Dummy Fields on Indivo Data Models. 
+    
+    Also setting all fields to blank=True, so it won't interfere with our datamodel validation.
+    This is fine because we aren't using the Django admin.
+
+    """
 
     def __new__(cls, name, bases, attrs):
 
@@ -246,6 +251,7 @@ class DataModelBase(models.base.ModelBase):
                 new_name = "%s%s"%(field_name, suffix)
                 new_field_class, new_field_kwargs = new_field_params
                 new_field = new_field_class(**new_field_kwargs)
+                new_field.blank = True
                 new_fields_dict[new_name] = new_field
 
                 # recurse if the new field is actually a replaceable DummyField
@@ -260,5 +266,6 @@ class DataModelBase(models.base.ModelBase):
         for field_name, field_val in attrs.iteritems():
             if isinstance(field_val, DummyField):
                 new_attrs = replace_field(new_attrs, field_name, field_val)
-        
+            elif isinstance(field_val, models.Field):
+                field_val.blank = True
         return super(DataModelBase, cls).__new__(cls, name, bases, new_attrs)

@@ -1,8 +1,9 @@
 from indivo.serializers import DataModelSerializers
+from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
+from indivo.validators import ValueInSetValidator
 
 class ProblemSerializers(DataModelSerializers):
-    model_class_name = 'Problem'
 
     def to_rdf(queryset, result_count, record=None, carenet=None):
         if not record:
@@ -10,6 +11,11 @@ class ProblemSerializers(DataModelSerializers):
         
         graph = PatientGraph(record)
         graph.addProblemList(queryset.iterator())
-        return graph.toRDF()
+        return graph.toRDF()        
 
-
+class ProblemOptions(DataModelOptions):
+    model_class_name = 'Problem'
+    serializers = ProblemSerializers
+    field_validators = {
+        'name_system': [ValueInSetValidator(['http://purl.bioontology.org/ontology/SNOMEDCT/']),],
+        }

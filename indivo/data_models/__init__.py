@@ -8,7 +8,7 @@ from django.db import models
 
 from indivo.models import Fact
 from indivo.lib import simpledatamodel
-from indivo.serializers import DataModelSerializers
+from options import DataModelOptions
 
 MODULE_NAME = 'model'
 EXTRAS_NAME = 'extra'
@@ -170,7 +170,7 @@ class IndivoDataModelLoader(object):
     def process_data_model_extras(self, dirpath, model_class):
         """ Processes extra options included in an extra.py file for a data model.
 
-        For now, this is just a set of serializer implementations.
+        Looks for indivo.data_models.DataModelOptions classes and attaches them to the data model
         
         """
 
@@ -200,10 +200,9 @@ class IndivoDataModelLoader(object):
             # discover and process classes in the module
             for name, cls in inspect.getmembers(module):
 
-                # Is it a Serializers class? Attach it.
-                if inspect.isclass(cls) and issubclass(cls, DataModelSerializers) \
-                        and cls != DataModelSerializers: # Necessary because issubclass(X, X) == True
-                    cls.attach_to_data_model(model_class)
+                # Is it an Options class? Attach it.
+                if inspect.isclass(cls) and issubclass(cls, DataModelOptions):
+                    cls.attach(model_class)
 
 # Core data models
 from core import *
