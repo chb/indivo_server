@@ -1,5 +1,5 @@
 from indivo.serializers import DataModelSerializers
-from indivo.validators import ValueInSetValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator
 from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
 
@@ -74,7 +74,7 @@ class EncounterOptions(DataModelOptions):
     model_class_name = 'Encounter'
     serializers = EncounterSerializers
     field_validators = {
-        'encounterType_system': [ValueInSetValidator([ENC_TYPE_URI])],
+        'encounterType_system': [ExactValueValidator(ENC_TYPE_URI)],
         'encounterType_identifier': [ValueInSetValidator(ENC_TYPES)],
         }
 
@@ -92,45 +92,45 @@ class VitalsOptions(DataModelOptions):
     model_class_name = 'VitalSigns'
     serializers = VitalsSerializers
     field_validators = {
-        'bp_position_system': [ValueInSetValidator([SNOMED_URI], nullable=True)],
+        'bp_position_system': [ExactValueValidator(SNOMED_URI, nullable=True)],
         'bp_position_identifier': [ValueInSetValidator(BP_POSITION_IDS, nullable=True)],
-        'bp_site_system': [ValueInSetValidator([SNOMED_URI], nullable=True)],
+        'bp_site_system': [ExactValueValidator(SNOMED_URI, nullable=True)],
         'bp_site_identifier': [ValueInSetValidator(BP_SITE_IDS, nullable=True)],
-        'bp_method_system': [ValueInSetValidator([BP_METHOD_URI], nullable=True)],
+        'bp_method_system': [ExactValueValidator(BP_METHOD_URI, nullable=True)],
         'bp_method_identifier': [ValueInSetValidator(BP_METHODS, nullable=True)],
         'bp_diastolic_unit': [ValueInSetValidator(UNITS['bp'], nullable=True)],
-        'bp_diastolic_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'bp_diastolic_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'bp_diastolic_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['bp_diastolic'], nullable=True)],
         'bp_systolic_unit': [ValueInSetValidator(UNITS['bp'], nullable=True)],
-        'bp_systolic_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'bp_systolic_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'bp_systolic_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['bp_systolic'], nullable=True)],
 
         'bmi_unit': [ValueInSetValidator(UNITS['bmi'], nullable=True)],
-        'bmi_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'bmi_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'bmi_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['bmi'], nullable=True)],
        
         'heart_rate_unit': [ValueInSetValidator(UNITS['heart_rate'], nullable=True)],
-        'heart_rate_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'heart_rate_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'heart_rate_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['heart_rate'], nullable=True)],
 
         'height_unit': [ValueInSetValidator(UNITS['height'], nullable=True)],
-        'height_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'height_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'height_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['height'], nullable=True)],
 
         'oxygen_saturation_unit': [ValueInSetValidator(UNITS['oxygen_saturation'], nullable=True)],
-        'oxygen_saturation_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'oxygen_saturation_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'oxygen_saturation_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['oxygen_saturation'], nullable=True)],
 
         'respiratory_rate_unit': [ValueInSetValidator(UNITS['resp_rate'], nullable=True)],
-        'respiratory_rate_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'respiratory_rate_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'respiratory_rate_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['resp_rate'], nullable=True)],
 
         'temperature_unit': [ValueInSetValidator(UNITS['temperature'], nullable=True)],
-        'temperature_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'temperature_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'temperature_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['temperature'], nullable=True)],
 
         'weight_unit': [ValueInSetValidator(UNITS['weight'], nullable=True)],
-        'weight_name_system': [ValueInSetValidator([LOINC_URI], nullable=True)],
+        'weight_name_system': [ExactValueValidator(LOINC_URI, nullable=True)],
         'weight_name_identifier': [ValueInSetValidator(VITAL_SIGN_IDS['weight'], nullable=True)],
 
         }

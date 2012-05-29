@@ -1,7 +1,9 @@
 from indivo.serializers import DataModelSerializers
 from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
-from indivo.validators import ValueInSetValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator
+
+SNOMED_URI = 'http://purl.bioontology.org/ontology/SNOMEDCT/'
 
 class ProblemSerializers(DataModelSerializers):
 
@@ -17,5 +19,5 @@ class ProblemOptions(DataModelOptions):
     model_class_name = 'Problem'
     serializers = ProblemSerializers
     field_validators = {
-        'name_system': [ValueInSetValidator(['http://purl.bioontology.org/ontology/SNOMEDCT/']),],
+        'name_system': [ExactValueValidator(SNOMED_URI)],
         }

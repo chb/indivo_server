@@ -1,5 +1,5 @@
 from indivo.serializers import DataModelSerializers
-from indivo.validators import ValueInSetValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator
 from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
 
@@ -32,9 +32,9 @@ class LabOptions(DataModelOptions):
     model_class_name = 'LabResult'
     serializers = LabSerializers
     field_validators = {
-        'abnormal_interpretation_system': [ValueInSetValidator([LAB_INTERP_URI], nullable=True)],
+        'abnormal_interpretation_system': [ExactValueValidator(LAB_INTERP_URI, nullable=True)],
         'abnormal_interpretation_identifier': [ValueInSetValidator(VALID_INTERPS, nullable=True)],
-        'test_name_system': [ValueInSetValidator([LOINC_URI])],
-        'status_system': [ValueInSetValidator([LAB_STATUS_URI], nullable=True)],
+        'test_name_system': [ExactValueValidator(LOINC_URI)],
+        'status_system': [ExactValueValidator(LAB_STATUS_URI, nullable=True)],
         'status_identifier': [ValueInSetValidator(VALID_STATUSES, nullable=True)],
         }

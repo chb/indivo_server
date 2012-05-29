@@ -1,5 +1,5 @@
 from indivo.data_models.options import DataModelOptions
-from indivo.validators import ValueInSetValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator
 
 SNOMED = 'http://purl.bioontology.org/ontology/SNOMEDCT/'
 RXNORM = 'http://purl.bioontology.org/ontology/RXNORM/'
@@ -32,19 +32,19 @@ VALID_EXCLUSION_IDS = [
 class AllergyOptions(DataModelOptions):
     model_class_name = 'Allergy'
     field_validators = {
-        'allergic_reaction_system': [ValueInSetValidator([SNOMED])],
-        'category_system': [ValueInSetValidator([SNOMED])],
+        'allergic_reaction_system': [ExactValueValidator(SNOMED)],
+        'category_system': [ExactValueValidator(SNOMED)],
         'category_identifier': [ValueInSetValidator(VALID_CATEGORY_IDS)],
-        'drug_allergen_system': [ValueInSetValidator([RXNORM], nullable=True)],
-        'drug_class_allergen_system': [ValueInSetValidator([NUI], nullable=True)],
-        'food_allergen_system': [ValueInSetValidator([UNII], nullable=True)],
-        'severity_system': [ValueInSetValidator([SNOMED])],
+        'drug_allergen_system': [ExactValueValidator(RXNORM, nullable=True)],
+        'drug_class_allergen_system': [ExactValueValidator(NUI, nullable=True)],
+        'food_allergen_system': [ExactValueValidator(UNII, nullable=True)],
+        'severity_system': [ExactValueValidator(SNOMED)],
         'severity_identifier': [ValueInSetValidator(VALID_SEVERITY_IDS)],
         }
 
 class AllergyExclusionOptions(DataModelOptions):
     model_class_name = 'AllergyExclusion'
     field_validators = {
-        'name_system': [ValueInSetValidator([SNOMED])],
+        'name_system': [ExactValueValidator(SNOMED)],
         'name_identifier': [ValueInSetValidator(VALID_EXCLUSION_IDS)],
         }

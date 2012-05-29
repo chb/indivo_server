@@ -1,5 +1,5 @@
 from indivo.serializers import DataModelSerializers
-from indivo.validators import ValueInSetValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator
 from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
 
@@ -43,11 +43,11 @@ class ImmunizationOptions(DataModelOptions):
     model_class_name = 'Immunization'
     serializers = ImmunizationSerializers
     field_validators = {
-        'administration_status_system': [ValueInSetValidator([IMM_STATUS_URI])],
+        'administration_status_system': [ExactValueValidator(IMM_STATUS_URI)],
         'administration_status_identifier': [ValueInSetValidator(VALID_IMM_STATUSES)],
-        'product_class_system': [ValueInSetValidator([IMM_CLASS_URI], nullable=True)],
-        'product_class_2_system': [ValueInSetValidator([IMM_CLASS_URI], nullable=True)],
-        'product_name_system': [ValueInSetValidator([IMM_PROD_URI])],
-        'refusal_reason_system': [ValueInSetValidator([IMM_REFUSE_URI], nullable=True)],
+        'product_class_system': [ExactValueValidator(IMM_CLASS_URI, nullable=True)],
+        'product_class_2_system': [ExactValueValidator(IMM_CLASS_URI, nullable=True)],
+        'product_name_system': [ExactValueValidator(IMM_PROD_URI)],
+        'refusal_reason_system': [ExactValueValidator(IMM_REFUSE_URI, nullable=True)],
         'refusal_reason_identifier': [ValueInSetValidator(VALID_REFUSALS, nullable=True)],
         }
