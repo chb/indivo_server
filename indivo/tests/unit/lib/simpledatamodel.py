@@ -176,7 +176,7 @@ class SDMJDataUnitTests(TransactionInternalTests):
             elif klass_name == 'TestFill2':
                 fill_objs.append(obj)
             else:
-                self.fail('SDMJ Document parsing produced aniinstance of an invalid class %s'%klass_name)
+                self.fail('SDMJ Document parsing produced an instance of an invalid class %s'%klass_name)
                 
         if not med_obj:
             self.fail('SDMJ Document parsing did not produce an instance of TestMedication2')
