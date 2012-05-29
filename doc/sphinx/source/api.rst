@@ -315,25 +315,24 @@ In the following calls, ``{DOCUMENT_ID}`` is the document being interpreted, and
 Special Documents
 ^^^^^^^^^^^^^^^^^
 
-The Demographics and Contact documents are special in that there should only be 
-one of each per record, and they should be easy to find.
+Demographics documents are special in that there should only be 
+one per record, and they should be easy to find.
 
 .. seealso::
 
    :doc:`Indivo Document Demographics Schema<schemas/demographics-schema>`
      The XML Schema for Indivo Demographics Data
 
-   :doc:`Indivo Document Contact Schema<schemas/contact-schema>`
-     The XML Schema for Indivo Contact Data
-
 .. glossary::
 
-   :http:get:`/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}`
-   :http:get:`/carenets/{CARENET_ID}/documents/special/{SPECIAL_DOCUMENT}`
-     Fetch a special document from a carenet or record.
+   :http:get:`/records/{RECORD_ID}/demographics`
+   :http:get:`/carenets/{CARENET_ID}/demographics`
+     Fetch demographics from a carenet or record. Depending on the requested ``response_format``  
+     return data is formatted as SMART RDF/XML (default), :ref:`sdmj`, or :ref:`sdmx`.
+     
 
-   :http:put:`/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}`
-     Update a special document.
+   :http:put:`/records/{RECORD_ID}/demographics`
+     Update or create demographics on a record.
 
 Messaging and Notifications
 ---------------------------
@@ -744,7 +743,7 @@ Record Administration
    :http:post:`/records/`
    :http:put:`/records/external/{APP_ID}/{EXTERNAL_ID}`
      Create a new record, possibly assigning it an external id. This call requires 
-     a valid Indivo :doc:`Contact Document <schemas/contact-schema>` in order to 
+     a valid Indivo :doc:`Demographics Document <schemas/demographics-schema>` in order to 
      create the record.
 
    :http:put:`/records/{RECORD_ID}/owner`

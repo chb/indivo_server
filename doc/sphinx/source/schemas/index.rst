@@ -102,7 +102,6 @@ Special Documents
    :maxdepth: 2
 
    demographics-schema
-   contact-schema
    annotation-schema
 
 .. _medical-schemas:

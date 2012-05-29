@@ -124,7 +124,7 @@ CALLS=[{
     "data_fields":{
         'record_id':'The identifier of the Indivo Record to which to grant access via the connect credentials',
         },
-    "description":"Get oAuth credentials for an app to run in Connect mode.",
+    "description":"Get oAuth credentials for an app to run in Connect or SMART REST mode.",
     "return_desc":":http:statuscode:`200` with a set of credentials providing access for the app to the record, via :ref:`Connect-Style Authentication <connect-auth>` and via :ref:`Standard oAuth <traditional-oauth>` authentication. Additionally, the credentials include a precalculated oAuth Header that the app can use to access the record.",
     "return_ex":'''
 <ConnectCredentials>
@@ -140,6 +140,75 @@ CALLS=[{
 ''',
     "deprecated": None,
     "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"DELETE",
+    "path":"/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences",
+    "view_func_name":"delete_user_preferences",
+    "access_doc":"The Account owner.",
+    "url_params":{
+        'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Delete all app-specific User Preferences for an account.",
+    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_ex":'''
+GIVE AN EXAMPLE OF A RETURN VALUE
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences",
+    "view_func_name":"get_user_preferences",
+    "access_doc":"The Account owner.",
+    "url_params":{
+        'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Get app-specific User Preferences for an account.",
+    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_ex":'''
+GIVE AN EXAMPLE OF A RETURN VALUE
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
+    "method":"PUT",
+    "path":"/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences",
+    "view_func_name":"set_user_preferences",
+    "access_doc":"The Account owner.",
+    "url_params":{
+        'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Set app-specific User Preferences for an account.",
+    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_ex":'''
+GIVE AN EXAMPLE OF A RETURN VALUE
+''',
+    "deprecated": None,
+    "added": None,
     "changed": None,
 
 },
@@ -1545,6 +1614,143 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 },
 {
     "method":"GET",
+    "path":"/carenets/{CARENET_ID}/demographics",
+    "view_func_name":"read_demographics_carenet",
+    "access_doc":"A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or any admin app.",
+    "url_params":{
+        'CARENET_ID':'The id string associated with the Indivo carenet',
+        },
+    "query_opts":{
+        'response_format':'one of `application/rdf+xml` (SMART RDF/XML), `application/json` (:ref:`sdmj`), or `application/xml` (:ref:`sdmx`). Default is `application/rdf+xml`',
+        },
+    "data_fields":{
+        },
+    "description":"Read demographics from a carenet.",
+    "return_desc":":http:statuscode:`200` with demographics formatted in the requested ``response_format`` (default `application/rdf+xml`) on success, :http:statuscode:`404` when no demographics found, and :http:statuscode:`400` if response_format is invalid",
+    "return_ex":'''
+application/rdf+xml:
+    
+    <?xml version="1.0" encoding="UTF-8"?>
+    <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/"   
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"   
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   
+         xmlns:sp="http://smartplatforms.org/terms#"   xmlns:v="http://www.w3.org/2006/vcard/ns#">
+    <rdf:Description rdf:nodeID="_6730841b-05df-445f-8695-ed64197f4e6a">
+        <v:family-name>William</v:family-name>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Name"/>
+        <v:given-name>Robinson</v:given-name>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_bcf66b59-e438-49b2-b572-99af4319b297">
+        <rdf:value>800-870-3011</rdf:value>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Tel"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Home"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Pref"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_8cbe3da1-fb53-4d31-80b6-19e0d04220ad">
+        <dcterms:identifier>http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6</dcterms:identifier>
+        <sp:system>Indivo Record</sp:system>
+        <dcterms:title>Indivo Record 96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6</dcterms:title>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_451ade87-b519-4c92-8d07-2bbfcb23999c">
+        <rdf:value>800-870-3011</rdf:value>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Tel"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Home"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Pref"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6/demographics">
+        <v:tel rdf:nodeID="_bcf66b59-e438-49b2-b572-99af4319b297"/>
+        <v:tel rdf:nodeID="_451ade87-b519-4c92-8d07-2bbfcb23999c"/>
+        <sp:email>william.robinson@example.com</sp:email>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Demographics"/>
+        <v:bday rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1965-08-09</v:bday>
+        <v:adr rdf:nodeID="_9f06ee63-3704-4b2a-9c2a-109cc9c99a57"/>
+        <sp:belongsTo rdf:resource="http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6"/>
+        <foaf:gender>male</foaf:gender>
+        <sp:preferredLanguage>EN</sp:preferredLanguage>
+        <v:n rdf:nodeID="_6730841b-05df-445f-8695-ed64197f4e6a"/>
+        <sp:medicalRecordNumber rdf:nodeID="_8cbe3da1-fb53-4d31-80b6-19e0d04220ad"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_9f06ee63-3704-4b2a-9c2a-109cc9c99a57">
+        <v:street-address>23 Church Rd</v:street-address>
+        <v:country>USA</v:country>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Address"/>
+        <v:region>OK</v:region>
+        <v:locality>Bixby</v:locality>
+        <v:postal-code>74008</v:postal-code>
+    </rdf:Description>
+</rdf:RDF>
+
+application/xml:
+
+    <Models>
+        <Model name="Demographics" documentId="44190967-cbaa-43a7-a98c-9f97f094ef2b">
+            <Field name="bday">1965-08-09</Field>
+            <Field name="email">william.robinson@example.com</Field>
+            <Field name="ethnicity"/>
+            <Field name="gender">male</Field>
+            <Field name="preferred_language">EN</Field>
+            <Field name="race"/>
+            <Field name="name_given">Robinson</Field>
+            <Field name="name_suffix"/>
+            <Field name="name_family">William</Field>
+            <Field name="name_prefix"/>
+            <Field name="tel_2_type">h</Field>
+            <Field name="tel_2_preferred_p">True</Field>
+            <Field name="tel_2_number">800-870-3011</Field>
+            <Field name="adr_region">OK</Field>
+            <Field name="adr_country">USA</Field>
+            <Field name="adr_postalcode">74008</Field>
+            <Field name="adr_city">Bixby</Field>
+            <Field name="adr_street">23 Church Rd</Field>
+            <Field name="tel_1_type">h</Field>
+            <Field name="tel_1_preferred_p">True</Field>
+            <Field name="tel_1_number">800-870-3011</Field>
+        </Model>
+    </Models>
+
+application/json:
+
+    [
+        {
+            "__modelname__": "Demographics",
+            "__documentid__": "44190967-cbaa-43a7-a98c-9f97f094ef2b",
+            "name_given": "Robinson",
+            "name_family": "William",
+            "name_prefix": null,
+            "name_suffix": null,
+            "gender": "male",
+            "race": null,
+            "ethnicity": null,
+            "bday": "1965-08-09",
+            "email": "william.robinson@example.com",
+            "preferred_language": "EN",
+            "tel_1_type": "h",
+            "tel_1_number": "800-870-3011",
+            "tel_1_preferred_p": true,
+            "tel_2_type": "h",
+            "tel_2_number": "800-870-3011",
+            "tel_2_preferred_p": true,
+            "adr_street": "23 Church Rd",
+            "adr_city": "Bixby",
+            "adr_postalcode": "74008",
+            "adr_region": "OK",
+            "adr_country": "USA"
+        }
+    ]
+
+
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"GET",
     "path":"/carenets/{CARENET_ID}/documents/",
     "view_func_name":"carenet_document_list",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
@@ -1586,58 +1792,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   ...
 
 </Documents>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/carenets/{CARENET_ID}/documents/special/{SPECIAL_DOCUMENT}",
-    "view_func_name":"read_special_document_carenet",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, an account in the carenet or in control of the record, or any admin app.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"Read a special document from a carenet.",
-    "return_desc":":http:statuscode:`200` with the special document's raw content, or :http:statuscode:`404` if the document hasn't been created yet.",
-    "return_ex":'''
-<Contact xmlns="http://indivo.org/vocab/xml/documents#">
-    <name>
-        <fullName>Sebastian Rockwell Cotour</fullName>
-        <givenName>Sebastian</givenName>
-        <familyName>Cotour</familyName>
-    </name>
-    <email type="personal">
-        scotour@hotmail.com
-    </email>
-
-    <email type="work">
-        sebastian.cotour@childrens.harvard.edu
-    </email>
-    <address type="home">
-        <streetAddress>15 Waterhill Ct.</streetAddress>
-        <postalCode>53326</postalCode>
-        <locality>New Brinswick</locality>
-        <region>Montana</region>
-
-        <country>US</country>
-        <timeZone>-7GMT</timeZone>
-    </address>
-    <location type="home">
-        <latitude>47N</latitude>
-        <longitude>110W</longitude>
-    </location>
-    <phoneNumber type="home">5212532532</phoneNumber>
-    <phoneNumber type="work">6217233734</phoneNumber>
-    <instantMessengerName protocol="aim">scotour</instantMessengerName>
-</Contact>
 ''',
     "deprecated": None,
     "added": None,
@@ -1730,7 +1884,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
     "return_desc":":http:statuscode:`200` with XML describing the record.",
     "return_ex":'''
 <Record id="123" label="Joe User">
-  <contact document_id="790" />
   <demographics document_id="467" />
   <created at="2010-10-23T10:23:34Z" by="indivoconnector@apps.indivo.org" />
 </Record>
@@ -2404,13 +2557,12 @@ see http://sandbox-api.smartplatforms.org/ontology
     "query_opts":{
         },
     "data_fields":{
-        '':'A valid Indivo Contact Document (see :doc:`/schemas/contact-schema`).',
+        '':'A valid Indivo Demographics Document (see :doc:`/schemas/demographics-schema`).',
         },
     "description":"Create a new record.",
-    "return_desc":":http:statuscode:`200` with information about the record on success, :http:statuscode:`400` if the contact XML was empty or invalid.",
+    "return_desc":":http:statuscode:`200` with information about the record on success, :http:statuscode:`400` if the demographics XML was empty or invalid.",
     "return_ex":'''
 <Record id="123" label="Joe Smith">
-  <contact document_id="234" />
   <demographics document_id="" />
 </Record>
 ''',
@@ -2431,13 +2583,12 @@ see http://sandbox-api.smartplatforms.org/ontology
     "query_opts":{
         },
     "data_fields":{
-        '':'A valid Indivo Contact Document (see :doc:`/schemas/contact-schema`).',
+        '':'A valid Indivo Demographics Document (see :doc:`/schemas/demographics-schema`).',
         },
     "description":"Create a new record with an associated external id.",
-    "return_desc":":http:statuscode:`200` with information about the record on success, :http:statuscode:`400` if the contact XML was empty or invalid.",
+    "return_desc":":http:statuscode:`200` with information about the record on success, :http:statuscode:`400` if the demographics XML was empty or invalid.",
     "return_ex":'''
 <Record id="123" label="Joe Smith">
-  <contact document_id="234" />
   <demographics document_id="" />
 </Record>
 ''',
@@ -2490,7 +2641,6 @@ see http://sandbox-api.smartplatforms.org/ontology
     "return_desc":":http:statuscode:`200` with information about the record.",
     "return_ex":'''
 <Record id="123" label="Joe Smith">
-  <contact document_id="234" />
   <demographics document_id="346" />
 </Record>
 ''',
@@ -3509,6 +3659,174 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
 },
 {
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/demographics",
+    "view_func_name":"read_demographics",
+    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        'response_format':'one of `application/rdf+xml` (SMART RDF/XML), `application/json` (:ref:`sdmj`), or `application/xml` (:ref:`sdmx`). Default is `application/rdf+xml`',
+        },
+    "data_fields":{
+        },
+    "description":"Read demographics from a record.",
+    "return_desc":":http:statuscode:`200` with demographics formatted in the requested ``response_format`` (default `application/rdf+xml`) on success, :http:statuscode:`404` when no demographics found, and :http:statuscode:`400` if response_format is invalid",
+    "return_ex":'''
+application/rdf+xml:
+    
+    <?xml version="1.0" encoding="UTF-8"?>
+    <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/"   
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"   
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   
+         xmlns:sp="http://smartplatforms.org/terms#"   xmlns:v="http://www.w3.org/2006/vcard/ns#">
+    <rdf:Description rdf:nodeID="_6730841b-05df-445f-8695-ed64197f4e6a">
+        <v:family-name>William</v:family-name>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Name"/>
+        <v:given-name>Robinson</v:given-name>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_bcf66b59-e438-49b2-b572-99af4319b297">
+        <rdf:value>800-870-3011</rdf:value>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Tel"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Home"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Pref"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_8cbe3da1-fb53-4d31-80b6-19e0d04220ad">
+        <dcterms:identifier>http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6</dcterms:identifier>
+        <sp:system>Indivo Record</sp:system>
+        <dcterms:title>Indivo Record 96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6</dcterms:title>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_451ade87-b519-4c92-8d07-2bbfcb23999c">
+        <rdf:value>800-870-3011</rdf:value>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Tel"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Home"/>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Pref"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#MedicalRecord"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6/demographics">
+        <v:tel rdf:nodeID="_bcf66b59-e438-49b2-b572-99af4319b297"/>
+        <v:tel rdf:nodeID="_451ade87-b519-4c92-8d07-2bbfcb23999c"/>
+        <sp:email>william.robinson@example.com</sp:email>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Demographics"/>
+        <v:bday rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1965-08-09</v:bday>
+        <v:adr rdf:nodeID="_9f06ee63-3704-4b2a-9c2a-109cc9c99a57"/>
+        <sp:belongsTo rdf:resource="http://indivo.org/records/96ff9eb2-3b18-4a0e-9df8-5a731b96d5d6"/>
+        <foaf:gender>male</foaf:gender>
+        <sp:preferredLanguage>EN</sp:preferredLanguage>
+        <v:n rdf:nodeID="_6730841b-05df-445f-8695-ed64197f4e6a"/>
+        <sp:medicalRecordNumber rdf:nodeID="_8cbe3da1-fb53-4d31-80b6-19e0d04220ad"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_9f06ee63-3704-4b2a-9c2a-109cc9c99a57">
+        <v:street-address>23 Church Rd</v:street-address>
+        <v:country>USA</v:country>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Address"/>
+        <v:region>OK</v:region>
+        <v:locality>Bixby</v:locality>
+        <v:postal-code>74008</v:postal-code>
+    </rdf:Description>
+</rdf:RDF>
+
+application/xml:
+
+    <Models>
+        <Model name="Demographics" documentId="44190967-cbaa-43a7-a98c-9f97f094ef2b">
+            <Field name="bday">1965-08-09</Field>
+            <Field name="email">william.robinson@example.com</Field>
+            <Field name="ethnicity"/>
+            <Field name="gender">male</Field>
+            <Field name="preferred_language">EN</Field>
+            <Field name="race"/>
+            <Field name="name_given">Robinson</Field>
+            <Field name="name_suffix"/>
+            <Field name="name_family">William</Field>
+            <Field name="name_prefix"/>
+            <Field name="tel_2_type">h</Field>
+            <Field name="tel_2_preferred_p">True</Field>
+            <Field name="tel_2_number">800-870-3011</Field>
+            <Field name="adr_region">OK</Field>
+            <Field name="adr_country">USA</Field>
+            <Field name="adr_postalcode">74008</Field>
+            <Field name="adr_city">Bixby</Field>
+            <Field name="adr_street">23 Church Rd</Field>
+            <Field name="tel_1_type">h</Field>
+            <Field name="tel_1_preferred_p">True</Field>
+            <Field name="tel_1_number">800-870-3011</Field>
+        </Model>
+    </Models>
+
+application/json:
+
+    [
+        {
+            "__modelname__": "Demographics",
+            "__documentid__": "44190967-cbaa-43a7-a98c-9f97f094ef2b",
+            "name_given": "Robinson",
+            "name_family": "William",
+            "name_prefix": null,
+            "name_suffix": null,
+            "gender": "male",
+            "race": null,
+            "ethnicity": null,
+            "bday": "1965-08-09",
+            "email": "william.robinson@example.com",
+            "preferred_language": "EN",
+            "tel_1_type": "h",
+            "tel_1_number": "800-870-3011",
+            "tel_1_preferred_p": true,
+            "tel_2_type": "h",
+            "tel_2_number": "800-870-3011",
+            "tel_2_preferred_p": true,
+            "adr_street": "23 Church Rd",
+            "adr_city": "Bixby",
+            "adr_postalcode": "74008",
+            "adr_region": "OK",
+            "adr_country": "USA"
+        }
+    ]
+
+
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"PUT",
+    "path":"/records/{RECORD_ID}/demographics",
+    "view_func_name":"set_demographics",
+    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Create or update demographics on a record.",
+    "return_desc":":http:statuscode:`200` with metadata on the updated document, or :http:statuscode:`400` if the new content didn't validate",
+    "return_ex":'''
+<Document id="14c81023-c84f-496d-8b8e-9438280441d3" type="http://indivo.org/vocab/xml/documents#Demographics" digest="7e9bc09276e0829374fd810f96ed98d544649703db3a9bc231550a0b0e5bcb1c" size="77">
+  <createdAt>2009-05-04T17:05:33</createdAt>
+  <creator id="steve@indivo.org" type="account">
+    <fullname>Steve Zabak</fullname>
+  </creator>
+  <original id="14c81023-c84f-496d-8b8e-9438280441d3" />
+  <latest id="14c81023-c84f-496d-8b8e-9438280441d3" createdAt="2009-05-05T17:05:33" createdBy="steve@indivo.org" />
+  <status>active</status>
+  <nevershare>false</nevershare>
+</Document>
+''',
+    "deprecated": None,
+    "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
     "method":"DELETE",
     "path":"/records/{RECORD_ID}/documents/",
     "view_func_name":"documents_delete",
@@ -3757,126 +4075,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   <isRelatedFrom>
     <relation type="http://indivo.org/vocab/documentrels#interpretation" count="1" />
   </isRelatedFrom>
-</Document>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}",
-    "view_func_name":"read_special_document",
-    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"Read a special document from a record.",
-    "return_desc":":http:statuscode:`200` with the special document's raw content, or :http:statuscode:`404` if the document hasn't been created yet.",
-    "return_ex":'''
-<Contact xmlns="http://indivo.org/vocab/xml/documents#">
-    <name>
-        <fullName>Sebastian Rockwell Cotour</fullName>
-        <givenName>Sebastian</givenName>
-        <familyName>Cotour</familyName>
-    </name>
-    <email type="personal">
-        scotour@hotmail.com
-    </email>
-
-    <email type="work">
-        sebastian.cotour@childrens.harvard.edu
-    </email>
-    <address type="home">
-        <streetAddress>15 Waterhill Ct.</streetAddress>
-        <postalCode>53326</postalCode>
-        <locality>New Brinswick</locality>
-        <region>Montana</region>
-
-        <country>US</country>
-        <timeZone>-7GMT</timeZone>
-    </address>
-    <location type="home">
-        <latitude>47N</latitude>
-        <longitude>110W</longitude>
-    </location>
-    <phoneNumber type="home">5212532532</phoneNumber>
-    <phoneNumber type="work">6217233734</phoneNumber>
-    <instantMessengerName protocol="aim">scotour</instantMessengerName>
-</Contact>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"POST",
-    "path":"/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}",
-    "view_func_name":"save_special_document",
-    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        '':'The raw content of the document to create.',
-        },
-    "description":"Create or update a special document on a record.",
-    "return_desc":":http:statuscode:`200` with metadata on the updated document, or :http:statuscode:`400` if the new content didn't validate.",
-    "return_ex":'''
-<Document id="14c81023-c84f-496d-8b8e-9438280441d3" type="http://indivo.org/vocab/xml/documents#Contact" digest="7e9bc09276e0829374fd810f96ed98d544649703db3a9bc231550a0b0e5bcb1c" size="77">
-  <createdAt>2009-05-04T17:05:33</createdAt>
-  <creator id="steve@indivo.org" type="account">
-    <fullname>Steve Zabak</fullname>
-  </creator>
-  <original id="14c81023-c84f-496d-8b8e-9438280441d3" />
-  <latest id="14c81023-c84f-496d-8b8e-9438280441d3" createdAt="2009-05-05T17:05:33" createdBy="steve@indivo.org" />
-  <label>Contacts</label>
-  <status>active</status>
-  <nevershare>false</nevershare>
-</Document>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"PUT",
-    "path":"/records/{RECORD_ID}/documents/special/{SPECIAL_DOCUMENT}",
-    "view_func_name":"save_special_document",
-    "access_doc":"A user app with access to the record, a principal in full control of the record, or any admin app.",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        'SPECIAL_DOCUMENT':'The type of special document to access. Options are ``demographics``, ``contact``',
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        '':'The raw content of the document to create.',
-        },
-    "description":"Create or update a special document on a record.",
-    "return_desc":":http:statuscode:`200` with metadata on the updated document, or :http:statuscode:`400` if the new content didn't validate.",
-    "return_ex":'''
-<Document id="14c81023-c84f-496d-8b8e-9438280441d3" type="http://indivo.org/vocab/xml/documents#Contact" digest="7e9bc09276e0829374fd810f96ed98d544649703db3a9bc231550a0b0e5bcb1c" size="77">
-  <createdAt>2009-05-04T17:05:33</createdAt>
-  <creator id="steve@indivo.org" type="account">
-    <fullname>Steve Zabak</fullname>
-  </creator>
-  <original id="14c81023-c84f-496d-8b8e-9438280441d3" />
-  <latest id="14c81023-c84f-496d-8b8e-9438280441d3" createdAt="2009-05-05T17:05:33" createdBy="steve@indivo.org" />
-  <label>Contacts</label>
-  <status>active</status>
-  <nevershare>false</nevershare>
 </Document>
 ''',
     "deprecated": None,
