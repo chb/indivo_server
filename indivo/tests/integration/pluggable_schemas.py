@@ -204,3 +204,29 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertEqual(len(fill_node_models), 1)        
         self.assertValidSDMXModel(fill_node_models[0], {'name':'TestFill'}, required_fields)
 
+    def test_data_model_validation(self):
+        
+        # post some documents that are valid by our TestMed schema but invalid against the TestMed datamodel validators
+        invalid_docs = []
+        invalid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml.invalid')).read())
+        invalid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed2.xml.invalid')).read())
+        invalid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed3.xml.invalid')).read())
+        for doc in invalid_docs:
+            response = self.client.post("/records/%s/documents/"%self.record.id, data=doc, content_type='application/xml')
+            self.assertTrue(response.status_code, 400)
+
+        # post some documents that are valid against the validators
+        valid_docs = []
+        valid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read())
+        valid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed2.xml')).read())
+        valid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed3.xml')).read())
+        for doc in valid_docs:
+            response = self.client.post("/records/%s/documents/"%self.record.id, data=doc, content_type='application/xml')
+            self.assertTrue(response.status_code, 400)
+        
+        # Only these three docs should come back in a report
+        response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id), {'response_format':'application/json'})
+        self.assertEquals(response.status_code, 200)
+        response_json = json.loads(response.content)
+        self.assertEquals(len(response_json), 3)
+ 
