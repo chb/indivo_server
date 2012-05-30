@@ -21,7 +21,7 @@ class ValueInSetValidator(object):
             return
 
         if value not in self.valid_values:
-            raise ValidationError("Invalid value: %s. Expected one of: %s"%(value, ", ".join(self.valid_values)))
+            raise ValidationError("Invalid value: %s. Expected one of: %s"%(value, ", ".join(map(str, self.valid_values))))
 
 
 class ExactValueValidator(ValueInSetValidator):
