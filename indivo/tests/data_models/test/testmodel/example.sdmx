@@ -1,7 +1,7 @@
 <Models xmlns="http://indivo.org/vocab/xml/documents#">
   <Model name="TestMed">
     <Field name="date_started">2010-08-07</Field>
-    <Field name="name">MyMed</Field>
+    <Field name="name">med2</Field>
     <Field name="brand_name">MyExpensiveMed</Field>
     <Field name="frequency">4</Field>
     <Field name="prescription">

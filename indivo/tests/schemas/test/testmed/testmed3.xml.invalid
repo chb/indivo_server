@@ -14,7 +14,7 @@
         </TestFill>
         <TestFill>
             <dateFilled>2010-10-16T00:00:00Z</dateFilled>
-            <supplyDays>30</supplyDays>
+            <supplyDays>15</supplyDays>
         </TestFill>
     </TestFills>
 </TestMed>
