@@ -150,13 +150,13 @@ class SDMJDataUnitTests(TransactionInternalTests):
         self.required_classes = []
         
         # Load test Classes
-        self.required_classes = self.load_classes_from_sdml(TEST_SDML_DOCS[0])
+        self.required_classes = self.load_models_from_sdml(TEST_SDML_DOCS[0])
 
     def tearDown(self):
         self.instance = None
 
         # Unregister the classes, reset the DB
-        self.unload_classes(self.required_classes)
+        self.unload_models(self.required_classes)
         self.required_classes = []
 
         super(SDMJDataUnitTests, self).tearDown()        
@@ -249,13 +249,13 @@ class SDMXDataUnitTests(TransactionInternalTests):
         self.required_classes = []
         
         # Load test Classes
-        self.required_classes = self.load_classes_from_sdml(TEST_SDML_DOCS[0])
+        self.required_classes = self.load_models_from_sdml(TEST_SDML_DOCS[0])
 
     def tearDown(self):
         self.instance = None
 
         # Unregister the classes, reset the DB
-        self.unload_classes(self.required_classes)
+        self.unload_models(self.required_classes)
         self.required_classes = []
 
         super(SDMXDataUnitTests, self).tearDown()        

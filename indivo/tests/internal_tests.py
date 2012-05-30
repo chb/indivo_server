@@ -5,7 +5,7 @@ from django.db.models.loading import cache
 
 from south.db import db
 
-from indivo.data_models import attach_filter_fields
+from indivo.data_models import attach_filter_fields, IndivoDataModelLoader
 from indivo.models import *
 from indivo.tests.data import *
 from indivo.lib import iso8601
@@ -20,6 +20,8 @@ from xml.dom import minidom
 from lxml import etree
 
 class IndivoTests(object):
+    TEST_MODEL_MODULE = sys.modules['indivo.models'] # models module to which we can add test datamodels, etc.
+    TEST_MODEL_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/')
     dependencies_loaded = False
     dependencies = {DocumentSchema:('document_schemas',['type']),
                     AuthSystem:('auth_systems', ['short_name', 'internal_p']),
@@ -247,24 +249,8 @@ class IndivoTests(object):
             response = method_func(url)
             self.assertEquals(response.status_code, 405)
 
-    def create_db_model(self, django_class):
-        fields = [(f.name, f) for f in django_class._meta.local_fields]
-        table_name = django_class._meta.db_table
-        db.create_table(table_name, fields)
-
-    def finish_db_creation(self):
-        db.execute_deferred_sql()
-
-    def drop_db_model(self, django_class):
-        # Drop the table. Also force a commit, or we'll have trouble with pending triggers in future operations.
-        # This means you can ONLY USE THIS FUNCTION IF TRANSACTIONS ARE ENABLED (i.e. in a subclass of 
-        # django.test.TransactionTestCase
-        table_name = django_class._meta.db_table
-        db.start_transaction()
-        db.delete_table(table_name)
-        db.commit_transaction()
-
     def remove_model_from_cache(self, modelname):
+        """ Delete a model from Django's internal cache. """
         try:
             del cache.app_models['indivo'][modelname]
         except KeyError:
@@ -344,35 +330,97 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
     to test transactions. If you just need to deal with IntegrityErrors by
     calling rollback, see enable_transactions below. """
     
-    def load_classes_from_sdml(self, sdml):
-        added_classes = []
-        
-        klasses = [k for k in SDML(sdml).get_output()]
-        
-        # Make sure the classes are in indivo.models, so we can find them
-        indivo_models_module = sys.modules['indivo.models']
-        for klass in klasses:
-            attach_filter_fields(klass)
-            added_classes.append(klass)
-            klass.__module__ = 'indivo.models'
-            klass.Meta.app_label = 'indivo'
-            setattr(indivo_models_module, klass.__name__, klass)
+    def load_model_dir(self, dirpath):
+        """ Load data models from a directory (like we do when running Indivo normally). """
+        loader = IndivoDataModelLoader(dirpath)
+        models = [model_class for model_name, model_class in loader.discover_data_models()]
+        self.load_models(models)
+        return models
+ 
+    def unload_model_dir(self, dirpath):
+        """ Unload data models that have been loaded from a directory."""
+        loader = IndivoDataModelLoader(dirpath)
+        models = [model_class for model_name, model_class in loader.discover_data_models()]
+        self.unload_models(models)
 
-            # Make sure the DB is up to date, so we can save objects
-            self.create_db_model(klass)
+    def load_models_from_sdml(self, sdml):
+        """ Load data models from an SDML literal. """
+        models = [] 
+        for model in SDML(sdml).get_output():
+            attach_filter_fields(model)
+            models.append(model)
+        self.load_models(models)
+        return models
+        
+    def load_models(self, models):
+        """ Do the heavy lifting for loading data models.
+        
+        Registers the models, then migrates the DB to support them.
+
+        """
+
+        loader = IndivoDataModelLoader('')
+        for m in models:
+
+            # Register the model in indivo.models
+            loader.add_model_to_module(m.__name__, m, self.TEST_MODEL_MODULE)
+
+            # Migrate the database to contain the model
+            db.start_transaction()
+            try:
+                self.create_db_model(m)
+            except Exception, e:
+                db.rollback_transaction()
+            else:
+                db.commit_transaction()
         self.finish_db_creation()
-        
-        return added_classes
-        
-    def unload_classes(self, klasses):
-        indivo_models_module = sys.modules['indivo.models']
-        for klass in klasses:
-            attr = getattr(indivo_models_module, klass.__name__, None)
-            if attr:
-                del attr
 
-            self.drop_db_model(klass)
-            self.remove_model_from_cache(klass.__name__)
+    def unload_models(self, models):
+        """ Do the heavy lifting for unloading data models.
+        
+        Unregisters the models, then migrates the DB to remove them.
+        
+        """
+
+        for m in models:
+
+            # Unregister the model from indivo.models
+            delattr(self.TEST_MODEL_MODULE, m.__name__)
+
+            # Remove the model from django's internal model cache
+            self.remove_model_from_cache(m.__name__)
+
+            # Migrate the database to no longer contain the model
+            db.start_transaction()
+            try:
+                self.drop_db_model(m)
+            except Exception, e:
+                db.rollback_transaction()
+            else:
+                db.commit_transaction()
+
+    def create_db_model(self, django_class):
+        """ Migrate the DB to support a single model. """
+        fields = [(f.name, f) for f in django_class._meta.local_fields]
+        table_name = django_class._meta.db_table
+        db.create_table(table_name, fields)
+
+    def finish_db_creation(self):
+        """ Exceute deferred SQL after creating several models. 
+        
+        MUST BE CALLED after self.create_db_model()
+        
+        """
+
+        db.execute_deferred_sql()
+
+    def drop_db_model(self, django_class):
+        """ Migrate the DB to remove a single model. """
+        # Drop the table. Also force a commit, or we'll have trouble with pending triggers in future operations.
+        table_name = django_class._meta.db_table
+        db.start_transaction()
+        db.delete_table(table_name)
+        db.commit_transaction()
 
 def enable_transactions(func):
     """ Hackish decorator that re-enables transaction management in tests

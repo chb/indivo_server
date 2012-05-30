@@ -11,13 +11,10 @@ from indivo.document_processing.document_processing import *
 class DocumentProcessingUnitTests(TransactionInternalTests):
     def setUp(self):
         super(DocumentProcessingUnitTests, self).setUp()
-        self.required_classes = []
         
-        # Make sure the test class is in indivo.models, so we can find it
-        indivo_models_module = sys.modules['indivo.models']
-        model_definition = open(os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/testmodel/model.sdml')).read()
-        self.required_classes = self.load_classes_from_sdml(model_definition)
-        
+        # Load the test datamodels
+        self.load_model_dir(self.TEST_MODEL_DIR)
+
         # load the test schema
         self.loader = IndivoSchemaLoader(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test'))
         self.loader.import_schemas()        
@@ -28,11 +25,11 @@ class DocumentProcessingUnitTests(TransactionInternalTests):
     def tearDown(self):
         self.instance = None
         
+        # Unload the test schema
         self.loader.unregister_all_schemas()
         
         # Unregister the classes, reset the DB
-        self.unload_classes(self.required_classes)
-        self.required_classes = []
+        self.unload_model_dir(self.TEST_MODEL_DIR)
 
         super(DocumentProcessingUnitTests, self).tearDown()     
         
@@ -72,12 +69,11 @@ class DocumentProcessingUnitTests(TransactionInternalTests):
         self.assertEquals(len(transformed_doc), 4)
         
         # check Class types and count        
-        klassCount = {}        
-        for klass in self.required_classes:
-            klassCount[klass.__name__] = 0
+        test_classes = ('TestMed', 'TestPrescription', 'TestFill')
+        klassCount = dict.fromkeys(test_classes, 0)
         
         for fact in transformed_doc:
-            if fact.__class__ in self.required_classes:
+            if fact.__class__ in test_classes:
                 klassCount[fact.__class__.__name__] += 1
             else:
                 self.fail("unexpected fact %s" % fact.__class__)

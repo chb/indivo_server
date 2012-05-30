@@ -1,7 +1,9 @@
 from indivo.tests.internal_tests import InternalTests
 from indivo.data_models import IndivoDataModelLoader, MODULE_NAME, MODULE_EXTENSIONS
 from indivo.models import Fact, Record
+from indivo.validators import ExactValueValidator, ValueInSetValidator
 
+from django.core.exceptions import ValidationError
 from django.conf import settings
 
 import sys, os
@@ -77,6 +79,32 @@ class DataModelLoaderUnitTests(InternalTests):
             # Dummy input to the serializers, which produce dummy output
             rdf_output = rdf_ser(model_cls.objects.none(), 0, Record())
             self.assertTrue(rdf_output.startswith(model_name))
+        
+
+        def _find_indivo_validator(validators, validator_class):
+            for v in validators:
+                if isinstance(v, validator_class):
+                    return v
+
+        # make sure the field validators were loaded correctly
+
+        # validator on TestMed.name should accept 'med1', 'med2', or None
+        test_med_class = getattr(TEST_MODULE, 'TestMed')
+        field = test_med_class._meta.get_field('name')
+        validator = _find_indivo_validator(field.validators, ValueInSetValidator)
+        self.assertNotRaises(ValidationError, validator, 'med1')
+        self.assertNotRaises(ValidationError, validator, 'med2')
+        self.assertNotRaises(ValidationError, validator, None)
+        self.assertRaises(ValidationError, validator, 'med3')
+
+        # validator on TestFill.supply_days should accept 30
+        test_med_class = getattr(TEST_MODULE, 'TestFill')
+        field = test_med_class._meta.get_field('supply_days')
+        validator = _find_indivo_validator(field.validators, ExactValueValidator)
+        self.assertNotRaises(ValidationError, validator, 30)
+        self.assertRaises(ValidationError, validator, 29)
+        self.assertRaises(ValidationError, validator, '30')
+        self.assertRaises(ValidationError, validator, None)
 
     def test_detect_model_dir(self):
         

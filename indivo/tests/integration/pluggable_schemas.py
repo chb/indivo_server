@@ -21,11 +21,10 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # Add a record for it
         self.record = self.createRecord(TEST_RECORDS, 0, owner=self.account)
         
-        # Add in TestMed class
-        model_definition = open(os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/testmodel/model.sdml')).read()
-        self.required_classes = self.load_classes_from_sdml(model_definition)
+        # Load the test data models
+        self.load_model_dir(self.TEST_MODEL_DIR)
         
-        # load the test schemas
+        # Load the test schemas
         self.loader = IndivoSchemaLoader(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test'))
         self.loader.import_schemas()        
 
@@ -33,10 +32,9 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # Unregister the schemas
         self.loader.unregister_all_schemas()
         
-        # Unregister TestMed, reset the DB
-        self.unload_classes(self.required_classes)
+        # Unload the test models
+        self.unload_model_dir(self.TEST_MODEL_DIR)
 
-        self.required_classes = []
         super(PluggableSchemaIntegrationTests,self).tearDown()
         
     def test_nested_model_json(self):
@@ -87,7 +85,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertEqual(len(test_med.findall('Field')), 6, "expected 6 fields on TestMed")
         self.assertEqual(test_med.get('name'), 'TestMed')
         self.assertEqual(test_med.find('Field[@name="date_started"]').text, '2010-10-01T00:00:00Z')
-        self.assertEqual(test_med.find('Field[@name="name"]').text, 'ibuprofen')
+        self.assertEqual(test_med.find('Field[@name="name"]').text, 'med1')
         self.assertEqual(test_med.find('Field[@name="brand_name"]').text, 'Advil')
         self.assertEqual(float(test_med.find('Field[@name="frequency"]').text), 2)
         
@@ -101,7 +99,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         test_fills = test_med.findall('./Field[@name="fills"]/Models/Model')
         self.assertEqual(len(test_fills), 2)
         self.assertEqual(test_fills[0].get("name"), "TestFill")
-        self.assertEqual(float(test_fills[0].find('Field[@name="supply_days"]').text), 15.0)
+        self.assertEqual(float(test_fills[0].find('Field[@name="supply_days"]').text), 30.0)
         
     def test_default_response_format(self):
         # post new document with a TestMed
@@ -131,6 +129,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertTrue(response_json == expected_json, "JSON does not match expected")
         
     def test_unsupported_response_format(self):
+
         # post new document with a TestMed
         test_med_data = open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read()
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
@@ -148,7 +147,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         response = self.client.get('/records/%s/reports/LabResult/'%(self.record.id), {'response_format':'application/xml'})
         self.assertEquals(response.status_code, 200)
         
-         # parse response and check          
+        # parse response and check          
         response_xml = etree.XML(response.content)
         labs = response_xml.findall('./Model')
         self.assertEqual(len(labs), 1)
@@ -176,7 +175,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # Check the top-level TestMed
         required_fields = {
             'date_started': (date, datetime.datetime(year=2010, month=8, day=7)),
-            'name': (str, "MyMed"),
+            'name': (str, "med2"),
             'brand_name': (str, "MyExpensiveMed"),
             'frequency': (float, 4),
             'prescription': None,
