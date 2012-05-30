@@ -318,7 +318,6 @@ class Call(object):
           'return_desc':'An XML snippet describing the Record',
           'return_ex':'
           <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
-            <contact document_id="83nvb-038xcc-98xcv-234234325235" />
             <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
           </Record>',
           'deprecated': ('0.9.3', 'Use :http:get:`/records/{RECORD_ID}/get`.'),
@@ -390,7 +389,6 @@ class Call(object):
         ::
         
            <Record id="c002aa8e-1ff0-11de-b090-001b63948875" label="Jill Smith">
-             <contact document_id="83nvb-038xcc-98xcv-234234325235" />
              <demographics document_id="646937a0-1ff1-11de-b090-001b63948875" />
            </Record>
         

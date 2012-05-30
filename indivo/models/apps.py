@@ -150,7 +150,7 @@ class PHA(OAuthApp):
         start_url = "%s%s"%(settings.UI_SERVER_URL, start_url)
 
     callback_url = parsed_manifest.get('oauth_callback_url', '')
-    if callback_url and not callback_url.startswith('http'):
+    if callback_url and callback_url.find('://') < 0:
         callback_url = "%s%s"%(settings.UI_SERVER_URL, callback_url)
 
     icon_url = parsed_manifest.get('icon', '')

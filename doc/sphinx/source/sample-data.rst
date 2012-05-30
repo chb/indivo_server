@@ -72,7 +72,6 @@ Data in ``SAMPLE_DATA_DIR`` should look like::
   bob/        # For example, this is the data profile that can be referenced as 'bob'
     ...
   profile_n/
-    Contact.xml # An optional contact document.
     Demographics.xml # An optional demographics document.
 
     doc_1.xml # XML Data to load goes here.
@@ -85,10 +84,9 @@ Data in ``SAMPLE_DATA_DIR`` should look like::
        ...
 
 Namely, the data directory should have multiple subdirectories, each representing one 
-patient's data. Within a patient's directory, there might be a ``Contact.xml`` file
-and/or a ``Demographics.xml`` file. There will also be any number of data files,
-labeled ``doc_{NAME}.{EXTENSION}``, where ``NAME`` can be anything, and ``EXTENSION``
-describes the type of data in the file.
+patient's data. Within a patient's directory, there might be a ``Demographics.xml`` file. 
+There will also be any number of data files, labeled ``doc_{NAME}.{EXTENSION}``, 
+where ``NAME`` can be anything, and ``EXTENSION`` describes the type of data in the file.
 
 We've provided you with a few sample patients to get started with, but you should 
 feel free to add data that is useful to your specific Indivo installation.
@@ -104,4 +102,4 @@ Adding sample data to Indivo is trivial: simply add files to
   directory, or
 
 * Add a new profile, by creating a new subdirectory of ``SAMPLE_DATA_DIR``. Make sure
-  to add a contact/demographics document for the new profile.
+  to add a demographics document for the new profile.
