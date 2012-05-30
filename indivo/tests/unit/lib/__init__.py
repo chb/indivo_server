@@ -14,3 +14,6 @@ from datamodel_loader import DataModelLoaderUnitTests
 
 # tests of document_processing
 from document_processing import DocumentProcessingUnitTests
+
+# tests of validators
+from validators import ValidatorUnitTests
