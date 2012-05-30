@@ -64,6 +64,9 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         del test_fill_2['__documentid__']
         
         expected_json = json.loads(TEST_TESTMED_JSON)
+        # we sort the fills here by date, so the JSON comparison will be consistent for this test
+        response_json[0]['fills'].sort(key=lambda fill: fill['date_filled'])
+        expected_json[0]['fills'].sort(key=lambda fill: fill['date_filled'])
         self.assertTrue(response_json == expected_json, "JSON does not match expected")
         
     def test_nested_model_xml(self):
@@ -128,6 +131,9 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         del test_fill_2['__documentid__']
         
         expected_json = json.loads(TEST_TESTMED_JSON)
+        # we sort the fills here by date, so the JSON comparison will be consistent for this test
+        response_json[0]['fills'].sort(key=lambda fill: fill['date_filled'])
+        expected_json[0]['fills'].sort(key=lambda fill: fill['date_filled'])
         self.assertTrue(response_json == expected_json, "JSON does not match expected")
         
     def test_unsupported_response_format(self):
