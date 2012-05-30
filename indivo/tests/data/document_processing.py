@@ -1,6 +1,6 @@
 TEST_DOCUMENT_PROCESSING_DOCS = ['''<TestMed xmlns="http://indivo.org/vocab/xml/documents#">
     <dateStarted>2010-10-01T00:00:00Z</dateStarted>
-    <name>ibuprofen</name>
+    <name>med1</name>
     <brandName>Advil</brandName>
     <frequency>2</frequency>
     <Prescription>
@@ -10,11 +10,11 @@ TEST_DOCUMENT_PROCESSING_DOCS = ['''<TestMed xmlns="http://indivo.org/vocab/xml/
     <TestFills>
         <TestFill>
             <dateFilled>2010-10-01T00:00:00Z</dateFilled>
-            <supplyDays>15</supplyDays>
+            <supplyDays>30</supplyDays>
         </TestFill>
         <TestFill>
             <dateFilled>2010-10-16T00:00:00Z</dateFilled>
-            <supplyDays>15</supplyDays>
+            <supplyDays>30</supplyDays>
         </TestFill>
     </TestFills>
 </TestMed>''']

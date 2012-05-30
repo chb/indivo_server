@@ -73,10 +73,10 @@ class DocumentProcessingUnitTests(TransactionInternalTests):
         klassCount = dict.fromkeys(test_classes, 0)
         
         for fact in transformed_doc:
-            if fact.__class__ in test_classes:
+            if fact.__class__.__name__ in test_classes:
                 klassCount[fact.__class__.__name__] += 1
             else:
-                self.fail("unexpected fact %s" % fact.__class__)
+                self.fail("unexpected fact %s" % fact.__class__.__name__)
         
         self.assertEquals(klassCount['TestMed'], 1)
         self.assertEquals(klassCount['TestPrescription'], 1)
