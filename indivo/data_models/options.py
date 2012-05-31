@@ -8,12 +8,11 @@ class DataModelOptions(object):
     """ Defines optional extra functionality for Indivo datamodels.
 
     To add options to a datamodel, subclass this class and override 
-    its attributes. Then, call ``attach()`` on an Indivo datamodel 
-    class to set the datamodel up with the options.
-    
-    Currently available attributes are:
+    its attributes. 
 
-    * *model_class_name*: Required. The name of the datamodel class 
+    Currently available options are:
+
+    * *model_class_name*: **Required**. The name of the datamodel class 
       to attach to.
 
     * *serializers*: Custom serializers for the data model. Should be 
@@ -21,7 +20,8 @@ class DataModelOptions(object):
 
     * *field_validators*: Custom validators for fields on the data model. A
       dictionary, where keys are field names on the model, and values are lists of
-      `Django Validators <https://docs.djangoproject.com/en/1.2/ref/validators/>`_.
+      `Django Validators <https://docs.djangoproject.com/en/1.2/ref/validators/>`_ 
+      to be run against the field.
 
     """
 

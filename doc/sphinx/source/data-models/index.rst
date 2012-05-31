@@ -221,10 +221,54 @@ see :ref:`below <add-data-model>` for information on how to add data models to I
 Advanced Data-Model Tasks
 -------------------------
 
+.. _data-model-options:
+
+Adding Advanced Features to a Data-Model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For complicated data models, a simple SDML definition just won't suffice. For a few specific features, such as 
+:ref:`custom object serialization <custom-serializers>` or :ref:`creation-time field validation <data-model-validators>`, 
+you can define (in python) an extra options file for a data model.
+
+This file should be named ``extra.py``, and can be dropped into the filesystem next to any data model, as described 
+:ref:`below <data-model-filesystem>`. The file should contain subclasses of 
+:py:class:`indivo.data_models.options.DataModelOptions`, each of which describes the options for one data model defined in 
+the ``model.py`` file in the same directory. Options are:
+
+.. autoclass:: indivo.data_models.options.DataModelOptions(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+For example, here's our options file for the Problem data model::
+
+  from indivo.serializers import DataModelSerializers
+  from indivo.data_models.options import DataModelOptions
+  from indivo.validators import ExactValueValidator
+
+  SNOMED_URI = 'http://purl.bioontology.org/ontology/SNOMEDCT/'
+
+  class ProblemSerializers(DataModelSerializers):
+
+      def to_rdf(queryset, result_count, record=None, carenet=None):
+          # ... our SMART RDF serializer implementation here ... #
+          return 'some RDF'
+
+  class ProblemOptions(DataModelOptions):
+      model_class_name = 'Problem'
+      serializers = ProblemSerializers
+      field_validators = {
+        'name_system': [ExactValueValidator(SNOMED_URI)],
+      }
+
+Make sure to restart Indivo for your changes to take effect after you add your ``extra.py`` file--but there's no need to 
+*reset* Indivo.
+
 .. _custom-serializers:
 
-Adding Custom Serializers to Indivo
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Adding Custom Serializers to a Data-Model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, when returning data via the :doc:`generic reporting API </generic-reports>`, Indivo will attempt to serialize
 data as :ref:`SDMJ <sdmj>` or :ref:`SDMX <sdml>`, depending on the requested response format. If you need your data to come
@@ -238,24 +282,48 @@ Serializers for a data model are implemented as simple methods that take a Djang
 string. For a given data-model, you should define a subclass of :py:class:`indivo.serializers.DataModelSerializers`, and
 add your desired serializers as methods on the class. Currently, available serializers are:
 
-* ``to_xml(queryset)``: returns an XML string representing the model objects in *queryset*
-* ``to_json(queryset)``: returns a JSON string representing the model objects in *queryset*
-* ``to_rdf(queryset)``: returns an RDF/XML string representing the model objects in *queryset*
+.. py:function:: to_xml(queryset, result_count, record=None, carenet=None)
+
+   returns an XML string representing the model objects in *queryset*. 
+   
+   :param QuerySet queryset: the objects to serialize
+   :param integer result_count: the total number of items in *queryset*
+   :param Record record: the patient record that the objects belong to, if available.
+   :param Carenet carenet: the Carenet via which the objects have been retrieved, if available.
+   :rtype: string
+
+.. py:function:: to_json(queryset, result_count, record=None, carenet=None)
+
+   returns a JSON string representing the model objects in *queryset*.
+
+   :param QuerySet queryset: the objects to serialize
+   :param integer result_count: the total number of items in *queryset*
+   :param Record record: the patient record that the objects belong to, if available.
+   :param Carenet carenet: the Carenet via which the objects have been retrieved, if available.
+   :rtype: string
+
+.. py:function:: to_rdf(queryset, result_count, record=None, carenet=None)
+
+   returns an RDF/XML string representing the model objects in *queryset*.
+
+   :param QuerySet queryset: the objects to serialize
+   :param integer result_count: the total number of items in *queryset*
+   :param Record record: the patient record that the objects belong to, if available.
+   :param Carenet carenet: the Carenet via which the objects have been retrieved, if available.
+   :rtype: string
 
 For example, here's a (non-functional) implementation of the serializers for the Problems data-model::
 
   from indivo.serializers import DataModelSerializers
   
   class ProblemSerializers(DataModelSerializers):
-      model_class_name = "Problem"
-
-      def to_xml(queryset):
+      def to_xml(queryset, result_count, record=None, carenet=None):
           return '''<Problems>...bunch of problems here...</Problems>'''
 
-      def to_json(queryset):
+      def to_json(queryset, result_count, record=None, carenet=None):
           return '''[{"Problem": "data here"}, {"Problem": "More data here..."}]'''
 
-      def to_rdf(queryset):
+      def to_rdf(queryset, result_count, record=None, carenet=None):
           return '''<rdf:RDF><rdf:Description rdf:type='indivo:Problem'>...RDF data here...</rdf:Description></rdf:RDF>'''
 
 A couple things to note:
@@ -282,11 +350,79 @@ When serializing models, the following libraries can come in handy:
 Attaching the Serializers to a Data Model
 """""""""""""""""""""""""""""""""""""""""
 
-Adding custom serializers to a data-model is simple: simply save your :py:class:`~indivo.serializers.DataModelSerializers`
-subclass to a file named ``extra.py``, and drop it into the directory where the data-model resides. More on the structure
-of those directories :ref:`below <add-data-model>`.
+Adding custom serializers to a data-model is simple: simply set your :py:class:`~indivo.serializers.DataModelSerializers`
+subclass to the ``serializers`` attribute of a :py:class:`~indivo.data_models.options.DataModelOptions` subclass in
+an ``extra.py`` file (see :ref:`above <data-model-options>` for info on adding advanced data-model options.
 
-Make sure to restart Indivo for your changes to take effect--but there's no need to *reset* Indivo.
+.. _data-model-validators:
+
+Adding Field Validation to a Data-Model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default, data models defined in SDML are very permissive: all fields are nullable, and there are no constraints on valid
+data points other than their type (string, date, etc.). In some cases, a data element could satisfy these constraints, but
+still be invalid. For example, an Indivo Problem must have its name coded using SNOMED, so a problem without a snomed code is
+invalid.
+
+Defining the Validators
+"""""""""""""""""""""""
+
+In such cases, you can attach validators to the data model. `Django Validators <https://docs.djangoproject.com/en/1.2/ref/validators/>`_ are essentially just python callables that raise a :py:class:`django.core.exceptions.ValidationError` if they are
+called on an invalid data point. We've defined a couple of useful validators, though you could use any function you'd like. 
+
+For example, here's a validator that will accept only the value ``2``::
+
+  from django.core.exceptions import ValidationError
+
+  def validate_2(value):
+      if value != 2:
+          raise ValidationError("Invalid value: %s. Expected 2"%str(value))
+
+Built in Validators
+"""""""""""""""""""
+
+Django provides a number of built-in validators, for which a full reference exists here: 
+https://docs.djangoproject.com/en/1.2/ref/validators/#built-in-validators.
+
+In addition, Indivo defines a few useful validators in :py:mod:`indivo.validators`:
+
+.. autoclass:: indivo.validators.ValueInSetValidator(valid_values, nullable=False)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+.. autoclass:: indivo.validators.ExactValueValidator(valid_value, nullable=False)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
+
+Attaching Validators to a Data Model
+""""""""""""""""""""""""""""""""""""
+
+Adding custom validators to a data-model is simple: simply add the validator to the field_validators attribute of a 
+:py:class:`~indivo.data_models.options.DataModelOptions` subclass in an ``extra.py`` file 
+(see :ref:`above <data-model-options>` for info on adding advanced data-model options).
+
+For example, let's add the requirement that Problem names must be coded as snomed. We can write the validator using
+the built-in :py:class:`~indivo.validators.ExactValueValidator`::
+
+  from indivo.validators import ExactValueValidator
+  SNOMED_URI = 'http://purl.bioontology.org/ontology/SNOMEDCT/'
+  snomed_validator = ExactValueValidator(SNOMED_URI)
+
+We can then attach it to the ``name_system`` field of a Problem, which will guarantee that we only accept problems which
+identify themselves as having a snomed code for their names::
+
+  class ProblemOptions(DataModelOptions):
+      model_class_name = 'Problem'
+      field_validators = {
+        'name_system': [snomed_validator]
+      }  
+
+Note that we put ``snomed_validator`` in a list, since we might theoretically add additional validators to the 
+``name_system`` field.
 
 .. _add-data-model:
 
@@ -305,6 +441,8 @@ Defining the Data Model
 
 As you saw :ref:`above <data-model-definition-types>`, data models can be defined in two formats: SDML or Django model
 classes. Simply produce a definition in one of the two forms, and save it to a file named **model.sdml** or **model.py**.
+
+.. _data-model-filesystem:
 
 Dropping the Definition into the Filesystem
 """""""""""""""""""""""""""""""""""""""""""

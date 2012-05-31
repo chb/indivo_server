@@ -54,6 +54,10 @@ Syntax
    * :py:class:`Telephone <indivo.fields.TelephoneField>`
    * :py:class:`Pharmacy <indivo.fields.PharmacyField>`
    * :py:class:`Provider <indivo.fields.ProviderField>`
+   * :py:class:`VitalSign <indivo.fields.VitalSignField>`
+   * :py:class:`BloodPressure <indivo.fields.BloodPressureField>`
+   * :py:class:`ValueRange <indivo.fields.ValueRangeField>`
+   * :py:class:`QuantitativeResult <indivo.fields.QuantitativeResultField>`
    * One-to-One
    * One-to-Many
 
