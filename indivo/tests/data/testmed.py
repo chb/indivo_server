@@ -2,7 +2,7 @@ TEST_TESTMED_JSON = '''
 [
     {
         "__modelname__": "TestMed",
-        "name": "ibuprofen",
+        "name": "med1",
         "brand_name": "Advil",
         "frequency": 2.0,
         "date_started": "2010-10-01T00:00:00Z",
@@ -15,11 +15,11 @@ TEST_TESTMED_JSON = '''
             {
                 "__modelname__": "TestFill",
                 "date_filled": "2010-10-01T00:00:00Z",
-                "supply_days": 15.0
+                "supply_days": 30.0
             }, {
                 "__modelname__": "TestFill",
                 "date_filled": "2010-10-16T00:00:00Z",
-                "supply_days": 15.0
+                "supply_days": 30.0
             }
         ]
     }
