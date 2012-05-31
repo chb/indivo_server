@@ -550,6 +550,15 @@ calls are now available:
    :http:get:`/capabilities/`
      Get the SMART capabilities for this instance of Indivo.
 
+   :http:get:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
+     Get account preferences for a specific application.
+
+   :http:put:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
+     Set account preferences for a specific application. Overrides previous preferences.
+
+   :http:delete:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
+     Remove all account preferences for a specific application.
+
 Generic Reports
 ---------------
 

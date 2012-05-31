@@ -157,12 +157,12 @@ CALLS=[{
     "data_fields":{
         },
     "description":"Delete all app-specific User Preferences for an account.",
-    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_desc":":http:statuscode:`200 Success`",
     "return_ex":'''
-GIVE AN EXAMPLE OF A RETURN VALUE
+<ok/>
 ''',
     "deprecated": None,
-    "added": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -180,12 +180,12 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":"Get app-specific User Preferences for an account.",
-    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_desc":":http:statuscode:`200`, with app-specific user preferences",
     "return_ex":'''
-GIVE AN EXAMPLE OF A RETURN VALUE
+Preferences format is defined by the app setting the preferences, and will therefore vary.
 ''',
     "deprecated": None,
-    "added": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
@@ -203,12 +203,12 @@ GIVE AN EXAMPLE OF A RETURN VALUE
     "data_fields":{
         },
     "description":"Set app-specific User Preferences for an account.",
-    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_desc":":http:statuscode:`200 Success`",
     "return_ex":'''
-GIVE AN EXAMPLE OF A RETURN VALUE
+<ok/>
 ''',
     "deprecated": None,
-    "added": None,
+    "added": ('2.0.0', ''),
     "changed": None,
 
 },
