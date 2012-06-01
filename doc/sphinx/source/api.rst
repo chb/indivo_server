@@ -624,6 +624,10 @@ Account Administration
      Get information about an account. The account_id must be in the form of an 
      email address.
 
+   :http:post:`/accounts/{ACCOUNT_ID}/info-set`
+     Set information about an account, including the name and contact email of the 
+     account holder.
+
    :http:get:`/accounts/search`
      Search for accounts by name or contact email.
 
