@@ -81,6 +81,7 @@ class Demographics(BaseModel):
         attrs['gender'] = root.findtext(_tag('gender'))
         attrs['email'] = root.findtext(_tag('email'))
         attrs['ethnicity'] = root.findtext(_tag('ethnicity'))
+        attrs['race'] = root.findtext(_tag('race'))
         attrs['preferred_language'] = root.findtext(_tag('preferredLanguage'))
         
         nameElement = root.find(_tag('Name'))
@@ -97,17 +98,18 @@ class Demographics(BaseModel):
             attrs['tel_1_preferred_p'] = tel_1.findtext(_tag('preferred'))
             
         if len(telephoneElements) > 1:
-            tel_2 = telephoneElements[0]
+            tel_2 = telephoneElements[1]
             attrs['tel_2_type'] = tel_2.findtext(_tag('type'))
             attrs['tel_2_number'] = tel_2.findtext(_tag('number'))
             attrs['tel_2_preferred_p'] = tel_2.findtext(_tag('preferred'))
         
         addressElement = root.find(_tag('Address'))
-        attrs['adr_country'] = addressElement.findtext(_tag('country'))
-        attrs['adr_city'] = addressElement.findtext(_tag('city'))
-        attrs['adr_postalcode'] = addressElement.findtext(_tag('postalCode'))
-        attrs['adr_region'] = addressElement.findtext(_tag('region'))
-        attrs['adr_street'] = addressElement.findtext(_tag('street'))
+        if addressElement:
+            attrs['adr_country'] = addressElement.findtext(_tag('country'))
+            attrs['adr_city'] = addressElement.findtext(_tag('city'))
+            attrs['adr_postalcode'] = addressElement.findtext(_tag('postalCode'))
+            attrs['adr_region'] = addressElement.findtext(_tag('region'))
+            attrs['adr_street'] = addressElement.findtext(_tag('street'))
         
         return klass(**attrs)
         
