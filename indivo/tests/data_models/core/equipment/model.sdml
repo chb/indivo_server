@@ -1,5 +1,5 @@
 {
-   " __modelname__": "Equipment",
+   "__modelname__": "Equipment",
    "date_started": "Date",
    "date_stopped": "Date",
    "name": "String",
