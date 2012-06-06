@@ -17,6 +17,10 @@ API_EXT = '.py'
 API_REFERENCE_FP = 'doc/sphinx/source/api-reference'
 API_REFERENCE_EXT = '.rst'
 API_CALLS_DICT = 'CALLS'
+API_SPEC_FP = 'api'
+API_SPEC_EXT = '.xml'
+PY_CLIENT_FP = 'doc/sphinx/source/py-client-reference'
+PY_CLIENT_EXT = '.rst'
 
 class APIDict(object):
     ''' 
@@ -30,6 +34,10 @@ class APIDict(object):
     api_ref_fp = API_REFERENCE_FP
     api_ref_ext = API_REFERENCE_EXT
     calls_dict = API_CALLS_DICT
+    api_spec_fp = API_SPEC_FP
+    api_spec_ext = API_SPEC_EXT
+    py_client_fp = PY_CLIENT_FP
+    py_client_ext = PY_CLIENT_EXT
 
     def __init__(self, read_file=True):
         self.apicache = {}
@@ -80,6 +88,176 @@ class APIDict(object):
         pre = '%s\n\nCALLS=['%(imports)
         post = ']\n'
 
+        self._write_to_file(pre, separator, post, render_func, full_fp)
+
+    def write_api_spec(self, path=None):
+        if not path:
+            path = '%s/%s%s'%(settings.APP_HOME, self.api_spec_fp, self.api_spec_ext)
+
+        separator = '\n  '
+        pre='<api>\n  '
+        post='\n</api>'
+        render_func = 'to_xml'
+        self._write_to_file(pre, separator, post, render_func, path)
+
+    def write_python_client_reference(self):
+        '''
+        Write a reference for the python client to a ReST document
+        '''
+        header = '''
+Python Client Library Reference
+===============================
+
+.. py:module:: indivo_python_client
+   :synopsis: A python client library for making authenticated Indivo API calls.
+
+.. py:class:: IndivoClient(server_params, consumer_params, resource_token=None, **state_vars)
+   
+   The Indivo python client. The client should be initialized with the following arguments:
+
+   * *server_params*: A dictionary containing information about the API server. The dictionary should have 
+     two keys: ``api_base``, the server location from which the API is served, and ``authorization_base``, 
+     the server location to which the user should be redirected to perform OAuth authorization.
+
+   * *consumer_params*: A dictionary containing information about your app. The dictionary should have two
+     keys: ``consumer_key``, the OAuth consumer key for your app, and ``consumer_secret``, the OAuth consumer
+     secret for your app.
+
+   * *resource_token*: **Optional.** A token (request, access, or session) with which to sign requests. The
+     token should be a dictionary with two keys: ``oauth_token`` and ``oauth_token_secret``.
+
+   * *state_vars*: **Optional.** Additional state to track with the API. This will be used to fill in url
+     parameters when available. For example, if you create an IndivoClient with 
+     ``pha_email='myapp@apps.indivo.org'``, then making an API call like :http:get:`/apps/{PHA_EMAIL}` will 
+     automatically fill in the url, without you needing to pass the ``pha_email`` argument into the call. This
+     is useful with variables that are unlikely to change within the use of a single client object, such as
+     ``pha_email`` or ``record_id``. You can override the variables in individual API calls if need be, 
+     however.
+
+--------
+
+.. py:method:: IndivoClient.get(uri, body={}, headers={}, **uri_params)
+
+   Make a signed HTTP GET request against Indivo. Arguments are:
+
+   * *uri*: The URI against which to make the request. Optionally, the URI may have templatable parameters,
+     which should take the form of ``{VAR_NAME}``. Such variables must be passed in via the *uri_params* 
+     argument or be present as a state variable on the :py:class:`~indivo_python_client.IndivoClient` 
+     instance itself, or a :py:exc:`KeyError` will be raised.
+
+   * *body*: **Optional.** A dictionary containing querystring parameters to add to the request, for example: 
+     ``{ 'record_id': 'abcde' }``. 
+
+   * *headers*: **Optional.** A dictionary containing additional HTTP headers to add to the request.
+
+   * *uri_params*: **Optional.** Additional parameters to be templated into the uri. parameter names should
+     be the lower-cased equivalent of uri parameters. For example, if the URI contains ``{PHA_EMAIL}``, 
+     *uri_params* should contain ``pha_email='someapp@apps.indivo.org'``.
+
+   This call will return a tuple ``(response, content)``, where *response* is an instance of 
+   :py:class:`httplib2.Response`, and *content* is the raw content returned by Indivo.
+
+--------
+
+.. py:method:: IndivoClient.put(uri, body='', headers={}, content_type=None, **uri_params)
+
+   Make a signed HTTP PUT request against Indivo. Arguments are:
+
+   * *uri*: The URI against which to make the request. Optionally, the URI may have templatable parameters,
+     which should take the form of ``{VAR_NAME}``. Such variables must be passed in via the *uri_params* 
+     argument or be present as a state variable on the :py:class:`~indivo_python_client.IndivoClient` 
+     instance itself, or a :py:exc:`KeyError` will be raised.
+
+   * *body*: **Optional.** The body of the request. It should be either a raw data string, or a dictionary 
+     containing form-data parameters.
+
+   * *headers*: **Optional.** A dictionary containing additional HTTP headers to add to the request.
+
+   * *content_type*: **Optional.** The MIME type of the data submitted in the PUT request. defaults to
+     ``application/x-www-form-urlencoded``.
+
+   * *uri_params*: **Optional.** Additional parameters to be templated into the uri. parameter names should
+     be the lower-cased equivalent of uri parameters. For example, if the URI contains ``{PHA_EMAIL}``, 
+     *uri_params* should contain ``pha_email='someapp@apps.indivo.org'``.
+
+   This call will return a tuple ``(response, content)``, where *response* is an instance of 
+   :py:class:`httplib2.Response`, and *content* is the raw content returned by Indivo.
+
+--------
+
+.. py:method:: IndivoClient.post(uri, body='', headers={}, content_type=None, **uri_params)
+
+   Make a signed HTTP POST request against Indivo. Arguments are:
+
+   * *uri*: The URI against which to make the request. Optionally, the URI may have templatable parameters,
+     which should take the form of ``{VAR_NAME}``. Such variables must be passed in via the *uri_params* 
+     argument or be present as a state variable on the :py:class:`~indivo_python_client.IndivoClient` 
+     instance itself, or a :py:exc:`KeyError` will be raised.
+
+   * *body*: **Optional.** The body of the request. It should be either a raw data string, or a dictionary 
+     containing form-data parameters.
+
+   * *headers*: **Optional.** A dictionary containing additional HTTP headers to add to the request.
+
+   * *content_type*: **Optional.** The MIME type of the data submitted in the POST request. defaults to
+     ``application/x-www-form-urlencoded``.
+
+   * *uri_params*: **Optional.** Additional parameters to be templated into the uri. parameter names should
+     be the lower-cased equivalent of uri parameters. For example, if the URI contains ``{PHA_EMAIL}``, 
+     *uri_params* should contain ``pha_email='someapp@apps.indivo.org'``.
+
+   This call will return a tuple ``(response, content)``, where *response* is an instance of 
+   :py:class:`httplib2.Response`, and *content* is the raw content returned by Indivo.
+
+--------
+
+.. py:method:: IndivoClient.delete(uri, headers={}, **uri_params)
+
+   Make a signed HTTP DELETE request against Indivo. Arguments are:
+
+   * *uri*: The URI against which to make the request. Optionally, the URI may have templatable parameters,
+     which should take the form of ``{VAR_NAME}``. Such variables must be passed in via the *uri_params* 
+     argument or be present as a state variable on the :py:class:`~indivo_python_client.IndivoClient` 
+     instance itself, or a :py:exc:`KeyError` will be raised.
+
+   * *headers*: **Optional.** A dictionary containing additional HTTP headers to add to the request.
+
+   * *uri_params*: **Optional.** Additional parameters to be templated into the uri. parameter names should
+     be the lower-cased equivalent of uri parameters. For example, if the URI contains ``{PHA_EMAIL}``, 
+     *uri_params* should contain ``pha_email='someapp@apps.indivo.org'``.
+
+   This call will return a tuple ``(response, content)``, where *response* is an instance of 
+   :py:class:`httplib2.Response`, and *content* is the raw content returned by Indivo.
+
+--------
+
+.. py:method:: IndivoClient.update_token(resource_token)
+
+   Update the token used by the client to sign requests. *resource_token* should be a dictionary with two
+   keys: ``oauth_token`` and ``oauth_token_secret``.
+
+--------
+
+.. py:method:: IndivoClient.fetch_request_token(params={})
+
+   Get a new request token from the server. *params* should include parameters for generating the token,
+   such as ``indivo_record_id``.
+
+--------
+
+.. py:method:: IndivoClient.exchange_token(verifier)
+
+   Exchange the client's current token (a request token) for an access token. *verifier* must be the
+   verifier string returned after the user has successfully authenticated.
+
+--------
+
+'''
+        separator = '\n\n--------\n\n'
+        pre = header
+        post = '\n'
+        render_func = 'to_client_ReST'
+        full_fp = '%s/%s%s'%(settings.APP_HOME, self.py_client_fp, self.py_client_ext)
         self._write_to_file(pre, separator, post, render_func, full_fp)
 
     def write_ReST_reference(self):
@@ -296,6 +474,14 @@ class Call(object):
             value = 'None'
 
         return '%s%s,\n'%(key, value)
+
+    def to_xml(self):
+        '''
+        Render the Call to XML, for building an API spec that can be used by client libraries.
+        Output will look like:
+        <call name="record" method="get" url="/records/{RECORD_ID}" />
+        '''
+        return '<call name="%s" method="%s" url="%s" />'%(self.view_func_name, self.method, self.path)
             
     def to_python(self):
         ''' 
@@ -365,6 +551,53 @@ class Call(object):
         """
 
         return ".. http:%s:: %s"%(self.method.lower(), self.path)
+
+    def to_client_ReST(self):
+        """ Render the Call as a ReST block (documenting the python client call).
+
+        Prints directive, description, and parameters. Output will look like:
+
+        .. py:method:: IndivoClient.record(record_id=None, body={})
+           
+           Get basic record information. 
+
+           *body* should contain query parameters for the call. See :http:get:`/records/{RECORD_ID}` for 
+           valid parameters and the returned content.
+
+           This call will return a tuple ``(response, content)``, where *response* is an instance of 
+           :py:class:`httplib2.Response`, and *content* is the raw content returned by Indivo.
+
+        """
+
+        directive = ".. py:method:: IndivoClient.%s"%self.view_func_name
+        args = "(" + ", ".join(map(lambda p: p.lower() + "=None", self.url_params.keys()))
+        if args != "(": args += "[, "
+        else: args += "["
+        if self.method == "GET":
+            description = '''*body* should contain query parameters for the call. *headers* should contain any additional HTTP headers to pass in with the call.''' 
+            args += "body={}, headers={}]"
+        elif self.method == "POST" or self.method == "PUT":
+            description = '''*body* should contain the data to send with the call. *headers* should contain any additional HTTP headers to pass in with the call. *content_type* should contain the MIME type of the data sent in the *body* argument.'''
+            args += "body={}, headers={}, content_type=None]"
+        elif self.method == "DELETE":
+            description = '''*headers* should contain any additional HTTP headers to pass in with the call.'''
+            args += "headers={}]"
+
+        args +=")"
+        directive += args
+
+        reference = '''See :http:%s:`%s` for valid parameters and the returned content.'''% (self.method.lower(), self.path)
+        description += ' ' + reference
+        
+        return_desc = '''This call will return a tuple ``(response, content)``, where *response* is an instance of :py:class:`httplib2.Response`, and *content* is the raw content returned by Indivo.'''
+
+        ret = '''%s\n\n%s\n\n%s\n\n%s'''%(
+            self._list_to_ReST([directive], 0),
+            self._list_to_ReST(self.description.strip().split('\n'), 3),
+            self._list_to_ReST([description], 3),
+            self._list_to_ReST([return_desc], 3),
+            )
+        return ret
 
     def to_ReST(self):
         """ Render the Call as a ReST block.

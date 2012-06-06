@@ -156,9 +156,13 @@ prep work except the final call to build the docs.
             print diffstr
 
         elif args[0] == 'build':
+            api = APIDict()
             
             # Write the API Reference ReST doc
-            self.write_api_reference()
+            self.write_api_reference(api)
+
+            # Write the Python Client Reference ReST doc
+            self.write_client_reference(api)
             
             # Use sphinx-apidoc to autogenerate code docs
             self.build_autocode()
@@ -167,10 +171,14 @@ prep work except the final call to build the docs.
             self.build_docs()
 
         elif args[0] == 'prepare':
+            api = APIDict()
             
             # Write the API Reference ReST doc
-            self.write_api_reference()
+            self.write_api_reference(api)
             
+            # Write the Python Client Reference ReST doc
+            self.write_client_reference(api)
+
             # Use sphinx-apidoc to autogenerate code docs
             self.build_autocode()
 
@@ -179,8 +187,11 @@ prep work except the final call to build the docs.
         else:
             raise CommandError('Unexpected argument: %s. Expected 1 argument: "parse" or "build"'%args[0])            
 
-    def write_api_reference(self):
-        APIDict().write_ReST_reference()
+    def write_api_reference(self, api):
+        api.write_ReST_reference()
+
+    def write_client_reference(self, api):
+        api.write_python_client_reference()
 
     def build_autocode(self):
         output_dir = 'source/autocode'

@@ -64,6 +64,7 @@ App Developers
    Data Pipeline <data-pipeline>
    Experimental API <experimental-api>
    Messaging and Notifications <messaging>
+   Python Client Reference <py-client-reference>
    Registering Apps with Indivo <app-registration>
    Sample Data <sample-data>
    Schemas <schemas/index>
@@ -113,6 +114,7 @@ Indivo Hackers
    Generic Reports <generic-reports>
    Localization <localization>
    Messaging and Notifications <messaging>
+   Python Client Reference <py-client-reference>
    Registering Apps with Indivo <app-registration>
    Sample Data <sample-data>
    Schemas <schemas/index>
