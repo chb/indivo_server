@@ -575,7 +575,6 @@ def get_connect_credentials(request, account, pha):
     carenet_id = request.POST.get('carenet_id', None)
     record_id = request.POST.get('record_id', None)
 
-    import pdb;pdb.set_trace()
     if carenet_id:
         try:
             carenet=Carenet.objects.get(id=carenet_id)
