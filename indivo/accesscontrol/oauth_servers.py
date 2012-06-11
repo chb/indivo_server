@@ -126,7 +126,10 @@ class UserDataStore(oauth.OAuthStore):
                                                                            'authorized_by': request_token.authorized_by})
     else:
       # this is a carenet only situation, we NEVER create the share
+      # but we do mark the request token with the share
       share = models.PHAShare.objects.get(record = carenet.record, with_pha = request_token.pha)
+      if not request_token.carenet:
+        request_token.carenet = carenet
       
     request_token.share = share
     request_token.save()

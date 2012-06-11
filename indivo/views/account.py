@@ -571,23 +571,38 @@ def get_connect_credentials(request, account, pha):
     
     """
 
-    try:
-        record_id = request.POST.get('record_id', None)
-        record = Record.objects.get(id=record_id)
-    except Record.DoesNotExist:
-        raise Http404
-    except Record.MultipleObjectsReturned:
-        raise Exception("Multiple records with same id--database is corrupt")
+    carenet = record = None
+    carenet_id = request.POST.get('carenet_id', None)
+    record_id = request.POST.get('record_id', None)
+
+    import pdb;pdb.set_trace()
+    if carenet_id:
+        try:
+            carenet=Carenet.objects.get(id=carenet_id)
+        except Carenet.DoesNotExist:
+            raise Http404
+        except Carenet.MultipleObjectsReturned:
+            raise Exception("Multiple carenets with same id--database is corrupt")
+
+    elif record_id:
+        try:
+            record = Record.objects.get(id=record_id)
+        except Record.DoesNotExist:
+            raise Http404
+        except Record.MultipleObjectsReturned:
+            raise Exception("Multiple records with same id--database is corrupt")
 
     # Generate the tokens
     from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
-    rest_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record, account=account)
-    connect_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record, account=account)
+    rest_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record, 
+                                                                     carenet=carenet, account=account)
+    connect_token = OAUTH_SERVER.generate_and_preauthorize_access_token(pha, record=record, 
+                                                                        carenet=carenet, account=account)
     connect_token.connect_auth_p = True
     connect_token.save()
 
     # Generate a 2-legged oauth header for the rest token, based on the pha's start_url
-    url = utils.url_interpolate(pha.start_url_template, {'record_id':record_id, 'carenet_id':''})
+    url = utils.url_interpolate(pha.start_url_template, {'record_id':record_id or '', 'carenet_id':carenet_id or ''})
     request = HTTPRequest("GET", url, HTTPRequest.FORM_URLENCODED_TYPE, '', {})
     oauth_params = {
         'smart_container_api_base': settings.SITE_URL_PREFIX,
