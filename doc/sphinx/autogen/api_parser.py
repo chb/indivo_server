@@ -236,6 +236,8 @@ Python Client Library Reference
    Update the token used by the client to sign requests. *resource_token* should be a dictionary with two
    keys: ``oauth_token`` and ``oauth_token_secret``.
 
+   Returns ``None``.
+
 --------
 
 .. py:method:: IndivoClient.fetch_request_token(params={})
@@ -243,12 +245,28 @@ Python Client Library Reference
    Get a new request token from the server. *params* should include parameters for generating the token,
    such as ``indivo_record_id``.
 
+   Returns the request token in the form of a dictionary with two keys: ``oauth_token`` and 
+   ``oauth_token_secret``.
+
 --------
 
 .. py:method:: IndivoClient.exchange_token(verifier)
 
    Exchange the client's current token (a request token) for an access token. *verifier* must be the
    verifier string returned after the user has successfully authenticated.
+
+   Returns the newly acquired access token in the form of a dictionary with two keys: ``oauth_token`` and 
+   ``oauth_token_secret``.
+
+--------
+
+.. py:method:: IndivoClient.get_surl_credentials()
+
+   Generate a token and secret for signing URLs. This token/secret are based on the client's current resource
+   token (which should be an access token). SURL credentials are required in order to use a UI Server widget:
+   they delegate access to the UI Server to make API calls on behalf of a user app.
+
+   Returns a dictionary with two keys: ``token`` and ``secret``.
 
 --------
 
