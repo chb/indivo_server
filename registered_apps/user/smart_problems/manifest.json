@@ -8,8 +8,8 @@
     "mode" : "ui",
     "scope": "record",
 
-    "index" : "http://fda.gping.org:8012/framework/problem_list/index.html",	
-    "icon" : "http://fda.gping.org:8012/framework/problem_list/icon.png",
+    "index" : "http://sample-apps.smartplatforms.org/framework/problem_list/index.html",	
+    "icon" : "http://sample-apps.smartplatforms.org/framework/problem_list/icon.png",
   
     "requires" : {
         "http://smartplatforms.org/terms#Problem": {

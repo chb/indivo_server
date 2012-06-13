@@ -9,8 +9,8 @@
   "mode" : "ui",
   "scope": "record",
 
-  "index" : "http://fda.gping.org:8012/framework/med_adherence/index.html",
-  "icon" :  "http://fda.gping.org:8012/framework/med_adherence/icon.png",
+  "index" : "http://sample-apps.smartplatforms.org/framework/med_adherence/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/med_adherence/icon.png",
   
   "requires" : {
        "http://smartplatforms.org/terms#Medication": {

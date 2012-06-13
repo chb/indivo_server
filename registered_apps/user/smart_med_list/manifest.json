@@ -8,8 +8,8 @@
   "mode" : "ui",	
   "scope": "record",
 
-  "icon" : "http://fda.gping.org:8012/framework/med_list/icon.png",
-  "index": "http://fda.gping.org:8012/framework/med_list/index.html",
+  "icon" : "http://sample-apps.smartplatforms.org/framework/med_list/icon.png",
+  "index": "http://sample-apps.smartplatforms.org/framework/med_list/index.html",
   
   "requires" : {
        "http://smartplatforms.org/terms#Medication": {

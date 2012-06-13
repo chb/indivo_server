@@ -8,6 +8,6 @@
   "mode" : "ui",	
   "scope": "record",
 
-  "icon" :  "http://fda.gping.org:8012/framework/api_playground/icon.png",
-  "index":  "http://fda.gping.org:8012/framework/api_playground/index.html"
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/api_playground/icon.png",
+  "index":  "http://sample-apps.smartplatforms.org/framework/api_playground/index.html"
 }

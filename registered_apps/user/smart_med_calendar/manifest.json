@@ -7,8 +7,8 @@
 
   "mode" : "ui",
   "scope": "record",
-  "index" : "http://fda.gping.org:8012/framework/med_calendar/index.html",
-  "icon" :  "http://fda.gping.org:8012/framework/med_calendar/icon.png",
+  "index" : "http://sample-apps.smartplatforms.org/framework/med_calendar/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/med_calendar/icon.png",
   
   "requires" : {
        "http://smartplatforms.org/terms#Medication": {

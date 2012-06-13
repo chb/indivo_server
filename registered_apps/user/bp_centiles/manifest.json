@@ -8,8 +8,8 @@
   "mode" : "ui",
   "scope" : "record",
 
-  "index" :  "http://fda.gping.org:8012/framework/bp_centiles/index.html",
-  "icon" :  "http://fda.gping.org:8012/framework/bp_centiles/icon.png",
+  "index" :  "http://sample-apps.smartplatforms.org/framework/bp_centiles/index.html",
+  "icon" :  "http://sample-apps.smartplatforms.org/framework/bp_centiles/icon.png",
 
   "smart_version": "0.4",
 
