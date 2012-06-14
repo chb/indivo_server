@@ -12,6 +12,7 @@ from carenetautoshare import CarenetAutoshareModelUnitTests
 from carenetdocument import CarenetDocumentModelUnitTests
 from carenetpha import CarenetPHAModelUnitTests
 from carenet import CarenetModelUnitTests
+from demographics import DemographicsModelUnitTests
 from document import DocumentModelUnitTests
 from documentrels import DocumentRelsModelUnitTests
 from documentschema import DocumentSchemaModelUnitTests

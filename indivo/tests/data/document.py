@@ -158,7 +158,7 @@ _TEST_DEMOGRAPHICS_DOCS = [
                     <gender>male</gender>
                     <email>test@fake.org</email>
                     <ethnicity>Scottish</ethnicity>
-                    <preferredLanguage>english</preferredLanguage>
+                    <preferredLanguage>EN</preferredLanguage>
                     <race>caucasian</race>
                     <Name>
                         <familyName>Wayne</familyName>
@@ -174,6 +174,7 @@ _TEST_DEMOGRAPHICS_DOCS = [
                     <Telephone>
                         <type>c</type>
                         <number>555-6666</number>
+                        <preferred>false</preferred>
                     </Telephone>
                     <Address>
                         <country>USA</country>
