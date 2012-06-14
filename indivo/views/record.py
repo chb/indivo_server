@@ -320,7 +320,7 @@ def _record_create(request, principal_email=None, external_id=None):
     return HttpResponseBadRequest("Demographics XML not valid")
 
   demographics = Demographics.from_xml(xml_data)
-  label = demographics.name_given + demographics.name_family
+  label = demographics.name_given + ' ' + demographics.name_family
 
   record_external_id = Record.prepare_external_id(external_id, principal_email)
     
