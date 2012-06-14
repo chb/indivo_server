@@ -31,6 +31,9 @@ def format_utc_date(date, date_only=False):
         elif date_only:
             return date.strftime(ISO8601_UTC_DATE_FORMAT)
         else:
-            return date.strftime(ISO8601_UTC_DATETIME_FORMAT)
+            if date.microsecond:
+                return date.strftime(ISO8601_UTC_DATETIME_FORMAT_MICRO)
+            else:
+                return date.strftime(ISO8601_UTC_DATETIME_FORMAT)
     except ValueError:
         return "BAD DATE"
