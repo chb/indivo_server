@@ -45,7 +45,7 @@ class DemographicsModelUnitTests(InternalTests):
         generated_json = json.loads(self.demographics.as_json())
         
         del generated_json[0]['__documentid__']
-        self.assertEquals(expected_json, generated_json)
+        self.assertEqual(expected_json, generated_json)
         
     def test_as_xml(self):
         root = etree.XML(self.demographics.as_xml())

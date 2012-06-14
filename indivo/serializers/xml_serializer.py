@@ -64,6 +64,8 @@ class Serializer(base.Serializer):
                 value = format_utc_date(value)
             elif isinstance(value, datetime.date):
                 value = format_utc_date(value, date_only=True)
+            elif isinstance(value, bool):
+                value = 'true' if value else 'false'
             else:
                  value = field.value_to_string(obj)
             field_element.text = value

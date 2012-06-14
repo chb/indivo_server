@@ -95,16 +95,16 @@ class Demographics(BaseModel):
             tel_1 = telephoneElements[0]
             attrs['tel_1_type'] = tel_1.findtext(_tag('type'))
             attrs['tel_1_number'] = tel_1.findtext(_tag('number'))
-            attrs['tel_1_preferred_p'] = tel_1.findtext(_tag('preferred'))
+            attrs['tel_1_preferred_p'] = 'false' != tel_1.findtext(_tag('preferred'))
             
         if len(telephoneElements) > 1:
             tel_2 = telephoneElements[1]
             attrs['tel_2_type'] = tel_2.findtext(_tag('type'))
             attrs['tel_2_number'] = tel_2.findtext(_tag('number'))
-            attrs['tel_2_preferred_p'] = tel_2.findtext(_tag('preferred'))
+            attrs['tel_2_preferred_p'] = 'false' !=  tel_2.findtext(_tag('preferred'))
         
         addressElement = root.find(_tag('Address'))
-        if addressElement:
+        if addressElement is not None:
             attrs['adr_country'] = addressElement.findtext(_tag('country'))
             attrs['adr_city'] = addressElement.findtext(_tag('city'))
             attrs['adr_postalcode'] = addressElement.findtext(_tag('postalCode'))

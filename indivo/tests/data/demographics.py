@@ -163,7 +163,7 @@ TEST_DEMOGRAPHICS_SDMX = '''
 TEST_DEMOGRAPHICS_SDMJ = '''
     [
         {
-            "tel_1_preferred_p": "true",
+            "tel_1_preferred_p": true,
             "adr_region": "secret",
             "tel_2_number": "555-6666",
             "__modelname__": "Demographics",
@@ -182,7 +182,7 @@ TEST_DEMOGRAPHICS_SDMJ = '''
             "preferred_language": "EN",
             "gender": "male",
             "name_suffix": "Jr",
-            "tel_2_preferred_p": "false",
+            "tel_2_preferred_p": false,
             "race": "caucasian",
             "adr_country": "USA"
         }
