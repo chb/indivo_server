@@ -502,7 +502,7 @@ class PatientGraph(object):
                     RXN_URI%"",
                     m.drugName_identifier)))
         g.add((mNode, SP['startDate'], Literal(m.startDate)))
-        g.add((mNode, SP['instructions'], Literal(m.instructions))) 
+        g.add((mNode, SP['instructions'], Literal(m.instructions or ''))) 
         if m.quantity_value and m.quantity_unit:
             g.add((mNode, SP['quantity'], self.valueAndUnit(m.quantity_value, m.quantity_unit)))
         if m.frequency_value and m.frequency_unit:
