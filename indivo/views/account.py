@@ -568,6 +568,8 @@ def get_connect_credentials(request, account, pha):
 
     Generates access tokens for *pha* to run against the *record_id* specified in ``request.POST``, authorized by
     *account*. Generates 2 tokens: one for SMART Connect use, and one for SMART REST use.
+
+    If the app is not yet enabled for the record/carenet, this will return a :http:statuscode:`403`.
     
     """
 
@@ -590,6 +592,11 @@ def get_connect_credentials(request, account, pha):
             raise Http404
         except Record.MultipleObjectsReturned:
             raise Exception("Multiple records with same id--database is corrupt")
+
+    # Make sure that the app is enabled
+    if (record and not PHAShare.objects.filter(record=record, with_pha=pha).exists()) or \
+            (carenet and not CarenetPHA.objects.filter(carenet=carenet, pha=pha).exists()):
+        raise PermissionDenied("Cannot generate credentials before app is enabled")
 
     # Generate the tokens
     from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
