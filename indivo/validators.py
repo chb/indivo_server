@@ -34,4 +34,18 @@ class ExactValueValidator(ValueInSetValidator):
 
     def __init__(self, valid_value, nullable=False):
         return super(ExactValueValidator, self).__init__([valid_value], nullable=nullable)
-        
+       
+ 
+class NonNullValidator(object):
+    """ Validates that a value is not null.
+    
+    A 'null' value is anything that Django would store as NULL in a database: ``None``, ``""``, ``[]``,
+    ``()``, or ``{}``. Note that other python objects that evaluate to false (``0``, ``False``) are not 
+    actually null values, as they represent data. 
+
+    This validator is useful for validating that strings are non-empty, for example.
+    
+    """
+
+    # This is a special validator: it is actually just a proxy for setting blank=False on the field
+    pass

@@ -3,6 +3,7 @@ Options processing and loading for Indivo medical data models.
 """
 
 from indivo.serializers import DataModelSerializers
+from indivo.validators import NonNullValidator
 
 class DataModelOptions(object):
     """ Defines optional extra functionality for Indivo datamodels.
@@ -66,4 +67,12 @@ class DataModelOptions(object):
         if not cls.field_validators: return # No custom validators
 
         for field_name, validators in cls.field_validators.iteritems():
-            data_model_class._meta.get_field(field_name).validators.extend(validators)
+            field = data_model_class._meta.get_field(field_name)
+            for v in validators:
+                
+                # We don't actually run NonNullValidators, we simply set blank=False
+                # on the field, and let Django do the work
+                if isinstance(v, NonNullValidator):
+                    field.blank = False
+                else:
+                    field.validators.append(v)
