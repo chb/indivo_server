@@ -1,5 +1,5 @@
 from indivo.serializers import DataModelSerializers
-from indivo.validators import ValueInSetValidator, ExactValueValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator, NonNullValidator
 from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
 
@@ -76,6 +76,8 @@ class EncounterOptions(DataModelOptions):
     field_validators = {
         'encounterType_system': [ExactValueValidator(ENC_TYPE_URI)],
         'encounterType_identifier': [ValueInSetValidator(ENC_TYPES)],
+        'encounterType_title': [NonNullValidator()],
+        'startDate': [NonNullValidator()],
         }
 
 
@@ -92,6 +94,8 @@ class VitalsOptions(DataModelOptions):
     model_class_name = 'VitalSigns'
     serializers = VitalsSerializers
     field_validators = {
+        'date': [NonNullValidator()],
+
         'bp_position_system': [ExactValueValidator(SNOMED_URI, nullable=True)],
         'bp_position_identifier': [ValueInSetValidator(BP_POSITION_IDS, nullable=True)],
         'bp_site_system': [ExactValueValidator(SNOMED_URI, nullable=True)],

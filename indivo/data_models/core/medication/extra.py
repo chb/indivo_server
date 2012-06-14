@@ -1,5 +1,5 @@
 from indivo.serializers import DataModelSerializers
-from indivo.validators import ValueInSetValidator, ExactValueValidator
+from indivo.validators import ValueInSetValidator, ExactValueValidator, NonNullValidator
 from indivo.data_models.options import DataModelOptions
 from indivo.lib.rdf import PatientGraph
 
@@ -28,8 +28,11 @@ class MedicationOptions(DataModelOptions):
     serializers = MedicationSerializers
     field_validators = {
         'drugName_system': [ExactValueValidator(RXN_URI)],
+        'drugName_identifier': [NonNullValidator()],
+        'drugName_title': [NonNullValidator()],
         'provenance_system': [ExactValueValidator(MED_PROV_URI, nullable=True)],
         'provenance_identifier': [ValueInSetValidator(MED_PROVS, nullable=True)],
+        'startDate': [NonNullValidator()],
         }
 
 
@@ -45,3 +48,7 @@ class FillSerializers(DataModelSerializers):
 class FillOptions(DataModelOptions):
     model_class_name = 'Fill'
     serializers = FillSerializers
+    field_validators = {
+        'date': [NonNullValidator()],
+        'dispenseDaysSupply': [NonNullValidator()],
+        }
