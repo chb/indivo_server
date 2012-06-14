@@ -43,7 +43,9 @@ def load_access_rules():
   # WARNING: This gives request tokens and 'no-users' access to these. Is this a problem?
   views = [get_version,
            all_phas,
+           all_manifests,
            pha,
+           app_manifest,
            smart_ontology,
            smart_capabilities,] 
   AccessRule('Basic Access', basic_access, views)

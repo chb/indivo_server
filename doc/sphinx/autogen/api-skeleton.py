@@ -803,7 +803,7 @@ Preferences format is defined by the app setting the preferences, and will there
 {
     "method":"GET",
     "path":"/apps/manifests/",
-    "view_func_name":"all_phas",
+    "view_func_name":"all_manifests",
     "access_doc":"Any principal in Indivo.",
     "url_params":{
         },
@@ -811,7 +811,7 @@ Preferences format is defined by the app setting the preferences, and will there
         },
     "data_fields":{
         },
-    "description":"List all available userapps.",
+    "description":"List SMART manifests for all available userapps.",
     "return_desc":"SMART-style manifests for each app.",
     "return_ex":'''
 [
@@ -1252,7 +1252,7 @@ Preferences format is defined by the app setting the preferences, and will there
 {
     "method":"GET",
     "path":"/apps/{PHA_EMAIL}/manifest",
-    "view_func_name":"pha",
+    "view_func_name":"app_manifest",
     "access_doc":"Any principal in Indivo.",
     "url_params":{
         'PHA_EMAIL':'The email identifier of the Indivo user app',
@@ -1261,7 +1261,7 @@ Preferences format is defined by the app setting the preferences, and will there
         },
     "data_fields":{
         },
-    "description":"Return a description of a single userapp.",
+    "description":"Return a SMART manifest for a single userapp.",
     "return_desc":"A SMART-style manifest for the app.",
     "return_ex":'''
 {

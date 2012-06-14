@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     
     # PHAs
     (r'^apps/$', MethodDispatcher({'GET':all_phas})),
-    (r'^apps/manifests/$', MethodDispatcher({'GET': all_phas}), {'smart_only': True}),
+    (r'^apps/manifests/$', MethodDispatcher({'GET': all_manifests})),
     (r'^apps/(?P<pha_email>[^/]+)$', 
      MethodDispatcher({'GET' : pha, 'DELETE': pha_delete})),
     (r'^apps/(?P<pha_email>[^/]+)', include('indivo.urls.application')),

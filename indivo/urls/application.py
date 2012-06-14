@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     ##
 
     # Manifest for the app, SMART style
-    (r'^/manifest$', MethodDispatcher({'GET':pha}), {'smart_only': True}),
+    (r'^/manifest$', MethodDispatcher({'GET':app_manifest})),
 
     # List of app-specific documents / create a doc
     (r'^/documents/$', 

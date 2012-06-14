@@ -20,18 +20,29 @@ import base64, hmac, datetime
 
 from django.utils import simplejson
 
-@utils.django_json
-def all_phas(request, smart_only=False):
+def all_manifests(request):
+    """ List SMART manifests for all available userapps.
+
+    Will return :http:statuscode:`200` with a list of app manifests as JSON on success.
+
+    """
+    
+    return _phas(request, smart_only=True)
+
+def all_phas(request):
     """ List all available userapps.
 
     Will return :http:statuscode:`200` with a list of app manifests as JSON on success.
 
     """
 
-    return PHA.queryset_as_manifests(PHA.objects.all(), smart_only=smart_only)
+    return _phas(request)
 
 @utils.django_json
-def pha(request, pha, smart_only=False):
+def _phas(request, smart_only=False):
+    return PHA.queryset_as_manifests(PHA.objects.all(), smart_only=smart_only)
+
+def pha(request, pha):
     """ Return a description of a single userapp.
 
     Will return :http:statuscode:`200` with the app's JSON manifest
@@ -39,6 +50,19 @@ def pha(request, pha, smart_only=False):
     
     """
 
+    return _pha(request, pha)
+
+def app_manifest(request, pha):
+    """ Return a SMART manifest for a single userapp.
+
+    Will return :http:statuscode:`200` with the app's JSON manifest
+    on success.
+    
+    """
+    return _pha(request, pha, smart_only=True)
+
+@utils.django_json
+def _pha(request, pha, smart_only=False):
     return pha.to_manifest(smart_only=smart_only, as_string=False)
 
 def app_record_list(request, pha):

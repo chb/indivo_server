@@ -28,7 +28,7 @@
   <call name="account_resend_secret" method="POST" url="/accounts/{ACCOUNT_EMAIL}/secret-resend" />
   <call name="account_set_state" method="POST" url="/accounts/{ACCOUNT_EMAIL}/set-state" />
   <call name="all_phas" method="GET" url="/apps/" />
-  <call name="all_phas" method="GET" url="/apps/manifests/" />
+  <call name="all_manifests" method="GET" url="/apps/manifests/" />
   <call name="pha_delete" method="DELETE" url="/apps/{PHA_EMAIL}" />
   <call name="pha" method="GET" url="/apps/{PHA_EMAIL}" />
   <call name="app_document_list" method="GET" url="/apps/{PHA_EMAIL}/documents/" />
@@ -40,7 +40,7 @@
   <call name="app_document_create_or_update" method="PUT" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
   <call name="app_document_label" method="PUT" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label" />
   <call name="app_document_meta" method="GET" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/meta" />
-  <call name="pha" method="GET" url="/apps/{PHA_EMAIL}/manifest" />
+  <call name="app_manifest" method="GET" url="/apps/{PHA_EMAIL}/manifest" />
   <call name="app_record_list" method="GET" url="/apps/{PHA_EMAIL}/records/" />
   <call name="autonomous_access_token" method="POST" url="/apps/{PHA_EMAIL}/records/{RECORD_ID}/access_token" />
   <call name="smart_capabilities" method="GET" url="/capabilities/" />
