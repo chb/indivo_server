@@ -146,7 +146,7 @@ class PHA(OAuthApp):
 
     # expand relative urls to be relative to the UI
     start_url = parsed_manifest.get('index', '')
-    if start_url and not start_url.find('://') < 0:
+    if start_url and start_url.find('://') < 0:
         start_url = "%s%s"%(settings.UI_SERVER_URL, start_url)
 
     callback_url = parsed_manifest.get('oauth_callback_url', '')
@@ -154,7 +154,7 @@ class PHA(OAuthApp):
         callback_url = "%s%s"%(settings.UI_SERVER_URL, callback_url)
 
     icon_url = parsed_manifest.get('icon', '')
-    if icon_url and not icon_url.find('://') < 0:
+    if icon_url and icon_url.find('://') < 0:
         icon_url = "%s%s"%(settings.UI_SERVER_URL, icon_url)
 
     kwargs = {
