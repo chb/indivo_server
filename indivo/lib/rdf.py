@@ -656,7 +656,7 @@ class PatientGraph(object):
         return tNode
 
     def name(self, obj, prefix):
-        suffixes = ['family', 'given', 'prefix', 'suffix']
+        suffixes = ['family', 'given', 'middle', 'prefix', 'suffix']
         fields = self._obj_fields_by_name(obj, prefix, suffixes)
         if not fields:
             return None
@@ -668,6 +668,8 @@ class PatientGraph(object):
             self.g.add((nNode, VCARD['family-name'], Literal(fields['family'])))
         if fields['given']:
             self.g.add((nNode, VCARD['given-name'], Literal(fields['given'])))
+        if fields['middle']:
+            self.g.add((nNode, VCARD['additional-name'], Literal(fields['middle'])))
         if fields['prefix']:
             self.g.add((nNode, VCARD['honorific-prefix'], Literal(fields['prefix'])))
         if fields['suffix']:

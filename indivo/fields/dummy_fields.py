@@ -174,6 +174,7 @@ class NameField(DummyField):
 
     * ``name_family``, the family (last) name of the person
     * ``name_given``, the given (first) name of the person
+    * ``name_middle``, the middle name of the person
     * ``name_prefix``, the prefix (i.e. 'Mr.', 'Sir', etc.) for the person's name
     * ``name_suffix``, the suffix (i.e. 'Jr.', 'Ph.D.', etc.) for the person's name
 
@@ -187,6 +188,7 @@ class NameField(DummyField):
     replacements = {
         '_family': (models.CharField, {'max_length':255, 'null':True}),
         '_given': (models.CharField, {'max_length':255, 'null':True}),
+        '_middle': (models.CharField, {'max_length':255, 'null':True}),
         '_prefix': (models.CharField, {'max_length':255, 'null':True}),
         '_suffix': (models.CharField, {'max_length':255, 'null':True}),
         }

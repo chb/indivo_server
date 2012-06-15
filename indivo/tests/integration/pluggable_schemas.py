@@ -159,7 +159,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.assertEqual(len(labs), 1)
         lab = labs[0]
         
-        self.assertEqual(len(lab.findall('Field')), 34)
+        self.assertEqual(len(lab.findall('Field')), 35)
         self.assertEqual(lab.get('name'), 'LabResult')
         
     def test_sdmx_schema(self):
