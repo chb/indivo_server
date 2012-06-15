@@ -95,7 +95,6 @@ class VitalsOptions(DataModelOptions):
     serializers = VitalsSerializers
     field_validators = {
         'date': [NonNullValidator()],
-        'encounter': [NonNullValidator()],
         
         'bp_position_system': [ExactValueValidator(SNOMED_URI, nullable=True)],
         'bp_position_identifier': [ValueInSetValidator(BP_POSITION_IDS, nullable=True)],
