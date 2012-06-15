@@ -31,7 +31,7 @@ DEMO_MODE = False
 # to data profiles. 'Data profiles' correspond
 # to subfolders of SAMPLE_DATA_DIR
 DEMO_PROFILES = {
-    'John Doe':'patient_1',
+    'William Robinson':'patient_967332',
     }
 
 # Location for sample data
