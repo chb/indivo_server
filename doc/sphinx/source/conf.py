@@ -27,10 +27,13 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 # on systems without the packages
 mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension', 'rdflib']
 class Mock(object):
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         pass
 
     def __getattr__(self, name):
+        return Mock()
+
+    def __call__(self, *args, **kwargs):
         return Mock()
 
 for mod_name in mocks:
