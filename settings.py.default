@@ -25,13 +25,15 @@ SECRET_KEY = 'REPLACEMENOW'
 APP_HOME = '/web/indivo_server'
 
 # Automatically create new records with sample data by default
-DEMO_MODE = False
+DEMO_MODE = True
 
 # which sample data to load when in demo mode. Maps desired record labels
 # to data profiles. 'Data profiles' correspond
 # to subfolders of SAMPLE_DATA_DIR
 DEMO_PROFILES = {
     'William Robinson':'patient_967332',
+    'Ruth Black': 'patient_665677',
+    'Mary Long': 'patient_736230',
     }
 
 # Location for sample data
