@@ -55,12 +55,13 @@ class DemographicsModelUnitTests(InternalTests):
         demographics = demographics[0]
         
         # check Demographics
-        self.assertEqual(len(demographics.findall('Field')), 21, "expected 21 fields on test Demographics")
+        self.assertEqual(len(demographics.findall('Field')), 22, "expected 22 fields on test Demographics")
         self.assertEqual(demographics.get('name'), 'Demographics')
         self.assertEqual(demographics.find('Field[@name="bday"]').text, '1939-11-15T00:00:00Z')
         self.assertEqual(demographics.find('Field[@name="email"]').text, 'test@fake.org')
         self.assertEqual(demographics.find('Field[@name="name_given"]').text, 'Bruce')
         self.assertEqual(demographics.find('Field[@name="name_family"]').text, 'Wayne')
+        self.assertEqual(demographics.find('Field[@name="name_middle"]').text, 'Quentin')
         self.assertEqual(demographics.find('Field[@name="name_prefix"]').text, 'Mr')
         self.assertEqual(demographics.find('Field[@name="name_suffix"]').text, 'Jr')
         self.assertEqual(demographics.find('Field[@name="ethnicity"]').text, 'Scottish')

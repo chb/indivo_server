@@ -163,6 +163,7 @@ _TEST_DEMOGRAPHICS_DOCS = [
                     <Name>
                         <familyName>Wayne</familyName>
                         <givenName>Bruce</givenName>
+                        <middleName>Quentin</middleName>
                         <prefix>Mr</prefix>
                         <suffix>Jr</suffix>
                     </Name>

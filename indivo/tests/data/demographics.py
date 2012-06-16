@@ -51,6 +51,7 @@ TEST_DEMOGRAPHICS_XML = '''
         <Name>
             <familyName>Wayne</familyName>
             <givenName>Bruce</givenName>
+            <middleName>Quentin</middleName>
             <prefix>Mr</prefix>
             <suffix>Jr</suffix>
         </Name>
@@ -102,6 +103,7 @@ TEST_DEMOGRAPHICS_RDFXML = '''
             <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Name"/>
             <v:honorific-suffix>Jr</v:honorific-suffix>
             <v:family-name>Wayne</v:family-name>
+            <v:additional-name>Quentin</v:additional-name>
         </rdf:Description>
         <rdf:Description rdf:about="Indivo Recordhttp://indivo.org/records/65c9e500-fdcf-4ba3-87ed-6eb265344d84">
             <sp:system>Indivo Record</sp:system>
@@ -143,6 +145,7 @@ TEST_DEMOGRAPHICS_SDMX = '''
             <Field name="race">caucasian</Field>
             <Field name="name_given">Bruce</Field>
             <Field name="name_suffix">Jr</Field>
+            <Field name="name_middle">Quentin</Field>
             <Field name="name_family">Wayne</Field>
             <Field name="name_prefix">Mr</Field>
             <Field name="tel_2_type">c</Field>
@@ -171,6 +174,7 @@ TEST_DEMOGRAPHICS_SDMJ = '''
             "ethnicity": "Scottish",
             "adr_postalcode": "90210",
             "name_family": "Wayne",
+            "name_middle": "Quentin",
             "tel_1_type": "h",
             "tel_2_type": "c",
             "name_prefix": "Mr",

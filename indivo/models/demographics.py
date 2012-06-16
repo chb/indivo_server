@@ -22,7 +22,8 @@ FIELDS = ('bday',
           'preferred_language', 
           'race', 
           'name_given', 
-          'name_suffix', 
+          'name_suffix',
+          'name_middle',
           'name_family', 
           'name_prefix', 
           'tel_2_type', 
@@ -87,6 +88,7 @@ class Demographics(BaseModel):
         nameElement = root.find(_tag('Name'))
         attrs['name_family'] = nameElement.findtext(_tag('familyName'))
         attrs['name_given'] = nameElement.findtext(_tag('givenName'))
+        attrs['name_middle'] = nameElement.findtext(_tag('middleName'))
         attrs['name_prefix'] = nameElement.findtext(_tag('prefix'))
         attrs['name_suffix'] = nameElement.findtext(_tag('suffix'))
         
