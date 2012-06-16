@@ -2,7 +2,7 @@
 Indivo Model for Demographics
 """
 import os
-import settings
+from django.conf import settings
 from lxml import etree
 
 from django.db import models
