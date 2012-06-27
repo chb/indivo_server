@@ -43,6 +43,7 @@ General Interest
    API <api>
    Architecture Overview <overview>
    Authentication <authentication>
+   Client Libraries <client-libs>
    Data Models <data-models/index>
    Schemas <schemas/index>
 
@@ -58,6 +59,7 @@ App Developers
    App UI Conventions <ui-conventions>
    Authentication <authentication>
    Basic Data Formats <data-formats>
+   Client Libraries <client-libs>
    Coding Systems <coding-systems>
    Complex Queries over Indivo Reports <query-api>
    Data Models <data-models/index>
@@ -104,6 +106,7 @@ Indivo Hackers
    Authentication <authentication>
    Auto-generated Documentation of the Indivo Codebase <autocode/modules>
    Basic Data Formats <data-formats>
+   Client Libraries <client-libs>
    Coding Systems <coding-systems>
    Complex Queries over Indivo Reports <query-api>
    Connecting Indivo to a Hospital <hospital-connector>
