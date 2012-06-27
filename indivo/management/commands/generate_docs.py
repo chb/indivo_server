@@ -20,7 +20,7 @@ Workflow is as follows:
 * Run ``./manage.py generate_docs parse``, which pulls in the latest Indivo code
   to create an up-to-date skeleton listing of all API calls supported by Indivo.
   This skeleton is written to a file specified by api_parser.py, usually 
-  'api-skeleton.py' in this directory.
+  ``indivo_server/doc/sphinx/autogen/api-skeleton.py``.
 
 * Edit the skeleton file, adding call descriptions, querystring options, url
   parameters, etc. Descriptions may be written as ReST, as they will be plugged
