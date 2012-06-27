@@ -107,6 +107,7 @@ Indivo Hackers
    Coding Systems <coding-systems>
    Complex Queries over Indivo Reports <query-api>
    Connecting Indivo to a Hospital <hospital-connector>
+   Documenting Indivo <documentation>
    Data Models <data-models/index>
    Data-Modeling Languages <sdm>
    Data Pipeline <data-pipeline>
