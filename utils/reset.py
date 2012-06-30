@@ -36,8 +36,10 @@ if DB_NAME == 'mysql':
                                                     CONN_DICT['NAME'])
 elif DB_NAME == 'postgresql_psycopg2':
     import psycopg2 as DB_EXCEPTION_MODULE
-    CREATE_DB_CMD = 'createdb -U %s -W %s'%(CONN_DICT['USER'], CONN_DICT['NAME'])
-    DROP_DB_CMD = 'dropdb -U %s -W %s'%(CONN_DICT['USER'], CONN_DICT['NAME'])
+    CREATE_DB_CMD = 'createdb -U %s -W %s -h %s'%(
+        CONN_DICT['USER'], CONN_DICT['NAME'], CONN_DICT['HOST'])
+    DROP_DB_CMD = 'dropdb -U %s -W %s -h %s'%(
+        CONN_DICT['USER'], CONN_DICT['NAME'], CONN_DICT['HOST'])
 
 else:
     raise ValueError("Reset Script doesn't support backend %s"%DB_NAME)
