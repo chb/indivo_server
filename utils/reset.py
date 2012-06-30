@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-""" 
+"""
 .. module:: utils.reset
    :synopsis: Script for resetting the Indivo Server Database and loading initial data
 
@@ -9,9 +9,9 @@
 """
 
 # Set up the Django environment
-import sys,os
+import sys
+import os
 from django.core import management
-from django.conf import settings
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../'))
 from django.db import connection, DatabaseError, IntegrityError
@@ -28,24 +28,26 @@ DB_MODULE, DB_NAME = CONN_DICT['ENGINE'].rsplit('.', 1)
 
 if DB_NAME == 'mysql':
     import _mysql_exceptions as DB_EXCEPTION_MODULE
-    CREATE_DB_CMD = 'mysqladmin -u%s -p%s create %s'%(CONN_DICT['USER'],
+    CREATE_DB_CMD = 'mysqladmin -u%s -p%s create %s' % (CONN_DICT['USER'],
                                                         CONN_DICT['PASSWORD'],
                                                         CONN_DICT['NAME'])
-    DROP_DB_CMD = 'mysqladmin -u%s -p%s drop %s'%(CONN_DICT['USER'],
+    DROP_DB_CMD = 'mysqladmin -u%s -p%s drop %s' % (CONN_DICT['USER'],
                                                     CONN_DICT['PASSWORD'],
                                                     CONN_DICT['NAME'])
 elif DB_NAME == 'postgresql_psycopg2':
     import psycopg2 as DB_EXCEPTION_MODULE
-    CREATE_DB_CMD = 'createdb -U %s -W %s -h %s'%(
+    CREATE_DB_CMD = 'createdb -U %s -W %s -h %s' % (
         CONN_DICT['USER'], CONN_DICT['NAME'], CONN_DICT['HOST'])
-    DROP_DB_CMD = 'dropdb -U %s -W %s -h %s'%(
+    DROP_DB_CMD = 'dropdb -U %s -W %s -h %s' % (
         CONN_DICT['USER'], CONN_DICT['NAME'], CONN_DICT['HOST'])
 
 else:
-    raise ValueError("Reset Script doesn't support backend %s"%DB_NAME)
+    raise ValueError("Reset Script doesn't support backend %s" % DB_NAME)
+
 
 def create_db():
     return subprocess.check_call(CREATE_DB_CMD, shell=True)
+
 
 def drop_db():
     # close django's connection to the database
@@ -58,12 +60,13 @@ usage = ''' %prog [options]
 Reset the Indivo database, optionally loading initial data and codingsystems data. Initial data should
 be placed in indivo_server/utils/indivo_data.xml.
 
-Some of the commands (i.e. dropping and creating the database) require authentication to the underlying 
-database. If you are prompted for a password, use the password for your database user (the same one you 
+Some of the commands (i.e. dropping and creating the database)
+require authentication to the underlying database. If you are prompted
+for a password, use the password for your database user (the same one you
 specified in settings.py)'''
 
 parser = OptionParser(usage=usage)
-parser.add_option("-s", 
+parser.add_option("-s",
                   action="store_true", dest="syncdb", default=True,
                   help="Reset the Database (default behavior).")
 parser.add_option("--no-syncdb",
@@ -75,16 +78,16 @@ parser.add_option("-b",
 parser.add_option("--no-data",
                   action="store_false", dest="load_data",
                   help="Don't load initial data from indivo_data.xml.")
-parser.add_option("-c", 
+parser.add_option("-c",
                   action="store_true", dest="load_codingsystems", default=False,
                   help="Load codingsystems data, if available.")
-parser.add_option("--no-codingsystems", 
+parser.add_option("--no-codingsystems",
                   action="store_false", dest="load_codingsystems",
                   help="Don't load codingsystems data (default behavior).")
-parser.add_option("--force-drop", 
+parser.add_option("--force-drop",
                   action="store_true", dest="force_drop", default=False,
                   help="Force a drop and recreate of the database (useful if flushing the database fails).")
-parser.add_option("--no-force-drop", 
+parser.add_option("--no-force-drop",
                   action="store_false", dest="force_drop",
                   help="Don't force a drop and recreate of the database unless necessary (default behavior).")
 
@@ -124,7 +127,7 @@ else:
             # Unknown exception. For now, just treat same as other exceptions
             except Exception as e:
                 force_drop = True
-    
+
         if force_drop:
 
             # Try dropping the database, in case it existed
@@ -133,7 +136,7 @@ else:
                 drop_db()
             except subprocess.CalledProcessError:
                 print "Couldn't drop database. Probably because it didn't exist."
-            
+
             # Create the Database
             print "Creating the Database..."
             try:
