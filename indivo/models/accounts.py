@@ -154,7 +154,7 @@ class Account(Principal):
         body = utils.render_template_raw('email/new_message/body', 
                                             {'account': self, 
                                            'full_name': self.full_name or self.contact_email,
-                                          'url_prefix': settings.SITE_URL_PREFIX, 
+                                          'url_prefix': settings.UI_SERVER_URL, 
                                   'email_support_name': settings.EMAIL_SUPPORT_NAME,
                                'email_support_address': settings.EMAIL_SUPPORT_ADDRESS }, 
                                         type='txt')
