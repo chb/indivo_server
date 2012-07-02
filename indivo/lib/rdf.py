@@ -89,7 +89,8 @@ class PatientGraph(object):
         g.add((dNode, SP['medicalRecordNumber'],
                self.code("Indivo Record %s"%record.id,
                          "Indivo Record",
-                         INDIVO_RECORD_URI%record.id)))
+                         INDIVO_RECORD_URI%record.id,
+                         blank=True)))
         
         # compound optional           
         addrNode = self.address(demographics, "adr")
@@ -517,18 +518,21 @@ class PatientGraph(object):
                              [SPCODE['MedicationProvenance']])))
         return mNode
 
-    def code(self, title, system, identifier, classes=[]):
+    def code(self, title, system, identifier, blank=False, classes=[]):
         """ Adds a Code to the graph and returns node """
-        cNode = URIRef(system+identifier)
-        self.g.add((cNode, RDF.type, SP['Code']))
-        self.g.add((cNode, DCTERMS['title'], Literal(title)))
-        self.g.add((cNode, SP['system'], Literal(system)))
-        self.g.add((cNode, DCTERMS['identifier'], Literal(identifier)))
+        if blank:
+            node = BNode()
+        else:
+            node = URIRef(system+identifier)
+        self.g.add((node, RDF.type, SP['Code']))
+        self.g.add((node, DCTERMS['title'], Literal(title)))
+        self.g.add((node, SP['system'], Literal(system)))
+        self.g.add((node, DCTERMS['identifier'], Literal(identifier)))
 
         # Add additional types: the general "Code" and specific, e.g. "BloodPressureCode"        
         for c in classes:
-            self.g.add((cNode, RDF.type, c))
-        return cNode
+            self.g.add((node, RDF.type, c))
+        return node
 
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""
