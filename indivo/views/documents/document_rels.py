@@ -155,7 +155,8 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
 
   **RETURNS:**
 
-  * :http:statuscode:`200` on success.
+  * An HttpResponse object whose body is a string of XML describing the created 
+    document, ready for return over the wire on success.
 
   * :http:statuscode:`400` if the new document content is invalid
 
@@ -163,7 +164,7 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
 
   * :py:exc:`django.http.Http404` if *document_id*
     doesn't identify an existing document scoped to *record*, or if
-    *rel* doesn't identify an valid relationship type.  
+    *rel* doesn't identify a valid relationship type.  
 
   """
 
@@ -180,7 +181,8 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
                                 creator = request.principal,
                                 pha = None,
                                 content = request.raw_post_data,
-                                external_id = full_external_id)
+                                external_id = full_external_id,
+                                mime_type = utils.get_content_type(request))
     # create the rel
     DocumentRels.objects.create(document_0 = old_doc, 
                                 document_1 = new_doc, 
@@ -189,4 +191,6 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
     raise Http404
   except ValueError as e:
     return HttpResponseBadRequest(str(e))
-  return DONE
+  return utils.render_template('document', {'record': new_doc.record, 
+                                            'doc'     : new_doc,
+                                            'pha'     : pha })
