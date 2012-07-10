@@ -40,21 +40,6 @@ def _set_doc_latest(doc):
     latest = docutils_obj.get_latest_doc(doc.id)
     doc.latest(latest.id, latest.created_at, latest.creator.email)
 
-def _get_doc_relations(doc):
-    """ Set the 'related documents'-related fields on a document for rendering.
-
-    This is computed at load-time before each rendering of document. It is 
-    not pre-computed or stored in the DB.
-
-    returns: None
-
-    """
-
-    relates_to = doc.rels_as_doc_0.values('relationship__type').annotate(count=Count('relationship'))
-    is_related_from = doc.rels_as_doc_1.values('relationship__type').annotate(count=Count('relationship'))
-    return relates_to, is_related_from
-    
-
 def _render_documents(docs, record, pha, tdc, format_type='xml'):
     """ Lowlevel document rendering to response data.
 
@@ -89,7 +74,6 @@ def _render_documents(docs, record, pha, tdc, format_type='xml'):
         for doc in docs:
             if doc.id:
                 _set_doc_latest(doc)
-                doc.relates_to, doc.is_related_from = _get_doc_relations(doc)
 
     return utils.render_template('documents', {  'docs'      : docs, 
                                                                                              'record'    : record, 

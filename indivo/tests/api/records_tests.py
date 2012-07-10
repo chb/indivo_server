@@ -434,6 +434,12 @@ class RecordInternalTests(InternalTests):
         response = self.client.post(url, data=TEST_R_DOCS[1]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
         root = etree.XML(response.content)
+        # check relation
+        relatedFrom = root.findall('./isRelatedFrom/relation')
+        self.assertEquals(len(relatedFrom), 1, "found more/less than 1 relation")
+        relatesTo = root.find('./relatesTo')
+        self.assertEquals(relatesTo, None, "should be no relatesTo")
+        # check document type
         doc_id = root.get('id')
         doc = Document.objects.get(id=doc_id)
         self.assertEquals(doc.mime_type, 'text/xml')
