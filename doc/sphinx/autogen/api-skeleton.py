@@ -4458,9 +4458,21 @@ application/json:
         '':'The raw content of the document to create.',
         },
     "description":"Create a document and relate it to an existing document.",
-    "return_desc":":http:statuscode:`200 Success`, :http:statuscode:`400` if the new content was invalid, or :http:statuscode:`404` if ``DOCUMENT_ID`` or ``REL`` are invalid.",
+    "return_desc":":http:statuscode:`200` with the metadata of the created document, or :http:statuscode:`400` if the new content was invalid, or :http:statuscode:`404` if ``DOCUMENT_ID`` or ``REL`` are invalid.",
     "return_ex":'''
-<ok/>
+    <Document id="238543a5-e516-4da2-8a70-8c764c65a5a7" type="" size="104" digest="6aaef7aa0fbc24eef18f6cde0bc17120cbea6f35" record_id="e32c3daf-33e3-443e-aa4a-fad22fe559cc">
+        <createdAt>2012-07-10T14:58:36.805563Z</createdAt>
+        <creator id="bob@indivo.org" type="account">
+            <fullname>Bob Loblaw</fullname>
+        </creator>
+        <original id="238543a5-e516-4da2-8a70-8c764c65a5a7"/>
+        <status>active</status>
+        <nevershare>false</nevershare>
+        <isRelatedFrom>
+            <relation type="http://indivo.org/vocab/documentrels#annotation" count="1" />
+        </isRelatedFrom>
+    </Document>
+    
 ''',
     "deprecated": None,
     "added": None,
@@ -4485,9 +4497,20 @@ application/json:
         '':'The raw content of the document to create.',
         },
     "description":"Create a document, assign it an external id, and relate it to an existing document.",
-    "return_desc":":http:statuscode:`200 Success`, :http:statuscode:`400` if the new content was invalid, or :http:statuscode:`404` if ``DOCUMENT_ID`` or ``REL`` are invalid.",
+    "return_desc":":http:statuscode:`200` with the metadata of the created document, or :http:statuscode:`400` if the new content was invalid, or :http:statuscode:`404` if ``DOCUMENT_ID`` or ``REL`` are invalid.",
     "return_ex":'''
-<ok/>
+    <Document id="238543a5-e516-4da2-8a70-8c764c65a5a7" type="" size="104" digest="6aaef7aa0fbc24eef18f6cde0bc17120cbea6f35" record_id="e32c3daf-33e3-443e-aa4a-fad22fe559cc">
+        <createdAt>2012-07-10T14:58:36.805563Z</createdAt>
+        <creator id="bob@indivo.org" type="account">
+            <fullname>Bob Loblaw</fullname>
+        </creator>
+        <original id="238543a5-e516-4da2-8a70-8c764c65a5a7"/>
+        <status>active</status>
+        <nevershare>false</nevershare>
+        <isRelatedFrom>
+            <relation type="http://indivo.org/vocab/documentrels#annotation" count="1" />
+        </isRelatedFrom>
+    </Document>
 ''',
     "deprecated": None,
     "added": None,
