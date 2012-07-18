@@ -408,13 +408,21 @@ Preferences format is defined by the app setting the preferences, and will there
         'body':'The message body. Defaults to ``[no body]``.',
         'body_type':'The formatting of the message body. Options are ``plaintext``, ``markdown``. Defaults to ``plaintext``.',
         'subject':'The message subject. Defaults to ``[no subject]``.',
-        'message_id':'An external identifier for the message.',
+        'message_id':'An external identifier for the message, for idempotency.',
         'severity':'The importance of the message. Options are ``low``, ``medium``, ``high``. Defaults to ``low``.',
         },
     "description":"Send a message to an account.",
-    "return_desc":":http:statuscode:`200 Success`, or http:statuscode:`400` if the passed message_id is a duplicate. Also emails account to alert them that a new message has arrived.",
+    "return_desc":":http:statuscode:`200 Success` with XML describing the message, or http:statuscode:`400` if the passed message_id is a duplicate. Also emails account to alert them that a new message has arrived.",
     "return_ex":'''
-<ok/>
+<Message id="63de173d-0dba-4cbd-92bd-5ef3b638ffd2">
+    <sender>test@indivo.org</sender>
+    <received_at>2012-07-13T15:59:25.102905Z</received_at>
+    <read_at></read_at>
+    <archived_at></archived_at>
+    <subject>subj</subject>
+    <severity>low</severity>
+    <record id="03302536-a00d-425a-8b87-533d0d37478e" />
+</Message>
 ''',
     "deprecated": None,
     "added": None,
@@ -486,7 +494,7 @@ Preferences format is defined by the app setting the preferences, and will there
     "url_params":{
         'ATTACHMENT_NUM':'The 1-indexed number corresponding to the message attachment',
         'ACCOUNT_EMAIL':'The email identifier of the Indivo account',
-        'MESSAGE_ID':'The unique identifier of the Indivo Message',
+        'MESSAGE_ID':'The unique external identifier of the Indivo Message',
         },
     "query_opts":{
         },
@@ -4753,7 +4761,7 @@ application/json:
     "access_doc":"Any admin app, or a user app with access to the record.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'MESSAGE_ID':'The unique identifier of the Indivo Message',
+        'MESSAGE_ID':'The unique external identifier of the Indivo Message, for idempotency.',
         },
     "query_opts":{
         },
