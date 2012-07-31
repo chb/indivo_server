@@ -2802,6 +2802,91 @@ see http://sandbox-api.smartplatforms.org/ontology
 },
 {
     "method":"GET",
+    "path":"/records/{RECORD_ID}/allergies/{MODEL_ID}",
+    "view_func_name":"smart_allergies_instance",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'MODEL_ID':'The id of the Allergy/AllergyExclusion',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Retrieve a specific instance of a SMART Allergy/AllergyExclusion.",
+    "return_desc":"SMART RDF describing the AllergyAllergyExclusion",
+    "return_ex":'''
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:sp="http://smartplatforms.org/terms#"
+>
+    <rdf:Description rdf:nodeID="_9ea3b5f3-c0c4-40d7-a370-2ab475ea1d6e">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <sp:code rdf:resource="http://purl.bioontology.org/ontology/NDFRT/N0000175503"/>
+        <dcterms:title>Sulfonamide Antibacterial</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/416098002">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/AllergyCategory"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <dcterms:identifier>416098002</dcterms:identifier>
+        <dcterms:title>Drug allergy</dcterms:title>
+        <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/24484000">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/AllergySeverity"/>
+        <dcterms:identifier>24484000</dcterms:identifier>
+        <dcterms:title>Severe</dcterms:title>
+        <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.bioontology.org/ontology/SNOMEDCT/39579001">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/SNOMED"/>
+        <dcterms:identifier>39579001</dcterms:identifier>
+        <dcterms:title>Anaphylaxis</dcterms:title>
+        <sp:system>http://purl.bioontology.org/ontology/SNOMEDCT/</sp:system>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://indivo.org/records/b171cd33-00a6-4038-976d-b8380c276ba1/allergies/09eadb0d-9c58-4cac-aad5-c84c29caf5bd">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Allergy"/>
+        <sp:allergicReaction rdf:nodeID="_6538190b-0659-4710-b083-fe3f0462242b"/>
+        <sp:category rdf:nodeID="_3572cdcd-7787-4801-b6b3-e153794ace84"/>
+        <sp:drugClassAllergen rdf:nodeID="_9ea3b5f3-c0c4-40d7-a370-2ab475ea1d6e"/>
+        <sp:severity rdf:nodeID="_e62b76fe-e33b-4d9f-9a2b-dc1221e3eb17"/>
+        <sp:belongsTo rdf:resource="http://indivo.org/records/b171cd33-00a6-4038-976d-b8380c276ba1"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_6538190b-0659-4710-b083-fe3f0462242b">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/39579001"/>
+        <dcterms:title>Anaphylaxis</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_e62b76fe-e33b-4d9f-9a2b-dc1221e3eb17">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/24484000"/>
+        <dcterms:title>Severe</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_3572cdcd-7787-4801-b6b3-e153794ace84">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <sp:code rdf:resource="http://purl.bioontology.org/ontology/SNOMEDCT/416098002"/>
+        <dcterms:title>Drug allergy</dcterms:title>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.bioontology.org/ontology/NDFRT/N0000175503">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/NDFRT"/>
+        <dcterms:identifier>N0000175503</dcterms:identifier>
+        <dcterms:title>Sulfonamide Antibacterial</dcterms:title>
+        <sp:system>http://purl.bioontology.org/ontology/NDFRT/</sp:system>
+    </rdf:Description>
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.1.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"GET",
     "path":"/records/{RECORD_ID}/apps/",
     "view_func_name":"record_phas",
     "access_doc":"A principal in full control of the record, or any admin app.",
@@ -5712,6 +5797,158 @@ SDMX Example:
 ''',
     "deprecated": None,
     "added": ('2.0.0', ''),
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/{MODEL_NAME}/{MODEL_ID}",
+    "view_func_name":"smart_generic_instance",
+    "access_doc":"A user app with access to the record, or a principal in full control of the record",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'MODEL_NAME':'The name of the SMART data model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API#Record_Calls>`_.',
+        'MODEL_ID':'The id of the SMART data_model to retrieve',        
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Retrieve a specific instance of a SMART model.",
+    "return_desc":":http:statuscode:`200` with SMART RDF/XML for the item matching **MODEL_NAME** and **MODEL_ID** belonging to the record.",
+    "return_ex":'''
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:sp="http://smartplatforms.org/terms#"
+xmlns:v="http://www.w3.org/2006/vcard/ns#"
+>
+    <rdf:Description rdf:about="http://smartplatforms.org/terms/codes/LabResultInterpretation#normal">
+        <sp:system>http://smartplatforms.org/terms/codes/LabResultInterpretation#</sp:system>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/LabResultInterpretation"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <dcterms:title>Normal</dcterms:title>
+        <dcterms:identifier>normal</dcterms:identifier>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_16d04766-09ab-4a14-847b-c2cc2aa90544">
+        <sp:unit>mEq/L</sp:unit>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+        <sp:value>120</sp:value>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_dc97d85d-c1fd-4996-980a-f2b37195c00a">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <dcterms:title>Serum Sodium</dcterms:title>
+        <sp:code rdf:resource="http://purl.bioontology.org/ontology/LNC/2951-2"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_83b7740f-b37b-40be-8d78-99e80de40790">
+        <sp:person rdf:nodeID="_fb3f9793-c486-40af-8be1-54b8105355c9"/>
+        <sp:role>Lab Specialist</sp:role>
+        <sp:organization rdf:nodeID="_679ad47e-94ca-4dc6-96ed-168ca03610b8"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Participant"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_372b5eab-eb4d-4d1f-b131-f6f7a8d82d7f">
+        <sp:maximum rdf:nodeID="_ce2e6286-ba4a-4c96-b686-3896189e468e"/>
+        <sp:minimum rdf:nodeID="_ce2e6286-ba4a-4c96-b686-3896189e468e"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueRange"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_ce2e6286-ba4a-4c96-b686-3896189e468e">
+        <sp:unit>mEq/L</sp:unit>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+        <sp:value>135</sp:value>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_716ae160-84dd-4f9e-b035-bd3b26b625dd">
+        <sp:unit>mEq/L</sp:unit>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+        <sp:value>140</sp:value>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_6fa51a50-1bdc-43b9-8be3-cbe828fab220">
+        <sp:normalRange rdf:nodeID="_372b5eab-eb4d-4d1f-b131-f6f7a8d82d7f"/>
+        <sp:nonCriticalRange rdf:nodeID="_e60921df-5c19-4a7f-b0c3-acaf46ff81d2"/>
+        <sp:valueAndUnit rdf:nodeID="_716ae160-84dd-4f9e-b035-bd3b26b625dd"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#QuantitativeResult"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_7e185aa4-7394-4cce-b107-d3a2ef01318c">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <dcterms:title>Final results: complete and verified</dcterms:title>
+        <sp:code rdf:resource="http://smartplatforms.org/terms/codes/LabStatus#final"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_c2141794-697e-4917-8cb2-eefc7d612f1a">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#CodedValue"/>
+        <dcterms:title>Normal</dcterms:title>
+        <sp:code rdf:resource="http://smartplatforms.org/terms/codes/LabResultInterpretation#normal"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_679ad47e-94ca-4dc6-96ed-168ca03610b8">
+        <v:organization-name>City Lab</v:organization-name>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Organization"/>
+        <v:adr rdf:nodeID="_660a15ce-8650-4c91-ad1d-cdee3015ea97"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_fb3f9793-c486-40af-8be1-54b8105355c9">
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Person"/>
+        <v:n rdf:nodeID="_0ac2cdea-f2b3-44c6-b703-284a757111d8"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_660a15ce-8650-4c91-ad1d-cdee3015ea97">
+        <v:postal-code>11111</v:postal-code>
+        <v:street-address>20 Elm St</v:street-address>
+        <v:region>MA</v:region>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Address"/>
+        <v:locality>Springfield</v:locality>
+        <v:country>USA</v:country>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.bioontology.org/ontology/LNC/2951-2">
+        <sp:system>http://purl.bioontology.org/ontology/LNC/</sp:system>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/LOINC"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <dcterms:title>Serum Sodium</dcterms:title>
+        <dcterms:identifier>2951-2</dcterms:identifier>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_d8aacfc9-e1f0-4702-8f8e-c1846c5c214a">
+        <sp:unit>mEq/L</sp:unit>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+        <sp:value>145</sp:value>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_0ac2cdea-f2b3-44c6-b703-284a757111d8">
+        <v:family-name>Finnialispi</v:family-name>
+        <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Name"/>
+        <v:given-name>Tad</v:given-name>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_e60921df-5c19-4a7f-b0c3-acaf46ff81d2">
+        <sp:maximum rdf:nodeID="_16d04766-09ab-4a14-847b-c2cc2aa90544"/>
+        <sp:minimum rdf:nodeID="_16d04766-09ab-4a14-847b-c2cc2aa90544"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueRange"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://indivo.org/records/f48030f2-5ed6-4fc0-97b2-a925d7d88d94/lab_results/d2ed9b5e-3eab-4cae-a35c-f5d8ce4c9fff">
+        <sp:abnormalInterpretation rdf:nodeID="_c2141794-697e-4917-8cb2-eefc7d612f1a"/>
+        <sp:notes>Blood sample appears to have hemolyzed</sp:notes>
+        <sp:belongsTo rdf:resource="http://indivo.org/records/f48030f2-5ed6-4fc0-97b2-a925d7d88d94"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#LabResult"/>
+        <sp:quantitativeResult rdf:nodeID="_6fa51a50-1bdc-43b9-8be3-cbe828fab220"/>
+        <sp:labName rdf:nodeID="_dc97d85d-c1fd-4996-980a-f2b37195c00a"/>
+        <sp:accessionNumber>AC09205823577</sp:accessionNumber>
+        <sp:labStatus rdf:nodeID="_7e185aa4-7394-4cce-b107-d3a2ef01318c"/>
+        <sp:specimenCollected rdf:nodeID="_0e2687ff-7b32-430e-b04e-d21f334918e4"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://smartplatforms.org/terms/codes/LabStatus#final">
+        <sp:system>http://smartplatforms.org/terms/codes/LabStatus#</sp:system>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Code"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms/codes/LabResultStatus"/>
+        <dcterms:title>Final results: complete and verified</dcterms:title>
+        <dcterms:identifier>final</dcterms:identifier>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_0e2687ff-7b32-430e-b04e-d21f334918e4">
+        <sp:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2010-12-27T17:00:00</sp:startDate>
+        <sp:participant rdf:nodeID="_83b7740f-b37b-40be-8d78-99e80de40790"/>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#Attribution"/>
+    </rdf:Description>
+    <rdf:Description rdf:nodeID="_b5de9335-f855-413c-8544-c80982421244">
+        <sp:unit>mEq/L</sp:unit>
+        <rdf:type rdf:resource="http://smartplatforms.org/terms#ValueAndUnit"/>
+        <sp:value>155</sp:value>
+    </rdf:Description>
+</rdf:RDF>
+''',
+    "deprecated": None,
+    "added": ('2.1.0', ''),
     "changed": None,
 
 },

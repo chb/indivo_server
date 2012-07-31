@@ -6,12 +6,15 @@
 
 """
 
-from django.http import HttpResponseBadRequest, HttpResponse, Http404
+from django.http import HttpResponseBadRequest, HttpResponse, Http404, HttpResponseServerError
+from django.db.models.loading import get_model
 from indivo.lib.view_decorators import DEFAULT_ORDERBY
 from indivo.lib.query import FactQuery
 from indivo.lib.rdf import PatientGraph
 from indivo.models import StatusName, Allergy, AllergyExclusion
 from .generic import _generic_list
+from django.shortcuts import render_to_response
+from symbol import except_clause
 
 SMART_URLS_TO_DATAMODELS = {
     'problems': 'Problem',
@@ -68,3 +71,52 @@ def smart_allergies(request, record):
   graph.addAllergyExclusions(exclusions_query.results.iterator())
   return HttpResponse(graph.toRDF(), mimetype='application/rdf+xml')
 
+def smart_generic_instance(request, record, model_name, model_id):
+    """Retrieve a specific instance of a SMART model."""
+    data_model_name = SMART_URLS_TO_DATAMODELS.get(model_name, None)
+    if not data_model_name:
+        # model mapping not found
+        raise Http404
+    model_class = get_model('indivo', data_model_name)
+    if model_class is None:
+        # model class not found
+        raise Http404
+    try:
+        # we use .filter here instead of .get_object_or_404 so we have a QuerySet 
+        # for serialization
+        model_instance = model_class.objects.filter(id=model_id)
+        if model_instance.count() == 1:
+            # found
+            data = model_class.to_rdf(model_instance, 1, record)
+            return HttpResponse(data, mimetype='application/rdf+xml')
+        elif model_instance.count() > 1:
+            # more than a single instance found
+            return HttpResponseServerError()
+        else:
+            # not found
+            raise Http404
+    except ValueError as e:
+        return HttpResponseBadRequest(str(e))
+    
+def smart_allergies_instance(request, record, model_id):
+    """Retrieve a specific instance of a SMART allergy.
+    
+    SMART allergies can be an Allergy or an AllergyExclusion
+    
+    """
+    try:
+        # Allergy and AllergyExclusion IDs are non-overlapping, so we can search
+        # for them sequentially
+        instance = Allergy.objects.filter(id=model_id)
+        if instance.count() == 1:
+            data = Allergy.to_rdf(instance, 1, record)
+        else:
+            instance = AllergyExclusion.objects.filter(id=model_id)
+            if instance.count() == 1:
+                data = AllergyExclusion.to_rdf(instance, 1, record)
+            else:
+                raise Http404
+    except ValueError as e:
+        return HttpResponseBadRequest(str(e))
+    
+    return HttpResponse(data, mimetype='application/rdf+xml')

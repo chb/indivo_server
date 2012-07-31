@@ -1,4 +1,6 @@
 from indivo.data_models.options import DataModelOptions
+from indivo.lib.rdf import PatientGraph
+from indivo.serializers import DataModelSerializers
 from indivo.validators import ValueInSetValidator, ExactValueValidator, NonNullValidator
 
 SNOMED = 'http://purl.bioontology.org/ontology/SNOMEDCT/'
@@ -29,8 +31,18 @@ VALID_EXCLUSION_IDS = [
     '409137002', # No known history of drug allergy
 ]
 
+class AllergySerializers(DataModelSerializers):
+    def to_rdf(queryset, result_count, record=None, carenet=None):
+        if not record:
+            record = carenet.record
+        
+        graph = PatientGraph(record)
+        graph.addAllergyList(queryset.iterator())
+        return graph.toRDF()
+
 class AllergyOptions(DataModelOptions):
     model_class_name = 'Allergy'
+    serializers = AllergySerializers
     field_validators = {
         'allergic_reaction_system': [ExactValueValidator(SNOMED)],
         'allergic_reaction_identifier': [NonNullValidator()],
@@ -46,8 +58,18 @@ class AllergyOptions(DataModelOptions):
         'severity_title': [NonNullValidator()],
         }
 
+class AllergyExclusionSerializers(DataModelSerializers):
+    def to_rdf(queryset, result_count, record=None, carenet=None):
+        if not record:
+            record = carenet.record
+        
+        graph = PatientGraph(record)
+        graph.addAllergyExclusions(queryset.iterator())
+        return graph.toRDF()
+
 class AllergyExclusionOptions(DataModelOptions):
     model_class_name = 'AllergyExclusion'
+    serializers = AllergyExclusionSerializers
     field_validators = {
         'name_system': [ExactValueValidator(SNOMED)],
         'name_identifier': [ValueInSetValidator(VALID_EXCLUSION_IDS)],

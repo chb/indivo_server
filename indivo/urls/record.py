@@ -48,6 +48,8 @@ urlpatterns = patterns('',
     # SMART API Aliases
     (r'^/allergies/$', MethodDispatcher({'GET': smart_allergies})), # requires a custom view due to AllergyExclusions
     (r'^/(?P<model_name>[^/]+)/$', MethodDispatcher({'GET': smart_generic})),
+    (r'^/allergies/(?P<model_id>[^/]+)$', MethodDispatcher({'GET': smart_allergies_instance})),
+    (r'^/(?P<model_name>[^/]+)/(?P<model_id>[^/]+)$', MethodDispatcher({'GET': smart_generic_instance})),
 
     # Demographics
     (r'^/demographics$', MethodDispatcher({'PUT': set_demographics, 'GET': read_demographics})),
