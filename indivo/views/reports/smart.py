@@ -29,7 +29,6 @@ SMART_URLS_TO_DATAMODELS = {
 
 def get_default_query_args():
     return {
-        'limit': 100,
         'offset': 0,
         'order_by': '-%s'%DEFAULT_ORDERBY,
         'status': StatusName.objects.get(name='active'),
