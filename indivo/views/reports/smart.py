@@ -13,8 +13,6 @@ from indivo.lib.query import FactQuery
 from indivo.lib.rdf import PatientGraph
 from indivo.models import StatusName, Allergy, AllergyExclusion
 from .generic import _generic_list
-from django.shortcuts import render_to_response
-from symbol import except_clause
 
 SMART_URLS_TO_DATAMODELS = {
     'problems': 'Problem',
@@ -49,26 +47,26 @@ def smart_generic(request, record, model_name):
     return _generic_list(request, default_query_args, data_model_name, response_format="application/rdf+xml", record=record)
 
 def smart_allergies(request, record):
-  """ SMART allergy list, serialized as RDF/XML.
+    """ SMART allergy list, serialized as RDF/XML.
+    
+    A bit more complicated than the generic list view, since we have to serialize AllergyExclusions as well.
+    
+    """
 
-  A bit more complicated than the generic list view, since we have to serialize AllergyExclusions as well.
-
-  """
-
-  default_query_args = get_default_query_args()  
-  allergies_query = FactQuery(Allergy, Allergy.filter_fields, default_query_args, record, None)
-  exclusions_query = FactQuery(AllergyExclusion, AllergyExclusion.filter_fields, default_query_args, record, None)
-
-  try:
-    allergies_query.execute()
-    exclusions_query.execute()
-  except ValueError as e:
-    return HttpResponseBadRequest(str(e))
-
-  graph = PatientGraph(record)
-  graph.addAllergyList(allergies_query.results.iterator())
-  graph.addAllergyExclusions(exclusions_query.results.iterator())
-  return HttpResponse(graph.toRDF(), mimetype='application/rdf+xml')
+    default_query_args = get_default_query_args()  
+    allergies_query = FactQuery(Allergy, Allergy.filter_fields, default_query_args, record, None)
+    exclusions_query = FactQuery(AllergyExclusion, AllergyExclusion.filter_fields, default_query_args, record, None)
+    
+    try:
+        allergies_query.execute()
+        exclusions_query.execute()
+    except ValueError as e:
+        return HttpResponseBadRequest(str(e))
+    
+    graph = PatientGraph(record)
+    graph.addAllergyList(allergies_query.results.iterator())
+    graph.addAllergyExclusions(exclusions_query.results.iterator())
+    return HttpResponse(graph.toRDF(), mimetype='application/rdf+xml')
 
 def smart_generic_instance(request, record, model_name, model_id):
     """Retrieve a specific instance of a SMART model."""
