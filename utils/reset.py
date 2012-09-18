@@ -26,20 +26,50 @@ import subprocess
 CONN_DICT = connection.settings_dict
 DB_MODULE, DB_NAME = CONN_DICT['ENGINE'].rsplit('.', 1)
 
+# TODO Make the database communications more django like, if not use django to
+#       do the setup.
+
+def isvalid(s):
+    return type(s) == str and len(s) > 0
+
 if DB_NAME == 'mysql':
     import _mysql_exceptions as DB_EXCEPTION_MODULE
-    CREATE_DB_CMD = 'mysqladmin -u%s -p%s create %s' % (CONN_DICT['USER'],
-                                                        CONN_DICT['PASSWORD'],
-                                                        CONN_DICT['NAME'])
-    DROP_DB_CMD = 'mysqladmin -u%s -p%s drop %s' % (CONN_DICT['USER'],
-                                                    CONN_DICT['PASSWORD'],
-                                                    CONN_DICT['NAME'])
+
+    params = []
+    if (not isvalid(CONN_DICT['NAME'])):
+        raise ValueError("Database setting NAME must be a valid non-empty string")
+    if (isvalid(CONN_DICT['USER'])):
+        params.append('-u%s' % CONN_DICT['USER'])
+    else:
+        raise ValueError("Database setting USER must be a valid non-empty string")
+    if (isvalid(CONN_DICT['PASSWORD'])):
+        params.append('-p%s' % CONN_DICT['PASSWORD'])
+    if (isvalid(CONN_DICT['HOST'])):
+        params.append('-h %s' % CONN_DICT['HOST'])
+    if (isvalid(CONN_DICT['PORT'])):
+        params.append('-P %s' % CONN_DICT['PORT'])
+    params = " ".join(params)
+
+    CREATE_DB_CMD = 'mysqladmin %s create %s' % (params, CONN_DICT['NAME'])
+    DROP_DB_CMD = 'mysqladmin %s drop %s' % (params, CONN_DICT['NAME'])
 elif DB_NAME == 'postgresql_psycopg2':
     import psycopg2 as DB_EXCEPTION_MODULE
-    CREATE_DB_CMD = 'createdb -U %s -W %s -h %s' % (
-        CONN_DICT['USER'], CONN_DICT['NAME'], CONN_DICT['HOST'])
-    DROP_DB_CMD = 'dropdb -U %s -W %s -h %s' % (
-        CONN_DICT['USER'], CONN_DICT['NAME'], CONN_DICT['HOST'])
+    
+    params = []
+    if (not isvalid(CONN_DICT['NAME'])):
+        raise ValueError("Database setting NAME must be a valid non-empty string")
+    if (isvalid(CONN_DICT['USER'])):
+        params.append('-U %s' % CONN_DICT['USER'])
+    else:
+        raise ValueError("Database setting USER must be a valid non-empty string")
+    if (isvalid(CONN_DICT['HOST'])):
+        params.append('-h %s' % CONN_DICT['HOST'])
+    if (isvalid(CONN_DICT['PORT'])):
+        params.append('-p %s' % CONN_DICT['PORT'])
+    params = " ".join(params)
+
+    CREATE_DB_CMD = 'createdb -W %s %s' % (params, CONN_DICT['NAME'])
+    DROP_DB_CMD = 'dropdb -W %s %s' % (params, CONN_DICT['NAME'])
 
 else:
     raise ValueError("Reset Script doesn't support backend %s" % DB_NAME)

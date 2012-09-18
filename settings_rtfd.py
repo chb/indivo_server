@@ -49,8 +49,8 @@ UI_SERVER_URL = 'http://localhost'
 DATABASES = {
     'default':{
         'ENGINE':'django.db.backends.postgresql_psycopg2', # '.postgresql_psycopg2', '.mysql', or '.oracle'
-        'NAME':'indivo',
-        'USER':'',
+        'NAME':'indivo', # Required to be non-empty string
+        'USER':'', # Required to be non-empty string
         'PASSWORD':'',
         'HOST':'', # Set to empty string for localhost.
         'PORT':'', # Set to empty string for default.
