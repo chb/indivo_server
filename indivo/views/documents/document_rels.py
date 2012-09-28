@@ -61,7 +61,7 @@ def get_documents_by_rel(request, record, document_id, rel, query_options, pha=N
   try:
     relationship = DocumentSchema.objects.get(type=DocumentSchema.expand_rel(rel))
     docs = Document.objects.filter(record=record,
-                                   status=status,
+                                   status=query_options['status'],
                                    rels_as_doc_1__document_0__original=document.original_id, # doc is related to passed document
                                    rels_as_doc_1__relationship=relationship) # AND relation type is correct
     tdc = len(docs)
