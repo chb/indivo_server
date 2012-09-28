@@ -56,14 +56,15 @@ INVALID_TEST_DIRS = (
 class DataModelLoaderUnitTests(InternalTests):
     def setUp(self):
         super(DataModelLoaderUnitTests, self).setUp()
-        self.core_loader = IndivoDataModelLoader(settings.CORE_DATAMODEL_DIRS[0])
         self.test_dir = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test')
         self.test_loader = IndivoDataModelLoader(self.test_dir)
+
+    def tearDown(self):
+        super(DataModelLoaderUnitTests,self).tearDown()
 
     def test_import_data_models(self):
         
         # get the core modules, and make sure we imported them all
-        self.core_loader.import_data_models(TEST_MODULE)
         self.assertModuleContains(TEST_MODULE, CORE_MODELS)
 
         # get the test modules, and make sure we imported them all
@@ -134,12 +135,6 @@ class DataModelLoaderUnitTests(InternalTests):
 
     def test_discover_data_models(self):
         
-        # Make sure we got all the core datamodels, and they are all Fact subclasses
-        core_models = dict([(name, cls) for name, cls in self.core_loader.discover_data_models()])
-        self.assertEqual(set(core_models.keys()), set(CORE_MODELS))
-        for cls in core_models.values():
-            self.assertTrue(issubclass(cls, Fact))
-
         # Make sure we got all the test datamodels, and they are all Fact subclasses
         test_models = dict([(name, cls) for name, cls in self.test_loader.discover_data_models()])
         self.assertEqual(set(test_models.keys()), set(TEST_MODELS))

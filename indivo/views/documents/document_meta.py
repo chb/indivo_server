@@ -8,7 +8,7 @@
 """
 
 from indivo.views.base import *
-from indivo.views.documents.document import _set_doc_latest, _get_doc_relations, _get_document
+from indivo.views.documents.document import _set_doc_latest, _get_document
 
 
 def update_document_meta(request, record, document_id):
@@ -188,8 +188,5 @@ def _document_meta(record=None, carenet=None, document=None, pha=None, external_
       raise Http404
 
   _set_doc_latest(document)
-
-  # related stuff
-  document.relates_to, document.is_related_from = _get_doc_relations(document)
 
   return render_template('single_document', {'doc' : document, 'record': document.record})

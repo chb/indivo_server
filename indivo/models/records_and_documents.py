@@ -5,6 +5,7 @@ from django.db import models, transaction
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
+from django.db.models import Count
 
 import urllib, hashlib, uuid
 
@@ -228,6 +229,14 @@ class Document(Object):
   label = models.CharField(max_length=100, null=True)
   digest = models.CharField(max_length=64, null=False)
   status = models.ForeignKey('StatusName', null=False, default=1)
+
+  @property
+  def relates_to(self):
+    return self.rels_as_doc_0.values('relationship__type').annotate(count=Count('relationship'))
+
+  @property
+  def is_related_from(self):
+    return self.rels_as_doc_1.values('relationship__type').annotate(count=Count('relationship'))
 
   #related_docs = models.ManyToManyField('self', through='DocumentRels', symmetrical=False)
 

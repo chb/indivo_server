@@ -428,9 +428,30 @@ class RecordInternalTests(InternalTests):
         record_id = self.record.id
         rel = REL
         doc_id = self.rs_docs[0].id
+
+        # test xml doc
         url = '/records/%s/documents/%s/rels/%s/'%(record_id, doc_id, rel)
         response = self.client.post(url, data=TEST_R_DOCS[1]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
+        root = etree.XML(response.content)
+        # check relation
+        relatedFrom = root.findall('./isRelatedFrom/relation')
+        self.assertEquals(len(relatedFrom), 1, "found more/less than 1 relation")
+        relatesTo = root.find('./relatesTo')
+        self.assertEquals(relatesTo, None, "should be no relatesTo")
+        # check document type
+        doc_id = root.get('id')
+        doc = Document.objects.get(id=doc_id)
+        self.assertEquals(doc.mime_type, 'text/xml')
+        
+        # test binary doc
+        url = '/records/%s/documents/%s/rels/%s/'%(record_id, doc_id, rel)
+        response = self.client.post(url, data=TEST_R_DOCS[11]['content'], content_type='image/gif')
+        self.assertEquals(response.status_code, 200)
+        root = etree.XML(response.content)
+        doc_id = root.get('id')
+        doc = Document.objects.get(id=doc_id)
+        self.assertEquals(doc.mime_type, 'image/gif')
         
     def test_get_record_specific_doc_carenets(self):
         record_id = self.record.id

@@ -212,12 +212,21 @@ class AccountInternalTests(InternalTests):
     def test_send_message_to_account(self):
         msg = TEST_MESSAGES[0]
         data = {'message_id': msg['message_id'],
+                'subject':msg['subject'],
                 'body':msg['body'],
                 'body_type':'markdown',
                 'severity':msg['severity'],
                 }
         response = self.client.post('/accounts/%s/inbox/'%(self.account.email), urlencode(data),'application/x-www-form-urlencoded')
         self.assertEquals(response.status_code, 200)
+        root = etree.XML(response.content)
+        # check returned data
+        message_id = root.get('id')
+        self.assertTrue(message_id is not None and len(message_id) > 0, "Did not find message ID")
+        subject = root.find('subject').text
+        self.assertEqual(subject, msg['subject'], "subjects do not match")
+        severity = root.find('severity').text
+        self.assertEqual(severity, msg['severity'], "subjects do not match")
 
     def test_update_account_info(self):
         response = self.client.post('/accounts/%s/info-set'%(self.account.email), urlencode({'contact_email':self.account.contact_email,'full_name':self.account.full_name}),'application/x-www-form-urlencoded')

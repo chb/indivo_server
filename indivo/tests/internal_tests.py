@@ -289,8 +289,6 @@ class IndivoTests(object):
         self.save_and_modify_setting('CONTRIB_SCHEMA_DIRS',
                                      [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/contrib')])
 
-        self.save_and_modify_setting('CORE_DATAMODEL_DIRS',
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/data_models/core')])
         self.save_and_modify_setting('CONTRIB_DATAMODEL_DIRS',
                                      [os.path.join(settings.APP_HOME, 'indivo/tests/data_models/contrib')])
 
@@ -303,7 +301,6 @@ class IndivoTests(object):
         # Restore settings for schema and datamodel locations
         self.restore_setting('CORE_SCHEMA_DIRS')
         self.restore_setting('CONTRIB_SCHEMA_DIRS')
-        self.restore_setting('CORE_DATAMODEL_DIRS')
         self.restore_setting('CONTRIB_DATAMODEL_DIRS')
 
     def setUp(self):

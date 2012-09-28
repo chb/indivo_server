@@ -1,0 +1,17 @@
+{% load template_utils %}
+{% spaceless %}
+<Message id="{{message.id}}">
+    <sender>{{message.sender.email}}</sender>
+    <received_at>{{message.received_at|format_iso8601_datetime}}</received_at>
+    <read_at>{{message.read_at|format_iso8601_datetime}}</read_at>
+    <archived_at>{{message.archived_at|format_iso8601_datetime}}</archived_at>
+    <subject>{{message.subject}}</subject>
+    <severity>{{message.severity}}</severity>
+    {% if message.about_record_id %}
+        <record id="{{message.about_record_id}}" />
+    {% endif %}
+    {% for attachment in message.messageattachment_set.all %}
+        <attachment num="{{attachment.attachment_num}}" type="{{attachment.type}}" size="{{attachment.type}}" />
+    {% endfor %}
+</Message>
+{% endspaceless %}

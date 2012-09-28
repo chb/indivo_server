@@ -1,13 +1,16 @@
-from indivo.models import *
-from indivo.tests.internal_tests import InternalTests
-from indivo.tests.data import *
-
 import json
 from lxml import etree
+
+from rdflib import Graph, Namespace
+
+from indivo.models import *
+from indivo.tests.internal_tests import InternalTests
+from indivo.tests.data import TEST_ACCOUNTS, TEST_RECORDS
 
 DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
 DOC_LABEL = 'A Document!'
 NS = 'http://indivo.org/vocab/xml/documents#'
+SMART = Namespace("http://smartplatforms.org/terms#")
 
 class ReportingInternalTests(InternalTests):
 
@@ -234,8 +237,38 @@ class ReportingInternalTests(InternalTests):
         for vital in response_json:
             self.assertTrue(float(vital['weight_value']) in [70.8, 80.8])
 
-
     def test_get_generic_nonexistent(self):  
         # get a JSON encoded report on a non-existent model
         response = self.client.get('/records/%s/reports/DoesNotExist/'%(self.record.id), {'response_format':'application/json'})
         self.assertEquals(response.status_code, 404)
+
+    def test_get_smart_labs(self):
+        response = self.client.get('/records/%s/lab_results/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 1)
+        
+        # retrieve a single lab result
+        lab_id = lab_results[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/lab_results/%s' % (self.record.id, lab_id))
+        self.assertEquals(response.status_code, 200)
+        
+    def test_get_smart_allergies(self):
+        # allergies are a special case since they can be an Allergy or AllergyExclusion 
+        response = self.client.get('/records/%s/allergies/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        allergy_results = [l for l in g.subjects(None,SMART["Allergy"])]
+        self.assertEqual(len(allergy_results), 1)
+        allergy_exclusion_results = [l for l in g.subjects(None,SMART["AllergyExclusion"])]
+        self.assertEqual(len(allergy_exclusion_results), 0)
+        
+        # retrieve a single allergy
+        allergy_id = allergy_results[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/allergies/%s' % (self.record.id, allergy_id))
+        self.assertEquals(response.status_code, 200)        

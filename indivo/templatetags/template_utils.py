@@ -5,7 +5,7 @@ from django.template import Context, loader
 from django.template.defaultfilters import stringfilter
 from indivo.models import Document
 from indivo.lib import iso8601
-from indivo.views.documents.document import _set_doc_latest, _get_doc_relations
+from indivo.views.documents.document import _set_doc_latest
 
 register = template.Library()
 
@@ -18,22 +18,6 @@ def check_empty(value):
   else:
     return value
 check_empty.is_safe = True
-
-
-@register.filter
-@stringfilter
-def get_doc_obj(doc_id):
-  try:
-    doc = Document.objects.get(id=doc_id)
-    
-    # append the doc metadata
-    _set_doc_latest(doc)
-    doc.relates_to, doc.is_related_from = _get_doc_relations(doc)
-
-    return loader.get_template('document.xml').render(Context({'doc': doc, 'record': doc.record}))
-  except:
-    return ""
-get_doc_obj.is_safe = True
 
 # this is definitely not a string filter, it should be a real timestamp
 @register.filter

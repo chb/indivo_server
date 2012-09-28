@@ -109,6 +109,15 @@ _TEST_R_DOCS = [
      'record': None, 
      'creator': ForeignKey('app', 'TEST_USERAPPS', 0),
      },
+    {'label':'rdoc12',
+     'content':"<Document id='HELLOWORLD11' xmlns='http://indivo.org/vocab#'>This will be set as a binary doc</Document>",
+     'record': None,
+     'pha': ForeignKey('app', 'TEST_USERAPPS',0),
+     'creator': ForeignKey('app', 'TEST_USERAPPS', 0),
+     'external_id':'external_rdoc2',
+     'pha_spec':False,
+     'mime_type':'image/gif'
+     }
 ]
 TEST_R_DOCS = scope(_TEST_R_DOCS, TestDocument)
 
