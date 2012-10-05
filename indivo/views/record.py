@@ -255,8 +255,13 @@ def record_share_delete(request, record, other_account_id):
   """
 
   try:
-    shares = AccountFullShare.objects.filter(record = record, with_account = Account.objects.get(email=other_account_id.lower().strip()))
+    account = Account.objects.get(email=other_account_id.lower().strip())
+    shares = AccountFullShare.objects.filter(record = record, with_account = account)
     shares.delete()
+    # delete the message route
+    routes = RecordNotificationRoute.objects.filter(record = record, account = account)
+    routes.delete()
+    return DONE
     return DONE
   except Account.DoesNotExist:
     raise Http404
