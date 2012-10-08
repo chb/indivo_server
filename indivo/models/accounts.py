@@ -150,17 +150,19 @@ class Account(Principal):
                         ["%s <%s>" % (self.full_name or self.contact_email, self.contact_email)])
     
     def notify_account_of_new_message(self):
-        subject = utils.render_template_raw('email/new_message/subject', {'account': self}, type='txt').strip()
-        body = utils.render_template_raw('email/new_message/body', 
-                                            {'account': self, 
-                                           'full_name': self.full_name or self.contact_email,
-                                          'url_prefix': settings.UI_SERVER_URL, 
-                                  'email_support_name': settings.EMAIL_SUPPORT_NAME,
-                               'email_support_address': settings.EMAIL_SUPPORT_ADDRESS }, 
-                                        type='txt')
-        utils.send_mail(subject, body, 
-                        "%s <%s>" % (settings.EMAIL_SUPPORT_NAME, settings.EMAIL_SUPPORT_ADDRESS), 
-                        ["%s <%s>" % (self.full_name or self.contact_email, self.contact_email)])
+        # only notify accounts that have a state of active or disabled
+        if self.state == ACTIVE or self.state == DISABLED:
+            subject = utils.render_template_raw('email/new_message/subject', {'account': self}, type='txt').strip()
+            body = utils.render_template_raw('email/new_message/body', 
+                                                {'account': self, 
+                                               'full_name': self.full_name or self.contact_email,
+                                              'url_prefix': settings.UI_SERVER_URL, 
+                                      'email_support_name': settings.EMAIL_SUPPORT_NAME,
+                                   'email_support_address': settings.EMAIL_SUPPORT_ADDRESS }, 
+                                            type='txt')
+            utils.send_mail(subject, body, 
+                            "%s <%s>" % (settings.EMAIL_SUPPORT_NAME, settings.EMAIL_SUPPORT_ADDRESS), 
+                            ["%s <%s>" % (self.full_name or self.contact_email, self.contact_email)])
     
     def send_welcome_email(self):
         subject = utils.render_template_raw('email/welcome/subject', {'account': self}, type='txt').strip()
