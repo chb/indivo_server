@@ -262,7 +262,6 @@ def record_share_delete(request, record, other_account_id):
     routes = RecordNotificationRoute.objects.filter(record = record, account = account)
     routes.delete()
     return DONE
-    return DONE
   except Account.DoesNotExist:
     raise Http404
   except Principal.DoesNotExist:
