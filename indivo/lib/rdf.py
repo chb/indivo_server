@@ -382,6 +382,22 @@ class PatientGraph(object):
             
             self.addStatement(pnode)
 
+    def addSocialHistoryList(self, histories):
+        """Add social histories to a patient's graph"""
+        
+        g = self.g
+
+        for history in histories:
+            pnode = URIRef(history.uri())
+            g.add((pnode, RDF.type, SP['SocialHistory']))
+            
+            # optional
+            smoking_status = self._getCodedValueFromField(history, 'smoking_status', [SPCODE['SmokingStatus']])
+            if smoking_status:    
+                g.add((pnode, SP['smokingStatus'], self.newCodedValue(smoking_status)))
+            
+            self.addStatement(pnode)
+
     #####################################################
     ### Helper Methods for reusable low-level objects ###
     #####################################################

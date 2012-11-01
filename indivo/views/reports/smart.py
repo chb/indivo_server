@@ -24,6 +24,7 @@ SMART_URLS_TO_DATAMODELS = {
     'medications': 'Medication',
     'vital_sign_sets': 'VitalSigns',
     'procedures': 'Procedure',
+    'social_history': 'SocialHistory',
 }
 
 def get_default_query_args():

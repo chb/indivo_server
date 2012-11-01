@@ -287,3 +287,17 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get('/records/%s/procedures/%s' % (self.record.id, procedure_id))
         self.assertEquals(response.status_code, 200)
         
+    def test_get_smart_social_history(self):
+        response = self.client.get('/records/%s/social_history/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        histories = [l for l in g.subjects(None,SMART["SocialHistory"])]
+        self.assertEqual(len(histories), 1)
+
+        # retrieve a single procedure
+        history_id = histories[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/social_history/%s' % (self.record.id, history_id))
+        self.assertEquals(response.status_code, 200)
+        
