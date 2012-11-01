@@ -211,7 +211,7 @@ class DocumentModelUnitTests(InternalTests):
 
         try:
             self.r_doc1.replace(invalid_xml, new_mimetype)
-        except ValueError:
+        except ValueError as e:
             self.fail('Could not add invalid document even with validation off')
 
         # Set the doc to replaced, make sure replacing it fails

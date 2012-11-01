@@ -1,6 +1,6 @@
 {
     "__modelname__": "Procedure",
-    "date_performed": "Date",
+    "date": "Date",
     "name": "String",
     "name_type": "String",
     "name_value": "String",

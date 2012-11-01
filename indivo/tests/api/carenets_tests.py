@@ -192,7 +192,7 @@ class CarenetInternalTests(InternalTests):
 
     def test_get_carenet_procedures(self):
         c_id = self.shared_carenet.id
-        url = '/carenets/%s/reports/minimal/procedures/'%(c_id)
+        url = '/carenets/%s/reports/procedure/'%(c_id)
 
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)

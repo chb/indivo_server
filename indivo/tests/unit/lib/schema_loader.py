@@ -9,7 +9,6 @@ NS = 'http://indivo.org/vocab/xml/documents#'
 
 VALID_CORE_SCHEMAS = {
     'equipment': NS+'Equipment',
-    'procedure': NS+'Procedure',
     'simplenote': NS+'SimpleClinicalNote',
     }
 

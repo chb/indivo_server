@@ -94,7 +94,7 @@ def smart_capabilities(request):
             "PUT"
         ]
     }, 
-    "http://smartplatforms.org/terms#VitalSigns": {
+    "http://smartplatforms.org/terms#VitalSignSet": {
         "methods": [
             "GET"
         ]

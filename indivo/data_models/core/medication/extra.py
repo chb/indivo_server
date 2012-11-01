@@ -27,11 +27,11 @@ class MedicationOptions(DataModelOptions):
     model_class_name = 'Medication'
     serializers = MedicationSerializers
     field_validators = {
-        'drugName_system': [ExactValueValidator(RXN_URI)],
-        'drugName_identifier': [NonNullValidator()],
-        'drugName_title': [NonNullValidator()],
-        'provenance_system': [ExactValueValidator(MED_PROV_URI, nullable=True)],
-        'provenance_identifier': [ValueInSetValidator(MED_PROVS, nullable=True)],
+        'name_code_system': [ExactValueValidator(RXN_URI)],
+        'name_code_identifier': [NonNullValidator()],
+        'name_code_title': [NonNullValidator()],
+        'provenance_code_system': [ExactValueValidator(MED_PROV_URI, nullable=True)],
+        'provenance_code_identifier': [ValueInSetValidator(MED_PROVS, nullable=True)],
         'startDate': [NonNullValidator()],
         }
 

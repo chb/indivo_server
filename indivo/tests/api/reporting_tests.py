@@ -48,18 +48,18 @@ class ReportingInternalTests(InternalTests):
 
     def test_get_procedures(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/procedures/?group_by=procedure_name&aggregate_by=count*procedure_name&date_range=date_performed*2005-03-10T00:00:00Z*'%(record_id)
+        url = '/records/%s/reports/procedure/?group_by=name_code_title&aggregate_by=count*name_code_title&date_range=date*2005-03-10T00:00:00Z*'%(record_id)
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)
 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-        url2 = '/records/%s/reports/minimal/procedures/?procedure_name=Appendectomy&date_group=date_performed*month&aggregate_by=count*procedure_name&order_by=-date_performed'%(record_id)
+        url2 = '/records/%s/reports/procedure/?name_code_title=Appendectomy&date_group=date*month&aggregate_by=count*name_code_title&order_by=-date'%(record_id)
         response = self.client.get(url2)
         self.assertEquals(response.status_code, 200)
 
-        url3 = '/records/%s/reports/minimal/procedures/?order_by=date_performed'%(record_id)
+        url3 = '/records/%s/reports/procedure/?order_by=date'%(record_id)
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 
@@ -152,7 +152,7 @@ class ReportingInternalTests(InternalTests):
         # check to make sure Model name is correct, and that it has 37 fields        
         first_lab = response_json[0]
         self.assertEquals(first_lab['__modelname__'], 'LabResult')
-        self.assertEquals(len(first_lab), 37)
+        self.assertEquals(len(first_lab), 43)
 
     def test_generic_query_api(self):
         record_id = self.record.id
@@ -208,13 +208,13 @@ class ReportingInternalTests(InternalTests):
         self.assertEqual(response_json[0]['date'], '2009-05-16T12:00:00Z')
         
         # string {field}
-        url = '/records/%s/reports/vitalsigns/?weight_name_title=Body weight'%(record_id)
+        url = '/records/%s/reports/vitalsigns/?weight_name_code_title=Body weight'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         response_json = json.loads(response.content)
         self.assertEqual(len(response_json), 2)      
-        self.assertEqual(response_json[0]['weight_name_title'], 'Body weight')
-        self.assertEqual(response_json[1]['weight_name_title'], 'Body weight')
+        self.assertEqual(response_json[0]['weight_name_code_title'], 'Body weight')
+        self.assertEqual(response_json[1]['weight_name_code_title'], 'Body weight')
         
         # number {field}
         url = '/records/%s/reports/vitalsigns/?weight_value=70.8'%(record_id)
@@ -272,3 +272,18 @@ class ReportingInternalTests(InternalTests):
         
         response = self.client.get('/records/%s/allergies/%s' % (self.record.id, allergy_id))
         self.assertEquals(response.status_code, 200)        
+
+    def test_get_smart_procedures(self):
+        response = self.client.get('/records/%s/procedures/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        procedures = [l for l in g.subjects(None,SMART["Procedure"])]
+        self.assertEqual(len(procedures), 2)
+
+        # retrieve a single procedure
+        procedure_id = procedures[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/procedures/%s' % (self.record.id, procedure_id))
+        self.assertEquals(response.status_code, 200)
+        

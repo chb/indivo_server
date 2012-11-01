@@ -1,9 +1,9 @@
-<Models>
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
   <Model name="Problem">
     <Field name="startDate">2009-05-16T12:00:00Z</Field>
     <Field name="endDate">2009-05-16T16:00:00Z</Field>
-    <Field name="name_title">Backache (Finding)</Field>
-    <Field name="name_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
-    <Field name="name_identifier">161891005</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
   </Model>
 </Models>

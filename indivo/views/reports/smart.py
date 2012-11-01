@@ -22,7 +22,8 @@ SMART_URLS_TO_DATAMODELS = {
     'immunizations': 'Immunization',
     'lab_results': 'LabResult',
     'medications': 'Medication',
-    'vital_signs': 'VitalSigns',
+    'vital_sign_sets': 'VitalSigns',
+    'procedures': 'Procedure',
 }
 
 def get_default_query_args():

@@ -13,13 +13,14 @@ class VitalSigns(Fact):
     respiratory_rate = VitalSignField()
     temperature = VitalSignField()
     weight = VitalSignField()
+    head_circ = VitalSignField()
 
 class Encounter(Fact):
-  startDate = models.DateTimeField(null=True)
-  endDate = models.DateTimeField(null=True)
-  facility = OrganizationField()
-  provider = ProviderField()
-  encounterType = CodedValueField()
+    startDate = models.DateTimeField(null=True)
+    endDate = models.DateTimeField(null=True)
+    facility = OrganizationField()
+    provider = ProviderField()
+    type = CodedValueField()
 
     
     

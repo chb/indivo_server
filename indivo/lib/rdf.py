@@ -108,7 +108,6 @@ class PatientGraph(object):
     def addMedList(self, meds):
         """Adds a MedList to a patient's graph"""
 
-        g = self.g
         if not meds: return # no meds
 
         for m in meds:
@@ -181,12 +180,9 @@ class PatientGraph(object):
                 g.add((pnode, SP['endDate'], Literal(prob.endDate)))
             if prob.notes:
                 g.add((pnode, SP['notes'], Literal(prob.notes)))
-            g.add((pnode, SP['problemName'],
-                   self.codedValue(SPCODE["SNOMED"],
-                                   SNOMED_URI%prob.name_identifier,
-                                   prob.name_title,
-                                   SNOMED_URI%"",
-                                   prob.name_identifier)))
+                
+            problem_name = self._getCodedValueFromField(prob, 'name', [SPCODE['SNOMED']])    
+            g.add((pnode, SP['problemName'], self.newCodedValue(problem_name)))
             self.addStatement(pnode)
             
     def addEncounterList(self, encounters):
@@ -203,7 +199,7 @@ class PatientGraph(object):
 
         for v in vitals:
             vnode = URIRef(v.uri('vital_signs'))
-            g.add((vnode, RDF.type, SP['VitalSigns']))
+            g.add((vnode, RDF.type, SP['VitalSignSet']))
             g.add((vnode, DCTERMS['date'], Literal(v.date)))
 
             enode = self.encounter(v.encounter)
@@ -241,6 +237,10 @@ class PatientGraph(object):
             wNode = self.vital(v, 'weight')
             if wNode:
                 g.add((vnode, SP['weight'], wNode))
+                
+            hcNode = self.vital(v, 'head_circ')
+            if hcNode:
+                g.add((hcNode, SP['headCircumference'], hcNode))
         
             self.addStatement(vnode)
 
@@ -254,47 +254,24 @@ class PatientGraph(object):
             g.add((inode, RDF.type, SP['Immunization']))
 
             g.add((inode, DCTERMS['date'], Literal(i.date)))
-            g.add((inode, SP['administrationStatus'],
-                   self.codedValue(
-                        SPCODE["ImmunizationAdministrationStatus"],
-                        IMM_STATUS_URI%i.administration_status_identifier,
-                        i.administration_status_title,
-                        IMM_STATUS_URI%"",
-                        i.administration_status_identifier)))
-            g.add((inode, SP['productName'],
-                   self.codedValue(
-                        SPCODE['ImmunizationProduct'],
-                        IMM_PROD_URI%i.product_name_identifier,
-                        i.product_name_title,
-                        IMM_PROD_URI%"",
-                        i.product_name_identifier)))
-        
-            if i.product_class_title and i.product_class_identifier:
-                g.add((inode, SP['productClass'],
-                       self.codedValue(
-                            SPCODE['ImmunizationClass'],
-                            IMM_CLASS_URI%i.product_class_identifier,
-                            i.product_class_title,
-                            IMM_CLASS_URI%"",
-                            i.product_class_identifier)))
-                                
-            if i.product_class_2_title and i.product_class_2_identifier:
-                g.add((inode, SP['productClass'],
-                       self.codedValue(
-                            SPCODE['ImmunizationClass'],
-                            IMM_CLASS_URI%i.product_class_2_identifier,
-                            i.product_class_2_title,
-                            IMM_CLASS_URI%"",
-                            i.product_class_2_identifier)))
             
+            admin_status = self._getCodedValueFromField(i, 'administration_status', [SPCODE['ImmunizationAdministrationStatus']])
+            g.add((inode, SP['administrationStatus'], self.newCodedValue(admin_status)))
+            
+            product_name = self._getCodedValueFromField(i, 'product_name', [SPCODE['ImmunizationProduct']])
+            g.add((inode, SP['productName'], self.newCodedValue(product_name)))
+        
+            product_class = self._getCodedValueFromField(i, 'product_class', [SPCODE['ImmunizationClass']])
+            if i.product_class_title and i.product_class_identifier:
+                g.add((inode, SP['productClass'], self.newCodedValue(product_class)))
+                                
+            product_class2 = self._getCodedValueFromField(i, 'product_class_2', [SPCODE['ImmunizationClass']])
+            if i.product_class_2_title and i.product_class_2_identifier:
+                g.add((inode, SP['productClass'], self.newCodedValue(product_class2)))
+            
+            refusal_reason = self._getCodedValueFromField(i, 'refusal_reason', [SPCODE['ImmunizationRefusalReason']])
             if i.refusal_reason_title and i.refusal_reason_identifier:
-                g.add((inode, SP['refusalReason'], 
-                       self.codedValue(
-                            SPCODE['ImmunizationRefusalReason'],
-                            IMM_REFUSE_URI%i.refusal_reason_identifier,
-                            i.refusal_reason_title,
-                            IMM_REFUSE_URI%"",
-                            i.refusal_reason_identifier)))
+                g.add((inode, SP['refusalReason'], self.newCodedValue(refusal_reason)))
                             
             self.addStatement(inode)
 
@@ -306,34 +283,19 @@ class PatientGraph(object):
             lNode = URIRef(lab.uri('lab_results'))
             g.add((lNode, RDF.type, SP['LabResult']))
 
-            g.add((lNode , SP['labName'],
-                   self.codedValue(
-                        SPCODE["LOINC"], 
-                        LOINC_URI%lab.test_name_identifier,
-                        lab.test_name_title,
-                        LOINC_URI%"",
-                        lab.test_name_identifier)))
+            lab_name = self._getCodedValueFromField(lab, 'name', [SPCODE['LOINC']])
+            g.add((lNode , SP['labName'], self.newCodedValue(lab_name)))
             
             if lab.abnormal_interpretation_title and lab.abnormal_interpretation_identifier:
-                g.add((lNode, SP['abnormalInterpretation'], 
-                       self.codedValue(
-                            SPCODE['LabResultInterpretation'],
-                            LAB_INTERP_URI%lab.abnormal_interpretation_identifier,
-                            lab.abnormal_interpretation_title,
-                            LAB_INTERP_URI%"",
-                            lab.abnormal_interpretation_identifier)))
+                abnormal_interpretation = self._getCodedValueFromField(lab, 'abnormal_interpretation', [SPCODE['LabResultInterpretation']])
+                g.add((lNode, SP['abnormalInterpretation'], self.newCodedValue(abnormal_interpretation)))
 
             if lab.accession_number:
                 g.add((lNode, SP['accessionNumber'], Literal(lab.accession_number)))
 
             if lab.status_title and lab.status_identifier:
-                g.add((lNode, SP['labStatus'],
-                       self.codedValue(
-                            SPCODE['LabResultStatus'],
-                            LAB_STATUS_URI%lab.status_identifier,
-                            lab.status_title,
-                            LAB_STATUS_URI%"",
-                            lab.status_identifier)))
+                lab_status = self._getCodedValueFromField(lab, 'status', [SPCODE['LabResultStatus']])
+                g.add((lNode, SP['labStatus'], self.newCodedValue(lab_status)))
 
             if lab.narrative_result:
                 nrNode = BNode()
@@ -348,41 +310,7 @@ class PatientGraph(object):
             if qrNode:
                 g.add((lNode, SP['quantitativeResult'], qrNode))
 
-            # Add the specimenCollected node, but only if its subNodes should be added.
-            # Implemented with booleans which are set to True by the child 
-            # if the parent node should be added
-            add_attr = False
-            attrNode = BNode()
-            if lab.collected_at:
-                add_attr = True
-                g.add((attrNode, SP['startDate'], Literal(lab.collected_at)))
-                
-            add_participant = False
-            pNode = BNode()
-            if lab.collected_by_role:
-                add_participant = True
-                g.add((pNode, SP['role'], Literal(lab.collected_by_role)))
-            oNode = self.organization(lab, 'collected_by_org')
-            if oNode:
-                add_participant = True
-                g.add((pNode, SP['organization'], oNode))            
-            personNode = BNode()
-            nameNode = self.name(lab, 'collected_by_name')
-            if nameNode:
-                add_participant = True
-                g.add((personNode, RDF.type, SP['Person'])) 
-                g.add((personNode, VCARD['n'], nameNode))
-                g.add((pNode, SP['person'], personNode))
-
-            if add_participant:
-                add_attr = True
-                g.add((pNode, RDF.type, SP['Participant']))
-                g.add((attrNode, SP['participant'], pNode))
-
-            if add_attr:
-                g.add((attrNode, RDF.type, SP['Attribution']))
-                g.add((lNode, SP['specimenCollected'], attrNode))
-
+            
             self.addStatement(lNode)
 
     def addAllergyExclusions(self, exclusions):
@@ -392,13 +320,8 @@ class PatientGraph(object):
         for e in exclusions:
             aExcept = URIRef(e.uri('allergy_exclusions'))
             g.add((aExcept, RDF.type, SP['AllergyExclusion']))
-            g.add((aExcept, SP['allergyExclusionName'],
-                   self.codedValue(
-                        SPCODE["AllergyExclusion"],
-                        SNOMED_URI%e.name_identifier,
-                        e.name_title,
-                        SNOMED_URI%'',
-                        e.name_identifier)))
+            exclusion_name = self._getCodedValueFromField(e, 'name', [SPCODE["AllergyExclusion"]])
+            g.add((aExcept, SP['allergyExclusionName'], self.newCodedValue(exclusion_name)))
             self.addStatement(aExcept)
 
     def addAllergyList(self, allergies):
@@ -408,55 +331,56 @@ class PatientGraph(object):
         for a in allergies:            
             aNode = URIRef(a.uri('allergies'))
             g.add((aNode, RDF.type, SP['Allergy']))
-            g.add((aNode, SP['severity'],
-                   self.codedValue(
-                        SPCODE["AllergySeverity"],
-                        SNOMED_URI%a.severity_identifier, 
-                        a.severity_title,
-                        SNOMED_URI%'',
-                        a.severity_identifier)))
-            g.add((aNode, SP['allergicReaction'],
-            self.codedValue(
-                       SPCODE["SNOMED"],
-                       SNOMED_URI%a.allergic_reaction_identifier,
-                       a.allergic_reaction_title,
-                       SNOMED_URI%'',
-                       a.allergic_reaction_identifier)))
-            g.add((aNode, SP['category'],
-                   self.codedValue(
-                        SPCODE["AllergyCategory"],
-                        SNOMED_URI%a.category_identifier,
-                        a.category_title, 
-                        SNOMED_URI%'',
-                        a.category_identifier)))
+            
+            severity = self._getCodedValueFromField(a, 'severity', [SPCODE["AllergySeverity"]])
+            g.add((aNode, SP['severity'], self.newCodedValue(severity)))
+            
+            reaction = self._getCodedValueFromField(a, 'allergic_reaction', [SPCODE["SNOMED"]])
+            g.add((aNode, SP['allergicReaction'], self.newCodedValue(reaction)))
+            
+            category = self._getCodedValueFromField(a, 'category', [SPCODE["AllergyCategory"]])
+            g.add((aNode, SP['category'], self.newCodedValue(category)))
 
-            if a.drug_allergen_identifier and a.drug_allergen_title:
-                g.add((aNode, SP['drugAllergen'],
-                       self.codedValue(
-                            SPCODE["RxNorm_Ingredient"],
-                            RXN_URI%a.drug_allergen_identifier,
-                            a.drug_allergen_title,
-                            RXN_URI%'',
-                            a.drug_allergen_identifier)))
+            if a.drug_allergen_code_identifier and a.drug_allergen_code_title:
+                drug_allergen = self._getCodedValueFromField(a, 'drug_allergen', [SPCODE["RxNorm_Ingredient"]])
+                g.add((aNode, SP['drugAllergen'], self.newCodedValue(drug_allergen)))
 
-            elif a.drug_class_allergen_identifier and a.drug_class_allergen_title:
-                g.add((aNode, SP['drugClassAllergen'],
-                       self.codedValue(
-                            SPCODE["NDFRT"],
-                            NUI_URI%a.drug_class_allergen_identifier,
-                            a.drug_class_allergen_title,
-                            NUI_URI%'',
-                            a.drug_class_allergen_identifier)))
+            elif a.drug_class_allergen_code_identifier and a.drug_class_allergen_code_title:
+                drug_class_allergen = self._getCodedValueFromField(a, 'drug_class_allergen', [SPCODE["NDFRT"]])
+                g.add((aNode, SP['drugClassAllergen'], self.newCodedValue(drug_class_allergen)))
 
-            elif a.food_allergen_identifier and a.food_allergen_title:
-                g.add((aNode, SP['foodAllergen'],
-                       self.codedValue(
-                            SPCODE["UNII"],
-                            UNII_URI%a.food_allergen_identifier,
-                            a.food_allergen_title,
-                            UNII_URI%'',
-                            a.food_allergen_identifier)))
+            elif a.other_allergen_code_identifier and a.other_allergen_code_title:
+                other_allergen = self._getCodedValueFromField(a, 'other_allergen', [SPCODE["UNII"]])
+                g.add((aNode, SP['otherAllergen'], self.newCodedValue(other_allergen)))
             self.addStatement(aNode)
+
+    def addProcedureList(self, procedures):
+        """Add procedures to a patient's graph"""
+        g = self.g
+
+        for procedure in procedures:
+            pnode = URIRef(procedure.uri())
+            g.add((pnode, RDF.type, SP['Procedure']))
+            
+            # required
+            procedure_name = self._getCodedValueFromField(procedure, 'name', [SPCODE['SNOMED']])
+            g.add((pnode, SP['procedureName'], self.newCodedValue(procedure_name)))
+            
+            # optional
+            if procedure.date:
+                g.add((pnode, SP['date'], Literal(procedure.date)))      
+            if procedure.notes:
+                g.add((pnode, SP['notes'], Literal(procedure.notes)))
+                
+            procedure_status = self._getCodedValueFromField(procedure, 'status', [SPCODE['SNOMED']])
+            if procedure_status:    
+                g.add((pnode, SP['procedureStatus'], self.newCodedValue(procedure_status)))
+            
+            procedure_provider = self.provider(procedure, 'provider')
+            if procedure_provider:
+                g.add((pnode, SP['provider'], procedure_provider))
+            
+            self.addStatement(pnode)
 
     #####################################################
     ### Helper Methods for reusable low-level objects ###
@@ -480,12 +404,8 @@ class PatientGraph(object):
         if provNode:
             g.add((eNode, SP['provider'], provNode))
                 
-        g.add((eNode, SP['encounterType'],
-               self.codedValue(SPCODE["EncounterType"],
-                               ENC_TYPE_URI%encounter.encounterType_identifier,
-                               encounter.encounterType_title,
-                               ENC_TYPE_URI%"",
-                               encounter.encounterType_identifier)))
+        encounter_type = self._getCodedValueFromField(encounter, 'type', SPCODE["EncounterType"])
+        g.add((eNode, SP['encounterType'], self.newCodedValue(encounter_type)))
         return eNode
 
     def medication(self, m):
@@ -495,13 +415,9 @@ class PatientGraph(object):
 
         mNode = URIRef(m.uri())
         g.add((mNode, RDF.type, SP['Medication']))
-        g.add((mNode, SP['drugName'], 
-               self.codedValue(
-                    SPCODE["RxNorm_Semantic"], 
-                    RXN_URI%m.drugName_identifier,
-                    m.drugName_title,
-                    RXN_URI%"",
-                    m.drugName_identifier)))
+        
+        drug_name = self._getCodedValueFromField(m, 'name', SPCODE["RxNorm_Semantic"])
+        g.add((mNode, SP['drugName'], self.newCodedValue(drug_name)))
         g.add((mNode, SP['startDate'], Literal(m.startDate)))
         g.add((mNode, SP['instructions'], Literal(m.instructions or ''))) 
         if m.quantity_value and m.quantity_unit:
@@ -511,12 +427,64 @@ class PatientGraph(object):
         if m.endDate:
             g.add((mNode, SP['endDate'], Literal(m.endDate)))
         if m.provenance_identifier and m.provenance_title and m.provenance_system:
+            provenance = self._getCodeFromField(m, 'provenance', [SPCODE['MedicationProvenance']])
             g.add((mNode, SP['provenance'],
-                   self.code(m.provenance_title,
-                             MED_PROV_URI%"",
-                             m.provenance_identifier,
-                             [SPCODE['MedicationProvenance']])))
+                   self.new_code(provenance)))
         return mNode
+
+    def newCodedValue(self, coded_value):
+        """ Adds a CodedValue to the graph and returns a node"""
+        
+        if not coded_value:
+            return None
+        
+        title = coded_value.get('title', '')
+        code = coded_value.get('code', None)
+        provenance = coded_value.get('provenance', None)
+        
+        cv_node = BNode()
+        
+        self.g.add((cv_node, RDF.type, SP['CodedValue']))
+        self.g.add((cv_node, DCTERMS['title'], Literal(title)))
+
+        # sp:code
+        code_node = self.new_code(code)
+        if code_node:
+            self.g.add((cv_node, SP['code'], code_node))
+            
+        # sp:provenance
+        provenance_node = self.codeProvenance(provenance)
+        if provenance_node:
+            self.g.add((cv_node, SP['provenance'], provenance_node))
+        
+        return cv_node
+        
+
+    def new_code(self, code, blank=False):
+        """ Adds a Code to the graph and returns node """
+        
+        if not code or (code.get("identifier") is None and code.get("title") is None and code.get("system") is None):
+            # don't add Codes that are empty
+            return None
+        
+        classes = code.get("classes", [])
+        title = code.get("title", "")
+        system = code.get("system", "")
+        identifier = code.get("identifier", "")
+        
+        if blank:
+            node = BNode()
+        else:
+            node = URIRef(system + identifier)
+        self.g.add((node, RDF.type, SP['Code']))
+        self.g.add((node, DCTERMS['title'], Literal(title)))
+        self.g.add((node, SP['system'], Literal(system)))
+        self.g.add((node, DCTERMS['identifier'], Literal(identifier)))
+
+        # Add additional types: the general "Code" and specific, e.g. "BloodPressureCode"        
+        for c in classes:
+            self.g.add((node, RDF.type, c))
+        return node
 
     def code(self, title, system, identifier, blank=False, classes=[]):
         """ Adds a Code to the graph and returns node """
@@ -533,6 +501,22 @@ class PatientGraph(object):
         for c in classes:
             self.g.add((node, RDF.type, c))
         return node
+
+    def codeProvenance(self, provenance):
+        """ Adds a CodeProvenance to the graph and returns node """
+        
+        title = provenance.get("title", None)
+        source_code = provenance.get("sourceCode", None)
+        translation_fidelity = provenance.get("translationFidelity", None)
+        
+        node = BNode()
+        self.g.add((node, DCTERMS['title'], Literal(title)))
+        self.g.add((node, DCTERMS['sourceCode'], Literal(source_code)))
+        
+        translation_fidelity_node = self.new_code(translation_fidelity)
+        if translation_fidelity_node:
+            self.g.add((node, SPCODE['TranslationFidelity'], translation_fidelity_node))
+        
 
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""
@@ -826,3 +810,51 @@ class PatientGraph(object):
 
     def addStatement(self, s):
         self.g.add((s, SP['belongsTo'], URIRef(INDIVO_RECORD_URI%self.record.id)))
+
+
+    def _getCodedValueFromField(self, model, field_prefix, classes=None):
+        """ Build up a dictionary representing a sp:CodedValue """
+        
+        coded_value = {}
+        
+        try:
+            coded_value["title"] = getattr(model, '%s_title' % (field_prefix))
+            coded_value["code"] = self._getCodeFromField(model, "%s_code" % (field_prefix), classes)
+            coded_value["provenance"] = self._getProvenanceFromField(model, "%s_provenance" % (field_prefix))
+        except AttributeError:
+            raise #TODO
+        
+        return coded_value
+
+    def _getCodeFromField(self, model, field_prefix, classes=None):
+        """ Build up a dictionary representing a sp:code """
+        
+        classes = classes or []
+        code = {}
+        
+        try:
+            code["classes"] = classes
+            code["identifier"] = getattr(model, '%s_identifier' % (field_prefix))
+            code["title"] = getattr(model, '%s_title' % (field_prefix))
+            code["system"] = getattr(model, '%s_system' % (field_prefix))
+        except AttributeError:
+            raise #TODO
+        
+        return code
+            
+    def _getProvenanceFromField(self, model, field_prefix):
+        """ Build up a dictionary representing a sp:provenance """
+        
+        provenance = {}
+        
+        try:
+            provenance["title"] = getattr(model, '%s_title' % (field_prefix))
+            provenance["sourceCode"] = getattr(model, '%s_source_code' % (field_prefix))
+            translation_fidelity = self._getCodeFromField(model, "%s_translation_fidelity" % (field_prefix), classes=[SPCODE['TranslationFidelity']])
+            provenance["translationFidelity"] = translation_fidelity
+        except AttributeError:
+            raise #TODO
+        
+        return provenance
+
+    

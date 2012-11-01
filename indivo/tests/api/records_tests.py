@@ -751,7 +751,7 @@ class RecordInternalTests(InternalTests):
 
     def test_get_record_procedures(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/procedures/'%(record_id)
+        url = '/records/%s/reports/procedure/'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # ADD REPORTS

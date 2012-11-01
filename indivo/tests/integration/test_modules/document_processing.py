@@ -56,7 +56,7 @@ def test_document_processing(IndivoClient):
 
     reports = [ 
                 chrome_client.read_equipment(),
-                chrome_client.read_procedures(),
+#                chrome_client.read_procedures(),
                 #chrome_client.read_measurements(lab_code='HBA1C', parameters={'limit':1})
                 chrome_client.read_measurements(lab_code='HBA1C'),
                 chrome_client.read_ccr_experimental(),

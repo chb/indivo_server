@@ -158,8 +158,8 @@ def request_token(request):
         # we already have the oauth_request in context, so we don't get it again
         from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
         request_token = OAUTH_SERVER.generate_request_token(request.oauth_request, 
-                                                            record_id = request.POST.get('indivo_record_id', None),
-                                                            carenet_id = request.POST.get('indivo_carenet_id', None))
+                                                            record_id = request.REQUEST.get('indivo_record_id', None),
+                                                            carenet_id = request.REQUEST.get('indivo_carenet_id', None))
         return HttpResponse(request_token.to_string(), mimetype='text/plain')
     except oauth.OAuthError, e:
         # an exception can be raised if there is a bad signature (or no signature) in the request

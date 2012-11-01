@@ -84,9 +84,15 @@ class SDMLUnitTests(InternalTests):
             'date_filled': models.DateField,
             'supply_days': models.FloatField,
             'filled_at_name': models.CharField,
-            'code_identifier': models.CharField, # CodedValues should be expanded
+            'code_code_identifier': models.CharField, # CodedValues should be expanded
+            'code_code_title': models.CharField,
+            'code_code_system': models.CharField,
             'code_title': models.CharField,
-            'code_system': models.CharField,
+            'code_provenance_source_code': models.CharField,
+            'code_provenance_title': models.CharField,
+            'code_provenance_translation_fidelity_identifier': models.CharField,
+            'code_provenance_translation_fidelity_system': models.CharField,
+            'code_provenance_translation_fidelity_title': models.CharField,
             'quantity_value': models.CharField, # ValueAndUnit fields should be expanded
             'quantity_unit': models.CharField,
             'pharmacy_ncpdpid': models.CharField, # Pharmacy fields should be expanded

@@ -7,7 +7,7 @@
         "endDate": "Date",
 	    "facility": "Organization",
 	    "provider": "Provider",
-        "encounterType": "CodedValue"
+        "type": "CodedValue"
         },
     "bp": "BloodPressure",
     "bmi": "VitalSign",

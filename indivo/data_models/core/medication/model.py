@@ -3,7 +3,7 @@ from django.db import models
 from indivo.fields import CodedValueField, ValueAndUnitField, PharmacyField, ProviderField
 
 class Medication(Fact):
-    drugName = CodedValueField()
+    name = CodedValueField()
     endDate = models.DateField(null=True)
     frequency = ValueAndUnitField()
     instructions = models.CharField(max_length=255, null=True)
