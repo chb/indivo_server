@@ -25,6 +25,7 @@ SMART_URLS_TO_DATAMODELS = {
     'vital_sign_sets': 'VitalSigns',
     'procedures': 'Procedure',
     'social_history': 'SocialHistory',
+    'clinical_notes': 'ClinicalNote',
 }
 
 def get_default_query_args():
@@ -41,7 +42,7 @@ def get_default_query_args():
 
 def smart_generic(request, record, model_name):
     """ SMART-compatible alias for the generic list view: returns data_models serialized as SMART RDF."""
-
+    
     default_query_args = get_default_query_args()
     data_model_name = SMART_URLS_TO_DATAMODELS.get(model_name, None)
     if not data_model_name:

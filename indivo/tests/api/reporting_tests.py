@@ -31,18 +31,18 @@ class ReportingInternalTests(InternalTests):
 
     def test_get_simple_clinical_notes(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/simple-clinical-notes/?group_by=specialty&aggregate_by=count*provider_name&date_range=date_of_visit*2005-03-10T00:00:00Z*'%(record_id)
+        url = '/records/%s/reports/ClinicalNote/'%(record_id)
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)
 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-        url2 = '/records/%s/reports/minimal/simple-clinical-notes/?provider_name=Kenneth%%20Mandl&date_group=date_of_visit*month&aggregate_by=count*provider_name&order_by=date_of_visit'%(record_id)
+        url2 = '/records/%s/reports/ClinicalNote/?provider_name_family=Mandel'%(record_id)
         response = self.client.get(url2)
         self.assertEquals(response.status_code, 200)
 
-        url3 = '/records/%s/reports/minimal/simple-clinical-notes/?order_by=-created_at'%(record_id)
+        url3 = '/records/%s/reports/ClinicalNote/?order_by=-created_at'%(record_id)
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 
@@ -262,9 +262,9 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
-        allergy_results = [l for l in g.subjects(None,SMART["Allergy"])]
+        allergy_results = [a for a in g.subjects(None,SMART["Allergy"])]
         self.assertEqual(len(allergy_results), 1)
-        allergy_exclusion_results = [l for l in g.subjects(None,SMART["AllergyExclusion"])]
+        allergy_exclusion_results = [a for a in g.subjects(None,SMART["AllergyExclusion"])]
         self.assertEqual(len(allergy_exclusion_results), 0)
         
         # retrieve a single allergy
@@ -278,7 +278,7 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
-        procedures = [l for l in g.subjects(None,SMART["Procedure"])]
+        procedures = [p for p in g.subjects(None,SMART["Procedure"])]
         self.assertEqual(len(procedures), 2)
 
         # retrieve a single procedure
@@ -292,12 +292,26 @@ class ReportingInternalTests(InternalTests):
         self.assertEquals(response.status_code, 200)
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
-        histories = [l for l in g.subjects(None,SMART["SocialHistory"])]
+        histories = [h for h in g.subjects(None,SMART["SocialHistory"])]
         self.assertEqual(len(histories), 1)
 
         # retrieve a single procedure
         history_id = histories[0].split('/')[-1]
         
         response = self.client.get('/records/%s/social_history/%s' % (self.record.id, history_id))
+        self.assertEquals(response.status_code, 200)
+        
+    def test_get_smart_clinical_note(self):
+        response = self.client.get('/records/%s/clinical_notes/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        notes = [n for n in g.subjects(None,SMART["ClinicalNote"])]
+        self.assertEqual(len(notes), 1)
+
+        # retrieve a single procedure
+        note_id = notes[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/clinical_notes/%s' % (self.record.id, note_id))
         self.assertEquals(response.status_code, 200)
         

@@ -10,7 +10,6 @@ The views that implement reporting calls.
 from equipment              import *
 from measurement            import *
 from procedure              import *
-from simple_clinical_notes  import *
 from ccr                    import *
 from generic                import *
 from smart                  import *

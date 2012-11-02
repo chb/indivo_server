@@ -388,15 +388,45 @@ class PatientGraph(object):
         g = self.g
 
         for history in histories:
-            pnode = URIRef(history.uri())
-            g.add((pnode, RDF.type, SP['SocialHistory']))
+            hnode = URIRef(history.uri())
+            g.add((hnode, RDF.type, SP['SocialHistory']))
             
             # optional
             smoking_status = self._getCodedValueFromField(history, 'smoking_status', [SPCODE['SmokingStatus']])
             if smoking_status:    
-                g.add((pnode, SP['smokingStatus'], self.newCodedValue(smoking_status)))
+                g.add((hnode, SP['smokingStatus'], self.newCodedValue(smoking_status)))
             
-            self.addStatement(pnode)
+            self.addStatement(hnode)
+            
+    def addClinicalNoteList(self, notes):
+        """Add clinical notes to a patient's graph"""
+        
+        g = self.g
+
+        for note in notes:
+            nnode = URIRef(note.uri())
+            g.add((nnode, RDF.type, SP['ClinicalNote']))
+            
+            # required
+            document_with_format = BNode();
+            g.add((document_with_format, RDF.type, SP['DocumentWithFormat']))
+            g.add((document_with_format, DCTERMS['format'], Literal(note.format)))
+            if note.value:
+                g.add((document_with_format, DCTERMS['value'], Literal(note.value)))
+
+            g.add((nnode, DCTERMS['hasFormat'], document_with_format))
+
+            # optional
+            if note.date:
+                g.add((nnode, DCTERMS['date'], Literal(note.date)))
+            if note.title:
+                g.add((nnode, DCTERMS['title'], Literal(note.title))) 
+                
+            note_provider = self.provider(note, 'provider')
+            if note_provider:
+                g.add((nnode, SP['provider'], note_provider))
+            
+            self.addStatement(nnode)
 
     #####################################################
     ### Helper Methods for reusable low-level objects ###

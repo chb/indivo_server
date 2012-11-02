@@ -6,7 +6,7 @@ from measurement import TEST_MEASUREMENTS
 from medication import TEST_MEDICATIONS
 from problem import TEST_PROBLEMS
 from procedure import TEST_PROCEDURES
-from simple_clinical_note import TEST_CLINICAL_NOTES
+from clinical_note import TEST_CLINICAL_NOTES
 from vital import TEST_VITALS
 from social_history import TEST_SOCIAL_HISTORIES
 

@@ -758,7 +758,7 @@ class RecordInternalTests(InternalTests):
 
     def test_get_record_simple_clinical_notes(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/simple-clinical-notes/'%(record_id)
+        url = '/records/%s/reports/ClinicalNote/'%(record_id)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # ADD REPORTS

@@ -202,7 +202,7 @@ class CarenetInternalTests(InternalTests):
 
     def test_get_carenet_simple_clinical_notes(self):
         c_id = self.shared_carenet.id
-        url = '/carenets/%s/reports/minimal/simple-clinical-notes/'%(c_id)
+        url = '/carenets/%s/reports/ClinicalNote/'%(c_id)
 
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)

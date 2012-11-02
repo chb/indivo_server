@@ -22,7 +22,7 @@ CORE_MODELS = (
     'Medication',
     'Problem',
     'Procedure',
-    'SimpleClinicalNote',
+    'ClinicalNote',
     'VitalSigns',
     )
 
@@ -35,7 +35,7 @@ CORE_DIRS = (
     'medication',
     'problem',
     'procedure',
-    'simple_clinical_note',
+    'clinical_note',
     'vitals',
     )
 
