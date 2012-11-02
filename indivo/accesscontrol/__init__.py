@@ -255,7 +255,6 @@ def load_access_rules():
         or pha_record_access(principal, carenet.record) \
         or full_control(principal, carenet.record)
   views = [carenet_measurement_list,
-           carenet_procedure_list,
            carenet_equipment_list,
            carenet_generic_list,
            carenet_document_list,
@@ -275,7 +274,6 @@ def load_access_rules():
     return pha_record_access(principal, record) \
         or full_control(principal, record)
   views = [measurement_list,
-           procedure_list,
            smart_allergies,
            smart_allergies_instance,
            smart_generic,
