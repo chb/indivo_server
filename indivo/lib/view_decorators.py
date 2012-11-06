@@ -68,7 +68,9 @@ def marsloader(query_api_support = False):
         'group_by': parse_string,
         'aggregate_by': parse_aggregate_by,  
         'date_range': parse_date_range,   
-        'date_group': parse_date_group,            
+        'date_group': parse_date_group,
+        'date_from': parse_string,  # SMART v0.5, transformed to date_range in smart views
+        'date_to': parse_string,    # SMART v0.5, transformed to date_range in smart views
       }
       
       ignore_map = {

@@ -8,10 +8,11 @@
 
 from django.http import HttpResponseBadRequest, HttpResponse, Http404, HttpResponseServerError
 from django.db.models.loading import get_model
-from indivo.lib.view_decorators import DEFAULT_ORDERBY
+from indivo.lib.view_decorators import marsloader
 from indivo.lib.query import FactQuery
 from indivo.lib.rdf import PatientGraph
-from indivo.models import StatusName, Allergy, AllergyExclusion
+from indivo.models import Allergy, AllergyExclusion
+
 from .generic import _generic_list
 
 SMART_URLS_TO_DATAMODELS = {
@@ -28,37 +29,61 @@ SMART_URLS_TO_DATAMODELS = {
     'clinical_notes': 'ClinicalNote',
 }
 
-def get_default_query_args():
-    return {
-        'offset': 0,
-        'order_by': '-%s'%DEFAULT_ORDERBY,
-        'status': StatusName.objects.get(name='active'),
-        'group_by': None,
-        'aggregate_by': None,
-        'date_range': None,
-        'date_group': None,
-        'filters': {},
-        }
+# used to transform SMART query filter fields to internal data model fields
+SMART_QUERY_FILTERS = {
+    'lab_results': {'loinc':'name_code_identifier'},
+    'vital_sign_sets': {'encounter_type':'encounter_type_code_title'},
+}
 
-def smart_generic(request, record, model_name):
+# defines what field SMART date filters apply to
+SMART_DATE_FILTERS = {
+    'lab_results':'date',
+    'vital_sign_sets':'date',
+}
+
+@marsloader(query_api_support=True)
+def smart_generic(request, query_options, record, model_name):
     """ SMART-compatible alias for the generic list view: returns data_models serialized as SMART RDF."""
     
-    default_query_args = get_default_query_args()
     data_model_name = SMART_URLS_TO_DATAMODELS.get(model_name, None)
     if not data_model_name:
         raise Http404
-    return _generic_list(request, default_query_args, data_model_name, response_format="application/rdf+xml", record=record)
+    
+    # replace filter fields based off mappings from SMART fields to data model fields
+    # e.g. loinc => lab_name_code_identifier for LabResult
+    field_mappings = SMART_QUERY_FILTERS.get(model_name)
+    query_filters = query_options.get('filters') 
+    if query_filters and field_mappings:
+        for filter_key in query_filters:
+            if field_mappings.has_key(filter_key):
+                # found a filter we need to rename
+                query_filters.update({field_mappings.get(filter_key):query_filters.pop(filter_key)})
+                
+    # transform SMART date query filters to Indivo filters
+    if SMART_DATE_FILTERS.has_key(model_name):
+        date_from = query_options.pop('date_from', None) #TODO iso8601 these, or is that handled in the query?
+        date_to = query_options.pop('date_to', None)
+        if date_from or date_to:
+            date_range = {'field': SMART_DATE_FILTERS.get(model_name),
+                          'start_date': date_from,
+                          'end_date': date_to,
+                          }
+            # these options overwrite any date_range value passed to the query, since it is a SMART call
+            query_options.update({'date_range':date_range})
+            
+    
+    return _generic_list(request, query_options, data_model_name, response_format="application/rdf+xml", record=record)
 
-def smart_allergies(request, record):
+@marsloader(query_api_support=True)
+def smart_allergies(request, query_options, record):
     """ SMART allergy list, serialized as RDF/XML.
     
     A bit more complicated than the generic list view, since we have to serialize AllergyExclusions as well.
     
     """
 
-    default_query_args = get_default_query_args()  
-    allergies_query = FactQuery(Allergy, Allergy.filter_fields, default_query_args, record, None)
-    exclusions_query = FactQuery(AllergyExclusion, AllergyExclusion.filter_fields, default_query_args, record, None)
+    allergies_query = FactQuery(Allergy, Allergy.filter_fields, query_options, record, None)
+    exclusions_query = FactQuery(AllergyExclusion, AllergyExclusion.filter_fields, query_options, record, None)
     
     try:
         allergies_query.execute()

@@ -256,6 +256,54 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get('/records/%s/lab_results/%s' % (self.record.id, lab_id))
         self.assertEquals(response.status_code, 200)
         
+        # grab labs with specific LOINC code
+        response = self.client.get('/records/%s/lab_results/?loinc=2951-2'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 1)
+        
+        # grab labs with bad LOINC code
+        response = self.client.get('/records/%s/lab_results/?loinc=2951-2fake'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 0)
+        
+        # grab labs with date_from
+        response = self.client.get('/records/%s/lab_results/?date_from=2009-05-16'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 1)
+        
+        # grab labs with date_from
+        response = self.client.get('/records/%s/lab_results/?date_from=2009-05-17'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 0)
+        
+        # grab labs with date_to
+        response = self.client.get('/records/%s/lab_results/?date_to=2009-05-15'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 0)
+        
+        # grab labs with date_to
+        response = self.client.get('/records/%s/lab_results/?date_to=2009-05-16'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
+        self.assertEqual(len(lab_results), 1)
+        
     def test_get_smart_allergies(self):
         # allergies are a special case since they can be an Allergy or AllergyExclusion 
         response = self.client.get('/records/%s/allergies/'%(self.record.id))

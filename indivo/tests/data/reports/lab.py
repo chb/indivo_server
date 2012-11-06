@@ -4,7 +4,7 @@ _TEST_LABS = [
 """
 <Models xmlns="http://indivo.org/vocab/xml/documents#">
   <Model name="LabResult">
-    <Field name="date">2009-05-16T12:00:00Z</Field>
+    <Field name="date">2009-05-16</Field>
     
     <Field name="abnormal_interpretation_code_title">Normal</Field>
     <Field name="abnormal_interpretation_code_system">http://smartplatforms.org/terms/codes/LabResultInterpretation#</Field>
