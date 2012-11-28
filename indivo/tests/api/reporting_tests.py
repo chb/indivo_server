@@ -242,6 +242,23 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get('/records/%s/reports/DoesNotExist/'%(self.record.id), {'response_format':'application/json'})
         self.assertEquals(response.status_code, 404)
 
+    def test_get_smart_problems(self):
+        response = self.client.get('/records/%s/problems/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 1)
+        
+        # retrieve a single problem
+        problem_id = problems[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/problems/%s' % (self.record.id, problem_id))
+        self.assertEquals(response.status_code, 200)
+        g.parse(data=response.content, format="application/rdf+xml")
+        encounters = [e for e in g.subjects(None,SMART["Encounter"])]
+        self.assertEqual(len(encounters), 2)
+
     def test_get_smart_labs(self):
         response = self.client.get('/records/%s/lab_results/'%(self.record.id))
         self.assertEquals(response.status_code, 200)

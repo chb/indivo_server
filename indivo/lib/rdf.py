@@ -185,9 +185,13 @@ class PatientGraph(object):
             g.add((pnode, SP['problemName'], self.newCodedValue(problem_name)))
             self.addStatement(pnode)
             
+            for encounter in prob.encounters.all():
+                eNode = self.encounter(encounter)
+                self.addStatement(eNode)
+                g.add((pnode, SP['encounter'], eNode))
+            
     def addEncounterList(self, encounters):
         """Add encounters to a patient's graph"""
-        g = self.g
 
         for encounter in encounters:
             eNode = self.encounter(encounter)
@@ -450,7 +454,7 @@ class PatientGraph(object):
         if provNode:
             g.add((eNode, SP['provider'], provNode))
                 
-        encounter_type = self._getCodedValueFromField(encounter, 'type', SPCODE["EncounterType"])
+        encounter_type = self._getCodedValueFromField(encounter, 'type', [SPCODE["EncounterType"]])
         g.add((eNode, SP['encounterType'], self.newCodedValue(encounter_type)))
         return eNode
 
@@ -462,7 +466,7 @@ class PatientGraph(object):
         mNode = URIRef(m.uri())
         g.add((mNode, RDF.type, SP['Medication']))
         
-        drug_name = self._getCodedValueFromField(m, 'name', SPCODE["RxNorm_Semantic"])
+        drug_name = self._getCodedValueFromField(m, 'name', [SPCODE["RxNorm_Semantic"]])
         g.add((mNode, SP['drugName'], self.newCodedValue(drug_name)))
         g.add((mNode, SP['startDate'], Literal(m.startDate)))
         g.add((mNode, SP['instructions'], Literal(m.instructions or ''))) 
@@ -484,14 +488,15 @@ class PatientGraph(object):
         if not coded_value:
             return None
         
-        title = coded_value.get('title', '')
+        title = coded_value.get('title', None)
         code = coded_value.get('code', None)
         provenance = coded_value.get('provenance', None)
         
         cv_node = BNode()
         
         self.g.add((cv_node, RDF.type, SP['CodedValue']))
-        self.g.add((cv_node, DCTERMS['title'], Literal(title)))
+        if title:
+            self.g.add((cv_node, DCTERMS['title'], Literal(title)))
 
         # sp:code
         code_node = self.new_code(code)
@@ -556,8 +561,9 @@ class PatientGraph(object):
         translation_fidelity = provenance.get("translationFidelity", None)
         
         node = BNode()
-        self.g.add((node, DCTERMS['title'], Literal(title)))
-        self.g.add((node, DCTERMS['sourceCode'], Literal(source_code)))
+        if title or source_code:
+            self.g.add((node, DCTERMS['title'], Literal(title)))
+            self.g.add((node, DCTERMS['sourceCode'], Literal(source_code)))
         
         translation_fidelity_node = self.new_code(translation_fidelity)
         if translation_fidelity_node:

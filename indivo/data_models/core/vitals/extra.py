@@ -5,7 +5,6 @@ from indivo.lib.rdf import PatientGraph
 
 SNOMED_URI="http://purl.bioontology.org/ontology/SNOMEDCT/"
 BP_METHOD_URI="http://smartplatforms.org/terms/codes/BloodPressureMethod#"
-ENC_TYPE_URI="http://smartplatforms.org/terms/codes/EncounterType#"
 LOINC_URI="http://purl.bioontology.org/ontology/LNC/"
 
 BP_POSITION_IDS = [
@@ -53,34 +52,6 @@ UNITS = {
     'weight': ['kg'],
     'head_circ': ['cm'],
 }
-
-ENC_TYPES = [
-    'home',
-    'emergency',
-    'ambulatory',
-    'inpatient',
-    'field',
-    'virtual',
-]
-
-class EncounterSerializers(DataModelSerializers):
-    def to_rdf(queryset, result_count, record=None, carenet=None):
-        if not record:
-            record = carenet.record
-        
-        graph = PatientGraph(record)
-        graph.addEncounterList(queryset.iterator())
-        return graph.toRDF()
-
-class EncounterOptions(DataModelOptions):
-    model_class_name = 'Encounter'
-    serializers = EncounterSerializers
-    field_validators = {
-        'type_code_system': [ExactValueValidator(ENC_TYPE_URI)],
-        'type_code_identifier': [ValueInSetValidator(ENC_TYPES)],
-        'type_code_title': [NonNullValidator()],
-        'startDate': [NonNullValidator()],
-        }
 
 
 class VitalsSerializers(DataModelSerializers):
