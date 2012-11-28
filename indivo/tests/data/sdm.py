@@ -58,6 +58,47 @@ TEST_SDMJ_DOCS = ['''
     ]
 }
 ''',
+'''
+{
+    "__modelname__": "TestModelA",
+    "date": "2009-05-16T12:00:00Z",
+    "text": "I am a TestModelA",
+    "myBs" : [
+        {
+            "__modelname__": "TestModelB",
+            "date": "2011-05-16",
+            "text": "I am TestModelB 1"
+        },
+        {
+            "__modelname__": "TestModelB",
+            "date": "2012-05-16T14:23:00Z",
+            "text": "I am TestModelB 2"
+        },
+        {
+            "__modelname__": "TestModelB",
+            "date": "2012-05-16T14:23:00Z",
+            "text": "I am TestModelB 3"
+        }
+    ],
+    "myC": {
+        "__modelname__": "TestModelC",
+        "date": "2012-05-16",
+        "text": "I am TestModelC 1"
+    },
+    "myDs": [
+        {
+            "__modelname__": "TestModelD",
+            "date": "2011-05-16",
+            "text": "I am TestModelD 1"
+        },
+        {
+            "__modelname__": "TestModelD",
+            "date": "2012-05-12",
+            "text": "I am TestModelD 2"
+        }
+    ]
+}
+''',
 ]
 
 TEST_SDMX_DOCS = ['''
@@ -89,6 +130,48 @@ TEST_SDMX_DOCS = ['''
           <Field name="filled_at_name">CVS</Field>
         </Model>
       </Models>
+    </Field>
+  </Model>
+</Models>
+''',
+'''
+<Models>
+  <Model name="TestModelA">
+    <Field name="date">2009-05-16T12:00:00Z</Field>
+    <Field name="text">I am a TestModelA</Field>
+    <Field name="myBs">
+      <Models>
+          <Model name="TestModelB">
+            <Field name="date">2011-05-16</Field>
+            <Field name="text">I am TestModelB 1</Field>
+          </Model>
+          <Model name="TestModelB">
+            <Field name="date">2012-05-16T14:23:00Z</Field>
+            <Field name="text">I am TestModelB 2</Field>
+          </Model>
+          <Model name="TestModelB">
+            <Field name="date">2012-05-16T14:23:00Z</Field>
+            <Field name="text">I am TestModelB 3</Field>
+          </Model>
+      </Models>
+    </Field>
+    <Field name="myC">
+        <Model name="TestModelC">
+            <Field name="date">2012-05-16</Field>
+            <Field name="text">I am TestModelC 1</Field>
+        </Model>
+    </Field>
+    <Field name="myDs">
+        <Models>
+            <Model name="TestModelD">
+                <Field name="date">2012-05-16</Field>
+                <Field name="text">I am TestModelD 1</Field>
+            </Model>
+            <Model name="TestModelD">
+                <Field name="date">2012-05-12</Field>
+                <Field name="text">I am TestModelD 2</Field>
+            </Model>
+        </Models>
     </Field>
   </Model>
 </Models>

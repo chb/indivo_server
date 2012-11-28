@@ -1,6 +1,7 @@
 import django.test
 from django.conf import settings
 from django.test.testcases import disable_transaction_methods, restore_transaction_methods
+from django.db import connection
 from django.db.models.loading import cache
 
 from south.db import db
@@ -401,6 +402,15 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
         fields = [(f.name, f) for f in django_class._meta.local_fields]
         table_name = django_class._meta.db_table
         db.create_table(table_name, fields)
+        
+        # create any ManyToMany tables
+        for m2m_field in django_class._meta.many_to_many:
+            m2m_table_name = m2m_field.m2m_db_table()
+            if m2m_table_name not in connection.introspection.table_names():
+                # build list of fields in the m2m "through" table
+                m2m_fields = [(f.name, f) for f in getattr(django_class, m2m_field.name).through._meta.local_fields]
+                db.create_table(m2m_field.m2m_db_table(), m2m_fields)
+        
 
     def finish_db_creation(self):
         """ Exceute deferred SQL after creating several models. 
@@ -417,6 +427,14 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
         table_name = django_class._meta.db_table
         db.start_transaction()
         db.delete_table(table_name)
+        
+        # drop any ManyToMany tables
+        for m2m_field in django_class._meta.many_to_many:
+            m2m_table_name = m2m_field.m2m_db_table()
+            if m2m_table_name in connection.introspection.table_names():
+                # delete table if it exists
+                db.delete_table(m2m_table_name)
+        
         db.commit_transaction()
 
 def enable_transactions(func):

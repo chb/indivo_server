@@ -43,6 +43,19 @@ TEST_MODELS = (
     'TestMed',
     'TestPrescription',
     'TestFill',
+    'TestFill2',
+    'TestMedication2',
+    'TestPrescription2',
+    'TestModelA',
+    'TestModelB',
+    'TestModelC',
+    'TestModelD',
+    )
+
+TEST_MODELS_WITH_EXTRAS = (
+    'TestMed',
+    'TestPrescription',
+    'TestFill',
     )
 
 TEST_DIRS = (
@@ -72,7 +85,7 @@ class DataModelLoaderUnitTests(InternalTests):
         self.assertModuleContains(TEST_MODULE, TEST_MODELS)
 
         # make sure the serializers were loaded correctly
-        for model_name  in TEST_MODELS:
+        for model_name  in TEST_MODELS_WITH_EXTRAS:
             model_cls = getattr(TEST_MODULE, model_name, None)
             rdf_ser = getattr(model_cls, 'to_rdf', None)
             self.assertTrue(rdf_ser)

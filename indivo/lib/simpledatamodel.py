@@ -13,6 +13,7 @@ except ImportError:
 
 from django.db import models
 from django.db.models.fields import FieldDoesNotExist
+from django.db.models.fields.related import ForeignRelatedObjectsDescriptor, ReverseManyRelatedObjectsDescriptor
 from indivo.models import Fact
 from lxml import etree
 from indivo.lib import iso8601
@@ -265,13 +266,13 @@ class SDMJData(SDMJ):
             # Yield the model instance we just created
             yield model_instance
 
-    def _parse_one(self, instance_dict, rel_parent_obj=None, rel_fieldname=None, rel_to_parent=False):
+    def _parse_one(self, instance_dict, rel_parent_obj=None, rel_fieldname=None, rel_to_parent="OneToOne"):
         """ Build one Django model instance.
         
         rel_parent_obj, rel_fieldname, and rel_to_parent, if provided, are instructions to set up a 
         reference to the parent object. Rel_fieldname is the field on which to create the reference,
-        and rel_on_parent indicates which direction the reference should go (child to parent for a
-        manytomany relationship, parent to child for a onetoone relationship).
+        and rel_to_parent indicates which type of relationship is required ("OneToOne", "OneToMany", 
+        or "ManyToMany")
 
         Returns a tuple of (subdefs_to_parse, parsed_instance), where subdefs_to_parse is a list
         of subobjects that need parsing, and parsed_instance is an instance of the 
@@ -301,20 +302,28 @@ class SDMJData(SDMJ):
 
         for fieldname, raw_value in instance_dict.iteritems():
             if isinstance(raw_value, list):
-                # OneToMany Field: we save the subobjects for later parsing.
-                # We tell the subobject to add a reference to our instance on a field
-                # named after the lowercase of our modelname.
+                # Determine relationship type of sub-objects
+                relationField = getattr(model_class, fieldname)
+                if isinstance(relationField, ReverseManyRelatedObjectsDescriptor):
+                    relation = "ManyToMany"
+                    field = fieldname
+                elif isinstance(relationField, ForeignRelatedObjectsDescriptor):
+                    relation = "OneToMany"
+                    field = relationField.related.field.name
+                else:
+                    raise ValueError("") #TODO
+                
+                # Save list of sub-objects along with their field name and relation type
                 for subobject_dict in raw_value:                
-                    subobjs_found.append((subobject_dict, model_name.lower(), True))
+                    subobjs_found.append((subobject_dict, field, relation))
 
             elif isinstance(raw_value, dict):
                 # OnetoOne Field: we save the subobject for later parsing.
                 # We tell the subobject to add a reference from our instance to them
-                subobjs_found.append((raw_value, fieldname, False))
+                subobjs_found.append((raw_value, fieldname, "OneToOne"))
 
             else:
                 # Simple Field: we validate the datatype, then add the data to our model
-
                 # get the field definition on the class
                 try:
                     model_field = model_class._meta.get_field(fieldname)
@@ -356,25 +365,34 @@ class SDMJData(SDMJ):
  
                     fields[fieldname] = value
 
-        # Add a reference from us to them, if we were asked to.
-        # We'll need to save the parent object first, so it has an ID
-        if rel_parent_obj and rel_to_parent:
-            if not rel_parent_obj.id:
-                rel_parent_obj.save()
-            fields[rel_fieldname] = rel_parent_obj
-
-        # Now build the Django Model instance
+        # build the Django Model instance
         instance = model_class(**fields)
 
-        # Add a reference from them to us, if we were asked to.
-        # We'll need to save ourselves first, so we have an ID.
-        if rel_parent_obj and not rel_to_parent:
-            instance.save()
-            setattr(rel_parent_obj, rel_fieldname, instance)
+        # add relations as needed
+        if rel_parent_obj:
+            # link based off relation type
+            if rel_to_parent == "OneToOne":
+                # add reference on parent, saving instance so we have an ID
+                instance.save()
+                setattr(rel_parent_obj, rel_fieldname, instance)
+                rel_parent_obj.save()
+            elif rel_to_parent == "OneToMany":
+                # add reference back to parent, making sure parent has been saved off and has an ID
+                if not rel_parent_obj.id:
+                    rel_parent_obj.save()
+                setattr(instance, rel_fieldname, rel_parent_obj)
+            elif rel_to_parent == "ManyToMany":
+                # add this instance through the parent, saving instance so we have an ID
+                instance.save()
+                getattr(rel_parent_obj, rel_fieldname).add(instance)
+                rel_parent_obj.save()
 
-        # Add ourselves as the parent to all of our subinstances
-        for subobj_dict, subobj_field, subobj_direction in subobjs_found:
-            subdefs_to_parse.append((subobj_dict, instance, subobj_field, subobj_direction))
+        # Add ourselves as the parent to all of our sub-instances
+        for subobj_etree, subobj_field, subobj_direction in subobjs_found:
+            subdefs_to_parse.append((subobj_etree, instance, subobj_field, subobj_direction))
+
+        # save off any relations added
+        instance.save()
 
         # And we're done!
         return (subdefs_to_parse, instance)        
@@ -446,13 +464,13 @@ class SDMXData(object):
             # Yield the model instance we just created
             yield model_instance
 
-    def _parse_one(self, instance_etree, rel_parent_obj=None, rel_fieldname=None, rel_to_parent=False):
+    def _parse_one(self, instance_etree, rel_parent_obj=None, rel_fieldname=None, rel_to_parent="OneToOne"):
         """ Build one Django model instance.
         
         rel_parent_obj, rel_fieldname, and rel_to_parent, if provided, are instructions to set up a 
         reference to the parent object. Rel_fieldname is the field on which to create the reference,
-        and rel_on_parent indicates which direction the reference should go (child to parent for a
-        manytomany relationship, parent to child for a onetoone relationship).
+        and rel_to_parent indicates which type of relationship is required ("OneToOne", "OneToMany", 
+        or "ManyToMany")
 
         Returns a tuple of (subdefs_to_parse, parsed_instance), where subdefs_to_parse is a list
         of subobjects that need parsing, and parsed_instance is an instance of the 
@@ -485,20 +503,28 @@ class SDMXData(object):
                 raise SDMDataException("All SDM data fields must specify a fieldname.")
 
             if field_etree.find('Models') is not None:
-                # OneToMany Field: we save the subobjects for later parsing.
-                # We tell the subobject to add a reference to our instance on a field
-                # named after the lowercase of our modelname.
+                # Determine relationship type of sub-objects
+                relationField = getattr(model_class, fieldname)
+                if isinstance(relationField, ReverseManyRelatedObjectsDescriptor):
+                    relation = "ManyToMany"
+                    field = fieldname
+                elif isinstance(relationField, ForeignRelatedObjectsDescriptor):
+                    relation = "OneToMany"
+                    field = relationField.related.field.name
+                else:
+                    raise ValueError("") #TODO
+                
+                # Save list of sub-objects along with their field name and relation type
                 for subobject_etree in field_etree.find('Models').findall('Model'):                
-                    subobjs_found.append((subobject_etree, model_name.lower(), True))
+                    subobjs_found.append((subobject_etree, field, relation))
 
             elif field_etree.find('Model') is not None:
                 # OnetoOne Field: we save the subobject for later parsing.
                 # We tell the subobject to add a reference from our instance to them
-                subobjs_found.append((field_etree.find('Model'), fieldname, False))
+                subobjs_found.append((field_etree.find('Model'), fieldname, "OneToOne"))
 
             else:
                 # Simple Field: we validate the datatype, then add the data to our model
-
                 # get the field definition on the class
                 try:
                     model_field = model_class._meta.get_field(fieldname)
@@ -513,7 +539,6 @@ class SDMXData(object):
                     fields[fieldname] = None
                 
                 else:
-
                     # since everything is coming in as a string, try converting to native Django types
                     if isinstance(model_field, models.DateField):
                         try:
@@ -540,29 +565,35 @@ class SDMXData(object):
  
                     fields[fieldname] = value
 
-        # Add a reference from us to them, if we were asked to.
-        # We'll need to save the parent object first, so it has an ID
-        if rel_parent_obj and rel_to_parent:
-            if not rel_parent_obj.id:
-                rel_parent_obj.save()
-            fields[rel_fieldname] = rel_parent_obj
-
-        # Now build the Django Model instance
+        # build the Django Model instance
         instance = model_class(**fields)
-        
-        # TODO: check for more efficient way than saving every time
-        if not instance.id:
-            instance.save()
 
-        # Add a reference from them to us, if we were asked to.
-        # We'll need to save ourselves first, so we have an ID.
-        if rel_parent_obj and not rel_to_parent:
-            setattr(rel_parent_obj, rel_fieldname, instance)
+        # add relations as needed
+        if rel_parent_obj:
+            # link based off relation type
+            if rel_to_parent == "OneToOne":
+                # add reference on parent, saving instance so we have an ID
+                instance.save()
+                setattr(rel_parent_obj, rel_fieldname, instance)
+                rel_parent_obj.save()
+            elif rel_to_parent == "OneToMany":
+                # add reference back to parent, making sure parent has been saved off and has an ID
+                if not rel_parent_obj.id:
+                    rel_parent_obj.save()
+                setattr(instance, rel_fieldname, rel_parent_obj)
+            elif rel_to_parent == "ManyToMany":
+                # add this instance through the parent, saving instance so we have an ID
+                instance.save()
+                getattr(rel_parent_obj, rel_fieldname).add(instance)
+                rel_parent_obj.save()
 
-        # Add ourselves as the parent to all of our subinstances
+        # Add ourselves as the parent to all of our sub-instances
         for subobj_etree, subobj_field, subobj_direction in subobjs_found:
             subdefs_to_parse.append((subobj_etree, instance, subobj_field, subobj_direction))
 
+        # save off any relations added
+        instance.save()
+        
         # And we're done!
         return (subdefs_to_parse, instance)        
 
