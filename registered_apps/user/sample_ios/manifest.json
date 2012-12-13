@@ -1,0 +1,16 @@
+{
+  "name" : "Your iOS App",
+  "description" : "Any app you'd like, written with the Indivo iOS framework.",
+  "author" : "You!",
+  "id" : "sampleios@apps.indivo.org",
+  "version" : "1.0.0",
+  "smart_version": "0.4",
+
+  "mode" : "ui",	
+  "scope": "record",
+  "has_ui": false,
+  "frameable": false,
+
+  "icon" :  "/jmvc/ui/resources/images/app_icons_32/your_iosapp.png",
+  "index": "indivo-framework:///did_select_record?record_id={record_id}&carenet_id={carenet_id}"
+}
