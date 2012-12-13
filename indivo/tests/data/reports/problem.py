@@ -6,6 +6,7 @@ _TEST_PROBLEMS = [
   <Model name="Problem">
     <Field name="startDate">2009-05-16T12:00:00Z</Field>
     <Field name="endDate">2011-08-22T00:00:00Z</Field>
+    <Field name="name_title">Backache 1</Field>
     <Field name="name_code_title">Backache (Finding)</Field>
     <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
     <Field name="name_code_identifier">161891005</Field>
@@ -53,6 +54,72 @@ _TEST_PROBLEMS = [
           </Model>
         </Models>
     </Field>
+  </Model>
+</Models>
+""",
+"""
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Problem">
+    <Field name="startDate">2009-05-16</Field>
+    <Field name="name_title">Backache 2</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
+  </Model>
+</Models>
+""",
+"""
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Problem">
+    <Field name="startDate">2009-06-16</Field>
+    <Field name="name_title">Backache 3</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
+  </Model>
+</Models>
+""",
+"""
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Problem">
+    <Field name="startDate">2010-02-22</Field>
+    <Field name="name_title">Backache 4</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
+  </Model>
+</Models>
+""",
+"""
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Problem">
+    <Field name="startDate">2010-05-16</Field>
+    <Field name="name_title">Backache 5</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
+  </Model>
+</Models>
+""",
+"""
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Problem">
+    <Field name="startDate">2010-05-17</Field>
+    <Field name="name_title">Backache 6</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
+  </Model>
+</Models>
+""",
+"""
+<Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Problem">
+    <Field name="startDate">2011-03-04</Field>
+    <Field name="name_title">Backache 7</Field>
+    <Field name="name_code_title">Backache (Finding)</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
+    <Field name="name_code_identifier">161891005</Field>
   </Model>
 </Models>
 """,

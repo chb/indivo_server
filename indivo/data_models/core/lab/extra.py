@@ -20,12 +20,12 @@ VALID_STATUSES = [
 ]
 
 class LabSerializers(DataModelSerializers):
-    def to_rdf(queryset, result_count, record=None, carenet=None):
+    def to_rdf(query, record=None, carenet=None):
         if not record:
             record = carenet.record
-        
         graph = PatientGraph(record)
-        graph.addLabList(queryset.iterator())
+        resultOrder = graph.addLabList(query.results.iterator(), True if query.limit else False)
+        graph.addResponseSummary(query, resultOrder)
         return graph.toRDF()
 
 class LabOptions(DataModelOptions):

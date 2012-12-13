@@ -15,6 +15,9 @@ from indivo.lib.query import FactQuery
 from indivo.lib.view_decorators import marsloader
 from indivo.serializers.json import IndivoJSONEncoder
 
+# SMART format
+SMART_FORMAT = 'application/rdf+xml'
+
 # map request content types to Model serialization types
 SERIALIZATION_FORMAT_MAP = {
     'application/json': 'json',
@@ -46,7 +49,11 @@ def serialize(cls, format, query, record=None, carenet=None):
     result_count = query.trc
     method = "to_" + SERIALIZATION_FORMAT_MAP[format]
     if hasattr(cls, method):
-        return getattr(cls, method)(queryset, result_count, record, carenet)
+        if format == SMART_FORMAT:
+            # SMART responseSummary requires extra information, so we pass along the whole FactQuery
+            return getattr(cls, method)(query, record, carenet)
+        else:
+            return getattr(cls, method)(queryset, result_count, record, carenet)
     else:
         raise ValueError("format not supported")
 
@@ -143,7 +150,8 @@ def _generic_list(request, query_options, data_model, record=None, carenet=None,
                 model_filters,
                 query_options,
                 record, 
-                carenet)
+                carenet,
+                request_url=request.build_absolute_uri())
   try:
       query.execute()
       data = serialize(model_class, response_format, query, record, carenet)

@@ -5,7 +5,9 @@ Adapted from the `Smart Sample Data generator <https://github.com/chb/smart_samp
 .. moduleauthor:: Daniel Haas <daniel.haas@post.harvard.edu
 
 """
+
 from rdflib import ConjunctiveGraph, Namespace, BNode, Literal, RDF, URIRef
+from rdflib.collection import Collection
 
 # Some constant strings:
 SP_DEMOGRAPHICS = "http://smartplatforms.org/records/%s/demographics"
@@ -28,6 +30,7 @@ LAB_STATUS_URI="http://smartplatforms.org/terms/codes/LabStatus#%s"
 # First Declare Name Spaces
 SP = Namespace("http://smartplatforms.org/terms#")
 SPCODE = Namespace("http://smartplatforms.org/terms/codes/")
+SPAPI = Namespace("http://smartplatforms.org/terms/api#")
 DC = Namespace("http://purl.org/dc/elements/1.1/")
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
@@ -50,6 +53,7 @@ class PatientGraph(object):
         g.bind('rdfs', RDFS)
         g.bind('sp', SP)
         g.bind('spcode', SPCODE)
+        g.bind('api', SPAPI)
         g.bind('dc', DC)
         g.bind('dcterms', DCTERMS)
         g.bind('foaf', FOAF)
@@ -62,6 +66,43 @@ class PatientGraph(object):
     def toRDF(self,format="xml"):
         return self.g.serialize(format=format)
     
+    def addResponseSummary(self, query, result_order=None):
+        """Add SMART ResponseSummary to the graph"""
+        
+        summary_node = BNode()
+        result_returned = query.results.count()
+        total_result_count = query.trc
+        self.g.add((summary_node, RDF.type, SPAPI['ResponseSummary']))
+        self.g.add((summary_node, SPAPI['resultsReturned'], Literal(result_returned)))
+        self.g.add((summary_node, SPAPI['totalResultCount'], Literal(total_result_count)))
+        
+        if result_order:
+            self.g.add((summary_node, SPAPI['resultOrder'], result_order))
+            
+        next_url = query.next_url()
+        if next_url:
+            self.g.add((summary_node, SPAPI['nextPageURL'], Literal(next_url)))
+
+    def addCombinedResponseSummary(self, query, result_order=None):
+        """Add SMART ResponseSummary to the graph based off queries with merged results"""
+        
+        summary_node = BNode()
+        # we use len() here instead of .count() since results can be a merged list
+        result_returned = len(query.results)
+        total_result_count = query.trc
+        self.g.add((summary_node, RDF.type, SPAPI['ResponseSummary']))
+        self.g.add((summary_node, SPAPI['resultsReturned'], Literal(result_returned)))
+        self.g.add((summary_node, SPAPI['totalResultCount'], Literal(total_result_count)))
+        
+        if result_order:
+            self.g.add((summary_node, SPAPI['resultOrder'], result_order))
+        next_url = query.next_url()
+        if next_url:
+            self.g.add((summary_node, SPAPI['nextPageURL'], Literal(next_url)))
+            
+        if result_order:
+            self.g.add((summary_node, SPAPI['resultOrder'], result_order))
+            
     def addDemographics(self, record):
         """ Adds patient Demographics info to the graph. """
         g = self.g
@@ -105,18 +146,28 @@ class PatientGraph(object):
 
         self.addStatement(dNode)
 
-    def addMedList(self, meds):
+    def addMedList(self, meds, order_results=False):
         """Adds a MedList to a patient's graph"""
 
         if not meds: return # no meds
+        med_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            med_list_node = BNode()
+            med_collection = Collection(self.g, med_list_node, [])
 
         for m in meds:
             mNode = self.medication(m)
+            if order_results:
+                med_collection.append(m)
             self.addStatement(mNode)
 
             # Now,loop through and add fulfillments for each med
             for fill in m.fulfillments.all().iterator():
                 self.addFill(fill, medNode=mNode)
+                
+        return med_list_node
 
     def addFill(self, fill, medNode=None, med_uri_only=True):
         """ Build a Fill and add it to the patient graph, optionally linking it with a medication node. """
@@ -151,14 +202,19 @@ class PatientGraph(object):
 
         self.addStatement(rfNode)
     
-    def addFillList(self, fills):
+    def addFillList(self, fills, order_results=False):
         """ Adds a FillList to a patient's graph. """
         g = self.g
         if not fills: return # no fills
+        fill_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            fill_list_node = BNode()
+            fill_collection = Collection(g, fill_list_node, [])
 
         addedMeds = {}
         for f in fills:
-
             # get the med node, creating it if we need to
             medNode = addedMeds.get(f.medication.id, None)
             if not medNode:
@@ -166,15 +222,28 @@ class PatientGraph(object):
                 self.addStatement(medNode)
                 addedMeds[f.medication.id] = medNode
 
+            if order_results:
+                fill_collection.append(medNode)
             self.addFill(f, medNode=medNode, med_uri_only=False)
+        
+        return fill_list_node
+            
 
-    def addProblemList(self, problems):
+    def addProblemList(self, problems, order_results=None):
         """Add problems to a patient's graph"""
         g = self.g
-
+        problem_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            problem_list_node = BNode()
+            problem_collection = Collection(g, problem_list_node, [])
+            
         for prob in problems:
             pnode = URIRef(prob.uri())
             g.add((pnode, RDF.type, SP['Problem']))
+            if order_results:
+                problem_collection.append(pnode)
             g.add((pnode, SP['startDate'], Literal(prob.startDate)))      
             if prob.endDate:
                 g.add((pnode, SP['endDate'], Literal(prob.endDate)))
@@ -183,27 +252,49 @@ class PatientGraph(object):
                 
             problem_name = self._getCodedValueFromField(prob, 'name', [SPCODE['SNOMED']])    
             g.add((pnode, SP['problemName'], self.newCodedValue(problem_name)))
+            
             self.addStatement(pnode)
             
             for encounter in prob.encounters.all():
                 eNode = self.encounter(encounter)
                 self.addStatement(eNode)
                 g.add((pnode, SP['encounter'], eNode))
+                
+        return problem_list_node
             
-    def addEncounterList(self, encounters):
+    def addEncounterList(self, encounters, order_results=False):
         """Add encounters to a patient's graph"""
+        
+        encounter_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            encounter_list_node = BNode()
+            encounter_collection = Collection(self.g, encounter_list_node, [])
 
         for encounter in encounters:
             eNode = self.encounter(encounter)
+            if order_results:
+                encounter_collection.append(eNode)
             self.addStatement(eNode)
+            
+        return encounter_list_node
 
-    def addVitalsList(self, vitals):
+    def addVitalsList(self, vitals, order_results=False):
         """Add vitals to a patient's graph"""
         g = self.g
+        vitals_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            vitals_list_node = BNode()
+            vitals_collection = Collection(g, vitals_list_node, [])
 
         for v in vitals:
             vnode = URIRef(v.uri('vital_signs'))
             g.add((vnode, RDF.type, SP['VitalSignSet']))
+            if order_results:        
+                vitals_collection.append(vnode)
             g.add((vnode, DCTERMS['date'], Literal(v.date)))
 
             enode = self.encounter(v.encounter)
@@ -245,17 +336,27 @@ class PatientGraph(object):
             hcNode = self.vital(v, 'head_circ')
             if hcNode:
                 g.add((hcNode, SP['headCircumference'], hcNode))
-        
-            self.addStatement(vnode)
 
-    def addImmunizationList(self, immunizations):
+            self.addStatement(vnode)
+        
+        return vitals_list_node
+
+    def addImmunizationList(self, immunizations, order_results=False):
         """Add immunizations to a patient's graph"""
         g = self.g
+        immunization_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            immunization_list_node = BNode()
+            immunization_collection = Collection(g, immunization_list_node, [])
 
         for i in immunizations:
 
             inode = URIRef(i.uri())
             g.add((inode, RDF.type, SP['Immunization']))
+            if order_results:
+                immunization_collection.append(inode)
 
             g.add((inode, DCTERMS['date'], Literal(i.date)))
             
@@ -276,16 +377,26 @@ class PatientGraph(object):
             refusal_reason = self._getCodedValueFromField(i, 'refusal_reason', [SPCODE['ImmunizationRefusalReason']])
             if i.refusal_reason_title and i.refusal_reason_identifier:
                 g.add((inode, SP['refusalReason'], self.newCodedValue(refusal_reason)))
-                            
+            
             self.addStatement(inode)
+            
+        return immunization_list_node
 
-    def addLabList(self, labs):
+    def addLabList(self, labs, order_results=False):
         """Adds Lab Results to the patient's graph"""
         g = self.g
-
+        lab_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            lab_list_node = BNode()
+            lab_collection = Collection(g, lab_list_node, [])
+        
         for lab in labs:
             lNode = URIRef(lab.uri('lab_results'))
             g.add((lNode, RDF.type, SP['LabResult']))
+            if order_results:
+                lab_collection.append(lNode)
 
             lab_name = self._getCodedValueFromField(lab, 'name', [SPCODE['LOINC']])
             g.add((lNode , SP['labName'], self.newCodedValue(lab_name)))
@@ -314,57 +425,105 @@ class PatientGraph(object):
             if qrNode:
                 g.add((lNode, SP['quantitativeResult'], qrNode))
 
-            
             self.addStatement(lNode)
+
+        return lab_list_node
+
+    def addCombinedAllergyList(self, combinedAllergies, order_results=False):
+        """Add a list of AllergyExclusions and Allergies to the patient graph"""
+
+        allergy_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            allergy_list_node = BNode()
+            allergy_collection = Collection(self.g, allergy_list_node, [])
+
+        for a in combinedAllergies:
+            if 'Allergy' == a.__class__.__name__:
+                node = self.allergy(a)
+            elif 'AllergyExclusion' == a.__class__.__name__:
+                node = self.allergy_exclusion(a)
+            else:
+                raise ValueError 
+            
+            if order_results:
+                allergy_collection.append(node)
+            self.addStatement(node)
+            
+        return allergy_list_node
 
     def addAllergyExclusions(self, exclusions):
         """ Add allergy exclusions to the patient graph. """
-        g = self.g
 
         for e in exclusions:
-            aExcept = URIRef(e.uri('allergy_exclusions'))
-            g.add((aExcept, RDF.type, SP['AllergyExclusion']))
-            exclusion_name = self._getCodedValueFromField(e, 'name', [SPCODE["AllergyExclusion"]])
-            g.add((aExcept, SP['allergyExclusionName'], self.newCodedValue(exclusion_name)))
+            aExcept = self.allergy_exclusion(e)
             self.addStatement(aExcept)
+
+    def allergy_exclusion(self, exclusion):
+        """Build an AllergyExclusion"""
+        g = self.g
+
+        aExcept = URIRef(exclusion.uri('allergy_exclusions'))
+        g.add((aExcept, RDF.type, SP['AllergyExclusion']))
+        exclusion_name = self._getCodedValueFromField(exclusion, 'name', [SPCODE["AllergyExclusion"]])
+        g.add((aExcept, SP['allergyExclusionName'], self.newCodedValue(exclusion_name)))
+
+        return aExcept
 
     def addAllergyList(self, allergies):
         """ Add a list of allergies to the patient graph. """
-        g = self.g
 
-        for a in allergies:            
-            aNode = URIRef(a.uri('allergies'))
-            g.add((aNode, RDF.type, SP['Allergy']))
-            
-            severity = self._getCodedValueFromField(a, 'severity', [SPCODE["AllergySeverity"]])
-            g.add((aNode, SP['severity'], self.newCodedValue(severity)))
-            
-            reaction = self._getCodedValueFromField(a, 'allergic_reaction', [SPCODE["SNOMED"]])
-            g.add((aNode, SP['allergicReaction'], self.newCodedValue(reaction)))
-            
-            category = self._getCodedValueFromField(a, 'category', [SPCODE["AllergyCategory"]])
-            g.add((aNode, SP['category'], self.newCodedValue(category)))
-
-            if a.drug_allergen_code_identifier and a.drug_allergen_code_title:
-                drug_allergen = self._getCodedValueFromField(a, 'drug_allergen', [SPCODE["RxNorm_Ingredient"]])
-                g.add((aNode, SP['drugAllergen'], self.newCodedValue(drug_allergen)))
-
-            elif a.drug_class_allergen_code_identifier and a.drug_class_allergen_code_title:
-                drug_class_allergen = self._getCodedValueFromField(a, 'drug_class_allergen', [SPCODE["NDFRT"]])
-                g.add((aNode, SP['drugClassAllergen'], self.newCodedValue(drug_class_allergen)))
-
-            elif a.other_allergen_code_identifier and a.other_allergen_code_title:
-                other_allergen = self._getCodedValueFromField(a, 'other_allergen', [SPCODE["UNII"]])
-                g.add((aNode, SP['otherAllergen'], self.newCodedValue(other_allergen)))
+        for a in allergies:        
+            aNode = self.allergy(a)
             self.addStatement(aNode)
 
-    def addProcedureList(self, procedures):
+    def allergy(self, allergy):
+        """Build an Allergy"""
+        
+        g = self.g
+        
+        aNode = URIRef(allergy.uri('allergies'))
+        g.add((aNode, RDF.type, SP['Allergy']))
+        
+        severity = self._getCodedValueFromField(allergy, 'severity', [SPCODE["AllergySeverity"]])
+        g.add((aNode, SP['severity'], self.newCodedValue(severity)))
+        
+        reaction = self._getCodedValueFromField(allergy, 'allergic_reaction', [SPCODE["SNOMED"]])
+        g.add((aNode, SP['allergicReaction'], self.newCodedValue(reaction)))
+        
+        category = self._getCodedValueFromField(allergy, 'category', [SPCODE["AllergyCategory"]])
+        g.add((aNode, SP['category'], self.newCodedValue(category)))
+
+        if allergy.drug_allergen_code_identifier and allergy.drug_allergen_code_title:
+            drug_allergen = self._getCodedValueFromField(allergy, 'drug_allergen', [SPCODE["RxNorm_Ingredient"]])
+            g.add((aNode, SP['drugAllergen'], self.newCodedValue(drug_allergen)))
+
+        elif allergy.drug_class_allergen_code_identifier and allergy.drug_class_allergen_code_title:
+            drug_class_allergen = self._getCodedValueFromField(allergy, 'drug_class_allergen', [SPCODE["NDFRT"]])
+            g.add((aNode, SP['drugClassAllergen'], self.newCodedValue(drug_class_allergen)))
+
+        elif allergy.other_allergen_code_identifier and allergy.other_allergen_code_title:
+            other_allergen = self._getCodedValueFromField(allergy, 'other_allergen', [SPCODE["UNII"]])
+            g.add((aNode, SP['otherAllergen'], self.newCodedValue(other_allergen)))
+            
+        return aNode
+
+    def addProcedureList(self, procedures, order_results=False):
         """Add procedures to a patient's graph"""
         g = self.g
+        procedure_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            procedure_list_node = BNode()
+            procedure_collection = Collection(g, procedure_list_node, [])
 
         for procedure in procedures:
             pnode = URIRef(procedure.uri())
             g.add((pnode, RDF.type, SP['Procedure']))
+            if order_results:
+                procedure_collection.append(pnode)
             
             # required
             procedure_name = self._getCodedValueFromField(procedure, 'name', [SPCODE['SNOMED']])
@@ -385,15 +544,25 @@ class PatientGraph(object):
                 g.add((pnode, SP['provider'], procedure_provider))
             
             self.addStatement(pnode)
+            
+        return procedure_list_node
 
-    def addSocialHistoryList(self, histories):
+    def addSocialHistoryList(self, histories, order_results=False):
         """Add social histories to a patient's graph"""
         
         g = self.g
+        history_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            history_list_node = BNode()
+            history_collection = Collection(g, history_list_node, [])
 
         for history in histories:
             hnode = URIRef(history.uri())
             g.add((hnode, RDF.type, SP['SocialHistory']))
+            if order_results:
+                history_collection.append(hnode)
             
             # optional
             smoking_status = self._getCodedValueFromField(history, 'smoking_status', [SPCODE['SmokingStatus']])
@@ -402,14 +571,22 @@ class PatientGraph(object):
             
             self.addStatement(hnode)
             
-    def addClinicalNoteList(self, notes):
+    def addClinicalNoteList(self, notes, order_results=False):
         """Add clinical notes to a patient's graph"""
         
         g = self.g
+        note_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            note_list_node = BNode()
+            note_collection = Collection(g, note_list_node, [])
 
         for note in notes:
             nnode = URIRef(note.uri())
             g.add((nnode, RDF.type, SP['ClinicalNote']))
+            if order_results:
+                note_collection.append(nnode)
             
             # required
             document_with_format = BNode();
@@ -431,6 +608,8 @@ class PatientGraph(object):
                 g.add((nnode, SP['provider'], note_provider))
             
             self.addStatement(nnode)
+            
+        return note_list_node
 
     #####################################################
     ### Helper Methods for reusable low-level objects ###
@@ -466,20 +645,24 @@ class PatientGraph(object):
         mNode = URIRef(m.uri())
         g.add((mNode, RDF.type, SP['Medication']))
         
+        # required
         drug_name = self._getCodedValueFromField(m, 'name', [SPCODE["RxNorm_Semantic"]])
         g.add((mNode, SP['drugName'], self.newCodedValue(drug_name)))
         g.add((mNode, SP['startDate'], Literal(m.startDate)))
-        g.add((mNode, SP['instructions'], Literal(m.instructions or ''))) 
+        g.add((mNode, SP['instructions'], Literal(m.instructions or '')))
+        
+        # optional 
         if m.quantity_value and m.quantity_unit:
             g.add((mNode, SP['quantity'], self.valueAndUnit(m.quantity_value, m.quantity_unit)))
         if m.frequency_value and m.frequency_unit:
             g.add((mNode, SP['frequency'], self.valueAndUnit(m.frequency_value, m.frequency_unit)))
         if m.endDate:
             g.add((mNode, SP['endDate'], Literal(m.endDate)))
-        if m.provenance_identifier and m.provenance_title and m.provenance_system:
-            provenance = self._getCodeFromField(m, 'provenance', [SPCODE['MedicationProvenance']])
-            g.add((mNode, SP['provenance'],
-                   self.new_code(provenance)))
+        
+        provenance = self._getCodedValueFromField(m, 'provenance')
+        if provenance:    
+            g.add((mNode, SP['provenance'], self.newCodedValue(provenance)))
+            
         return mNode
 
     def newCodedValue(self, coded_value):
@@ -553,6 +736,7 @@ class PatientGraph(object):
             self.g.add((node, RDF.type, c))
         return node
 
+
     def codeProvenance(self, provenance):
         """ Adds a CodeProvenance to the graph and returns node """
         
@@ -582,20 +766,6 @@ class PatientGraph(object):
         self.g.add((cvNode, SP['code'], cNode))
 
         return cvNode
-
-    def codedValueFromObj(self, obj, prefix, codeclass):
-        suffixes = ['identifier', 'title', 'system']
-        fields = self._obj_fields_by_name(obj, prefix, suffixes)
-        if not fields:
-            return None
-
-        return self.codedValue(
-            codeclass,
-            fields['system'] + fields['identifier'],
-            fields['title'],
-            fields['system'],
-            fields['identifier'],
-            )
 
     def valueAndUnit(self,value,units):
         """Adds a ValueAndUnit node to a graph; returns the node"""
@@ -806,9 +976,9 @@ class PatientGraph(object):
         if fields['value']:
             self.g.add((vNode, SP['value'], Literal(fields['value'])))
 
-        nameNode = self.codedValueFromObj(obj, "%s_name"%prefix, SPCODE['VitalSign'])
-        if nameNode:
-            self.g.add((vNode, SP['vitalName'], nameNode))
+        name = self._getCodedValueFromField(obj, "%s_name"%prefix, [SPCODE['VitalSign']])
+        if name:    
+            self.g.add((vNode, SP['vitalName'], self.newCodedValue(name)))
 
         return vNode
 
@@ -824,17 +994,17 @@ class PatientGraph(object):
         if diaNode:
             self.g.add((bpNode, SP['diastolic'], diaNode))
 
-        posNode = self.codedValueFromObj(obj, "%s_position"%prefix, SPCODE['BloodPressureBodyPosition'])
-        if posNode:
-            self.g.add((bpNode, SP['bodyPosition'], posNode))
+        position = self._getCodedValueFromField(obj, "%s_position"%prefix, [SPCODE['BloodPressureBodyPosition']])
+        if position:    
+            self.g.add((bpNode, SP['bodyPosition'], self.newCodedValue(position)))
 
-        siteNode = self.codedValueFromObj(obj, "%s_site"%prefix, SPCODE['BloodPressureBodySite'])
-        if siteNode:
-            self.g.add((bpNode, SP['bodySite'], siteNode))
-
-        methodNode = self.codedValueFromObj(obj, "%s_method"%prefix, SPCODE['BloodPressureMethod'])
-        if methodNode:
-            self.g.add((bpNode, SP['method'], methodNode))
+        site = self._getCodedValueFromField(obj, "%s_site"%prefix, [SPCODE['BloodPressureBodySite']])
+        if site:    
+            self.g.add((bpNode, SP['bodySite'], self.newCodedValue(site)))
+            
+        method = self._getCodedValueFromField(obj, "%s_method"%prefix, [SPCODE['BloodPressureMethod']])
+        if method:    
+            self.g.add((bpNode, SP['method'], self.newCodedValue(method)))
 
         return bpNode
     

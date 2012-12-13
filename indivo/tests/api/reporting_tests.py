@@ -2,6 +2,7 @@ import json
 from lxml import etree
 
 from rdflib import Graph, Namespace
+from rdflib.collection import Collection
 
 from indivo.models import *
 from indivo.tests.internal_tests import InternalTests
@@ -11,6 +12,7 @@ DOCUMENT = '''<DOC>HERE'S MY CONTENT</DOC>'''
 DOC_LABEL = 'A Document!'
 NS = 'http://indivo.org/vocab/xml/documents#'
 SMART = Namespace("http://smartplatforms.org/terms#")
+SPAPI = Namespace("http://smartplatforms.org/terms/api#")
 
 class ReportingInternalTests(InternalTests):
 
@@ -145,7 +147,7 @@ class ReportingInternalTests(InternalTests):
     def test_get_generic_labs(self):
         response = self.client.get('/records/%s/reports/LabResult/'%(self.record.id))
         self.assertEquals(response.status_code, 200)
-        
+
         response_json = json.loads(response.content)
         self.assertTrue(len(response_json), 1)
 
@@ -248,20 +250,22 @@ class ReportingInternalTests(InternalTests):
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         problems = [p for p in g.subjects(None,SMART["Problem"])]
-        self.assertEqual(len(problems), 1)
+        self.assertEqual(len(problems), 7)
         
         # retrieve a single problem
         problem_id = problems[0].split('/')[-1]
         
         response = self.client.get('/records/%s/problems/%s' % (self.record.id, problem_id))
         self.assertEquals(response.status_code, 200)
+        g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
-        encounters = [e for e in g.subjects(None,SMART["Encounter"])]
-        self.assertEqual(len(encounters), 2)
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 1)
 
     def test_get_smart_labs(self):
         response = self.client.get('/records/%s/lab_results/'%(self.record.id))
         self.assertEquals(response.status_code, 200)
+
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
@@ -328,15 +332,75 @@ class ReportingInternalTests(InternalTests):
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         allergy_results = [a for a in g.subjects(None,SMART["Allergy"])]
-        self.assertEqual(len(allergy_results), 1)
+        self.assertEqual(len(allergy_results), 2)
         allergy_exclusion_results = [a for a in g.subjects(None,SMART["AllergyExclusion"])]
-        self.assertEqual(len(allergy_exclusion_results), 0)
+        self.assertEqual(len(allergy_exclusion_results), 1)
         
         # retrieve a single allergy
         allergy_id = allergy_results[0].split('/')[-1]
         
         response = self.client.get('/records/%s/allergies/%s' % (self.record.id, allergy_id))
         self.assertEquals(response.status_code, 200)        
+        
+        # test paging (currently allergies are ordered by date created
+        response = self.client.get('/records/%s/allergies/?limit=2' % (self.record.id))
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        allergy_results = [a for a in g.subjects(None,SMART["Allergy"])]
+        self.assertEqual(len(allergy_results), 2)
+        allergy_exclusion_results = [a for a in g.subjects(None,SMART["AllergyExclusion"])]
+        self.assertEqual(len(allergy_exclusion_results), 0)
+        # grab the next page
+        next_page_url = [a for a in g.objects(None, SPAPI['nextPageURL'])][0]
+        response = self.client.get(next_page_url)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        allergy_results = [a for a in g.subjects(None,SMART["Allergy"])]
+        self.assertEqual(len(allergy_results), 0)
+        allergy_exclusion_results = [a for a in g.subjects(None,SMART["AllergyExclusion"])]
+        self.assertEqual(len(allergy_exclusion_results), 1)
+
+    def test_get_smart_encounters(self):
+        response = self.client.get('/records/%s/encounters/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        encounters = [e for e in g.subjects(None,SMART["Encounter"])]
+        self.assertEqual(len(encounters), 4)
+
+        # retrieve a single encounter
+        encounter_id = encounters[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/encounters/%s' % (self.record.id, encounter_id))
+        self.assertEquals(response.status_code, 200)
+        
+    def test_get_smart_immunizations(self):
+        response = self.client.get('/records/%s/immunizations/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        immunizations = [i for i in g.subjects(None,SMART["Immunization"])]
+        self.assertEqual(len(immunizations), 1)
+
+        # retrieve a single immunization
+        immunization_id = immunizations[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/immunizations/%s' % (self.record.id, immunization_id))
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_smart_medications(self):
+        response = self.client.get('/records/%s/medications/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        medications = [m for m in g.subjects(None,SMART["Medication"])]
+        self.assertEqual(len(medications), 1)
+
+        # retrieve a single medication
+        medication_id = medications[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/medications/%s' % (self.record.id, medication_id))
+        self.assertEquals(response.status_code, 200)
 
     def test_get_smart_procedures(self):
         response = self.client.get('/records/%s/procedures/'%(self.record.id))
@@ -380,3 +444,98 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get('/records/%s/clinical_notes/%s' % (self.record.id, note_id))
         self.assertEquals(response.status_code, 200)
         
+    def test_get_smart_vitals(self):
+        response = self.client.get('/records/%s/vital_sign_sets/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        vitals = [v for v in g.subjects(None,SMART["VitalSignSet"])]
+        self.assertEqual(len(vitals), 2)
+
+        # retrieve a single vital sign set
+        vital_sign_set_id = vitals[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/vital_sign_sets/%s' % (self.record.id, vital_sign_set_id))
+        self.assertEquals(response.status_code, 200)
+        
+    def test_smart_limit_and_offset(self):
+        # limit to 5
+        response = self.client.get('/records/%s/problems/?limit=5'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 5)
+
+        # limit to 5 and offset from 5
+        response = self.client.get('/records/%s/problems/?limit=5&offset=5'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 2)
+
+        # offset past the end
+        response = self.client.get('/records/%s/problems/?limit=5&offset=8'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 0)
+
+        # negative offset should translate to offset of 0
+        response = self.client.get('/records/%s/problems/?limit=5&offset=-1'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 5)
+        
+        # non-integer offset should return 400
+        response = self.client.get('/records/%s/problems/?limit=5&offset=a'%(self.record.id))
+        self.assertEquals(response.status_code, 400)
+        
+    def test_smart_response_summary(self):
+        # response summary for paged results
+        response = self.client.get('/records/%s/problems/?limit=5'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+
+        response_summary = [s for s in g.subjects(None,SPAPI['ResponseSummary'])]
+        self.assertEqual(len(response_summary), 1, "expected a single ResponseSummary")
+        response_summary = response_summary[0]
+        next_page_url = [a for a in g.objects(response_summary, SPAPI['nextPageURL'])][0]
+        results_returned = [a for a in g.objects(response_summary, SPAPI['resultsReturned'])][0]
+        self.assertEqual(results_returned, 5, "expected resultsReturned to be 5")
+        total_result_count = [a for a in g.objects(response_summary, SPAPI['totalResultCount'])][0]
+        self.assertEqual(total_result_count, 7, "expected totalResultCount to be 7")
+        result_order = [a for a in g.objects(response_summary, SPAPI['resultOrder'])][0]
+        problem_list = list(Collection(g, result_order))
+        self.assertEqual(len(problem_list), 5, "wrong length for resultOrder")
+        
+        # grab the nextPageURL from previous request
+        response = self.client.get(next_page_url)
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        self.assertEqual(len(problems), 2)
+        
+        # response summary for single instance
+        problems = [p for p in g.subjects(None,SMART["Problem"])]
+        problem_id = problems[0].split('/')[-1]
+        
+        response = self.client.get('/records/%s/problems/%s' % (self.record.id, problem_id))
+        self.assertEquals(response.status_code, 200)
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        response_summary = [s for s in g.subjects(None,SPAPI['ResponseSummary'])]
+        self.assertEqual(len(response_summary), 1, "expected a single ResponseSummary")
+        response_summary = response_summary[0]
+        next_page_url = [a for a in g.objects(response_summary, SPAPI['nextPageURL'])]
+        self.assertEqual(len(next_page_url), 0, "did not expect nextPageURL")
+        results_returned = [a for a in g.objects(response_summary, SPAPI['resultsReturned'])][0]
+        self.assertEqual(results_returned, 1, "expected resultsReturned to be 1")
+        total_result_count = [a for a in g.objects(response_summary, SPAPI['totalResultCount'])][0]
+        self.assertEqual(total_result_count, 1, "expected totalResultCount to be 1")

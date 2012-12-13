@@ -2,75 +2,71 @@ from base import report_content_to_test_docs
 
 _TEST_MEDICATIONS = [
     """
-<Medication xmlns="http://indivo.org/vocab/xml/documents#">
-  <dateStarted>2009-02-05</dateStarted> 
-  <name type="http://indivo.org/codes/meds#" abbrev="c2i" value="COX2 Inhibitor">COX2 Inhibitor</name>
-  <brandName type="http://indivo.org/codes/meds#" abbrev="vioxx" value="Vioxx">Vioxx</brandName>
-  <dose>
-    <value>3</value>
-    <unit type="http://indivo.org/codes/units#" value="pills" abbrev="p">pills</unit>
-  </dose>
-  <route type="http://indivo.org/codes/routes#" value="PO">By Mouth</route>
-  <strength>
-    <value>100</value>
-    <unit type="http://indivo.org/codes/units#" value="mg" abbrev="mg">mg</unit>
-  </strength>
-  <frequency type="http://indivo.org/codes/frequency#" value="daily" abbrev="daily">every 12 hours</frequency>
-  <prescription>
-    <by>
-      <name>Dr. Ken Mandl</name>
-      <institution>Children's Hospital Boston</institution>
-    </by>
-    <on>2009-02-01</on> 
-    <stopOn>2010-01-31</stopOn>
-    <dispenseAsWritten>true</dispenseAsWritten>
-    <duration>P2M</duration>
-    <refillInfo>once a month for 3 months</refillInfo>
-    <instructions>don't take them all at once!</instructions>
-  </prescription>
-</Medication>
-""",
+    <Models xmlns="http://indivo.org/vocab/xml/documents#">
+  <Model name="Medication">
+    <Field name="name_code_title">AMITRIPTYLINE HCL 50 MG TAB</Field>
+    <Field name="name_code_system">http://purl.bioontology.org/ontology/RXNORM/</Field>
+    <Field name="name_code_identifier">856845</Field>
+    <Field name="endDate">2007-08-14</Field>
+    <Field name="frequency_value">2</Field>
+    <Field name="frequency_unit">/d</Field>
+    <Field name="instructions">Take two tablets twice daily as needed for pain</Field>
+    <Field name="provenance_code_title">Derived by prescription</Field>
+    <Field name="provenance_code_system">http://smartplatforms.org/terms/codes/MedicationProvenance#</Field>
+    <Field name="provenance_code_identifier">prescription</Field>
+    <Field name="quantity_value">2</Field>
+    <Field name="quantity_unit">{tablet}</Field>
+    <Field name="startDate">2007-03-14</Field>
+    <Field name="fulfillments">
+      <Models>
+        <Model name="Fill">
+          <Field name="date">2007-03-14T04:00:00Z</Field>
+          <Field name="dispenseDaysSupply">30</Field>
+          <Field name="pbm">T00000000001011</Field>
+          <Field name="pharmacy_ncpdpid">5235235</Field>
+          <Field name="pharmacy_org">CVS #588</Field>
+          <Field name="pharmacy_adr_country">Australia</Field>
+          <Field name="pharmacy_adr_city">WonderCity</Field>
+          <Field name="pharmacy_adr_postalcode">5555</Field>
+          <Field name="pharmacy_adr_street">111 Lake Drive</Field> 
+          <Field name="provider_dea_number">325555555</Field>
+          <Field name="provider_npi_number">5235235</Field>
+          <Field name="provider_email">joshua.mandel@fake.emailserver.com</Field>
+          <Field name="provider_name_given">Josuha</Field>
+          <Field name="provider_name_family">Mandel</Field>
+          <Field name="provider_tel_1_type">w</Field>
+          <Field name="provider_tel_1_number">1-235-947-3452</Field>
+          <Field name="provider_tel_1_preferred_p">true</Field>
+          <Field name="quantityDispensed_value">60</Field>
+          <Field name="quantityDispensed_unit">{tablet}</Field>
+        </Model>
+        <Model name="Fill">
+          <Field name="date">2007-04-14T04:00:00Z</Field>
+          <Field name="dispenseDaysSupply">30</Field>
+          <Field name="pbm">T00000000001011</Field>
+          <Field name="pharmacy_ncpdpid">5235235</Field>
+          <Field name="pharmacy_org">CVS #588</Field>
+          <Field name="pharmacy_adr_country">Australia</Field>
+          <Field name="pharmacy_adr_city">WonderCity</Field>
+          <Field name="pharmacy_adr_postalcode">5555</Field>
+          <Field name="pharmacy_adr_street">111 Lake Drive</Field> 
+          <Field name="provider_dea_number">325555555</Field>
+          <Field name="provider_npi_number">5235235</Field>
+          <Field name="provider_email">joshua.mandel@fake.emailserver.com</Field>
+          <Field name="provider_name_given">Josuha</Field>
+          <Field name="provider_name_family">Mandel</Field>
+          <Field name="provider_tel_1_type">w</Field>
+          <Field name="provider_tel_1_number">1-235-947-3452</Field>
+          <Field name="provider_tel_1_preferred_p">true</Field>
+          <Field name="quantityDispensed_value">60</Field>
+          <Field name="quantityDispensed_unit">{tablet}</Field>
+        </Model>
+      </Models>
+    </Field>
+  </Model>
+</Models>
 
-    """
-<Medication xmlns="http://indivo.org/vocab/xml/documents#">
-  <dateStarted>2009-03-05</dateStarted>
-  <name>COX2 Inhibitor</name>
-  <brandName>Vioxx</brandName>
-  <dose>
-    <textValue>3 pills</textValue>
-  </dose>
-  <route>By Mouth</route>
-  <strength>
-    <value>100</value>
-    <unit>mg</unit>
-  </strength>
-  <frequency>every 12 hours</frequency> 
-  <prescription>
-    <by>
-      <name>Dr. Ken Mandl</name>
-      <institution>Children's Hospital Boston</institution>
-    </by>
-    <on>2009-02-01</on>
-    <stopOn>2010-01-31</stopOn>
-    <dispenseAsWritten>true</dispenseAsWritten>
-    <duration>P2M</duration>
-    <refillInfo>once a month for 3 months</refillInfo>
-    <instructions>don't take them all at once!</instructions>
-  </prescription>
-</Medication>
-""",
-
-    """
-<Medication xmlns='http://indivo.org/vocab/xml/documents#'>
-  <dateStarted>2009-02-05</dateStarted>
-  <name type='http://indivo.org/codes/meds#' value='Tylenol' abbrev='Tylenol'>Tylenol</name>
-  <dose>
-    <textValue>2</textValue>
-  </dose>
-  <frequency type='http://indivo.org/codes/frequency#' value='225756002' abbrev='q4'>every 4 hours</frequency>
-</Medication>
-""",
-
+    """,
 ]
 
 TEST_MEDICATIONS = report_content_to_test_docs(_TEST_MEDICATIONS)

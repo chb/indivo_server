@@ -64,7 +64,7 @@ def get_documents_by_rel(request, record, document_id, rel, query_options, pha=N
                                    status=query_options['status'],
                                    rels_as_doc_1__document_0__original=document.original_id, # doc is related to passed document
                                    rels_as_doc_1__relationship=relationship) # AND relation type is correct
-    tdc = len(docs)
+    tdc = docs.count()
   except:
     docs = []
   return _render_documents(docs, record, pha, tdc)

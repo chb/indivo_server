@@ -32,12 +32,13 @@ VALID_EXCLUSION_IDS = [
 ]
 
 class AllergySerializers(DataModelSerializers):
-    def to_rdf(queryset, result_count, record=None, carenet=None):
+    def to_rdf(query, record=None, carenet=None):
         if not record:
             record = carenet.record
         
         graph = PatientGraph(record)
-        graph.addAllergyList(queryset.iterator())
+        graph.addAllergyList(query.results.iterator())
+        graph.addResponseSummary(query)
         return graph.toRDF()
 
 class AllergyOptions(DataModelOptions):
@@ -59,12 +60,13 @@ class AllergyOptions(DataModelOptions):
         }
 
 class AllergyExclusionSerializers(DataModelSerializers):
-    def to_rdf(queryset, result_count, record=None, carenet=None):
+    def to_rdf(query, carenet=None):
         if not record:
             record = carenet.record
         
         graph = PatientGraph(record)
-        graph.addAllergyExclusions(queryset.iterator())
+        graph.addAllergyExclusions(query.results.iterator())
+        graph.addResponseSummary(query)
         return graph.toRDF()
 
 class AllergyExclusionOptions(DataModelOptions):
