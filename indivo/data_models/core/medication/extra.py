@@ -28,6 +28,7 @@ class MedicationOptions(DataModelOptions):
     model_class_name = 'Medication'
     serializers = MedicationSerializers
     field_validators = {
+        'name_title': [NonNullValidator()],
         'name_code_system': [ExactValueValidator(RXN_URI)],
         'name_code_identifier': [NonNullValidator()],
         'name_code_title': [NonNullValidator()],

@@ -4,6 +4,7 @@ _TEST_SOCIAL_HISTORIES = [
     """
     <Models xmlns="http://indivo.org/vocab/xml/documents#">
       <Model name="SocialHistory">
+        <Field name="smoking_status_title">Former Smoker</Field>
         <Field name="smoking_status_code_title">Former Smoker</Field>
         <Field name="smoking_status_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
         <Field name="smoking_status_code_identifier">8517006</Field>

@@ -10,6 +10,7 @@ lab_fact = LabResult(
 
     accession_number="AC09205823577",
 
+    name_title="Serum Sodium",
     name_code_title="Serum Sodium",
     name_code_system="http://purl.bioontology.org/ontology/LNC/",
     name_code_identifier="2951-2",

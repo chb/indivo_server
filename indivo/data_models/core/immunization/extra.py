@@ -45,11 +45,13 @@ class ImmunizationOptions(DataModelOptions):
     serializers = ImmunizationSerializers
     field_validators = {
         'date': [NonNullValidator()],
+        'administration_status_title': [NonNullValidator()],
         'administration_status_code_system': [ExactValueValidator(IMM_STATUS_URI)],
         'administration_status_code_identifier': [ValueInSetValidator(VALID_IMM_STATUSES)],
         'administration_status_code_title': [NonNullValidator()],
         'product_class_code_system': [ExactValueValidator(IMM_CLASS_URI, nullable=True)],
         'product_class_2_code_system': [ExactValueValidator(IMM_CLASS_URI, nullable=True)],
+        'product_name_title': [NonNullValidator()],
         'product_name_code_system': [ExactValueValidator(IMM_PROD_URI)],
         'product_name_code_identifier': [NonNullValidator()],
         'product_name_code_title': [NonNullValidator()],

@@ -20,6 +20,7 @@ class ProcedureOptions(DataModelOptions):
     model_class_name = 'Procedure'
     serializers = ProcedureSerializers
     field_validators = {
+        'name_title': [NonNullValidator()],
         'name_code_system': [ExactValueValidator(SNOMED_URI)],
         'name_code_identifier': [NonNullValidator()],
         'name_code_title': [NonNullValidator()],

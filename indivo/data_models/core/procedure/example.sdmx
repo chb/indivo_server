@@ -2,6 +2,7 @@
 	<Model name="Procedure">
 		<Field name="date">2011-02-15T12:00:00Z</Field>
 	    <Field name="notes">Went great!</Field>
+	    <Field name="name_title">Appendectomy</Field>
 	    <Field name="name_code_title">Appendectomy</Field>
 	    <Field name="name_code_system">http://purl.bioontology.org/ontology/SNOMEDCT/</Field>
 	    <Field name="name_code_identifier">80146002</Field>

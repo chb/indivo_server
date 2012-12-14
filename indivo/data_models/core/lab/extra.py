@@ -34,6 +34,7 @@ class LabOptions(DataModelOptions):
     field_validators = {
         'abnormal_interpretation_code_system': [ExactValueValidator(LAB_INTERP_URI, nullable=True)],
         'abnormal_interpretation_code_identifier': [ValueInSetValidator(VALID_INTERPS, nullable=True)],
+        'name_title': [NonNullValidator()],
         'name_code_system': [ExactValueValidator(LOINC_URI)],
         'name_code_identifier': [NonNullValidator()],
         'name_code_title': [NonNullValidator()],

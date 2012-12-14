@@ -4,6 +4,7 @@ from indivo.lib.iso8601 import parse_utc_date as date
 procedure_fact = Procedure(
     date=date("2011-02-15T12:00:00Z"),
     notes="Went great!",
+    name_title="Appendectomy",
     name_code_title="Appendectomy",
     name_code_system="http://purl.bioontology.org/ontology/SNOMEDCT/",
     name_code_identifier="80146002",

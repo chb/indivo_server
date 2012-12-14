@@ -367,15 +367,15 @@ class PatientGraph(object):
             g.add((inode, SP['productName'], self.newCodedValue(product_name)))
         
             product_class = self._getCodedValueFromField(i, 'product_class', [SPCODE['ImmunizationClass']])
-            if i.product_class_title and i.product_class_identifier:
+            if product_class:
                 g.add((inode, SP['productClass'], self.newCodedValue(product_class)))
                                 
             product_class2 = self._getCodedValueFromField(i, 'product_class_2', [SPCODE['ImmunizationClass']])
-            if i.product_class_2_title and i.product_class_2_identifier:
+            if product_class2:
                 g.add((inode, SP['productClass'], self.newCodedValue(product_class2)))
             
             refusal_reason = self._getCodedValueFromField(i, 'refusal_reason', [SPCODE['ImmunizationRefusalReason']])
-            if i.refusal_reason_title and i.refusal_reason_identifier:
+            if refusal_reason:
                 g.add((inode, SP['refusalReason'], self.newCodedValue(refusal_reason)))
             
             self.addStatement(inode)
@@ -401,14 +401,14 @@ class PatientGraph(object):
             lab_name = self._getCodedValueFromField(lab, 'name', [SPCODE['LOINC']])
             g.add((lNode , SP['labName'], self.newCodedValue(lab_name)))
             
-            if lab.abnormal_interpretation_title and lab.abnormal_interpretation_identifier:
+            if lab.abnormal_interpretation_title:
                 abnormal_interpretation = self._getCodedValueFromField(lab, 'abnormal_interpretation', [SPCODE['LabResultInterpretation']])
                 g.add((lNode, SP['abnormalInterpretation'], self.newCodedValue(abnormal_interpretation)))
 
             if lab.accession_number:
                 g.add((lNode, SP['accessionNumber'], Literal(lab.accession_number)))
 
-            if lab.status_title and lab.status_identifier:
+            if lab.status_title:
                 lab_status = self._getCodedValueFromField(lab, 'status', [SPCODE['LabResultStatus']])
                 g.add((lNode, SP['labStatus'], self.newCodedValue(lab_status)))
 

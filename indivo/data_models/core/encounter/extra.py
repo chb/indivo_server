@@ -27,6 +27,7 @@ class EncounterOptions(DataModelOptions):
     model_class_name = 'Encounter'
     serializers = EncounterSerializers
     field_validators = {
+        'type_title': [NonNullValidator()],
         'type_code_system': [ExactValueValidator(ENC_TYPE_URI)],
         'type_code_identifier': [ValueInSetValidator(ENC_TYPES)],
         'type_code_title': [NonNullValidator()],

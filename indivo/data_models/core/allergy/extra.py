@@ -45,15 +45,18 @@ class AllergyOptions(DataModelOptions):
     model_class_name = 'Allergy'
     serializers = AllergySerializers
     field_validators = {
+        'allergic_reaction_title': [NonNullValidator()],
         'allergic_reaction_code_system': [ExactValueValidator(SNOMED)],
         'allergic_reaction_code_identifier': [NonNullValidator()],
         'allergic_reaction_code_title': [NonNullValidator()],
+        'category_title': [NonNullValidator()],
         'category_code_system': [ExactValueValidator(SNOMED)],
         'category_code_identifier': [ValueInSetValidator(VALID_CATEGORY_IDS)],
         'category_code_title': [NonNullValidator()],
         'drug_allergen_code_system': [ExactValueValidator(RXNORM, nullable=True)],
         'drug_class_allergen_code_system': [ExactValueValidator(NUI, nullable=True)],
         'other_allergen_code_system': [ExactValueValidator(UNII, nullable=True)],
+        'severity_title': [NonNullValidator()],
         'severity_code_system': [ExactValueValidator(SNOMED)],
         'severity_code_identifier': [ValueInSetValidator(VALID_SEVERITY_IDS)],
         'severity_code_title': [NonNullValidator()],
@@ -76,4 +79,5 @@ class AllergyExclusionOptions(DataModelOptions):
         'name_code_system': [ExactValueValidator(SNOMED)],
         'name_code_identifier': [ValueInSetValidator(VALID_EXCLUSION_IDS)],
         'name_code_title': [NonNullValidator()],
+        'name_title': [NonNullValidator()],
         }

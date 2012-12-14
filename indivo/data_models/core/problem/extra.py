@@ -20,6 +20,7 @@ class ProblemOptions(DataModelOptions):
     model_class_name = 'Problem'
     serializers = ProblemSerializers
     field_validators = {
+        'name_title': [NonNullValidator()],
         'name_code_system': [ExactValueValidator(SNOMED_URI)],
         'name_code_identifier': [NonNullValidator()],
         'name_code_title': [NonNullValidator()],

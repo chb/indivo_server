@@ -8,6 +8,7 @@
 
     <Field name="accession_number">AC09205823577</Field>
 
+	<Field name="name_title">Serum Sodium</Field>
     <Field name="name_code_title">Serum Sodium</Field>
     <Field name="name_code_system">http://purl.bioontology.org/ontology/LNC/</Field>
     <Field name="name_code_identifier">2951-2</Field>

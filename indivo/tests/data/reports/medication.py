@@ -4,6 +4,7 @@ _TEST_MEDICATIONS = [
     """
     <Models xmlns="http://indivo.org/vocab/xml/documents#">
   <Model name="Medication">
+    <Field name="name_title">AMITRIPTYLINE HCL 50 MG TAB</Field>
     <Field name="name_code_title">AMITRIPTYLINE HCL 50 MG TAB</Field>
     <Field name="name_code_system">http://purl.bioontology.org/ontology/RXNORM/</Field>
     <Field name="name_code_identifier">856845</Field>
@@ -11,6 +12,7 @@ _TEST_MEDICATIONS = [
     <Field name="frequency_value">2</Field>
     <Field name="frequency_unit">/d</Field>
     <Field name="instructions">Take two tablets twice daily as needed for pain</Field>
+    <Field name="provenance_title">Derived by prescription</Field>
     <Field name="provenance_code_title">Derived by prescription</Field>
     <Field name="provenance_code_system">http://smartplatforms.org/terms/codes/MedicationProvenance#</Field>
     <Field name="provenance_code_identifier">prescription</Field>
