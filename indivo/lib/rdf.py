@@ -401,15 +401,17 @@ class PatientGraph(object):
             lab_name = self._getCodedValueFromField(lab, 'name', [SPCODE['LOINC']])
             g.add((lNode , SP['labName'], self.newCodedValue(lab_name)))
             
-            if lab.abnormal_interpretation_title:
-                abnormal_interpretation = self._getCodedValueFromField(lab, 'abnormal_interpretation', [SPCODE['LabResultInterpretation']])
+            g.add((lNode, DCTERMS['date'], Literal(lab.date)))
+            
+            abnormal_interpretation = self._getCodedValueFromField(lab, 'abnormal_interpretation', [SPCODE['LabResultInterpretation']])
+            if abnormal_interpretation:
                 g.add((lNode, SP['abnormalInterpretation'], self.newCodedValue(abnormal_interpretation)))
 
             if lab.accession_number:
                 g.add((lNode, SP['accessionNumber'], Literal(lab.accession_number)))
 
-            if lab.status_title:
-                lab_status = self._getCodedValueFromField(lab, 'status', [SPCODE['LabResultStatus']])
+            lab_status = self._getCodedValueFromField(lab, 'status', [SPCODE['LabResultStatus']])
+            if lab_status:
                 g.add((lNode, SP['labStatus'], self.newCodedValue(lab_status)))
 
             if lab.narrative_result:
@@ -467,7 +469,8 @@ class PatientGraph(object):
         aExcept = URIRef(exclusion.uri('allergy_exclusions'))
         g.add((aExcept, RDF.type, SP['AllergyExclusion']))
         exclusion_name = self._getCodedValueFromField(exclusion, 'name', [SPCODE["AllergyExclusion"]])
-        g.add((aExcept, SP['allergyExclusionName'], self.newCodedValue(exclusion_name)))
+        if exclusion_name:
+            g.add((aExcept, SP['allergyExclusionName'], self.newCodedValue(exclusion_name)))
 
         return aExcept
 
@@ -487,24 +490,27 @@ class PatientGraph(object):
         g.add((aNode, RDF.type, SP['Allergy']))
         
         severity = self._getCodedValueFromField(allergy, 'severity', [SPCODE["AllergySeverity"]])
-        g.add((aNode, SP['severity'], self.newCodedValue(severity)))
+        if severity:
+            g.add((aNode, SP['severity'], self.newCodedValue(severity)))
         
         reaction = self._getCodedValueFromField(allergy, 'allergic_reaction', [SPCODE["SNOMED"]])
-        g.add((aNode, SP['allergicReaction'], self.newCodedValue(reaction)))
+        if reaction:
+            g.add((aNode, SP['allergicReaction'], self.newCodedValue(reaction)))
         
         category = self._getCodedValueFromField(allergy, 'category', [SPCODE["AllergyCategory"]])
-        g.add((aNode, SP['category'], self.newCodedValue(category)))
+        if category:
+            g.add((aNode, SP['category'], self.newCodedValue(category)))
 
-        if allergy.drug_allergen_code_identifier and allergy.drug_allergen_code_title:
-            drug_allergen = self._getCodedValueFromField(allergy, 'drug_allergen', [SPCODE["RxNorm_Ingredient"]])
+        drug_allergen = self._getCodedValueFromField(allergy, 'drug_allergen', [SPCODE["RxNorm_Ingredient"]])
+        if drug_allergen:
             g.add((aNode, SP['drugAllergen'], self.newCodedValue(drug_allergen)))
 
-        elif allergy.drug_class_allergen_code_identifier and allergy.drug_class_allergen_code_title:
-            drug_class_allergen = self._getCodedValueFromField(allergy, 'drug_class_allergen', [SPCODE["NDFRT"]])
+        drug_class_allergen = self._getCodedValueFromField(allergy, 'drug_class_allergen', [SPCODE["NDFRT"]])
+        if drug_class_allergen:
             g.add((aNode, SP['drugClassAllergen'], self.newCodedValue(drug_class_allergen)))
 
-        elif allergy.other_allergen_code_identifier and allergy.other_allergen_code_title:
-            other_allergen = self._getCodedValueFromField(allergy, 'other_allergen', [SPCODE["UNII"]])
+        other_allergen = self._getCodedValueFromField(allergy, 'other_allergen', [SPCODE["UNII"]])
+        if other_allergen:
             g.add((aNode, SP['otherAllergen'], self.newCodedValue(other_allergen)))
             
         return aNode
@@ -634,7 +640,8 @@ class PatientGraph(object):
             g.add((eNode, SP['provider'], provNode))
                 
         encounter_type = self._getCodedValueFromField(encounter, 'type', [SPCODE["EncounterType"]])
-        g.add((eNode, SP['encounterType'], self.newCodedValue(encounter_type)))
+        if encounter_type:
+            g.add((eNode, SP['encounterType'], self.newCodedValue(encounter_type)))
         return eNode
 
     def medication(self, m):
@@ -659,9 +666,9 @@ class PatientGraph(object):
         if m.endDate:
             g.add((mNode, SP['endDate'], Literal(m.endDate)))
         
-        provenance = self._getCodedValueFromField(m, 'provenance')
+        provenance = self._getCodeFromField(m, 'provenance')
         if provenance:    
-            g.add((mNode, SP['provenance'], self.newCodedValue(provenance)))
+            g.add((mNode, SP['provenance'], self.new_code(provenance)))
             
         return mNode
 
@@ -740,6 +747,9 @@ class PatientGraph(object):
     def codeProvenance(self, provenance):
         """ Adds a CodeProvenance to the graph and returns node """
         
+        if not provenance:
+            return None
+        
         title = provenance.get("title", None)
         source_code = provenance.get("sourceCode", None)
         translation_fidelity = provenance.get("translationFidelity", None)
@@ -753,6 +763,8 @@ class PatientGraph(object):
         if translation_fidelity_node:
             self.g.add((node, SPCODE['TranslationFidelity'], translation_fidelity_node))
         
+        return node
+
 
     def codedValue(self,codeclass,uri,title,system,identifier):
         """ Adds a CodedValue to the graph and returns node"""
@@ -1040,9 +1052,15 @@ class PatientGraph(object):
         coded_value = {}
         
         try:
-            coded_value["title"] = getattr(model, '%s_title' % (field_prefix))
-            coded_value["code"] = self._getCodeFromField(model, "%s_code" % (field_prefix), classes)
-            coded_value["provenance"] = self._getProvenanceFromField(model, "%s_provenance" % (field_prefix))
+            title = getattr(model, '%s_title' % (field_prefix))
+            if title:
+                coded_value["title"] = title 
+            code = self._getCodeFromField(model, "%s_code" % (field_prefix), classes)
+            if code:
+                coded_value["code"] = code
+            provenance = self._getProvenanceFromField(model, "%s_provenance" % (field_prefix))
+            if provenance:
+                coded_value["provenance"] = provenance 
         except AttributeError:
             raise #TODO
         
@@ -1055,12 +1073,21 @@ class PatientGraph(object):
         code = {}
         
         try:
-            code["classes"] = classes
-            code["identifier"] = getattr(model, '%s_identifier' % (field_prefix))
-            code["title"] = getattr(model, '%s_title' % (field_prefix))
-            code["system"] = getattr(model, '%s_system' % (field_prefix))
+            identifier = getattr(model, '%s_identifier' % (field_prefix))
+            if identifier:
+                code["identifier"] = identifier
+            title = getattr(model, '%s_title' % (field_prefix))
+            if title:
+                code["title"] = title
+            system =  getattr(model, '%s_system' % (field_prefix))
+            if system:
+                code["system"] = system
         except AttributeError:
             raise #TODO
+        
+        if code:
+            # attach classes if not empty
+            code["classes"] = classes
         
         return code
             
@@ -1070,10 +1097,15 @@ class PatientGraph(object):
         provenance = {}
         
         try:
-            provenance["title"] = getattr(model, '%s_title' % (field_prefix))
-            provenance["sourceCode"] = getattr(model, '%s_source_code' % (field_prefix))
+            title = getattr(model, '%s_title' % (field_prefix))
+            if title:
+                provenance["title"] = title
+            source_code = getattr(model, '%s_source_code' % (field_prefix))
+            if source_code:
+                provenance["sourceCode"] = source_code 
             translation_fidelity = self._getCodeFromField(model, "%s_translation_fidelity" % (field_prefix), classes=[SPCODE['TranslationFidelity']])
-            provenance["translationFidelity"] = translation_fidelity
+            if translation_fidelity:
+                provenance["translationFidelity"] = translation_fidelity
         except AttributeError:
             raise #TODO
         

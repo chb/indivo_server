@@ -1,13 +1,13 @@
 from indivo.models import Fact
 from django.db import models
-from indivo.fields import CodedValueField, ValueAndUnitField, PharmacyField, ProviderField
+from indivo.fields import CodedValueField, CodeField, ValueAndUnitField, PharmacyField, ProviderField
 
 class Medication(Fact):
     name = CodedValueField()
     endDate = models.DateField(null=True)
     frequency = ValueAndUnitField()
     instructions = models.CharField(max_length=255, null=True)
-    provenance = CodedValueField()
+    provenance = CodeField()
     quantity = ValueAndUnitField()
     startDate = models.DateField(null=True)
 

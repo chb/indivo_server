@@ -17,7 +17,7 @@ from django.db.models.fields.related import ForeignRelatedObjectsDescriptor, Rev
 from indivo.models import Fact
 from lxml import etree
 from indivo.lib import iso8601
-from indivo.fields import CodedValueField, ValueAndUnitField, AddressField
+from indivo.fields import CodedValueField, CodeField, ValueAndUnitField, AddressField
 from indivo.fields import NameField, TelephoneField, PharmacyField, ProviderField
 from indivo.fields import OrganizationField, BloodPressureField, VitalSignField
 from indivo.fields import QuantitativeResultField, ValueRangeField
@@ -26,6 +26,7 @@ SDM_TYPES = {
     'Date': (models.DateTimeField, {'null':True}),
     'String': (models.CharField, {'max_length': 255, 'null':True}),
     'Number': (models.FloatField, {'null':True}),
+    'Code': (CodeField, {}),
     'CodedValue': (CodedValueField, {}),
     'ValueAndUnit': (ValueAndUnitField, {}),
     'Address': (AddressField, {}),
