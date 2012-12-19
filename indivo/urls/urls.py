@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 
     # SMART container calls
     (r'^ontology$', MethodDispatcher({'GET': smart_ontology})),
-    (r'^capabilities/$', MethodDispatcher({'GET': smart_capabilities})),              
+    (r'^manifest$', MethodDispatcher({'GET': smart_manifest})),              
     
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static'}),

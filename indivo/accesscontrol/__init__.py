@@ -47,7 +47,7 @@ def load_access_rules():
            pha,
            app_manifest,
            smart_ontology,
-           smart_capabilities,] 
+           smart_manifest,] 
   AccessRule('Basic Access', basic_access, views)
 
   # Account-related views

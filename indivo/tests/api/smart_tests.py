@@ -11,7 +11,7 @@ class SMARTInternalTests(InternalTests):
         response = self.client.get('/ontology')
         self.assertEqual(response.status_code, 200)
         
-    def test_get_smart_capabilities(self):
-        response = self.client.get('/capabilities/')
+    def test_get_smart_manifest(self):
+        response = self.client.get('/manifest')
         self.assertEqual(response.status_code, 200)
 
