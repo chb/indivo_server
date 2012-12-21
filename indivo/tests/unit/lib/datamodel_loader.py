@@ -13,13 +13,11 @@ TEST_MODULE = sys.modules[__name__]
 CORE_MODELS = (
     'Allergy',
     'AllergyExclusion',
-    'Equipment',
     'Encounter',
     'Fill',
     'Immunization',
     'LabResult',
     'LabPanel'
-    'Measurement',
     'Medication',
     'Problem',
     'Procedure',
@@ -29,11 +27,9 @@ CORE_MODELS = (
 
 CORE_DIRS = (
     'allergy',
-    'equipment',
     'immunization',
     'lab_result',
     'lab_panel',
-    'measurement',
     'medication',
     'problem',
     'procedure',

@@ -10,8 +10,6 @@ AUDIT_FUNC_NAME = 'record_app_specific_document'
 CARENET_LABEL = 'New Carenet'
 REL = 'annotation'
 STATUS = {'status':'void', 'reason':'because I CAN'}
-LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
-
 
 def recordStateSetUp(test_cases_instance):
     _self = test_cases_instance
@@ -730,21 +728,6 @@ class RecordInternalTests(InternalTests):
     def test_get_record_ccr(self):
         record_id = self.record.id
         url = '/records/%s/reports/experimental/ccr'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # ADD REPORTS
-
-    def test_get_record_equipment(self):
-        record_id = self.record.id
-        url = '/records/%s/reports/minimal/equipment/'%(record_id)
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        # ADD REPORTS
-
-    def test_get_record_measurements(self):
-        record_id = self.record.id
-        lab_code = LAB_CODE
-        url = '/records/%s/reports/minimal/measurements/%s/'%(record_id, lab_code)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         # ADD REPORTS

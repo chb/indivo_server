@@ -16,7 +16,6 @@
 	  <xs:sequence>
 	    <xs:choice minOccurs="1" maxOccurs="1">
 	      <xs:element name="Allergy" />
-	      <xs:element name="Equipment" />
 	      <xs:element name="Immunization" />
 	      <xs:element name="LabReport" />
 	      <xs:element name="Medication" />

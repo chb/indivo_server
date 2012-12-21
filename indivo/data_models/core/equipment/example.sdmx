@@ -1,9 +1,0 @@
-<Models xmlns="http://indivo.org/vocab/xml/documents#">
-  <Model name="Equipment">
-    <Field name="date_started">2009-02-05</Field>
-    <Field name="date_stopped">2009-06-12</Field>
-    <Field name="name">Pacemaker</Field>
-    <Field name="vendor">Acme Medical Devices</Field>
-    <Field name="description">it works!</Field>
-  </Model>
-</Models>

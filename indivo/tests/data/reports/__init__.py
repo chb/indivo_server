@@ -1,9 +1,7 @@
 from allergy import TEST_ALLERGIES, TEST_ALLERGY_EXCLUSIONS, TEST_ALLERGIES_INVALID
-from equipment import TEST_EQUIPMENT
 from immunization import TEST_IMMUNIZATIONS
 from lab_result import TEST_LAB_RESULTS
 from lab_panel import TEST_LAB_PANELS
-from measurement import TEST_MEASUREMENTS
 from medication import TEST_MEDICATIONS
 from problem import TEST_PROBLEMS
 from procedure import TEST_PROCEDURES
@@ -15,9 +13,7 @@ TEST_REPORTS = (TEST_LAB_RESULTS
                 + TEST_LAB_PANELS
                 + TEST_ALLERGIES
                 + TEST_ALLERGY_EXCLUSIONS
-                + TEST_EQUIPMENT
                 + TEST_IMMUNIZATIONS
-                + TEST_MEASUREMENTS
                 + TEST_MEDICATIONS
                 + TEST_PROBLEMS
                 + TEST_PROCEDURES

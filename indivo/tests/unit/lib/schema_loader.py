@@ -8,7 +8,7 @@ import os
 NS = 'http://indivo.org/vocab/xml/documents#'
 
 VALID_CORE_SCHEMAS = {
-    'equipment': NS+'Equipment',
+    'sdmx': NS+'Models',
     }
 
 INVALID_CORE_SCHEMAS = (

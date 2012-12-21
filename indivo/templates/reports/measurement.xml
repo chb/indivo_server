@@ -1,1 +1,0 @@
-{% load template_utils %}<Measurement id="{{ fobj.id }}" value="{{ fobj.value }}" type="{{ fobj.type }}" datetime="{{ fobj.datetime|format_iso8601_datetime }}" unit="{{ fobj.unit }}" source_doc="{{ fobj.document_id }}" />
