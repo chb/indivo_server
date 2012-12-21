@@ -382,7 +382,35 @@ class PatientGraph(object):
             
         return immunization_list_node
 
-    def addLabList(self, labs, order_results=False):
+    def addLabPanelList(self, lab_panels, order_results=False):
+        """Adds Lab Panels to the patient's graph"""
+        
+        g = self.g
+        panel_list_node = None
+        
+        if order_results:
+            # build an ordered list if requested
+            panel_list_node = BNode()
+            panel_collection = Collection(g, panel_list_node, [])
+        
+        for panel in lab_panels:
+            panel_node = URIRef(panel.uri('lab_panels'))
+            g.add((panel_node, RDF.type, SP['LabPanel']))
+            if order_results:
+                panel_collection.append(panel_node)
+            
+            lab_name = self._getCodedValueFromField(panel, 'name', [SPCODE['LOINC']])
+            if lab_name:
+                g.add((panel_node , SP['labName'], self.newCodedValue(lab_name)))
+                
+            for lab_result in panel.lab_results.all().iterator():
+                result_node = self.lab_result(lab_result)
+                g.add((panel_node, SP['labResult'], result_node))
+                self.addStatement(result_node)
+
+        return panel_list_node
+    
+    def addLabResultList(self, labs, order_results=False):
         """Adds Lab Results to the patient's graph"""
         g = self.g
         lab_list_node = None
@@ -393,41 +421,10 @@ class PatientGraph(object):
             lab_collection = Collection(g, lab_list_node, [])
         
         for lab in labs:
-            lNode = URIRef(lab.uri('lab_results'))
-            g.add((lNode, RDF.type, SP['LabResult']))
+            lNode = self.lab_result(lab)
+            self.addStatement(lNode)
             if order_results:
                 lab_collection.append(lNode)
-
-            lab_name = self._getCodedValueFromField(lab, 'name', [SPCODE['LOINC']])
-            g.add((lNode , SP['labName'], self.newCodedValue(lab_name)))
-            
-            g.add((lNode, DCTERMS['date'], Literal(lab.date)))
-            
-            abnormal_interpretation = self._getCodedValueFromField(lab, 'abnormal_interpretation', [SPCODE['LabResultInterpretation']])
-            if abnormal_interpretation:
-                g.add((lNode, SP['abnormalInterpretation'], self.newCodedValue(abnormal_interpretation)))
-
-            if lab.accession_number:
-                g.add((lNode, SP['accessionNumber'], Literal(lab.accession_number)))
-
-            lab_status = self._getCodedValueFromField(lab, 'status', [SPCODE['LabResultStatus']])
-            if lab_status:
-                g.add((lNode, SP['labStatus'], self.newCodedValue(lab_status)))
-
-            if lab.narrative_result:
-                nrNode = BNode()
-                g.add((nrNode, RDF.type, SP['NarrativeResult']))
-                g.add((nrNode, SP['value'], Literal(lab.narrative_result)))
-                g.add((lNode, SP['narrativeResult'], nrNode))
-
-            if lab.notes:
-                g.add((lNode, SP['notes'], Literal(lab.notes)))
-
-            qrNode = self.quantitativeResult(lab, 'quantitative_result')
-            if qrNode:
-                g.add((lNode, SP['quantitativeResult'], qrNode))
-
-            self.addStatement(lNode)
 
         return lab_list_node
 
@@ -643,6 +640,45 @@ class PatientGraph(object):
         if encounter_type:
             g.add((eNode, SP['encounterType'], self.newCodedValue(encounter_type)))
         return eNode
+
+    def lab_result(self, lab):
+        """ Build a Medication, but don't add fills and don't link it to the patient. Returns the med node. """
+        g = self.g
+        if not lab: return 
+
+        lNode = URIRef(lab.uri('lab_results'))
+        g.add((lNode, RDF.type, SP['LabResult']))
+        
+        lab_name = self._getCodedValueFromField(lab, 'name', [SPCODE['LOINC']])
+        g.add((lNode , SP['labName'], self.newCodedValue(lab_name)))
+        
+        g.add((lNode, DCTERMS['date'], Literal(lab.date)))
+        
+        abnormal_interpretation = self._getCodedValueFromField(lab, 'abnormal_interpretation', [SPCODE['LabResultInterpretation']])
+        if abnormal_interpretation:
+            g.add((lNode, SP['abnormalInterpretation'], self.newCodedValue(abnormal_interpretation)))
+
+        if lab.accession_number:
+            g.add((lNode, SP['accessionNumber'], Literal(lab.accession_number)))
+
+        lab_status = self._getCodedValueFromField(lab, 'status', [SPCODE['LabResultStatus']])
+        if lab_status:
+            g.add((lNode, SP['labStatus'], self.newCodedValue(lab_status)))
+
+        if lab.narrative_result:
+            nrNode = BNode()
+            g.add((nrNode, RDF.type, SP['NarrativeResult']))
+            g.add((nrNode, SP['value'], Literal(lab.narrative_result)))
+            g.add((lNode, SP['narrativeResult'], nrNode))
+
+        if lab.notes:
+            g.add((lNode, SP['notes'], Literal(lab.notes)))
+
+        qrNode = self.quantitativeResult(lab, 'quantitative_result')
+        if qrNode:
+            g.add((lNode, SP['quantitativeResult'], qrNode))
+            
+        return lNode
 
     def medication(self, m):
         """ Build a Medication, but don't add fills and don't link it to the patient. Returns the med node. """

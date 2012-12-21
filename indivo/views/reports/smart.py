@@ -23,6 +23,7 @@ SMART_URLS_TO_DATAMODELS = {
     'fulfillments': 'Fill', 
     'immunizations': 'Immunization',
     'lab_results': 'LabResult',
+    'lab_panels': 'LabPanel',
     'medications': 'Medication',
     'vital_sign_sets': 'VitalSigns',
     'procedures': 'Procedure',
@@ -62,7 +63,7 @@ def smart_generic(request, query_options, record, model_name):
                 
     # transform SMART date query filters to Indivo filters
     if SMART_DATE_FILTERS.has_key(model_name):
-        date_from = query_options.pop('date_from', None) #TODO iso8601 these, or is that handled in the query?
+        date_from = query_options.pop('date_from', None) 
         date_to = query_options.pop('date_to', None)
         if date_from or date_to:
             date_range = {'field': SMART_DATE_FILTERS.get(model_name),

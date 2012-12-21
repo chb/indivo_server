@@ -262,14 +262,23 @@ class ReportingInternalTests(InternalTests):
         problems = [p for p in g.subjects(None,SMART["Problem"])]
         self.assertEqual(len(problems), 1)
 
-    def test_get_smart_labs(self):
+    def test_get_smart_lab_panels(self):
+        response = self.client.get('/records/%s/lab_panels/'%(self.record.id))
+        self.assertEquals(response.status_code, 200)
+
+        g = Graph()
+        g.parse(data=response.content, format="application/rdf+xml")
+        lab_panels = [l for l in g.subjects(None,SMART["LabPanel"])]
+        self.assertEqual(len(lab_panels), 1)
+    
+    def test_get_smart_lab_results(self):
         response = self.client.get('/records/%s/lab_results/'%(self.record.id))
         self.assertEquals(response.status_code, 200)
 
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
-        self.assertEqual(len(lab_results), 1)
+        self.assertEqual(len(lab_results), 2)
         
         # retrieve a single lab result
         lab_id = lab_results[0].split('/')[-1]
@@ -283,7 +292,7 @@ class ReportingInternalTests(InternalTests):
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
-        self.assertEqual(len(lab_results), 1)
+        self.assertEqual(len(lab_results), 2)
         
         # grab labs with bad LOINC code
         response = self.client.get('/records/%s/lab_results/?loinc=2951-2fake'%(self.record.id))
@@ -299,7 +308,7 @@ class ReportingInternalTests(InternalTests):
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
-        self.assertEqual(len(lab_results), 1)
+        self.assertEqual(len(lab_results), 2)
         
         # grab labs with date_from
         response = self.client.get('/records/%s/lab_results/?date_from=2009-05-17'%(self.record.id))
@@ -318,12 +327,12 @@ class ReportingInternalTests(InternalTests):
         self.assertEqual(len(lab_results), 0)
         
         # grab labs with date_to
-        response = self.client.get('/records/%s/lab_results/?date_to=2009-05-16'%(self.record.id))
+        response = self.client.get('/records/%s/lab_results/?date_to=2009-05-16T23:59:59Z'%(self.record.id))
         self.assertEquals(response.status_code, 200)
         g = Graph()
         g.parse(data=response.content, format="application/rdf+xml")
         lab_results = [l for l in g.subjects(None,SMART["LabResult"])]
-        self.assertEqual(len(lab_results), 1)
+        self.assertEqual(len(lab_results), 2)
         
     def test_get_smart_allergies(self):
         # allergies are a special case since they can be an Allergy or AllergyExclusion 

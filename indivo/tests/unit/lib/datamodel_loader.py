@@ -18,6 +18,7 @@ CORE_MODELS = (
     'Fill',
     'Immunization',
     'LabResult',
+    'LabPanel'
     'Measurement',
     'Medication',
     'Problem',
@@ -30,7 +31,8 @@ CORE_DIRS = (
     'allergy',
     'equipment',
     'immunization',
-    'lab',
+    'lab_result',
+    'lab_panel',
     'measurement',
     'medication',
     'problem',

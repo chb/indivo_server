@@ -11,3 +11,4 @@ class LabResult(Fact):
     narrative_result = models.CharField(max_length=255, null=True)
     notes = models.CharField(max_length=600, null=True)
     quantitative_result = QuantitativeResultField()
+    lab_panel = models.ForeignKey('LabPanel', null=True, related_name='lab_results')

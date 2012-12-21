@@ -58,6 +58,9 @@ def marsloader(query_api_support = False):
           field, time_incr = value.split('*')
           return {'field':field, 'time_incr':time_incr}
       
+      def parse_date(value):
+          return iso8601.parse_utc_date(value)
+      
       check_safety()
       
       parse_map = {
@@ -69,8 +72,8 @@ def marsloader(query_api_support = False):
         'aggregate_by': parse_aggregate_by,  
         'date_range': parse_date_range,   
         'date_group': parse_date_group,
-        'date_from': parse_string,  # SMART v0.5, transformed to date_range in smart views
-        'date_to': parse_string,    # SMART v0.5, transformed to date_range in smart views
+        'date_from': parse_date,  # SMART v0.5, transformed to date_range in smart views
+        'date_to': parse_date,    # SMART v0.5, transformed to date_range in smart views
       }
       
       ignore_map = {

@@ -154,7 +154,7 @@ vital_sign = data.reports.vital._TEST_VITALS[0]
 patient_access_key = "<PatientAccessKey> <record_id>456</record_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> <access_key> <patient_id>123</patient_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> </access_key> </PatientAccessKey>"
 access_key = "<AccessKey> <record_id>456</record_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> <access_key> <patient_id>123</patient_id> <token>z8j38em</token> <token_secret>hs92jwl</token_secret> </access_key> </AccessKey>"
 
-lab = data.reports.lab._TEST_LABS[0]
+lab = data.reports.lab_result._TEST_LAB_RESULTS[0]
 
 clinical_note= """
 <SimpleClinicalNote xmlns="http://indivo.org/vocab/xml/documents#">

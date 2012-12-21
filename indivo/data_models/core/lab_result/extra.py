@@ -19,18 +19,18 @@ VALID_STATUSES = [
     'final',
 ]
 
-class LabSerializers(DataModelSerializers):
+class LabResultSerializers(DataModelSerializers):
     def to_rdf(query, record=None, carenet=None):
         if not record:
             record = carenet.record
         graph = PatientGraph(record)
-        resultOrder = graph.addLabList(query.results.iterator(), True if query.limit else False)
+        resultOrder = graph.addLabResultList(query.results.iterator(), True if query.limit else False)
         graph.addResponseSummary(query, resultOrder)
         return graph.toRDF()
 
-class LabOptions(DataModelOptions):
+class LabResultOptions(DataModelOptions):
     model_class_name = 'LabResult'
-    serializers = LabSerializers
+    serializers = LabResultSerializers
     field_validators = {
         'abnormal_interpretation_code_system': [ExactValueValidator(LAB_INTERP_URI, nullable=True)],
         'abnormal_interpretation_code_identifier': [ValueInSetValidator(VALID_INTERPS, nullable=True)],

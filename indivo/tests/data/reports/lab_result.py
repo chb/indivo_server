@@ -1,6 +1,6 @@
 from base import report_content_to_test_docs
 
-_TEST_LABS = [
+_TEST_LAB_RESULTS = [
 """
 <Models xmlns="http://indivo.org/vocab/xml/documents#">
   <Model name="LabResult">
@@ -42,4 +42,4 @@ _TEST_LABS = [
 """,
 ]
 
-TEST_LABS = report_content_to_test_docs(_TEST_LABS)
+TEST_LAB_RESULTS = report_content_to_test_docs(_TEST_LAB_RESULTS)

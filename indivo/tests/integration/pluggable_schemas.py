@@ -156,7 +156,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # parse response and check          
         response_xml = etree.XML(response.content)
         labs = response_xml.findall('./Model')
-        self.assertEqual(len(labs), 1)
+        self.assertEqual(len(labs), 2)
         lab = labs[0]
         
         self.assertEqual(len(lab.findall('Field')), 41)
