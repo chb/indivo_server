@@ -254,9 +254,7 @@ def load_access_rules():
         or principal.isInCarenet(carenet) \
         or pha_record_access(principal, carenet.record) \
         or full_control(principal, carenet.record)
-  views = [carenet_measurement_list,
-           carenet_equipment_list,
-           carenet_generic_list,
+  views = [carenet_generic_list,
            carenet_document_list,
            carenet_document,
            carenet_document_meta]
@@ -273,12 +271,10 @@ def load_access_rules():
     """A user app with access to the record, or a principal in full control of the record"""
     return pha_record_access(principal, record) \
         or full_control(principal, record)
-  views = [measurement_list,
-           smart_allergies,
+  views = [smart_allergies,
            smart_allergies_instance,
            smart_generic,
            smart_generic_instance,
-           equipment_list,
            generic_list,
            report_ccr,
            record_document_list,

@@ -68,35 +68,35 @@ class ReportingInternalTests(InternalTests):
 
     def test_get_measurements(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/measurements/HBA1C/?group_by=lab_code&aggregate_by=avg*value&date_range=date_measured*2005-03-10T00:00:00Z*'%(record_id)
+        url = '/records/%s/reports/Measurement/?type=HBA1C&group_by=type&aggregate_by=avg*value&date_range=datetime*2005-03-10T00:00:00Z*'%(record_id)
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)
 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-        url2 = '/records/%s/reports/minimal/measurements/HBA1C/?lab_code=HBA1C&date_group=date_measured*month&aggregate_by=max*value&order_by=date_measured&date_range=date_measured*1990-03-10T00:00:00Z*'%(record_id)
+        url2 = '/records/%s/reports/Measurement/?type=HBA1C&&date_group=datetime*month&aggregate_by=max*value&order_by=datetime&date_range=datetime*1990-03-10T00:00:00Z*'%(record_id)
         response = self.client.get(url2)
         self.assertEquals(response.status_code, 200)
 
-        url3 = '/records/%s/reports/minimal/measurements/HBA1C/?order_by=date_measured&date_range=date_measured*2009-06-17T03:00:00.02Z*'%(record_id)
+        url3 = '/records/%s/reports/Measurement/?type=HBA1C&order_by=datetime&date_range=datetime*2009-06-17T03:00:00.02Z*'%(record_id)
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)        
 
     def test_get_equipment(self):
         record_id = self.record.id
-        url = '/records/%s/reports/minimal/equipment/?group_by=equipment_vendor&aggregate_by=count*equipment_name&date_range=date_started*2004-03-10T00:00:00Z*'%(record_id)
+        url = '/records/%s/reports/equipment/?group_by=vendor&aggregate_by=count*name&date_range=date_started*2004-03-10T00:00:00Z*'%(record_id)
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)
 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-        url2 = '/records/%s/reports/minimal/equipment/?equipment_name=Tractor&date_group=date_started*month&aggregate_by=count*equipment_name&order_by=date_started&date_range=date_started*1990-03-10T00:00:00Z*'%(record_id)
+        url2 = '/records/%s/reports/equipment/?name=Tractor&date_group=date_started*month&aggregate_by=count*name&order_by=date_started&date_range=date_started*1990-03-10T00:00:00Z*'%(record_id)
         response = self.client.get(url2)
         self.assertEquals(response.status_code, 200)
 
-        url3 = '/records/%s/reports/minimal/equipment/?order_by=date_started&date_range=date_started*2000-03-10T00:00:00Z*'%(record_id)
+        url3 = '/records/%s/reports/equipment/?order_by=date_started&date_range=date_started*2000-03-10T00:00:00Z*'%(record_id)
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 
