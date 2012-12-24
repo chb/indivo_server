@@ -22,7 +22,9 @@ from lxml import etree
 
 class IndivoTests(object):
     TEST_MODEL_MODULE = sys.modules['indivo.models'] # models module to which we can add test datamodels, etc.
-    TEST_MODEL_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/')
+    # Add in testing Schema and Datamodel locations
+    TEST_SCHEMA_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test')
+    TEST_DATAMODEL_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test')
     dependencies_loaded = False
     dependencies = {DocumentSchema:('document_schemas',['type']),
                     AuthSystem:('auth_systems', ['short_name', 'internal_p']),
@@ -284,25 +286,11 @@ class IndivoTests(object):
             os.makedirs(test_media_root)
         self.save_and_modify_setting('MEDIA_ROOT', test_media_root)
 
-        # Redirect Schema and Datamodel file locations, so we can play with them during tests
-        self.save_and_modify_setting('CORE_SCHEMA_DIRS', 
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/core')])
-        self.save_and_modify_setting('CONTRIB_SCHEMA_DIRS',
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/contrib')])
-
-        self.save_and_modify_setting('CONTRIB_DATAMODEL_DIRS',
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/data_models/contrib')])
-
     def restore_test_settings(self):
         # clear out any test files we created, and restore the MEDIA_ROOT setting
         for subtree in os.listdir(settings.MEDIA_ROOT):
             shutil.rmtree(os.path.join(settings.MEDIA_ROOT, subtree))
         self.restore_setting('MEDIA_ROOT')
-
-        # Restore settings for schema and datamodel locations
-        self.restore_setting('CORE_SCHEMA_DIRS')
-        self.restore_setting('CONTRIB_SCHEMA_DIRS')
-        self.restore_setting('CONTRIB_DATAMODEL_DIRS')
 
     def setUp(self):
         self.test_data_context = TestDataContext()

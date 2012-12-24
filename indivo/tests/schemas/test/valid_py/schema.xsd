@@ -2,8 +2,8 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#" xmlns:indivo="http://indivo.org/vocab/xml/documents#"
 elementFormDefault="qualified">
 
-  <include schemaLocation="../../common/codes.xsd" />
-  <include schemaLocation="../../common/provider.xsd" />
+  <include schemaLocation="../common/codes.xsd" />
+  <include schemaLocation="../common/provider.xsd" />
 
   <!-- this is mostly a chunk o' text. More normalized clinical notes will be in a diff schema -->
   <element name="SimpleClinicalNote">

@@ -2,7 +2,7 @@
 <xsl:stylesheet version = '1.0' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:indivodoc="http://indivo.org/vocab/xml/documents#"> 
   <xsl:output method = "xml" indent = "yes" />  
   <xsl:template match="indivodoc:SimpleClinicalNote">
-    <Models>
+    <TestModels>
       <Model name="SimpleClinicalNote">
         <Field name="date_of_visit"><xsl:value-of select='indivodoc:dateOfVisit/text()' /></Field>
         <xsl:if test="indivodoc:finalizedAt">
@@ -29,6 +29,6 @@
         <Field name="chief_complaint"><xsl:value-of select='indivodoc:chiefComplaint/text()' /></Field>
         <Field name="content"><xsl:value-of select='indivodoc:content/text()' /></Field>
       </Model>
-    </Models>
+    </TestModels>
   </xsl:template>
 </xsl:stylesheet>

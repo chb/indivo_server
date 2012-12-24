@@ -152,11 +152,11 @@ class SDMLUnitTests(InternalTests):
 class SDMJDataUnitTests(TransactionInternalTests):
     def setUp(self):
         super(SDMJDataUnitTests, self).setUp()
-        self.load_model_dir(self.TEST_MODEL_DIR)
+        self.load_model_dir(self.TEST_DATAMODEL_DIR)
         self.instance = SDMJData(TEST_SDMJ_DOCS[0])
 
     def tearDown(self):
-        self.unload_model_dir(self.TEST_MODEL_DIR)
+        self.unload_model_dir(self.TEST_DATAMODEL_DIR)
         super(SDMJDataUnitTests, self).tearDown()        
 
     def test_get_output(self):
@@ -273,10 +273,10 @@ class SDMXDataUnitTests(TransactionInternalTests):
     def setUp(self):
         super(SDMXDataUnitTests, self).setUp()
         # Load the test datamodels
-        self.load_model_dir(self.TEST_MODEL_DIR)
+        self.load_model_dir(self.TEST_DATAMODEL_DIR)
 
     def tearDown(self):
-        self.unload_model_dir(self.TEST_MODEL_DIR)
+        self.unload_model_dir(self.TEST_DATAMODEL_DIR)
         # Unload the test datamodels
         super(SDMXDataUnitTests, self).tearDown()        
 

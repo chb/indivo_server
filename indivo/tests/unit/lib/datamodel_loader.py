@@ -67,7 +67,7 @@ INVALID_TEST_DIRS = (
 class DataModelLoaderUnitTests(InternalTests):
     def setUp(self):
         super(DataModelLoaderUnitTests, self).setUp()
-        self.test_dir = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test')
+        self.test_dir = self.TEST_DATAMODEL_DIR
         self.test_loader = IndivoDataModelLoader(self.test_dir)
 
     def tearDown(self):

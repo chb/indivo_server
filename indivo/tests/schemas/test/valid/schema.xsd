@@ -9,11 +9,11 @@
             <element name="Models" type="indivo:ModelsType" minOccurs="0" maxOccurs="1"/>
           </choice>
           <attribute name="name" type="string" use="required"/>
+          <attribute name="documentId" type="string" use="optional"/>
         </complexType>
       </element>
     </sequence>
     <attribute name="name" type="string" use="required" />
-    <attribute name="documentId" type="string" use="optional"/>
   </complexType>
 
   <complexType name="ModelsType">
@@ -22,6 +22,6 @@
     </sequence>
   </complexType>
 
-  <element name="Models" type="indivo:ModelsType" />
+  <element name="TestModels" type="indivo:ModelsType" />
 
 </schema>
