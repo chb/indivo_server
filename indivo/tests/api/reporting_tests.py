@@ -65,6 +65,15 @@ class ReportingInternalTests(InternalTests):
         response = self.client.get(url3)
         self.assertEquals(response.status_code, 200)
 
+    def test_get_vital_signs(self):
+        url = '/records/%s/reports/vitalsigns/?group_by=weight_unit&aggregate_by=avg*weight_value'%(self.record.id)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        
+        url = '/records/%s/reports/vitalsigns/?aggregate_by=avg*weight_value'%(self.record.id)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+
     def test_get_audits(self):
         record_id = self.record.id        
 
