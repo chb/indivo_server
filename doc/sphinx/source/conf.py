@@ -25,7 +25,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 # Mock packages that we don't need so that code imports work
 # on systems without the packages
-mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension', 'rdflib']
+mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension', 'rdflib', 'rdflib.collection']
 class Mock(object):
     def __init__(self, *args, **kwargs):
         pass

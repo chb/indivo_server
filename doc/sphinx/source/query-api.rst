@@ -20,8 +20,7 @@ generic query string that determines paging and ordering of the results::
 * ``status`` can be used where applicable. It pertains to the status of documents 
   and can currently be set to one of three options: 'void', 'archived' or 'active'
 
-For minimal (url ends in ``/reports/minimal/{report_type}/``) and 
-:doc:`generic <generic-reports>` reports, we expose an expanded query interface, 
+For :doc:`generic <generic-reports>` reports, we expose an expanded query interface, 
 allowing for filtering, date constraints, and aggregation. Note that this interface 
 only makes sense to implement for reports that function solely to retrieve 
 and display fact objects. The interface will not be implemented for any more 
@@ -32,15 +31,6 @@ Audit interface)
 
 Output
 ------
-
-Minimal Reports
-^^^^^^^^^^^^^^^
-
-In the previous interface, reports were templated into schemas for output as 
-specified by :doc:`the Indivo Reporting Schema <schemas/reporting-schema>`. This output 
-method will be preserved for queries that return sets of fact objects, but for 
-queries that return aggregates or groups, we will output data according to the 
-:doc:`Indivo Aggregate Report Schema <schemas/aggregate-schema>`.
 
 Generic Reports
 ^^^^^^^^^^^^^^^
@@ -223,13 +213,13 @@ Notes on Aggregation
 Aggregation over Indivo medical data types could be very useful in certain cases 
 where the data is known (by an app-developer, who generated the data, say) to be 
 highly structured. For example, consider a 'Pedometer-Visualizer' app, which 
-reads in data from an electric pedometer worn by a patient, stores that data as 
-Indivo Measurements, and displays to the patient aggregate views of their steps 
+reads in data from an electric pedometer worn by a patient, stores that data as a
+contributed Data Model, and displays to the patient aggregate views of their steps 
 taken (weekly/daily averages, total miles walked, etc.). This app could take full 
 advantage of aggregation functions such as 'sum', 'avg', etc. However, there are 
 many cases in Indivo where the data, in spite of conforming to Indivo schemas, is 
-not necessarily clean enough to run these aggregations. Consider the case of lab 
-test results: the schema field is by necessity a string, as not all lab results 
+not necessarily clean enough to run these aggregations. Consider the case of LabResults: 
+the quantitative_result_value field is by necessity a string, as not all LabResults 
 have numerical values. Thus, an incoming query might assume that it could ask for 
 an 'average lab result value', when in fact the data wouldn't support it. We 
 therefore cannot allow numerical aggregations over fields not explicitly labeled 
@@ -266,44 +256,35 @@ Example Queries
 Below are a number of sample queries that demonstrate the power of the new 
 interface.
 
-Get all labs of type 'Hematology' within a date range
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Get all Problems with a name_code_title of 'Gastritis' within a date range
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+  GET /records/{record_id}/reports/problem/?name_code_title=Gastritis&
+  date_range=date*2009-05-04T00:00:00Z*2011-03-09T00:00:00Z
+
+Get all Problems with a name_code_title of 'Gastritis' or 'Osteoarthritis' 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
   
-  GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology&
-  date_range=date_measured*2009-05-04T00:00:00Z*2011-03-09T00:00:00Z
-
-Get all labs of type 'Hematology' or 'Chemistry' 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-::
-  
-  GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology|Chemistry
-
-.. 
-  Get the average result value of all labs of type 'Hematology'
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-  ::
-
-  GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology&
-  aggregate_by=avg*first_lab_test_value 
+  GET /records/{record_id}/reports/problem/?name_code_title=Gastritis|Osteoarthritis
 
 
-Get the number of lab results per type over the last year
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Get the average weight_value of all VitalSigns
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
   
-  GET /records/{record_id}/reports/minimal/labs/?group_by=lab_type&
-  aggregate_by=count*lab_test_name&date_range=date_measured*2010-03-10T00:00:00Z*
+  GET /records/{record_id}/reports/vitalsigns/?aggregate_by=avg*weight_value
 
-Get the number of Hematology labs per month over the last year, ordered by date
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Get the number of Problems per name_code_title with a startDate since 2010-03-10T00:00:00Z
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
+  
+  GET /records/{record_id}/reports/problem/?group_by=name_code_title&
+  aggregate_by=count*&date_range=startDate*2010-03-10T00:00:00Z*
 
-  GET /records/{record_id}/reports/minimal/labs/?lab_type=Hematology&
-  date_group=date_measured*month&aggregate_by=count*lab_type&
-  order_by=-date_measured&date_range=date_measured*2010-03-10T00:00:00Z*

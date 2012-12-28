@@ -25,7 +25,7 @@ Add a subscription
 
   <Subscription id="..." />
 
-A subscription is created by an app on a specific URL, within a record. The URL is relative to the record, i.e. ``/reports/minimal/medications/``. For now only report URLs are supported.
+A subscription is created by an app on a specific URL, within a record. The URL is relative to the record, i.e. ``/reports/medication/``. For now only report URLs are supported.
 
 The callback URL is the URL that Indivo should connect to when an update pertaining to that subscription occurs. 
 

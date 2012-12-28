@@ -7,7 +7,7 @@ Introduction
 :term:`Data Models <data model>` in Indivo describe the format in which Indivo represents medical information. They are
 **NOT** the same as :term:`Schemas <schema>`, which describe formats that Indivo recognizes as valid input data. Rather,
 data models describe the final processed state of medical data in Indivo: how data are stored, how they are queryable via
-the :doc:`Query API </query-api>`, and how they are returned via the :ref:`Reporting API <processed-reports>`.
+the :doc:`Query API </query-api>`.
 
 We also introduce one additional term: :term:`Medical Facts <fact>`. A Fact is one datapoint corresponding to a data 
 model: for example, a latex allergy is a Fact that is an instance of the :doc:`Allergy data model <allergy>`. Internally,
@@ -21,11 +21,10 @@ Defining a Data Model
 At its most basic level, a data model definition is just a list of fields and their types. For example, our 
 :doc:`Problem data model <problem>` is defined as (some fields omitted):
 
-* *date_onset*: Date
-* *date_resolution*: Date
+* *startDate*: Date
+* *endDate*: Date
 * *name*: String
-* *comments*: String
-* *diagnosed_by*: String
+* *notes*: String
 
 This is pretty simple, and we'd like to enable others add new data models to Indivo just as easily. So we currently
 allow two formats for defining data models:
@@ -73,6 +72,12 @@ below for some examples). You should use these fields as if they were any other 
 
 Now YourModel has both a standard CharField, and also other fields defined by the Field Subclass. We define the following 
 Field Subclasses:
+
+.. autoclass:: indivo.fields.CodeField(Type)
+   :no-members:
+   :no-undoc-members:
+   :no-private-members:
+   :no-show-inheritance:
 
 .. autoclass:: indivo.fields.CodedValueField(Type)
    :no-members:
@@ -160,63 +165,63 @@ both in SDML and Django Model classes.
 Data Models and the Query API
 -----------------------------
 
-Since the :doc:`Query API </query-api>` allows app developers to directly apply filters and ranges to the datamodels they
+Since the :doc:`Query API </query-api>` allows app developers to directly apply filters and ranges to the Data Models they
 are selecting, they need to know what fields they are allowed to query against. The answer is simple:
 
 **ANY FIELD ON A DATA MODEL THAT IS NOT A RELATION TO ANOTHER MODEL MAY BE USED IN THE QUERY API!**
 
 For example, we introduced the 'Problem' model above, which has the fields:
 
-* *date_onset*: Date
-* *date_resolution*: Date
+* *startDate*: Date
+* *endDate*: Date
 * *name*: String
-* *comments*: String
-* *diagnosed_by*: String
+* *notess*: String
 
-If you were making an API call such as :http:get:`/records/{RECORD_ID}/reports/minimal/problems/`, you could filter by
+If you were making an API call such as :http:get:`/records/{RECORD_ID}/reports/Problem/`, you could filter by
 any of:
 
-* *date_onset*
-* *date_resolution*
+* *startDate*
+* *endDate*
 * *name*
-* *comments*
-* *diagnosed_by*
+* *notes*
 
-If the problems model were a bit more complicated, and had another field:
+The Problem model is actually a bit more complicated, and has another field:
 
-* *prescribed_med*: Medication
+* *encounters*: Encounter
 
-You wouldn't be able to filter by *prescribed_med*, since that field is a relation to another model.
+You won't be able to filter by *encounters*, since that field is a relation to another model.
 
 The only exceptions to this rule are :ref:`custom Django Model Fields <custom-model-fields>`. Such fields are translated
 into fields with other names, as described above. Any of these fields may be used in the query API, but (for example), 
-when looking at a model with a CodedValue element such as: 
+when looking at a model with a Code element such as: 
 
-* *problem_type*: CodedValue
+* *name*: Code
 
-You would be able to filter by *problem_type_identifier*, *problem_type_title*, or *problem_type_system*, but not by
-*problem_type* itself. 
+You would be able to filter by *name_identifier*, *name_title*, or *name_system*, but not by
+*name* itself. 
 
 .. _core-data-models:
 
 Core Data Models
 ----------------
 
-Here is a listing of the data models currently supported by Indivo. Each instance might define other, contributed models:
+Here is a listing of the core data models currently supported by Indivo. Each instance might define other, contributed models:
 see :ref:`below <add-data-model>` for information on how to add data models to Indivo.
 
 .. toctree::
    :maxdepth: 1
 
    allergy
-   equipment
+   clinical_note
+   encounter
    immunization
-   lab
+   lab_panel
+   lab_result
    medication
    problem
    procedure
-   vitals
-   scn
+   social_history
+   vital_signs
 
 Advanced Data-Model Tasks
 -------------------------
@@ -251,16 +256,20 @@ For example, here's our options file for the Problem data model::
 
   class ProblemSerializers(DataModelSerializers):
 
-      def to_rdf(queryset, result_count, record=None, carenet=None):
+      def to_rdf(query, record=None, carenet=None):
           # ... our SMART RDF serializer implementation here ... #
           return 'some RDF'
 
   class ProblemOptions(DataModelOptions):
-      model_class_name = 'Problem'
-      serializers = ProblemSerializers
-      field_validators = {
-        'name_system': [ExactValueValidator(SNOMED_URI)],
-      }
+    model_class_name = 'Problem'
+    serializers = ProblemSerializers
+    field_validators = {
+        'name_title': [NonNullValidator()],
+        'name_code_system': [ExactValueValidator(SNOMED_URI)],
+        'name_code_identifier': [NonNullValidator()],
+        'name_code_title': [NonNullValidator()],
+        'startDate': [NonNullValidator()],
+    }
 
 Make sure to restart Indivo for your changes to take effect after you add your ``extra.py`` file--but there's no need to 
 *reset* Indivo.
@@ -302,12 +311,11 @@ add your desired serializers as methods on the class. Currently, available seria
    :param Carenet carenet: the Carenet via which the objects have been retrieved, if available.
    :rtype: string
 
-.. py:function:: to_rdf(queryset, result_count, record=None, carenet=None)
+.. py:function:: to_rdf(query, record=None, carenet=None)
 
-   returns an RDF/XML string representing the model objects in *queryset*.
+   returns an RDF/XML string representing the model objects in *query.results*.
 
-   :param QuerySet queryset: the objects to serialize
-   :param integer result_count: the total number of items in *queryset*
+   :param FactQuery query: the Indivo FactQuery, containing the results and query options
    :param Record record: the patient record that the objects belong to, if available.
    :param Carenet carenet: the Carenet via which the objects have been retrieved, if available.
    :rtype: string
@@ -323,7 +331,7 @@ For example, here's a (non-functional) implementation of the serializers for the
       def to_json(queryset, result_count, record=None, carenet=None):
           return '''[{"Problem": "data here"}, {"Problem": "More data here..."}]'''
 
-      def to_rdf(queryset, result_count, record=None, carenet=None):
+      def to_rdf(query, record=None, carenet=None):
           return '''<rdf:RDF><rdf:Description rdf:type='indivo:Problem'>...RDF data here...</rdf:Description></rdf:RDF>'''
 
 A couple things to note:
@@ -418,11 +426,11 @@ identify themselves as having a snomed code for their names::
   class ProblemOptions(DataModelOptions):
       model_class_name = 'Problem'
       field_validators = {
-        'name_system': [snomed_validator]
+        'name_code_system': [snomed_validator]
       }  
 
 Note that we put ``snomed_validator`` in a list, since we might theoretically add additional validators to the 
-``name_system`` field.
+``name_code_system`` field.
 
 .. _add-data-model:
 

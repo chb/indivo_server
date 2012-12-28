@@ -1,8 +1,7 @@
 Indivo Reporting Schema
 =======================
 
-See the schema for :doc:`metadata-schema` and specific 
-:ref:`indivo:doc schemas <medical-schemas>`.
+See the schema for :doc:`metadata-schema`
 
 Schema:
 

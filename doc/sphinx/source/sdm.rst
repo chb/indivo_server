@@ -47,6 +47,7 @@ Syntax
    * Number
    * String
    * Date
+   * :py:class:`Code <indivo.fields.CodedValueField>`
    * :py:class:`CodedValue <indivo.fields.CodedValueField>`
    * :py:class:`ValueAndUnit <indivo.fields.ValueAndUnitField>`
    * :py:class:`Address <indivo.fields.AddressField>`

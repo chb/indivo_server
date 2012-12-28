@@ -1,5 +1,5 @@
-Indivo API
-==========
+Indivo API Overview
+===================
 
 The Indivo API provides an interface for Personal Health Applications to extend the functionality of the 
 Indivo PCHR. The Indivo API abides by the REST design pattern: it is stateless, re-uses existing HTTP 
@@ -72,7 +72,7 @@ When a list of results are returned, the URL ends in a ``/`` and the HTTP method
 REST design. In that case, Indivo X supports a generic query string that determines paging and ordering of 
 the results::
 
-  ?offset={offset}&limit={limit}&order_by={order_by}&status={document_status}&modified_since={modified_since}
+  ?offset={offset}&limit={limit}&order_by={order_by}&status={document_status}
 
 * ``offset`` indicates which item number to start with, e.g. when getting a second batch of items.
 
@@ -86,15 +86,13 @@ the results::
 * ``status`` can be used where applicable. It pertains to the status of documents and can currently be set to 
   one of three options: 'void', 'archived' or 'active'
 
-* ``modified_since`` allows an application to look at items that have been modified since a given timestamp, 
-  so that incremental downloads may be possible.
-
 Querying Results
 ^^^^^^^^^^^^^^^^
 
 As of the Beta3 release, calls that implement the basic paging operations above may also implement a more 
 powerful :doc:`query interface <query-api>`, also represented in the query string. In these cases (currently 
-all of the minimal medical reports and the auditing calls), the following values may occur in the query string::
+all of the :doc:`Generic Reports <generic-reports>` and the :ref:`auditing calls <audit-query-fields>`), the 
+following values may occur in the query string::
 
   ?offset={offset}&limit={limit}&order_by={order_by}&status={document_status}
 
@@ -482,48 +480,20 @@ Record-Application-specific storage calls are all 3-legged oAuth calls.
      Delete a record-application-specific document. Since these documents do not
      contain medical data, deleting them is acceptable.
 
-.. _processed-reports:
+.. _reporting-APIs:
 
-Processed Medical Reports
--------------------------
+Reporting APIs
+--------------
 
-Indivo processes documents into medical reports. Each report can be altered by the 
-basic paging mechanism or the more complex query interface described above. Over 
-time, new reports may be introduced. For now, we define these as the minimal set 
-of reports. Fields supported by individual reports for the querying interface may 
-be found :ref:`here <valid-query-fields>`. Response formats correspond to the 
-:doc:`schemas/reporting-schema`, and individual reports fit their individual 
-datatype's schema (see :ref:`medical-schemas`). If a report is accessed via a 
-carenet, only documents that are shared into the carenet will appear in the
-results.
+Indivo Currently supports two main APIs for reporting over :doc:`Data Models <data-models/index>`
 
-.. glossary::
+.. _smart-reporting-api:
 
-   :http:get:`/records/{RECORD_ID}/reports/minimal/equipment/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/equipment/`
-     List equipment for a given record.
-
-   :http:get:`/records/{RECORD_ID}/reports/minimal/labs/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/labs/`
-     List lab results for a given record.
-
-   :http:get:`/records/{RECORD_ID}/reports/minimal/measurements/{LAB_CODE}/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/`
-     List measurements for a given record.
-
-   :http:get:`/records/{RECORD_ID}/reports/minimal/procedures/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/procedures/`
-     List procedures for a given record.
-
-   :http:get:`/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/`
-   :http:get:`/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/`
-     List clinical notes for a given record.
-
-SMART API Calls
----------------
+SMART API Calls over Data Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As Indivo now supports the `SMART API <http://dev.smartplatforms.org/>`_, the following
-calls are now available:
+calls are now available for reporting over the various SMART Data Models
 
 .. glossary::
 
@@ -531,36 +501,21 @@ calls are now available:
      Get a SMART RDF list of a patient's medical data of type ``MODEL_NAME``. Available data models are:
      
      * ``allergies``
+     * ``clinical_notes``
      * ``encounters``
      * ``fulfillments``
      * ``immunizations``
+     * ``lab_panels``
      * ``lab_results``
      * ``medications``
      * ``problems``
-     * ``vital_signs``
+     * ``procedures``
+     * ``social_history``
+     * ``vital_sign_sets``
      
-   :http:get:`/apps/{APP_ID}/manifest`
-   :http:get:`/apps/manifests/`
-     Get SMART-style JSON manifests for one or all apps registered with this 
-     instance of Indivo.
-
-   :http:get:`/ontology`
-     Get the ontology used by a SMART container
-     
-   :http:get:`/capabilities/`
-     Get the SMART capabilities for this instance of Indivo.
-
-   :http:get:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
-     Get account preferences for a specific application.
-
-   :http:put:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
-     Set account preferences for a specific application. Overrides previous preferences.
-
-   :http:delete:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
-     Remove all account preferences for a specific application.
 
 Generic Reports
----------------
+^^^^^^^^^^^^^^^
 
 Indivo provides the ability to run 'generic' reports over all :doc:`data models <data-models/index>`.
 These reports support the :doc:`API Query Interface <query-api>`, and provide an 
@@ -571,8 +526,36 @@ with the possibility for :ref:`customization <response_format_customization>`.
 
    :http:get:`/records/{RECORD_ID}/reports/{DATA_MODEL}/`
    :http:get:`/carenets/{CARENET_ID}/reports/{DATA_MODEL}/`
-     List a patient's medical data.
 
+See :doc:`Generic Reports <generic-reports>` for more information
+
+
+SMART API Calls
+---------------
+
+In addition to the :ref:`SMART calls over specific Data Models <smart-reporting-api>`,
+Indivo also supports the following SMART Calls:
+
+.. glossary::
+
+   :http:get:`/apps/{APP_ID}/manifest`
+   :http:get:`/apps/manifests/`
+     Get SMART-style JSON manifests for one or all apps registered with this 
+     instance of Indivo.
+
+   :http:get:`/manifest`
+     Get the SMART container manifest describing its properties and capabilities
+
+   :http:get:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
+     Get account preferences for a specific application.
+
+   :http:put:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
+     Set account preferences for a specific application. Overrides previous preferences.
+
+   :http:delete:`/accounts/{ACCOUNT_EMAIL}/apps/{PHA_EMAIL}/preferences`
+     Remove all account preferences for a specific application.
+     
+     
 Coding Systems
 --------------
 

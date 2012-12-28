@@ -4,11 +4,6 @@ Indivo Data Model: Problem
 Model Definition
 ----------------
 
-As :ref:`SDML <sdml>`:
-
-.. include:: /../../../indivo/data_models/core/problem/model.sdml
-   :literal:
-
 As a Django Model Class:
 
 .. include:: /../../../indivo/data_models/core/problem/model.py
