@@ -137,4 +137,8 @@ def document_versions(request, record, document_id, query_options):
 
   offset = query_options['offset']
   limit = query_options['limit']
-  return _render_documents(docs[offset:offset+limit], record, None, len(docs))
+  
+  total_count = docs.count()
+  if limit:
+      docs = docs[offset:offset+limit]
+  return _render_documents(docs, record, None, total_count)

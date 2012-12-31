@@ -8,9 +8,7 @@ import os
 NS = 'http://indivo.org/vocab/xml/documents#'
 
 VALID_CORE_SCHEMAS = {
-    'equipment': NS+'Equipment',
-    'procedure': NS+'Procedure',
-    'simplenote': NS+'SimpleClinicalNote',
+    'sdmx': NS+'Models',
     }
 
 INVALID_CORE_SCHEMAS = (
@@ -23,16 +21,16 @@ class IndivoSchemaDirUnitTests(InternalTests):
         super(IndivoSchemaDirUnitTests, self).setUp()
 
         # A valid directory
-        self.valid_instance = IndivoSchemaDir(os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid'))
+        self.valid_instance = IndivoSchemaDir(os.path.join(self.TEST_SCHEMA_DIR, 'valid'))
 
         # A valid directory with a python transform
-        self.valid_instance_py = IndivoSchemaDir(os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid_py'))
+        self.valid_instance_py = IndivoSchemaDir(os.path.join(self.TEST_SCHEMA_DIR, 'valid_py'))
 
         # An invalid directory having a schema but no transform
         self.invalid_instance_schema = IndivoSchemaDir(os.path.join(settings.CORE_SCHEMA_DIRS[0], 'demographics'))
 
         # An invalid directory having neither a schema nor a transform
-        self.invalid_instance_empty = IndivoSchemaDir(os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'bad_dir'))
+        self.invalid_instance_empty = IndivoSchemaDir(os.path.join(self.TEST_SCHEMA_DIR, 'bad_dir'))
 
     def test_construction(self):
 
@@ -64,10 +62,10 @@ class IndivoSchemaDirUnitTests(InternalTests):
         self.assertFalse(self.invalid_instance_empty.is_valid())
 
     def test_get_full_schema_path(self):
-        schema_path = os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid/schema.xsd')
+        schema_path = os.path.join(self.TEST_SCHEMA_DIR, 'valid/schema.xsd')
         self.assertEqual(self.valid_instance.get_full_schema_path(), schema_path)
 
-        schema_path = os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid_py/schema.xsd')
+        schema_path = os.path.join(self.TEST_SCHEMA_DIR, 'valid_py/schema.xsd')
         self.assertEqual(self.valid_instance_py.get_full_schema_path(), schema_path)
         
         schema_path = os.path.join(settings.CORE_SCHEMA_DIRS[0], 'demographics/schema.xsd')
@@ -76,10 +74,10 @@ class IndivoSchemaDirUnitTests(InternalTests):
         self.assertEqual(self.invalid_instance_empty.get_full_schema_path(), None)
     
     def test_get_full_transform_path(self):
-        transform_path = os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid/transform.xsl')
+        transform_path = os.path.join(self.TEST_SCHEMA_DIR, 'valid/transform.xsl')
         self.assertEqual(self.valid_instance.get_full_transform_path(), transform_path)
 
-        transform_path = os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'valid_py/transform.py')
+        transform_path = os.path.join(self.TEST_SCHEMA_DIR, 'valid_py/transform.py')
         self.assertEqual(self.valid_instance_py.get_full_transform_path(), transform_path)
         
         self.assertEqual(self.invalid_instance_schema.get_full_transform_path(), None)
@@ -105,7 +103,7 @@ class SchemaLoaderUnitTests(InternalTests):
             self.assertFalse(schema_dir.is_valid())
 
         # Make sure our empty directory isn't a valid schema directory
-        bad_dir = os.path.join(settings.CONTRIB_SCHEMA_DIRS[0], 'bad_dir')
+        bad_dir = os.path.join(self.TEST_SCHEMA_DIR, 'bad_dir')
         self.assertFalse(IndivoSchemaLoader.detect_schema_dir(bad_dir).is_valid())
 
     def test_discover_schema_dirs(self):

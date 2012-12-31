@@ -248,9 +248,11 @@ class DataModelBase(models.base.ModelBase):
             
             # build the new fields to replace the old field with
             for suffix, new_field_params in field.__class__.replacements.iteritems():
-                new_name = "%s%s"%(field_name, suffix)
+                new_name = "%s_%s"%(field_name, suffix)
                 new_field_class, new_field_kwargs = new_field_params
                 new_field = new_field_class(**new_field_kwargs)
+                # use db_column name if specified, otherwise default to suffix
+                new_field.db_column = "%s_%s" % ((field.db_column or field_name), (new_field.db_column or suffix))
                 new_field.blank = True
                 new_fields_dict[new_name] = new_field
 

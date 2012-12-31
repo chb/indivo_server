@@ -1,14 +1,20 @@
 {
     "__modelname__": "Procedure",
-    "date_performed": "2009-05-16T12:00:00",
-    "name": "Appendectomy",
-    "name_type": "http://codes.indivo.org/procedures#",
-    "name_value": "123",
-    "name_abbrev": "append",
-    "provider_name": "Kenneth Mandl",
-    "provider_institution": "Children's Hospital Boston",
-    "location": "300 Longwood Ave, Boston MA 02115",
-    "comments": "Went great!"
+    "date": "2011-02-15T12:00:00Z",
+    "notes": "Went great!",
+    "name_title": "Appendectomy",
+    "name_code_title": "Appendectomy",
+    "name_code_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
+    "name_code_identifier": "80146002",
+    "status_code_title": "Complete",
+    "status_code_system": "http://purl.bioontology.org/ontology/SNOMEDCT/",
+    "status_code_identifier": "385658003",
+    "provider_dea_number": "325555555",
+    "provider_npi_number": "5235235",
+    "provider_email": "joshua.mandel@fake.emailserver.com",
+    "provider_name_given": "Josuha",
+    "provider_name_family": "Mandel",
+    "provider_tel_1_type": "w",
+    "provider_tel_1_number": "1-235-947-3452",
+    "provider_tel_1_preferred_p": True,
 }
-
-

@@ -1,0 +1,11 @@
+{
+    "__modelname__": "LabResult",
+    "date": "Date"
+    "abnormal_interpretation": "CodedValue",
+    "accession_number": "String",
+    "name": "CodedValue",
+    "status": "CodedValue",
+    "narrative_result": "String",
+    "notes": "String",
+    "quantitative_result": "QuantitativeResult"
+}

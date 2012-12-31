@@ -54,8 +54,8 @@ class Serializer(base.Serializer):
             self._current[field.name] = (related[0] if related else None)
 
     def handle_m2m_field(self, obj, field):
-        if field.creates_table:
-            related = getattr(obj, field.name)
+        related = getattr(obj, field.name)
+        if related:
             new_serializer = Serializer()
             self.options.update({'seen': self.seen})
             self._current[field.name] = new_serializer.serialize(related.iterator(), **self.options)

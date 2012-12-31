@@ -15,6 +15,9 @@ from indivo.lib.query import FactQuery
 from indivo.lib.view_decorators import marsloader
 from indivo.serializers.json import IndivoJSONEncoder
 
+# SMART format
+SMART_FORMAT = 'application/rdf+xml'
+
 # map request content types to Model serialization types
 SERIALIZATION_FORMAT_MAP = {
     'application/json': 'json',
@@ -46,7 +49,11 @@ def serialize(cls, format, query, record=None, carenet=None):
     result_count = query.trc
     method = "to_" + SERIALIZATION_FORMAT_MAP[format]
     if hasattr(cls, method):
-        return getattr(cls, method)(queryset, result_count, record, carenet)
+        if format == SMART_FORMAT:
+            # SMART responseSummary requires extra information, so we pass along the whole FactQuery
+            return getattr(cls, method)(query, record, carenet)
+        else:
+            return getattr(cls, method)(queryset, result_count, record, carenet)
     else:
         raise ValueError("format not supported")
 
@@ -68,13 +75,14 @@ def aggregate_json(query):
     """Serialize an aggregate query's results to a JSON string"""
     
     results = []
-    group_key = (query.group_by if query.group_by else query.date_group['time_incr']) 
+    group_key = (query.group_by if query.group_by else (query.date_group['time_incr'] if query.date_group else None)) 
     for row in query.results:
         row['__modelname__'] = 'AggregateReport'
         
         # rename the group key to 'group'
-        row['group'] = row[group_key]
-        del row[group_key]
+        if group_key:
+            row['group'] = row[group_key]
+            del row[group_key]
         
         # rename 'aggregate_value' to 'value'
         row['value'] = row['aggregate_value']
@@ -88,11 +96,13 @@ def aggregate_xml(query):
     """Serialize an aggregate query's results to an XML string"""
     
     root = etree.Element("AggregateReports")
-    group_key = (query.group_by if query.group_by else query.date_group['time_incr']) 
+    group_key = (query.group_by if query.group_by else (query.date_group['time_incr'] if query.date_group else None)) 
     for row in query.results:
         row_element = etree.Element("AggregateReport", 
-                                    value = str(row['aggregate_value']),
-                                    group = row[group_key])
+                                    value = str(row['aggregate_value']))
+        if group_key:
+            row_element.set("group", row[group_key])
+
         root.append(row_element)
         
     return etree.tostring(root)
@@ -143,7 +153,8 @@ def _generic_list(request, query_options, data_model, record=None, carenet=None,
                 model_filters,
                 query_options,
                 record, 
-                carenet)
+                carenet,
+                request_url=request.build_absolute_uri())
   try:
       query.execute()
       data = serialize(model_class, response_format, query, record, carenet)

@@ -42,14 +42,14 @@ Let's start with some vocabulary:
 
    Fact
      A single datapoint: an instance of a data model. For example, one Medication is a Fact, as is one Problem, etc. The
-     medication fact is an object whose format is defined by the :doc:`Medication Data Model <data-models/medication>`.
+     Medication fact is an object whose format is defined by the :doc:`Medication Data Model <data-models/medication>`.
      When you take input data in the form of an XML :term:`Document` and run it through a :term:`Transform`, you arrive
      at a Fact object that can be stored in the database.
 
    Serialization
      The process of taking a :term:`Fact object <Fact>` and converting it to an output format, suitable for returning in
-     response to an API call. For example, our current :ref:`Reporting API <processed-reports>` outputs Fact objects
-     serialized to XML or JSON.
+     response to an API call. For example, our current :ref:`Reporting APIs <reporting-APIs>` output Fact objects
+     serialized to XML, JSON, or RDF/XML.
 
 The Pipeline
 ------------
@@ -76,7 +76,7 @@ of five steps:
 
 #. **Storage.** The processed Facts are written to the database.
 
-#. **Retrieval.** When an app makes an API call using the :ref:`Reporting API <processed-reports>`, the database is queried
+#. **Retrieval.** When an app makes an API call using the :ref:`Reporting APIs <reporting-APIs>`, the database is queried
    for matching Facts. Those facts are then :term:`serialized <Serialization>` into the required output format (i.e., 
    XML or JSON) and returned to the app.
 
@@ -103,7 +103,7 @@ feed data into the pipeline:
 * :http:put:`/records/{RECORD_ID}/documents/{DOCUMENT_ID}/rels/{REL_TYPE}/external/{APP_ID}/{EXTERNAL_ID}`
 * :http:post:`/accounts/{ACCOUNT_ID}/inbox/{MESSAGE_ID}/attachments/{ATTACHMENT_NUM}/accept`
 
-All of the :ref:`reporting <processed-reports>` calls retrieve collections of processed Fact objects from Indivo, and 
+All of the :ref:`Reporting APIs <reporting-APIs>` retrieve collections of processed Fact objects from Indivo, and 
 thus rely on the tail end of the processing pipeline.
 
 Learning More

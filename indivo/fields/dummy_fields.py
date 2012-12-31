@@ -14,12 +14,12 @@ class DummyField(models.Field):
     """
     replacements = {}
 
-class CodedValueField(DummyField):
-    """ A field for representing coded data elements.
+class CodeField(DummyField):
+    """ A field for representing code data elements.
 
-    Creating a CodedValueField named 'value', for example, will (under the hood) create thee fields:
+    Creating a CodeField named 'value', for example, will (under the hood) create these fields:
     
-    * ``value_identifier``, the system-specific identifier that represents the element (i.e. an RXNorm CUI)
+    * ``value_identifier``, the system-specific identifier that represents the element (i.e. an RXNorm LOINC)
     * ``value_title``, the human-readable title of the element
     * ``value_system``, the coding system used to represent the element
 
@@ -31,9 +31,53 @@ class CodedValueField(DummyField):
     """
 
     replacements = {
-        '_identifier': (models.CharField, {'max_length':255, 'null':True}),
-        '_title': (models.CharField, {'max_length':255, 'null':True}),
-        '_system': (models.CharField, {'max_length':255, 'null':True}),
+        'identifier': (models.CharField, {'max_length':255, 'null':True, 'db_column':'id'}),
+        'title': (models.CharField, {'max_length':255, 'null':True}),
+        'system': (models.CharField, {'max_length':255, 'null':True, 'db_column':'sys'}),
+        }
+
+class CodeProvenanceField(DummyField):
+    """ A field for representing the provenance of a Code.
+
+    Creating a CodeProvenanceField named 'value', for example, will (under the hood) create the fields:
+    
+    * ``value_source_code``, URI for the source code
+    * ``value_title``, the human-readable title of the element
+    * ``value_translation_fidelity_*``, fields defined in :py:class:`~indivo.fields.TranslationFidelityField`
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``value`` field name.
+
+    """
+
+    replacements = {
+        'source_code': (models.CharField, {'max_length':255, 'null':True, 'db_column':'sc'}),
+        'title': (models.CharField, {'max_length':255, 'null':True}),
+        'translation_fidelity': (CodeField, {'db_column':'tf'}),
+        }
+
+class CodedValueField(DummyField):
+    """ A field for representing coded data elements.
+
+    Creating a CodedValueField named 'value', for example, will (under the hood) create the fields:
+    
+    * ``value_title``, the human-readable title of the element
+    * ``value_code_*``, fields defined in :py:class:`~indivo.fields.CodeField`
+    * ``value_provenance_*``, fields defined in :py:class:`~indivo.fields.CodeProvenanceField`
+
+    When describing instances of your model (either when defining a
+    :ref:`transform output <transform-output-types>` or when referencing fields using 
+    :ref:`the Indivo Query API <queryable-fields>`), you must refer to these field names, not the original
+    ``value`` field name.
+
+    """
+
+    replacements = {
+        'title': (models.CharField, {'max_length':255, 'null':True}),
+        'code': (CodeField, {}),
+        'provenance': (CodeProvenanceField, {'db_column':'prov'}),
         }
     
 class ValueAndUnitField(DummyField):
@@ -52,8 +96,8 @@ class ValueAndUnitField(DummyField):
     """
     
     replacements = {
-        '_value': (models.CharField, {'max_length':255, 'null':True}), # consider making this a float?
-        '_unit': (models.CharField, {'max_length':255, 'null':True}),
+        'value': (models.CharField, {'max_length':255, 'null':True}), # consider making this a float?
+        'unit': (models.CharField, {'max_length':255, 'null':True}),
         }
 
 class ValueRangeField(DummyField):
@@ -72,8 +116,8 @@ class ValueRangeField(DummyField):
     """
     
     replacements = {
-        '_max': (ValueAndUnitField, {}),
-        '_min': (ValueAndUnitField, {}),
+        'max': (ValueAndUnitField, {}),
+        'min': (ValueAndUnitField, {}),
         }
 
 class QuantitativeResultField(DummyField):
@@ -93,9 +137,9 @@ class QuantitativeResultField(DummyField):
     """
     
     replacements = {
-        '_non_critical_range': (ValueRangeField, {}),
-        '_normal_range': (ValueRangeField, {}),
-        '_value': (ValueAndUnitField, {}),
+        'non_critical_range': (ValueRangeField, {}),
+        'normal_range': (ValueRangeField, {}),
+        'value': (ValueAndUnitField, {}),
         }
 
 class AddressField(DummyField):
@@ -118,11 +162,11 @@ class AddressField(DummyField):
     """
     
     replacements = {
-        '_country': (models.CharField, {'max_length':255, 'null':True}),
-        '_city': (models.CharField, {'max_length':255, 'null':True}),
-        '_postalcode': (models.CharField, {'max_length':12, 'null':True}),
-        '_region': (models.CharField, {'max_length':255, 'null':True}),
-        '_street': (models.CharField, {'max_length':255, 'null':True}),
+        'country': (models.CharField, {'max_length':255, 'null':True}),
+        'city': (models.CharField, {'max_length':255, 'null':True}),
+        'postalcode': (models.CharField, {'max_length':12, 'null':True}),
+        'region': (models.CharField, {'max_length':255, 'null':True}),
+        'street': (models.CharField, {'max_length':255, 'null':True}),
         }
 
 class OrganizationField(DummyField):
@@ -141,8 +185,8 @@ class OrganizationField(DummyField):
     """
     
     replacements = {
-        '_name': (models.CharField, {'max_length':255, 'null':True}),
-        '_adr': (AddressField, {}),
+        'name': (models.CharField, {'max_length':255, 'null':True}),
+        'adr': (AddressField, {}),
         }
 
 class PharmacyField(DummyField):
@@ -162,9 +206,9 @@ class PharmacyField(DummyField):
     """
     
     replacements = {
-        '_ncpdpid': (models.CharField, {'max_length':255, 'null':True}),
-        '_org': (models.CharField, {'max_length':255, 'null':True}),
-        '_adr': (AddressField, {}),
+        'ncpdpid': (models.CharField, {'max_length':255, 'null':True}),
+        'org': (models.CharField, {'max_length':255, 'null':True}),
+        'adr': (AddressField, {}),
         }
 
 class NameField(DummyField):
@@ -186,11 +230,11 @@ class NameField(DummyField):
     """
     
     replacements = {
-        '_family': (models.CharField, {'max_length':255, 'null':True}),
-        '_given': (models.CharField, {'max_length':255, 'null':True}),
-        '_middle': (models.CharField, {'max_length':255, 'null':True}),
-        '_prefix': (models.CharField, {'max_length':255, 'null':True}),
-        '_suffix': (models.CharField, {'max_length':255, 'null':True}),
+        'family': (models.CharField, {'max_length':255, 'null':True}),
+        'given': (models.CharField, {'max_length':255, 'null':True}),
+        'middle': (models.CharField, {'max_length':255, 'null':True}),
+        'prefix': (models.CharField, {'max_length':255, 'null':True}),
+        'suffix': (models.CharField, {'max_length':255, 'null':True}),
         }
 
 class TelephoneField(DummyField):
@@ -212,9 +256,9 @@ class TelephoneField(DummyField):
     phone_number_type_choices = ( ('h', 'Home'), ('w', 'Work'), ('c', 'Cell'), )
 
     replacements = {
-        '_type': (models.CharField, {'max_length':1, 'null':True, 'choices':phone_number_type_choices}),
-        '_number': (models.CharField, {'max_length':20, 'null':True}),
-        '_preferred_p': (models.BooleanField, {'default':False}),
+        'type': (models.CharField, {'max_length':1, 'null':True, 'choices':phone_number_type_choices}),
+        'number': (models.CharField, {'max_length':20, 'null':True}),
+        'preferred_p': (models.BooleanField, {'default':False}),
         }
 
 class ProviderField(DummyField):
@@ -245,18 +289,18 @@ class ProviderField(DummyField):
     gender_choices = ( ('m', 'male'), ('f', 'female'), )
     
     replacements = {
-        '_dea_number': (models.CharField, {'max_length':255, 'null':True}),
-        '_ethnicity': (models.CharField, {'max_length':255, 'null':True}),
-        '_npi_number': (models.CharField, {'max_length':255, 'null':True}),
-        '_preferred_language': (models.CharField, {'max_length':255, 'null':True}),
-        '_race': (models.CharField, {'max_length':255, 'null':True}),
-        '_adr': (AddressField, {}),
-        '_bday': (models.DateField, {'null':True}),
-        '_email': (models.EmailField, {'max_length':255, 'null':True}),
-        '_name': (NameField, {'max_length':255, 'null':True}),
-        '_tel_1': (TelephoneField, {'max_length':255, 'null':True}),
-        '_tel_2': (TelephoneField, {'max_length':255, 'null':True}),
-        '_gender': (models.CharField, {'max_length':255, 'null':True, 'choices':gender_choices}),
+        'dea_number': (models.CharField, {'max_length':255, 'null':True}),
+        'ethnicity': (models.CharField, {'max_length':255, 'null':True}),
+        'npi_number': (models.CharField, {'max_length':255, 'null':True}),
+        'preferred_language': (models.CharField, {'max_length':255, 'null':True}),
+        'race': (models.CharField, {'max_length':255, 'null':True}),
+        'adr': (AddressField, {}),
+        'bday': (models.DateField, {'null':True}),
+        'email': (models.EmailField, {'max_length':255, 'null':True}),
+        'name': (NameField, {'max_length':255, 'null':True}),
+        'tel_1': (TelephoneField, {'max_length':255, 'null':True}),
+        'tel_2': (TelephoneField, {'max_length':255, 'null':True}),
+        'gender': (models.CharField, {'max_length':255, 'null':True, 'choices':gender_choices}),
         }
     
 class VitalSignField(DummyField):
@@ -276,9 +320,9 @@ class VitalSignField(DummyField):
     """
     
     replacements = {
-        '_unit': (models.CharField, {'max_length':255, 'null':True}),
-        '_value': (models.FloatField, {'null':True}),
-        '_name': (CodedValueField, {}),
+        'unit': (models.CharField, {'max_length':255, 'null':True}),
+        'value': (models.FloatField, {'null':True}),
+        'name': (CodedValueField, {}),
         }
 
 class BloodPressureField(DummyField):
@@ -300,9 +344,9 @@ class BloodPressureField(DummyField):
     """
     
     replacements = {
-        '_position': (CodedValueField, {}),
-        '_site': (CodedValueField, {}),
-        '_method': (CodedValueField, {}),
-        '_diastolic': (VitalSignField, {}),
-        '_systolic': (VitalSignField, {}),
+        'position': (CodedValueField, {}),
+        'site': (CodedValueField, {}),
+        'method': (CodedValueField, {}),
+        'diastolic': (VitalSignField, {}),
+        'systolic': (VitalSignField, {}),
         }

@@ -58,6 +58,9 @@ def marsloader(query_api_support = False):
           field, time_incr = value.split('*')
           return {'field':field, 'time_incr':time_incr}
       
+      def parse_date(value):
+          return iso8601.parse_utc_date(value)
+      
       check_safety()
       
       parse_map = {
@@ -68,7 +71,9 @@ def marsloader(query_api_support = False):
         'group_by': parse_string,
         'aggregate_by': parse_aggregate_by,  
         'date_range': parse_date_range,   
-        'date_group': parse_date_group,            
+        'date_group': parse_date_group,
+        'date_from': parse_date,  # SMART v0.5, transformed to date_range in smart views
+        'date_to': parse_date,    # SMART v0.5, transformed to date_range in smart views
       }
       
       ignore_map = {
@@ -78,7 +83,7 @@ def marsloader(query_api_support = False):
       # This should be abstracted
       # StatusName 'active' should always be available
       arg_defaults = {
-        'limit': 100, 
+        'limit': None, 
         'offset': 0,
         'order_by': '-%s'%(DEFAULT_ORDERBY) if not request.GET.has_key('aggregate_by') or not query_api_support else None,
         'status': models.StatusName.objects.get(name='active'),

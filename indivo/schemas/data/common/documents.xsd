@@ -4,7 +4,6 @@ elementFormDefault="qualified">
 
   <include schemaLocation="asthmaactionplan.xsd" />
   <include schemaLocation="demographics.xsd" />
-  <include schemaLocation="equipment.xsd" />
   <include schemaLocation="lab.xsd" />
   <include schemaLocation="labreport.xsd" />
   <include schemaLocation="procedure.xsd" />

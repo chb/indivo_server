@@ -1349,43 +1349,6 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
 
 },
 {
-    "method":"GET",
-    "path":"/capabilities/",
-    "view_func_name":"smart_capabilities",
-    "access_doc":"Any principal in Indivo.",
-    "url_params":{
-        },
-    "query_opts":{
-        },
-    "data_fields":{
-        },
-    "description":"SMART Capabilities",
-    "return_desc":"JSON formatted SMART capabilities",
-    "return_ex":'''
-{
-    "http://smartplatforms.org/terms#Demographics": {
-        "methods": [
-            "GET"
-        ]
-    }, 
-    "http://smartplatforms.org/terms#Encounter": {
-        "methods": [
-            "GET"
-        ]
-    }, 
-    "http://smartplatforms.org/terms#VitalSigns": {
-        "methods": [
-            "GET"
-        ]
-    }
-}
-''',
-    "deprecated": None,
-    "added": ('2.0.0', ''),
-    "changed": None,
-
-},
-{
     "method":"DELETE",
     "path":"/carenets/{CARENET_ID}",
     "view_func_name":"carenet_delete",
@@ -1928,281 +1891,6 @@ application/json:
 },
 {
     "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/equipment/",
-    "view_func_name":"carenet_equipment_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the equipment data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of equipment, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="equipment_name" value="pacemaker"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Models" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Equipment xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateStarted>2009-02-05</dateStarted>
-        <dateStopped>2010-06-12</dateStopped>
-        <type>cardiac</type>
-        <name>Pacemaker</name>
-        <vendor>Acme Medical Devices</vendor>
-        <id>167-ABC-23</id>
-        <description>it works</description>
-        <specification>blah blah blah</specification>
-      </Equipment>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/",
-    "view_func_name":"carenet_measurement_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        'LAB_CODE':'The identifier corresponding to the measurement being made.',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the measurement data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of measurements, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="lab_type" value="hematology"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Measurement" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Measurement id="1234" value="120" type="blood pressure systolic" datetime="2011-03-02T00:00:00Z" unit="mmHg" source_doc="3456" />
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/procedures/",
-    "view_func_name":"carenet_procedure_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the procedure data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of procedures, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Procedure" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Procedure xmlns="http://indivo.org/vocab/xml/documents#">
-        <datePerformed>2009-05-16T12:00:00</datePerformed>
-        <name type="http://codes.indivo.org/procedures#" value="85" abbrev="append">Appendectomy</name>
-        <provider>
-          <name>Kenneth Mandl</name>
-          <institution>Children's Hospital Boston</institution>
-        </provider>
-      </Procedure>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/",
-    "view_func_name":"carenet_simple_clinical_notes_list",
-    "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
-    "url_params":{
-        'CARENET_ID':'The id string associated with the Indivo carenet',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the simple_clinical_notes data for a given carenet.",
-    "return_desc":":http:statuscode:`200` with a list of notes, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#SimpleClinicalNote" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <SimpleClinicalNote xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateOfVisit>2010-02-02T12:00:00Z</dateOfVisit>
-        <finalizedAt>2010-02-03T13:12:00Z</finalizedAt>
-        <visitType type="http://codes.indivo.org/visit-types#" value="acute">Acute Care</visitType>
-        <visitLocation>Longfellow Medical</visitLocation>
-        <specialty type="http://codes.indivo.org/specialties#" value="hem-onc">Hematology/Oncology</specialty>
-
-        <signature>
-          <at>2010-02-03T13:12:00Z</at>    
-          <provider>
-            <name>Kenneth Mandl</name>
-            <institution>Children's Hospital Boston</institution>
-          </provider>
-        </signature>
-
-        <signature>
-          <provider>
-            <name>Isaac Kohane</name>
-            <institution>Children's Hospital Boston</institution>
-          </provider>
-        </signature>
-
-        <chiefComplaint>stomach ache</chiefComplaint>
-        <content>Patient presents with ... </content>
-      </SimpleClinicalNote>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
     "path":"/carenets/{CARENET_ID}/reports/{DATA_MODEL}/",
     "view_func_name":"carenet_generic_list",
     "access_doc":"A user app with access to the carenet or the entire carenet's record, or an account in the carenet or in control of the record.",
@@ -2343,6 +2031,118 @@ SDMX Example:
   "full_value": "Hypertensive disorder, systemic arterial (disorder)"},
  {"abbreviation": null, "code": "55822004", "consumer_value": null,
   "umls_code": "C0020473", "full_value": "Hyperlipidemia (disorder)"}]
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
+    "method":"GET",
+    "path":"/manifest",
+    "view_func_name":"smart_manifest",
+    "access_doc":"Any principal in Indivo.",
+    "url_params":{
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"SMART Container Manifest",
+    "return_desc":"SMART Container manifest describing its properties and capabilites, formatted as JSON",
+    "return_ex":'''
+
+    {
+        "smart_version": "0.5.0",
+        "api_base": "http://localhost:8000",
+        "name": "SMART v0.5 Sandbox",
+        "description": "Indivo Server",
+        "admin": "support@indivo.localhost",
+    
+        "launch_urls": {
+            "authorize_token": "http://localhost:8080/oauth/authorize", 
+            "exchange_token": "http://localhost:8000/oauth/access_token", 
+            "request_token": "http://localhost:8000/oauth/request_token"
+        }, 
+    
+        "capabilities": {
+            "http://smartplatforms.org/terms#Allergy": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#AppManifest": {
+                "methods": [
+                    "GET"
+                ]
+            },
+            "http://smartplatforms.org/terms#ClinicalNote": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#ContainerManifest": {
+                "methods": [
+                    "GET"
+                ]
+            },
+            "http://smartplatforms.org/terms#Demographics": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#Encounter": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#Fulfillment": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#Immunization": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#LabResult": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#Medication": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#Ontology": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#Problem": {
+                "methods": [
+                    "GET"
+                ]
+            },
+            "http://smartplatforms.org/terms#Procedure": {
+                "methods": [
+                    "GET"
+                ]
+            }, 
+            "http://smartplatforms.org/terms#SocialHistory": {
+                "methods": [
+                    "GET"
+                ]
+            },
+            "http://smartplatforms.org/terms#VitalSignSet": {
+                "methods": [
+                    "GET"
+                ]
+            }
+        }
+    }
 ''',
     "deprecated": None,
     "added": None,
@@ -2813,7 +2613,7 @@ see http://sandbox-api.smartplatforms.org/ontology
         },
     "data_fields":{
         },
-    "description":"Retrieve a specific instance of a SMART Allergy/AllergyExclusion.",
+    "description":"Retrieve a specific instance of a SMART allergy.",
     "return_desc":"SMART RDF describing the AllergyAllergyExclusion",
     "return_ex":'''
 <?xml version="1.0" encoding="UTF-8"?>
@@ -5163,281 +4963,6 @@ application/json:
 },
 {
     "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/equipment/",
-    "view_func_name":"equipment_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the equipment data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of equipment, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="equipment_name" value="pacemaker"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Models" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Equipment xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateStarted>2009-02-05</dateStarted>
-        <dateStopped>2010-06-12</dateStopped>
-        <type>cardiac</type>
-        <name>Pacemaker</name>
-        <vendor>Acme Medical Devices</vendor>
-        <id>167-ABC-23</id>
-        <description>it works</description>
-        <specification>blah blah blah</specification>
-      </Equipment>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/measurements/{LAB_CODE}/",
-    "view_func_name":"measurement_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        'LAB_CODE':'The identifier corresponding to the measurement being made.',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the measurement data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of measurements, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-      <Filter name="lab_type" value="hematology"/>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Measurement" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Measurement id="1234" value="120" type="blood pressure systolic" datetime="2011-03-02T00:00:00Z" unit="mmHg" source_doc="3456" />
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/procedures/",
-    "view_func_name":"procedure_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the procedure data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of procedures, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#Procedure" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <Procedure xmlns="http://indivo.org/vocab/xml/documents#">
-        <datePerformed>2009-05-16T12:00:00</datePerformed>
-        <name type="http://codes.indivo.org/procedures#" value="85" abbrev="append">Appendectomy</name>
-        <provider>
-          <name>Kenneth Mandl</name>
-          <institution>Children's Hospital Boston</institution>
-        </provider>
-      </Procedure>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
-    "path":"/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/",
-    "view_func_name":"simple_clinical_notes_list",
-    "access_doc":"A user app with access to the record, or a principal in full control of the record",
-    "url_params":{
-        'RECORD_ID':'The id string associated with the Indivo record',
-        },
-    "query_opts":{
-        'status':'The account or document status to filter by',
-        '{FIELD}':'See :ref:`query-operators`, :ref:`valid-query-fields`',
-        'order_by':'See :ref:`query-operators`',
-        'aggregate_by':'See :ref:`query-operators`',
-        'date_range':'See :ref:`query-operators`',
-        'date_group':'See :ref:`query-operators`',
-        'group_by':'See :ref:`query-operators`',
-        'limit':'See :ref:`query-operators`',
-        'offset':'See :ref:`query-operators`',
-        },
-    "data_fields":{
-        },
-    "description":"List the simple_clinical_notes data for a given record.",
-    "return_desc":":http:statuscode:`200` with a list of notes, or :http:statuscode:`400` if any invalid query parameters were passed.",
-    "return_ex":'''
-<Reports xmlns="http://indivo.org/vocab/xml/documents#">
-  <Summary total_document_count="2" limit="100" offset="0" order_by="date_measured" />
-  <QueryParams>
-    <DateRange value="date_measured*1995-03-10T00:00:00Z*" />
-    <Filters>
-    </Filters>
-  </QueryParams>
-  <Report>
-    <Meta>
-      <Document id="261ca370-927f-41af-b001-7b615c7a468e" type="http://indivo.org/vocab/xml/documents#SimpleClinicalNote" size="1653" digest="0799971784e5a2d199cd6585415a8cd57f7bf9e4f8c8f74ef67a1009a1481cd6" record_id="">
-        <createdAt>2011-05-02T17:48:13Z</createdAt>
-        <creator id="mymail@mail.ma" type="Account">
-          <fullname>full name</fullname>
-        </creator>
-        <original id="261ca370-927f-41af-b001-7b615c7a468e"/>
-        <label>testing</label>
-        <status>active</status>
-        <nevershare>false</nevershare>
-      </Document>
-    </Meta>
-    <Item>
-      <SimpleClinicalNote xmlns="http://indivo.org/vocab/xml/documents#">
-        <dateOfVisit>2010-02-02T12:00:00Z</dateOfVisit>
-        <finalizedAt>2010-02-03T13:12:00Z</finalizedAt>
-        <visitType type="http://codes.indivo.org/visit-types#" value="acute">Acute Care</visitType>
-        <visitLocation>Longfellow Medical</visitLocation>
-        <specialty type="http://codes.indivo.org/specialties#" value="hem-onc">Hematology/Oncology</specialty>
-
-        <signature>
-          <at>2010-02-03T13:12:00Z</at>    
-          <provider>
-            <name>Kenneth Mandl</name>
-            <institution>Children's Hospital Boston</institution>
-          </provider>
-        </signature>
-
-        <signature>
-          <provider>
-            <name>Isaac Kohane</name>
-            <institution>Children's Hospital Boston</institution>
-          </provider>
-        </signature>
-
-        <chiefComplaint>stomach ache</chiefComplaint>
-        <content>Patient presents with ... </content>
-      </SimpleClinicalNote>
-    </Item>
-  </Report>
-
-  ...
-
-</Reports>
-''',
-    "deprecated": None,
-    "added": None,
-    "changed": None,
-
-},
-{
-    "method":"GET",
     "path":"/records/{RECORD_ID}/reports/{DATA_MODEL}/",
     "view_func_name":"generic_list",
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
@@ -5807,8 +5332,8 @@ SDMX Example:
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
+        'MODEL_ID':'The id of the SMART data_model to retrieve',
         'MODEL_NAME':'The name of the SMART data model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API#Record_Calls>`_.',
-        'MODEL_ID':'The id of the SMART data_model to retrieve',        
         },
     "query_opts":{
         },

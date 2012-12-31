@@ -70,7 +70,7 @@ def test_document_handling(IndivoClient):
     # this should fail
     assert_400(chrome_client.set_document_status(data='reason=allergy not correct&status=activated'), "bad status should not be allowed to be set on doc")
 
-    chrome_client.post_document(data=data.measurement01)
+    chrome_client.post_document(data=data.doc00)
     chrome_client.read_allergies()
 
     chrome_client.post_document(data=data.problem)

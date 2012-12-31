@@ -45,13 +45,19 @@ class FactModelUnitTests(InternalTests):
         # generate a subclass of fact
         FactSubclass = type("FactSubclass", (Fact,), fact_subclass_attrs)
 
-        # Since 'coded' was a CodedValueField, we should see three new fields on the subclass
+        # Since 'coded' was a CodedValueField, we should see nine new fields on the subclass
         valid_fields = {
             'fact_ptr': models.OneToOneField, # pointer to the parent class
             'not_coded': models.IntegerField, # original integer field, preserved
-            'coded_identifier': models.CharField, # New fields substituted for the DummyField
+            'coded_code_identifier': models.CharField, # New fields substituted for the DummyField
+            'coded_code_system': models.CharField,
+            'coded_code_title': models.CharField,
             'coded_title': models.CharField,
-            'coded_system': models.CharField,
+            'coded_provenance_source_code': models.CharField,
+            'coded_provenance_title': models.CharField,
+            'coded_provenance_translation_fidelity_identifier': models.CharField,
+            'coded_provenance_translation_fidelity_system': models.CharField,
+            'coded_provenance_translation_fidelity_title': models.CharField,
             }
         self.assertEqual(len(valid_fields.keys()), len(FactSubclass._meta.local_fields))
         for field in FactSubclass._meta.local_fields:

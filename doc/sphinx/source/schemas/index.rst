@@ -24,7 +24,7 @@ i.e. PDFs, MPEG, etc....
 
 XML documents that conform to the built-in schemas can be immediately transformed, via the Indivo X 
 :doc:`Data Pipeline </data-pipeline>`, into individual datapoints, which can then be queried using the 
-:ref:`Indivo Reporting API <processed-reports>`. XML documents that conform to custom schemas are not processed, and 
+:ref:`Indivo Reporting APIs <reporting-APIs>`. XML documents that conform to custom schemas are not processed, and 
 therefore cannot be retrieved using the reporting API (though you can still access them with 
 :ref:`API calls for retrieving unprocessed documents <reading-documents-API>`, which will return them in their original 
 XML form.
@@ -57,10 +57,10 @@ prescription data in the same XML document because those two chunks of data are 
 point, Indivo stores prescription filling information, then it is likely that this information would be more appropriately 
 stored in a separate, linked document.
 
-Core Schemas
-------------
+Included Schemas
+----------------
 
-All schema files and sample instance documents are available at http://indivo.org/vocab/xml/. Note that these schemas
+All schema files and sample instance documents are available at https://github.com/chb/indivo_server/tree/master/indivo/schemas. Note that these schemas
 are only the ones that come with Indivo by default. Each instance of Indivo might define additional, custom schemas that
 are not documented here. See :ref:`add-schema` for instructions on how to add custom schemas to Indivo.
 
@@ -106,15 +106,12 @@ Special Documents
 
 .. _medical-schemas:
 
-Medical Documents
-^^^^^^^^^^^^^^^^^
+Core 
+^^^^
 
 .. toctree::
    :maxdepth: 2
 
-   procedure-schema
-   equipment-schema
-   scn-schema
    sdmx-schema
 
 .. _add-schema:

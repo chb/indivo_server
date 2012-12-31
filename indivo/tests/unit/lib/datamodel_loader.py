@@ -13,33 +13,44 @@ TEST_MODULE = sys.modules[__name__]
 CORE_MODELS = (
     'Allergy',
     'AllergyExclusion',
-    'Equipment',
     'Encounter',
     'Fill',
     'Immunization',
     'LabResult',
-    'Measurement',
+    'LabPanel'
     'Medication',
     'Problem',
     'Procedure',
-    'SimpleClinicalNote',
+    'ClinicalNote',
     'VitalSigns',
     )
 
 CORE_DIRS = (
     'allergy',
-    'equipment',
     'immunization',
-    'lab',
-    'measurement',
+    'lab_result',
+    'lab_panel',
     'medication',
     'problem',
     'procedure',
-    'simple_clinical_note',
+    'clinical_note',
     'vitals',
     )
 
 TEST_MODELS = (
+    'TestMed',
+    'TestPrescription',
+    'TestFill',
+    'TestFill2',
+    'TestMedication2',
+    'TestPrescription2',
+    'TestModelA',
+    'TestModelB',
+    'TestModelC',
+    'TestModelD',
+    )
+
+TEST_MODELS_WITH_EXTRAS = (
     'TestMed',
     'TestPrescription',
     'TestFill',
@@ -56,7 +67,7 @@ INVALID_TEST_DIRS = (
 class DataModelLoaderUnitTests(InternalTests):
     def setUp(self):
         super(DataModelLoaderUnitTests, self).setUp()
-        self.test_dir = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test')
+        self.test_dir = self.TEST_DATAMODEL_DIR
         self.test_loader = IndivoDataModelLoader(self.test_dir)
 
     def tearDown(self):
@@ -72,7 +83,7 @@ class DataModelLoaderUnitTests(InternalTests):
         self.assertModuleContains(TEST_MODULE, TEST_MODELS)
 
         # make sure the serializers were loaded correctly
-        for model_name  in TEST_MODELS:
+        for model_name  in TEST_MODELS_WITH_EXTRAS:
             model_cls = getattr(TEST_MODULE, model_name, None)
             rdf_ser = getattr(model_cls, 'to_rdf', None)
             self.assertTrue(rdf_ser)

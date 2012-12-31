@@ -9,6 +9,6 @@
   "mode" : "ui",
   "scope" : "record",
 
-  "index" :  "http://apiverifier.smartplatforms.org/smartapp/index-0.4.html",
+  "index" :  "http://apiverifier.smartplatforms.org/smartapp/index-0.5.html",
   "icon" :  "http://apiverifier.smartplatforms.org/static/images/icon.png"
 }

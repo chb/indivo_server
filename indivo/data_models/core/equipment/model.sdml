@@ -1,8 +1,0 @@
-{
-   "__modelname__": "Equipment",
-   "date_started": "Date",
-   "date_stopped": "Date",
-   "name": "String",
-   "vendor": "String",
-   "description": "String"
-}

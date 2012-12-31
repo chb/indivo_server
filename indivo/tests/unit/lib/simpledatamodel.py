@@ -84,9 +84,15 @@ class SDMLUnitTests(InternalTests):
             'date_filled': models.DateField,
             'supply_days': models.FloatField,
             'filled_at_name': models.CharField,
-            'code_identifier': models.CharField, # CodedValues should be expanded
+            'code_code_identifier': models.CharField, # CodedValues should be expanded
+            'code_code_title': models.CharField,
+            'code_code_system': models.CharField,
             'code_title': models.CharField,
-            'code_system': models.CharField,
+            'code_provenance_source_code': models.CharField,
+            'code_provenance_title': models.CharField,
+            'code_provenance_translation_fidelity_identifier': models.CharField,
+            'code_provenance_translation_fidelity_system': models.CharField,
+            'code_provenance_translation_fidelity_title': models.CharField,
             'quantity_value': models.CharField, # ValueAndUnit fields should be expanded
             'quantity_unit': models.CharField,
             'pharmacy_ncpdpid': models.CharField, # Pharmacy fields should be expanded
@@ -146,24 +152,16 @@ class SDMLUnitTests(InternalTests):
 class SDMJDataUnitTests(TransactionInternalTests):
     def setUp(self):
         super(SDMJDataUnitTests, self).setUp()
+        self.load_model_dir(self.TEST_DATAMODEL_DIR)
         self.instance = SDMJData(TEST_SDMJ_DOCS[0])
-        self.required_classes = []
-        
-        # Load test Classes
-        self.required_classes = self.load_models_from_sdml(TEST_SDML_DOCS[0])
 
     def tearDown(self):
-        self.instance = None
-
-        # Unregister the classes, reset the DB
-        self.unload_models(self.required_classes)
-        self.required_classes = []
-
+        self.unload_model_dir(self.TEST_DATAMODEL_DIR)
         super(SDMJDataUnitTests, self).tearDown()        
 
     def test_get_output(self):
         output_objects = [obj for obj in self.instance.get_output()]
-        self.assertEqual(len(output_objects), 4) # Three models in the definition
+        self.assertEqual(len(output_objects), 4) # Four models in the definition
     
         med_obj = scrip_obj = None
         fill_objs = []
@@ -197,10 +195,9 @@ class SDMJDataUnitTests(TransactionInternalTests):
 
         # The 'prescription' field should be a OneToOne field, pointing at the prescription object
         self.assertEqual(med_obj.prescription, scrip_obj)
-
+        
         # The 'fills' field should be a manager for fills objects
-        # We can't test whether they match up because we aren't saving them to the database
-        # So currently 'med_obj.fills' will raise a DoesNotExist exception
+        self.assertEqual(med_obj.fills.count(), 2)
 
         # Make sure the testprescription2 class parsed as expected
         scrip_expected_fields = {
@@ -213,8 +210,7 @@ class SDMJDataUnitTests(TransactionInternalTests):
 
         # The TestPrescription2 object should have a 'testmedication2' field pointing to the Medication class
         # (the reverse link of the OneToOne from the TestMedication2)
-        # We can't test this because we aren't saving object to the database.
-        # If we were, we should test this with: self.assertEqual(scrip_obj.testmedication2, med_obj)
+        self.assertEqual(scrip_obj.testmedication2, med_obj)
 
         # Make sure the testfill2 class parsed as expected
         fill_expected_fields = {
@@ -227,6 +223,37 @@ class SDMJDataUnitTests(TransactionInternalTests):
             self.check_object_fields(fill_obj, fill_expected_fields)
             self.assertEqual(fill_obj.testmedication2, med_obj)
         self.assertEqual(set([o.date_filled for o in fill_objs]), fill_dates)
+
+    def test_relations(self):
+        self.instance = SDMJData(TEST_SDMJ_DOCS[1])
+        output_objects = [obj for obj in self.instance.get_output()]
+        self.assertEqual(len(output_objects), 7) 
+
+        # check type and amounts
+        modelA = filter(lambda obj: obj.__class__.__name__ == "TestModelA", output_objects)
+        self.assertEqual(len(modelA), 1)
+        modelA = modelA[0]
+        modelBs = filter(lambda obj: obj.__class__.__name__ == "TestModelB", output_objects)
+        self.assertEqual(len(modelBs), 3)
+        modelC = filter(lambda obj: obj.__class__.__name__ == "TestModelC", output_objects)
+        self.assertEqual(len(modelC), 1)
+        modelC = modelC[0]
+        modelDs = filter(lambda obj: obj.__class__.__name__ == "TestModelD", output_objects)
+        self.assertEqual(len(modelDs), 2)
+
+        # check OneToOne
+        self.assertEqual(modelC, modelA.myC)
+        self.assertEqual(modelA, modelC.testmodela)
+        
+        # check ManyToMany
+        for b in modelBs:
+            self.assertEqual(True, b in modelA.myBs.all(), "TestModelB instance not found in modelA.myBs")
+            self.assertEqual(True, modelA in b.testmodela_set.all(), "TestModelB not linked back to TestModelA")
+        
+        # check OneToMany
+        for d in modelDs:
+            self.assertEqual(True, d in modelA.myDs.all(), "TestModelD instance not found in modelA.myDs")
+            self.assertEqual(modelA, d.myA, "TestModelD not linked back to TestModelA")
 
     def test_invalid_schemas(self):
         def cause_exception(doc):
@@ -245,22 +272,16 @@ class SDMJDataUnitTests(TransactionInternalTests):
 class SDMXDataUnitTests(TransactionInternalTests):
     def setUp(self):
         super(SDMXDataUnitTests, self).setUp()
-        self.instance = SDMXData(etree.parse(StringIO(TEST_SDMX_DOCS[0])))
-        self.required_classes = []
-        
-        # Load test Classes
-        self.required_classes = self.load_models_from_sdml(TEST_SDML_DOCS[0])
+        # Load the test datamodels
+        self.load_model_dir(self.TEST_DATAMODEL_DIR)
 
     def tearDown(self):
-        self.instance = None
-
-        # Unregister the classes, reset the DB
-        self.unload_models(self.required_classes)
-        self.required_classes = []
-
+        self.unload_model_dir(self.TEST_DATAMODEL_DIR)
+        # Unload the test datamodels
         super(SDMXDataUnitTests, self).tearDown()        
 
     def test_get_output(self):
+        self.instance = SDMXData(etree.parse(StringIO(TEST_SDMX_DOCS[0])))
         output_objects = [obj for obj in self.instance.get_output()]
         self.assertEqual(len(output_objects), 4) # Three models in the definition
     
@@ -298,9 +319,8 @@ class SDMXDataUnitTests(TransactionInternalTests):
         self.assertEqual(med_obj.prescription, scrip_obj)
 
         # The 'fills' field should be a manager for fills objects
-        # We can't test whether they match up because we aren't saving them to the database
-        # So currently 'med_obj.fills' will raise a DoesNotExist exception
-
+        self.assertEqual(med_obj.fills.count(), 2)
+        
         # Make sure the testprescription2 class parsed as expected
         scrip_expected_fields = {
             'prescribed_by_name': 'Kenneth D. Mandl',
@@ -312,8 +332,7 @@ class SDMXDataUnitTests(TransactionInternalTests):
 
         # The TestPrescription2 object should have a 'testmedication2' field pointing to the Medication class
         # (the reverse link of the OneToOne from the TestMedication2)
-        # We can't test this because we aren't saving object to the database.
-        # If we were, we should test this with: self.assertEqual(scrip_obj.testmedication2, med_obj)
+        self.assertEqual(scrip_obj.testmedication2, med_obj)
 
         # Make sure the testfill2 class parsed as expected
         fill_expected_fields = {
@@ -326,6 +345,38 @@ class SDMXDataUnitTests(TransactionInternalTests):
             self.check_object_fields(fill_obj, fill_expected_fields)
             self.assertEqual(fill_obj.testmedication2, med_obj)
         self.assertEqual(set([o.date_filled for o in fill_objs]), fill_dates)
+
+    def test_relations(self):
+        self.instance = SDMXData(etree.parse(StringIO(TEST_SDMX_DOCS[1])))
+        output_objects = [obj for obj in self.instance.get_output()]
+        # should create 7 model instances
+        self.assertEqual(len(output_objects), 7) 
+
+        # check type and amounts
+        modelA = filter(lambda obj: obj.__class__.__name__ == "TestModelA", output_objects)
+        self.assertEqual(len(modelA), 1)
+        modelA = modelA[0]
+        modelBs = filter(lambda obj: obj.__class__.__name__ == "TestModelB", output_objects)
+        self.assertEqual(len(modelBs), 3)
+        modelC = filter(lambda obj: obj.__class__.__name__ == "TestModelC", output_objects)
+        self.assertEqual(len(modelC), 1)
+        modelC = modelC[0]
+        modelDs = filter(lambda obj: obj.__class__.__name__ == "TestModelD", output_objects)
+        self.assertEqual(len(modelDs), 2)
+
+        # check OneToOne
+        self.assertEqual(modelC, modelA.myC)
+        self.assertEqual(modelA, modelC.testmodela)
+        
+        # check ManyToMany
+        for b in modelBs:
+            self.assertEqual(True, b in modelA.myBs.all(), "TestModelB instance not found in modelA.myBs")
+            self.assertEqual(True, modelA in b.testmodela_set.all(), "TestModelB not linked back to TestModelA")
+        
+        # check OneToMany
+        for d in modelDs:
+            self.assertEqual(True, d in modelA.myDs.all(), "TestModelD instance not found in modelA.myDs")
+            self.assertEqual(modelA, d.myA, "TestModelD not linked back to TestModelA")
 
     def test_invalid_schemas(self):
         def cause_exception(doc):

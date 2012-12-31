@@ -57,7 +57,7 @@ def _render_documents(docs, record, pha, tdc, format_type='xml'):
         :py:class:`~indivo.models.apps.PHA` that *docs* are 
         scoped to.
 
-    * *tdc*: The total document count of objects to render (i.e., ``len(docs)``).
+    * *tdc*: The total document count of objects to render (i.e., ``docs.count()``).
         This can be passed in to avoid recomputing the size of docs if that might
         be expensive (i.e., a QuerySet which would require an extra DB call).
 
@@ -578,11 +578,16 @@ def document_list(request, query_options, record=None, pha=None):
                 else:
                     docs = Document.objects.filter(fqn=fqn, 
                                                    pha=pha, replaced_by=None, status=status).order_by(order_by)
-                return _render_documents(docs, record, pha, docs.count())
+                return _render_documents(docs, record, pha, docs.count()) #TODO: shouldn't this use limit/offset as well?
             except DocumentSchema.DoesNotExist:
                 raise Http404
         docs = Document.objects.filter(record=record, 
                                        replaced_by=None, pha=pha, status=status).order_by(order_by)
     except:
         docs = []
-    return _render_documents(docs[offset:offset+limit], record, pha, len(docs))
+    
+    total_count = docs.count()    
+    if limit:
+        docs = docs[offset:offset+limit]
+        
+    return _render_documents(docs, record, pha, total_count)

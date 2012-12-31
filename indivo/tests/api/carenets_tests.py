@@ -5,7 +5,6 @@ from indivo.tests.data import *
 from django.utils.http import urlencode
 import hashlib
 
-LAB_CODE = 'HBA1C' # MAKE SURE TO ADD THESE MEASUREMENTS
 CARENET_NAME = 'NEWNAME'
 
 class CarenetInternalTests(InternalTests):
@@ -169,30 +168,9 @@ class CarenetInternalTests(InternalTests):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
-    def test_get_carenet_equipment(self):
-        c_id = self.shared_carenet.id
-        url = '/carenets/%s/reports/minimal/equipment/'%(c_id)
-
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
-    def test_get_carenet_measurements(self):
-        c_id = self.shared_carenet.id
-        lab_code = LAB_CODE
-        url = '/carenets/%s/reports/minimal/measurements/%s/'%(c_id, lab_code)
-
-        bad_methods = ['put', 'post', 'delete']
-        self.check_unsupported_http_methods(bad_methods, url)
-
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-
     def test_get_carenet_procedures(self):
         c_id = self.shared_carenet.id
-        url = '/carenets/%s/reports/minimal/procedures/'%(c_id)
+        url = '/carenets/%s/reports/procedure/'%(c_id)
 
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)
@@ -202,7 +180,7 @@ class CarenetInternalTests(InternalTests):
 
     def test_get_carenet_simple_clinical_notes(self):
         c_id = self.shared_carenet.id
-        url = '/carenets/%s/reports/minimal/simple-clinical-notes/'%(c_id)
+        url = '/carenets/%s/reports/ClinicalNote/'%(c_id)
 
         bad_methods = ['put', 'post', 'delete']
         self.check_unsupported_http_methods(bad_methods, url)

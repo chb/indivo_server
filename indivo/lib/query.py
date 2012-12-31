@@ -2,12 +2,16 @@
 Common Functionality for support of the Query API
 """
 
+import urlparse
+import urllib
+
 from indivo.lib.sharing_utils import carenet_facts_filter
 from indivo.lib.utils import render_template
 from indivo.lib.iso8601 import parse_utc_date
 from django.db.models import Avg, Count, Max, Min, Sum
 from django.db import connection
 from django.db.backends import postgresql_psycopg2, mysql, oracle
+from django.db.models.query import QuerySet
 
 
 db_string = connection.settings_dict['ENGINE']
@@ -87,7 +91,11 @@ RELATED_LIST = [
 class FactQuery(object):
     def __init__(self, model, model_filters,
                  query_options,
-                 record=None, carenet=None):
+                 record=None, 
+                 carenet=None,
+                 fact_id=None,
+                 request_url=None
+                 ):
         self.model = model
         self.valid_filters = model_filters
         self.group_by = query_options.get('group_by')
@@ -95,6 +103,7 @@ class FactQuery(object):
         self.aggregate_by = query_options.get('aggregate_by')
         self.limit = query_options.get('limit')
         self.offset = query_options.get('offset')
+        self.offset = self.offset if self.offset >=0 else 0
         self.order_by = query_options.get('order_by')
         self.status = query_options.get('status')
         self.date_range = query_options.get('date_range')
@@ -108,6 +117,11 @@ class FactQuery(object):
 
         self.carenet = carenet
         self.record = carenet.record if carenet else record
+        
+        self.fact_id = fact_id
+        
+        # keep track of request url for handling nextPageURL in SMART requests
+        self.request_url = request_url
 
     def render(self, item_template, output_template=OUTPUT_TEMPLATE):
         if self.results is None:
@@ -148,45 +162,74 @@ class FactQuery(object):
         5. We evaluate the query to get an ordered list of results, the apply limit and offset.
         '''
 
-        # This is okay, Django evaluates lazily
-        results = self.model.objects.all()
-
-        # Apply select_related for performance here
-        results = results.select_related(*RELATED_LIST)
-
-        # 1. Apply filter operators (but not limit/offset).
-        results = self._apply_filters(results)
-
-        # 2. Evaluate group_by or date_group
-        results = self._apply_grouping(results)
-
-        # 3. Evaluate aggregate_by
-        self.grouping_p = self.group_by or self.date_group
-        self.flat_aggregation = self.aggregate_by and not self.grouping_p
-        results = self._apply_aggregation(results)
-
-        # 4. Order_by
-        # ignore order_by if we have a single aggregation    
-        if not self.flat_aggregation:
-            results = self._apply_ordering(results)
-    
-        # 5. limit and offset. Make sure to grab the total result count
-        # before paging is applied and we lose it.
-
-        # No need to get the count or worry about paging for a flat
-        # aggregation, which was already evaluated
-        if self.flat_aggregation:
-            self.trc = 1
-            results = [results] # [{'aggregation': 'value'}]
-
-        # Avoid evaluation for as long as possible: pass back a QuerySet object
+        if self.fact_id:
+            # query for a specific instance
+            # we use .filter here instead of .get_object_or_404 so we have a QuerySet 
+            results = self.model.objects.filter(id=self.fact_id)
+            
+            # using len() instead of .count() since it is a result set of 1 and 
+            # we don't worry about delaying execution or storing lots of data in-memory
+            self.trc = len(results)  
         else:
-            self.trc = results.count()
-            if self.limit:
-                results = results[self.offset:self.offset+self.limit]
+            # This is okay, Django evaluates lazily
+            results = self.model.objects.all()
+    
+            # Apply select_related for performance here
+            results = results.select_related(*RELATED_LIST)
+    
+            # 1. Apply filter operators (but not limit/offset).
+            results = self._apply_filters(results)
+    
+            # 2. Evaluate group_by or date_group
+            results = self._apply_grouping(results)
+    
+            # 3. Evaluate aggregate_by
+            self.grouping_p = self.group_by or self.date_group
+            self.flat_aggregation = self.aggregate_by and not self.grouping_p
+            results = self._apply_aggregation(results)
+    
+            # 4. Order_by
+            # ignore order_by if we have a single aggregation    
+            if not self.flat_aggregation:
+                results = self._apply_ordering(results)
+        
+            # 5. limit and offset. Make sure to grab the total result count
+            # before paging is applied and we lose it.
+    
+            # No need to get the count or worry about paging for a flat
+            # aggregation, which was already evaluated
+            if self.flat_aggregation:
+                self.trc = 1
+                results = [results] # [{'aggregation': 'value'}]
+    
+            # Avoid evaluation for as long as possible: pass back a QuerySet object
+            else:
+                self.trc = results.count()
+                if self.limit:
+                    results = results[self.offset:self.offset+self.limit]
                 
         # And we're done!
         self.results = results
+
+    def next_url(self):
+        next_url = None
+        
+        # to accommodate merged QuerySets used by SMART Allergies, which might be lists
+        if isinstance(self.results, QuerySet):
+            result_count = self.results.count()
+        else:
+            result_count = len(self.results)
+        
+        if self.limit and (self.trc > (self.offset + result_count)):
+            parsed_uri = urlparse.urlparse(self.request_url)
+            if parsed_uri.query:
+                query_dict = dict(urlparse.parse_qsl(parsed_uri.query))
+                query_dict['offset'] = self.offset + self.limit
+                parsed_uri = list(parsed_uri)
+                parsed_uri[4] = urllib.urlencode(query_dict)
+                next_url = urlparse.urlunparse(parsed_uri)
+
+        return next_url
 
     def _apply_filters(self, results):
         # Carenet filters.

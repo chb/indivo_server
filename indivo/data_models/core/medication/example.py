@@ -2,9 +2,10 @@ from indivo.models import Medication, Fill
 from indivo.lib.iso8601 import parse_utc_date as date
 
 med = Medication(
-    drugName_title="AMITRIPTYLINE HCL 50 MG TAB",
-    drugName_system="http://purl.bioontology.org/ontology/RXNORM/",
-    drugName_identifier="856845",
+    name_title="AMITRIPTYLINE HCL 50 MG TAB",
+    name_code_title="AMITRIPTYLINE HCL 50 MG TAB",
+    name_code_system="http://purl.bioontology.org/ontology/RXNORM/",
+    name_code_identifier="856845",
     endDate=date("2007-08-14"),
     frequency_value="2",
     frequency_unit="/d",

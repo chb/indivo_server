@@ -61,14 +61,16 @@ def test_client_expect_no_access(client, record_id, document_id, run_special_adm
     assert_403(client.set_document_status(record_id=record_id, document_id=document_id, data='reason=void1&status=void'))
     assert_403(client.read_document_status_history(record_id=record_id, document_id=document_id))
 
-    reports = ['read_equipment', 'read_procedures', 
-               ['read_measurements', {'lab_code':'HBA1C'}]]
-    for report in reports:
-        extra_params = {}
-        if type(report) == list:
-            extra_params = report[1]
-            report = report[0]
-        assert_403(getattr(client, report)(**combine_dicts({'record_id':record_id}, extra_params)))
+# TODO: replace with tests on generic reports
+#
+#    reports = ['read_equipment',  
+#               ['read_measurements', {'lab_code':'HBA1C'}]]
+#    for report in reports:
+#        extra_params = {}
+#        if type(report) == list:
+#            extra_params = report[1]
+#            report = report[0]
+#        assert_403(getattr(client, report)(**combine_dicts({'record_id':record_id}, extra_params)))
 
 
 def test_account_admin_calls(client, account_id):

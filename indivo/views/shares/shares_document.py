@@ -112,9 +112,10 @@ def carenet_document_list(request, carenet, query_options):
 
   offset = query_options['offset']
   limit = query_options['limit']
-  ret_documents = documents[offset:offset+limit]
+  if limit:
+      documents = documents[offset:offset+limit]
 
-  return _render_documents(ret_documents, carenet.record, None, tdc)
+  return _render_documents(documents, carenet.record, None, tdc)
 
 
 

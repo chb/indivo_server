@@ -91,9 +91,12 @@ def audit_function_view(request, record, document_id, function_name, query_optio
     limit = query_options['limit']
     order_by = query_options['order_by']
     status = query_options['status']
+    total_result_count = audits.count()
+    if limit:
+        audits = audits[offset:offset+limit]
     return render_template('reports/report', 
-                           {'fobjs' : audits[offset:offset+limit],
-                            'trc': len(audits),
+                           {'fobjs' : audits,
+                            'trc': total_result_count,
                             'item_template': AUDIT_TEMPLATE,
                             'limit': limit,
                             'offset': offset,
@@ -121,9 +124,12 @@ def audit_record_view(request, record, query_options):
   status = query_options['status']
   try:
     audits = Audit.objects.filter(record_id=record.id).order_by('-datetime')
+    total_result_count = audits.count()
+    if limit:
+        audits = audits[offset:offset+limit]
     return render_template('reports/report', 
-                           {'fobjs' : audits[offset:offset+limit],
-                            'trc': len(audits),
+                           {'fobjs' : audits,
+                            'trc': total_result_count,
                             'item_template': AUDIT_TEMPLATE,
                             'limit': limit,
                             'offset': offset,
@@ -154,9 +160,12 @@ def audit_document_view(request, record, document_id, query_options):
     limit = query_options['limit']
     order_by = query_options['order_by']
     status = query_options['status']
+    total_result_count = audits.count()
+    if limit:
+        audits = audits[offset:offset+limit]
     return render_template('reports/report', 
-                           {'fobjs' : audits[offset:offset+limit],
-                            'trc': len(audits),
+                           {'fobjs' : audits,
+                            'trc': total_result_count,
                             'item_template': AUDIT_TEMPLATE,
                             'limit': limit,
                             'offset': offset,

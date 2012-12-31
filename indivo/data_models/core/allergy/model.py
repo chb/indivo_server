@@ -6,7 +6,7 @@ class Allergy(Fact):
     category = CodedValueField()
     drug_allergen = CodedValueField()
     drug_class_allergen = CodedValueField()
-    food_allergen = CodedValueField()
+    other_allergen = CodedValueField()
     severity = CodedValueField()
 
 class AllergyExclusion(Fact):

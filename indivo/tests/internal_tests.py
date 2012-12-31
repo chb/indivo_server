@@ -1,6 +1,7 @@
 import django.test
 from django.conf import settings
 from django.test.testcases import disable_transaction_methods, restore_transaction_methods
+from django.db import connection
 from django.db.models.loading import cache
 
 from south.db import db
@@ -21,7 +22,9 @@ from lxml import etree
 
 class IndivoTests(object):
     TEST_MODEL_MODULE = sys.modules['indivo.models'] # models module to which we can add test datamodels, etc.
-    TEST_MODEL_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/')
+    # Add in testing Schema and Datamodel locations
+    TEST_SCHEMA_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test')
+    TEST_DATAMODEL_DIR = os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test')
     dependencies_loaded = False
     dependencies = {DocumentSchema:('document_schemas',['type']),
                     AuthSystem:('auth_systems', ['short_name', 'internal_p']),
@@ -283,25 +286,11 @@ class IndivoTests(object):
             os.makedirs(test_media_root)
         self.save_and_modify_setting('MEDIA_ROOT', test_media_root)
 
-        # Redirect Schema and Datamodel file locations, so we can play with them during tests
-        self.save_and_modify_setting('CORE_SCHEMA_DIRS', 
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/core')])
-        self.save_and_modify_setting('CONTRIB_SCHEMA_DIRS',
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/schemas/contrib')])
-
-        self.save_and_modify_setting('CONTRIB_DATAMODEL_DIRS',
-                                     [os.path.join(settings.APP_HOME, 'indivo/tests/data_models/contrib')])
-
     def restore_test_settings(self):
         # clear out any test files we created, and restore the MEDIA_ROOT setting
         for subtree in os.listdir(settings.MEDIA_ROOT):
             shutil.rmtree(os.path.join(settings.MEDIA_ROOT, subtree))
         self.restore_setting('MEDIA_ROOT')
-
-        # Restore settings for schema and datamodel locations
-        self.restore_setting('CORE_SCHEMA_DIRS')
-        self.restore_setting('CONTRIB_SCHEMA_DIRS')
-        self.restore_setting('CONTRIB_DATAMODEL_DIRS')
 
     def setUp(self):
         self.test_data_context = TestDataContext()
@@ -401,6 +390,15 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
         fields = [(f.name, f) for f in django_class._meta.local_fields]
         table_name = django_class._meta.db_table
         db.create_table(table_name, fields)
+        
+        # create any ManyToMany tables
+        for m2m_field in django_class._meta.many_to_many:
+            m2m_table_name = m2m_field.m2m_db_table()
+            if m2m_table_name not in connection.introspection.table_names():
+                # build list of fields in the m2m "through" table
+                m2m_fields = [(f.name, f) for f in getattr(django_class, m2m_field.name).through._meta.local_fields]
+                db.create_table(m2m_field.m2m_db_table(), m2m_fields)
+        
 
     def finish_db_creation(self):
         """ Exceute deferred SQL after creating several models. 
@@ -417,6 +415,14 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
         table_name = django_class._meta.db_table
         db.start_transaction()
         db.delete_table(table_name)
+        
+        # drop any ManyToMany tables
+        for m2m_field in django_class._meta.many_to_many:
+            m2m_table_name = m2m_field.m2m_db_table()
+            if m2m_table_name in connection.introspection.table_names():
+                # delete table if it exists
+                db.delete_table(m2m_table_name)
+        
         db.commit_transaction()
 
 def enable_transactions(func):

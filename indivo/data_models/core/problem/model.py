@@ -7,3 +7,4 @@ class Problem(Fact):
   endDate = models.DateTimeField(null=True)
   name = CodedValueField()
   notes = models.TextField(null=True)
+  encounters = models.ManyToManyField('Encounter', null=True)

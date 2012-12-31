@@ -40,7 +40,7 @@ General Interest
 .. toctree::
    :maxdepth: 1
 
-   API <api>
+   api-overview
    Architecture Overview <overview>
    Authentication <authentication>
    Client Libraries <client-libs>
@@ -54,7 +54,7 @@ App Developers
    :maxdepth: 1
 
    Architecture Overview <overview>
-   API <api>
+   api-overview
    api-reference
    App UI Conventions <ui-conventions>
    Authentication <authentication>
@@ -101,7 +101,7 @@ Indivo Hackers
 
    Architecture Overview <overview>
    Access Control <access-control>
-   API <api>
+   api-overview
    Auditing <audit>
    Authentication <authentication>
    Auto-generated Documentation of the Indivo Codebase <autocode/modules>

@@ -1,0 +1,15 @@
+{
+  "name" : "WebNotes",
+  "description" : "WebNotes allows you to to store web page snippets directly into your Indivo account. The app works across all browsers as a bookmarklet and allows you to categorize the link into different folders by problems, medications, allergies or lab results. It also you to patients to share a given snippet with their care network or print to discuss",
+  "author" : "Chintan Patel",
+  "id" : "webnotes@apps.indivo.org",
+  "version" : "1.0.0",
+  "smart_version": "0.1",
+  "mode" : "ui",	
+  "scope": "record",
+  "has_ui": true,
+  "frameable": true,
+  "icon" :  "http://webnotes.trialx.com/all_static/img/webnotes.png",
+  "index": "http://webnotes.trialx.com/start_auth?record_id={record_id}&carenet_id={carenet_id}",
+  "oauth_callback_url": "http://webnotes.trialx.com/after_auth"
+}

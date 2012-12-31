@@ -1,0 +1,27 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://indivo.org/vocab/xml/documents#" elementFormDefault="qualified" xmlns:indivo="http://indivo.org/vocab/xml/documents#">
+
+  <complexType name="ModelType">
+    <sequence>
+      <element name="Field" minOccurs="0" maxOccurs="unbounded">
+        <complexType mixed="true">
+          <choice>
+            <element name="Model" type="indivo:ModelType" minOccurs="0" maxOccurs="1"/>
+            <element name="Models" type="indivo:ModelsType" minOccurs="0" maxOccurs="1"/>
+          </choice>
+          <attribute name="name" type="string" use="required"/>
+          <attribute name="documentId" type="string" use="optional"/>
+        </complexType>
+      </element>
+    </sequence>
+    <attribute name="name" type="string" use="required" />
+  </complexType>
+
+  <complexType name="ModelsType">
+    <sequence>
+      <element name="Model" type="indivo:ModelType" minOccurs="0" maxOccurs="unbounded" />
+    </sequence>
+  </complexType>
+
+  <element name="TestModels" type="indivo:ModelsType" />
+
+</schema>

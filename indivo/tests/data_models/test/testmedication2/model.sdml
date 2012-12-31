@@ -1,0 +1,25 @@
+{
+    "__modelname__": "TestMedication2",
+    "name": "String",
+    "date_started": "Date",
+    "date_stopped": "Date",
+    "brand_name": "String", 
+    "route": "String",
+    "prescription": {
+        "__modelname__": "TestPrescription2",
+        "prescribed_by_name": "String",
+        "prescribed_by_institution": "String",
+        "prescribed_on": "Date",
+        "prescribed_stop_on": "Date"
+        },
+    "fills": [{
+            "__modelname__": "TestFill2",
+            "date_filled": "Date",
+            "supply_days": "Number",
+            "filled_at_name": "String",
+            "code": "CodedValue",
+            "quantity": "ValueAndUnit",
+            "pharmacy": "Pharmacy",
+            "prescriber": "Provider"
+            }]
+}

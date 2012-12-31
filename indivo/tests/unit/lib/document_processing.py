@@ -13,10 +13,10 @@ class DocumentProcessingUnitTests(TransactionInternalTests):
         super(DocumentProcessingUnitTests, self).setUp()
         
         # Load the test datamodels
-        self.load_model_dir(self.TEST_MODEL_DIR)
+        self.load_model_dir(self.TEST_DATAMODEL_DIR)
 
         # load the test schema
-        self.loader = IndivoSchemaLoader(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test'))
+        self.loader = IndivoSchemaLoader(self.TEST_SCHEMA_DIR)
         self.loader.import_schemas()        
         
         # create instance from a TestMed document
@@ -29,7 +29,7 @@ class DocumentProcessingUnitTests(TransactionInternalTests):
         self.loader.unregister_all_schemas()
         
         # Unregister the classes, reset the DB
-        self.unload_model_dir(self.TEST_MODEL_DIR)
+        self.unload_model_dir(self.TEST_DATAMODEL_DIR)
 
         super(DocumentProcessingUnitTests, self).tearDown()     
         

@@ -1,5 +1,4 @@
 import os
-import settings
 import sys
 import json
 import datetime
@@ -22,24 +21,23 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         self.record = self.createRecord(TEST_RECORDS, 0, owner=self.account)
         
         # Load the test data models
-        self.load_model_dir(self.TEST_MODEL_DIR)
+        self.load_model_dir(self.TEST_DATAMODEL_DIR)
         
         # Load the test schemas
-        self.loader = IndivoSchemaLoader(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test'))
+        self.loader = IndivoSchemaLoader(self.TEST_SCHEMA_DIR)
         self.loader.import_schemas()        
 
     def tearDown(self):
         # Unregister the schemas
         self.loader.unregister_all_schemas()
-        
         # Unload the test models
-        self.unload_model_dir(self.TEST_MODEL_DIR)
+        self.unload_model_dir(self.TEST_DATAMODEL_DIR)
 
         super(PluggableSchemaIntegrationTests,self).tearDown()
         
     def test_nested_model_json(self):
         # post new document with a TestMed
-        test_med_data = open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read()
+        test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
@@ -69,7 +67,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         
     def test_nested_model_xml(self):
         # post new document with a TestMed
-        test_med_data = open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read()
+        test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
@@ -106,7 +104,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         
     def test_default_response_format(self):
         # post new document with a TestMed
-        test_med_data = open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read()
+        test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
@@ -137,7 +135,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
     def test_unsupported_response_format(self):
 
         # post new document with a TestMed
-        test_med_data = open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read()
+        test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
         response = self.client.post('/records/%s/documents/'%(self.record.id), 
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
@@ -156,16 +154,16 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # parse response and check          
         response_xml = etree.XML(response.content)
         labs = response_xml.findall('./Model')
-        self.assertEqual(len(labs), 1)
+        self.assertEqual(len(labs), 2)
         lab = labs[0]
         
-        self.assertEqual(len(lab.findall('Field')), 35)
+        self.assertEqual(len(lab.findall('Field')), 41)
         self.assertEqual(lab.get('name'), 'LabResult')
         
     def test_sdmx_schema(self):
 
         # Post an SDMX document that matches our TestMed datamodel
-        sdmx_doc = open(os.path.join(settings.APP_HOME, 'indivo/tests/data_models/test/testmodel/example.sdmx')).read()
+        sdmx_doc = open(os.path.join(self.TEST_DATAMODEL_DIR, 'testmodel/example.sdmx')).read()
         url = "/records/%s/documents/"%self.record.id
         response = self.client.post(url, data=sdmx_doc, content_type='application/xml')
         self.assertEqual(response.status_code, 200)
@@ -214,18 +212,18 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         
         # post some documents that are valid by our TestMed schema but invalid against the TestMed datamodel validators
         invalid_docs = []
-        invalid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml.invalid')).read())
-        invalid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed2.xml.invalid')).read())
-        invalid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed3.xml.invalid')).read())
+        invalid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml.invalid')).read())
+        invalid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed2.xml.invalid')).read())
+        invalid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed3.xml.invalid')).read())
         for doc in invalid_docs:
             response = self.client.post("/records/%s/documents/"%self.record.id, data=doc, content_type='application/xml')
             self.assertTrue(response.status_code, 400)
 
         # post some documents that are valid against the validators
         valid_docs = []
-        valid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed.xml')).read())
-        valid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed2.xml')).read())
-        valid_docs.append(open(os.path.join(settings.APP_HOME, 'indivo/tests/schemas/test/testmed/testmed3.xml')).read())
+        valid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read())
+        valid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed2.xml')).read())
+        valid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed3.xml')).read())
         for doc in valid_docs:
             response = self.client.post("/records/%s/documents/"%self.record.id, data=doc, content_type='application/xml')
             self.assertTrue(response.status_code, 400)
