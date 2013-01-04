@@ -32,7 +32,7 @@ DEMO_MODE = False
 # to data profiles. 'Data profiles' correspond
 # to subfolders of SAMPLE_DATA_DIR
 DEMO_PROFILES = {
-    'John Doe':'patient_1',
+    'William Robinson':'patient_967332',
     }
 
 # Location for sample data
@@ -40,6 +40,9 @@ SAMPLE_DATA_DIR = APP_HOME + '/sample_data'
 
 # URL prefix (where indivo_server will be accessible from the web)
 SITE_URL_PREFIX = "http://localhost:8000"
+
+# Description to show in SMART manifest call
+SITE_DESCRIPTION = "Indivo Server"
 
 # URL prefix for the UI server
 # (usually port 80 on the same machine)
@@ -197,3 +200,10 @@ LOGIN_URL = "/account/login"
 
 # no trailing slash just because
 APPEND_SLASH = False
+
+# custom serializations
+SERIALIZATION_MODULES = {
+    "indivo_python" : "indivo.serializers.python",
+    "indivo_xml": "indivo.serializers.xml_serializer"
+}
+
