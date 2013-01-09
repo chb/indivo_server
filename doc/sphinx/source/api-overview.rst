@@ -1,3 +1,4 @@
+===================
 Indivo API Overview
 ===================
 
@@ -493,7 +494,8 @@ SMART API Calls over Data Models
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As Indivo now supports the `SMART API <http://dev.smartplatforms.org/>`_, the following
-calls are now available for reporting over the various SMART Data Models
+calls are now available for reporting over the various SMART Data Models.  These calls return 
+SMART RDF/XML, and adhere to the behavior defined by the `SMART REST API <http://dev.smartplatforms.org/reference/rest_api/>`_.
 
 .. glossary::
 
@@ -561,12 +563,20 @@ Coding Systems
 
 A number of Indivo documents contain coded values. These can be based on UMLS, 
 SNOMED, etc. Indivo provides a generic API for looking up coded values. This API 
-is particularly built to support live autocomplete in JavaScript.
+is particularly built to support live autocomplete in JavaScript.  
+
+**Note** These calls require that your instance has been loaded with coding systems.
+For information on how to do this, please see our :ref:`note <coding-systems-install>`
+in the installations instructions.  
 
 .. glossary::
    
    :http:get:`/codes/systems/`
      List available coding systems. Return data is in JSON format.
+     
+	 .. warning::
+     
+	   This call has not yet been implemented.
 
    :http:get:`/codes/systems/{SHORT_NAME}/query`
      Search a coding system for a value.

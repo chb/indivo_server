@@ -5,7 +5,7 @@ Introduction
 ------------
 
 The Indivo Data Pipeline is the set of processes that take input data as it enters Indivo, extract and store clinical 
-datapoints (:term:`Facts <fact>`), and make those datapoints available as output via the :doc:`API <api>`. As of version
+datapoints (:term:`Facts <fact>`), and make those datapoints available as output via the :doc:`API <api-reference>`. As of version
 1.1 of Indivo X, every component of the pipeline is substitutable: you can add new formats for input data, new ways to
 store the data, and new methods to output them.
 

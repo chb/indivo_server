@@ -2,7 +2,7 @@ Architecture Overview
 =====================
 
 This document provides a basic overview of the Indivo X system architecture. This document should 
-be read before continuing on to :doc:`Indivo Authentication <authentication>` and :doc:`the Indivo API <api>`.
+be read before continuing on to :doc:`Indivo Authentication <authentication>` and :doc:`the Indivo API overview <api-overview>`.
 
 Basic Indivo Concepts
 ---------------------
@@ -90,4 +90,4 @@ Authentication is via oAuth.
 
 More about :doc:`Indivo Authentication <authentication>`.
 
-More about :doc:`the Indivo API <api>`.
+More about :doc:`the Indivo API <api-overview>`.

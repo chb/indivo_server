@@ -287,7 +287,7 @@ API Reference
 =============
 
 This page contains a full list of valid Indivo API calls, generated from the code.
-For a more detailed walkthrough of individual calls, see :doc:`api`.
+For a more detailed walkthrough of individual calls, see :doc:`api-overview`.
 
 In the access control for some calls, you might see the phrase *full control*. In
 Indivo, this is defined as follows:

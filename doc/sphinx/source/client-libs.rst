@@ -2,7 +2,7 @@ Indivo Client Libraries
 =======================
 
 An Indivo client library is any code (in any language) provided as a standard package to app developers which
-enables them to make :doc:`API calls <api>` against Indivo without worrying about low-level implementation
+enables them to make :doc:`API calls <api-overview>` against Indivo without worrying about low-level implementation
 details such as OAuth signing. We currently support a few simple libraries: this document lists those
 libraries, and provides advice for generating new libraries.
 

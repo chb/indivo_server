@@ -4,7 +4,7 @@ Documenting Indivo
 Indivo's documentation (as of version 1.0) is written using the 
 `Sphinx documentation framework <http://sphinx.pocoo.org/>`_, and is hosted by 
 `Read the Docs <http://readthedocs.org/>`_. Additionally, we've added some 
-mechanisms to autogenerate documentation for our :doc:`api` and 
+mechanisms to autogenerate documentation for our :doc:`api-reference` and 
 :doc:`python client <py-client-reference>`.
 
 Modifying the Docs

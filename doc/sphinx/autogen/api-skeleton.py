@@ -2145,7 +2145,7 @@ SDMX Example:
     }
 ''',
     "deprecated": None,
-    "added": None,
+    "added": ('2.0.1', ''),
     "changed": None,
 
 },

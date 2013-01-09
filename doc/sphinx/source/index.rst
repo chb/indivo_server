@@ -6,8 +6,6 @@
 Welcome to Indivo X's technical documentation!
 ==============================================
 
-.. contents::
-
 Overview
 ^^^^^^^^
 
@@ -15,9 +13,8 @@ If you are interested in working with Indivo, you probably fall into one or more
 the following categories:
 
 * `General Interest`_: You've heard about this 'Indivo X' project, and want to learn
-  more about what it can do. You might want to check out our 
-  `non-technical wiki <http://wiki.chip.org/indivo/index.php/Indivo>`_ before 
-  diving into this more technical overview.
+  more about what it can do. You also might want to check out our 
+  `website <http://indivohealth.org>`_ before diving into this more technical overview.
 
 * `App Developers`_: You want to build applications that enable patients to engage in
   their care, using Indivo's RESTful API to store and fetch medical data. You are
@@ -124,6 +121,17 @@ Indivo Hackers
    Schemas <schemas/index>
    Transforms <transform>
    todos
+
+
+HOWTOs
+^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   howtos/*
+   
 
 Indices and tables
 ==================
