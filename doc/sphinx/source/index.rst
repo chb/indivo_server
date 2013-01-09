@@ -131,6 +131,15 @@ HOWTOs
    :glob:
 
    howtos/*
+
+Release Notes
+^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   releases/*
    
 
 Indices and tables

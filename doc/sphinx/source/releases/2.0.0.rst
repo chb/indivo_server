@@ -1,0 +1,61 @@
+============================
+Indivo X 2.0.0 Release Notes
+============================
+
+The Indivo X 2.0.0 release represents a major step forward in interoperability by providing a deep integration of the `SMART <http://www.smartplatforms.org/>`_ data models and API.  SMART apps will now be able to run unaltered on Indivo, or enhanced to take advantage of Indivo's full API.  Also included in this release is a new system for easily extending Indivo with custom data models, and the ability to retrieve them in multiple formats (XML, JSON, RDF/XML).
+
+Grab the Code
+=============
+
+* Indivo X Server
+
+  * http://github.com/chb/indivo_server/
+  * http://cloud.github.com/downloads/chb/indivo_server/indivo_server-v2.0.0.tar.gz
+
+* Indivo X UI Server + bundled apps (allergies, labs, medications, problems)
+
+  * http://github.com/chb/indivo_ui_server/
+  * http://cloud.github.com/downloads/chb/indivo_ui_server/indivo_ui_server-v2.0.0.tar.gz
+
+* Indivo X Python Client Library
+
+  * http://github.com/chb/indivo_client_py/
+  * http://cloud.github.com/downloads/chb/indivo_client_py/indivo_client_py-v2.0.0.tar.gz
+
+Change Log
+==========
+
+Indivo Server
+-------------
+
+* Now supports the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API>`_
+* New methods for easily defining new data models and attaching custom serializers and validators
+
+  * Django Model Classes
+  
+    * For those with python/Django experience
+    
+  * Simple Data Modeling Language (SDML)
+  
+    * JSON-based modeling language for defining simple data models
+     
+* Reports over all data models, supporting the API Query Interface, and with XML and JSON serialization options
+* New SMART-style JSON app manifests
+* Sample data profiles for demo and testing purposes
+
+Indivo UI Server
+----------------
+
+* Now supports SMART apps
+* New Labs app
+
+Python Client
+-------------
+
+* New client using the python-oauth2 library
+* Full access to all response information
+
+Some Things You Should Know
+===========================
+
+* With our adoption of the SMART data models and API, we have removed overlapping Indivo models.  This means that there is **NO MIGRATION PATH** from the 1.x.x to the 2.x.x version of Indivo.
