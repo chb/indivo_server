@@ -30,7 +30,7 @@ General Architecture and User Flow
 
 A user will add the Indivo Problems application to their record on demand, or it may be added for them by an administrative application. User Authentication is entirely performed via Indivo.
 
-Indivo Problems will store all of its data in Indivo X, using the :doc:`Problem data model <../data-models/problem>`. Notes added to the problem will be stored as standard annotations TODO. Thus, Indivo Problems does not require anything other than application logic: no database, no authentication mechanism, just HTML serving and access to the Indivo X API.
+Indivo Problems will store all of its data in Indivo X, using the :doc:`Problem data model <../data-models/problem>`. Notes added to the problem will be stored as standard annotations. Thus, Indivo Problems does not require anything other than application logic: no database, no authentication mechanism, just HTML serving and access to the Indivo X API.
 
 Authentication
 ==============
@@ -203,7 +203,7 @@ In the Indivo Problem List code, this is packaged as ``get_indivo_client`` in th
 Reading a list of Problems
 --------------------------
 
-Though each problem is its own Indivo document, problems might come from a CCR, from a list of problems in another schema, etc... Thus, it is always best to access the *Problems Report* TODO when listing problems, which will list all of the reports processed from all input documents.
+Though each problem is its own Indivo document, problems might come from a CCR, from a list of problems in another schema, etc... Thus, it is always best to access Problems through our :ref:`reporting APIs <reporting-APIs>` when listing problems, which will list all of the reports processed from all input documents.
 
 The call is slightly different depending on whether this is a record or carenet (eventually, Indivo may provide a single API call to make this easier, but for now we must differentiate)::
 

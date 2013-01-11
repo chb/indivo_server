@@ -259,7 +259,7 @@ Get the Code
 From A Packaged Release
 """""""""""""""""""""""
 
-* Download the latest release of Indivo X and untar into ``indivo_server/``. Do not change this directory name--it will break the django settings file.
+* Download the latest release of Indivo X from our `tags page <https://github.com/chb/indivo_server/tags>`_ and untar into ``indivo_server/``. Do not change this directory name--it will break the django settings file.
 
 From Github
 """""""""""
@@ -351,7 +351,7 @@ Once that's done, assuming you've installed everything in ``/web/indivo_server``
 
 and have everything loaded properly.
 
-See more info on codingsystems and where to find the data files [TODO](www.junk.com).
+See more info on codingsystems and where to find the data files :doc:`here <coding-systems>`.
 
 Database Cleanup
 ^^^^^^^^^^^^^^^^
@@ -377,7 +377,11 @@ Get the Code
 From a Packaged Release
 """""""""""""""""""""""
 
-* Download the latest release of Indivo X UI Server (see [TODO](www.junk.com)) and untar into ``indivo_ui_server/``. Do not change this directory name--it will break the django settings file.
+* Download the latest release of Indivo X UI Server from our `tags page <https://github.com/chb/indivo_ui_server/tags>`_ and untar into ``indivo_ui_server/``. 
+  
+  .. note::
+  
+  	Do not change this directory name--it will break the django settings file.
 
 From Github
 """""""""""
