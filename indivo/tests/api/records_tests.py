@@ -641,6 +641,32 @@ class RecordInternalTests(InternalTests):
         url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], self.attachment['attachment_num'])
         response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
+        
+        # Attachment number too large
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], "5")
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)
+        
+        # 0 attachment number
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], "0")
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)
+        
+        # Negative attachment number
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], "-1")
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)
+        
+        # Non-integer attachment number
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, msg['message_id'], "a")
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)
+
+        # Wrong message id
+        url = '/records/%s/inbox/%s/attachments/%s'%(record_id, 'junkID', self.attachment['attachment_num'])
+        response = self.client.post(url, data=self.attachment['content'], content_type='text/xml')
+        self.assertEquals(response.status_code, 400)
+
 
     def test_record_notify(self):
         record_id = self.record.id

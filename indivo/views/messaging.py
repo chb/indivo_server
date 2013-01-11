@@ -97,16 +97,17 @@ def record_send_message(request, record, message_id):
   passed *message_id* is a duplicate.
   
   """
-
-  record.send_message(
-    external_identifier = message_id, 
-    sender              = request.principal.effective_principal,
-    subject             = _get_subject(request),
-    body                = request.POST.get('body',    '[no body]'),
-    body_type           = request.POST.get('body_type',    'plaintext'),
-    num_attachments     = request.POST.get('num_attachments', 0),
-    severity            = request.POST.get('severity', 'low'))
-  
+  try:
+    record.send_message(
+        external_identifier = message_id, 
+        sender              = request.principal.effective_principal,
+        subject             = _get_subject(request),
+        body                = request.POST.get('body',    '[no body]'),
+        body_type           = request.POST.get('body_type',    'plaintext'),
+        num_attachments     = request.POST.get('num_attachments', 0),
+        severity            = request.POST.get('severity', 'low'))
+  except ValueError, e:
+    return HttpResponseBadRequest(e)
   return DONE
 
 @transaction.commit_on_success
@@ -130,8 +131,16 @@ def record_message_attach(request, record, message_id, attachment_num):
   # there may be more than one message here
   messages = Message.objects.filter(about_record = record, external_identifier = message_id)
   
-  for message in messages:
-    message.add_attachment(attachment_num, request.raw_post_data)
+  if len(messages) == 0:
+      return HttpResponseBadRequest("Message not found")
+  
+  try:
+    for message in messages:
+      message.add_attachment(attachment_num, request.raw_post_data)
+  except IntegrityError as e:
+      raise e
+  except Exception as e:
+    return HttpResponseBadRequest(e)
 
   return DONE
 

@@ -59,8 +59,12 @@ class Message(Object):
         attachment_num is 1-indexed
         """
 
-        if int(attachment_num) > self.num_attachments:
-            raise Exception("attachment num is too high")
+        try:
+            attachment_num = int(attachment_num)
+            if attachment_num > self.num_attachments or attachment_num < 1:
+                raise Exception("attachment number out of range")
+        except ValueError as e:
+            raise Exception("not a valid attachment number")
         
         mime_type='application/xml' # Only handle XML attachments for now
 
