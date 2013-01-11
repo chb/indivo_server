@@ -3,7 +3,7 @@ Indivo Client Libraries
 
 An Indivo client library is any code (in any language) provided as a standard package to app developers which
 enables them to make :doc:`API calls <api-overview>` against Indivo without worrying about low-level implementation
-details such as OAuth signing. We currently support a few simple libraries: this document lists those
+details such as OAuth signing. We currently support a couple simple libraries: this document lists those
 libraries, and provides advice for generating new libraries.
 
 Supported Client Libraries
@@ -29,14 +29,6 @@ data-types using the Indivo API.
 The code is available `on github <https://github.com/chb/IndivoFramework-ios>`__, and documentation is
 available `in the Indivo docs <http://docs.indivohealth.org/projects/indivo-x-ios-framework/en/latest/>`_.
 
-Java Client
-^^^^^^^^^^^
-
-Our java client is a simple layer over the Indivo API. **WARNING:** the client is not yet fully up to date
-for Indivo version 2.0, so use at your own risk!
-
-Code is available `on github <https://github.com/chb/indivo_client_java>`__, and although there is no
-publicly hosted documentation, there are helpful examples in README files in the source code.
 
 SMART Clients
 ^^^^^^^^^^^^^
@@ -44,13 +36,13 @@ SMART Clients
 Since Indivo now supports the `SMART API <http://smartplatforms.org>`_, apps written using SMART client libraries
 will also run on Indivo. See the documentation for SMART client libraries:
 
-* `in javascript <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_App_Javascript_Libraries>`_
+* `in javascript <http://dev.smartplatforms.org/libraries/javascript/>`_
 
-* `in python <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_App_Python_Library>`_
+* `in python <http://dev.smartplatforms.org/libraries/python/>`_
 
-* `in java <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_App_Java_Library>`_
+* `in java <http://dev.smartplatforms.org/libraries/java/>`_
 
-* or `in .NET <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_Container_DotNET_Libraries>`_
+* or `in .NET <http://dev.smartplatforms.org/libraries/dotnet/>`_
 
 Building a Client Library
 -------------------------

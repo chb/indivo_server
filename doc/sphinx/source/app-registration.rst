@@ -15,7 +15,7 @@ Indivo-specific parameters to accommodate the way Indivo represents applications
 manifest will also be a valid Indivo manifest. 
 
 See `The SMART Project's documentation 
-<http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_Packaging_Applications_via_SMART_Manifest>`_ 
+<http://dev.smartplatforms.org/reference/app_manifest/>`_ 
 for a description of the basic syntax of a manifest, which is JSON based. Below, we describe only the Indivo-specific
 modifications.
 

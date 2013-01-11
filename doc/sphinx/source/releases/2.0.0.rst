@@ -28,7 +28,7 @@ Change Log
 Indivo Server
 -------------
 
-* Now supports the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API>`_
+* Now supports the `SMART API <http://dev.smartplatforms.org/reference/rest_api/>`_
 * New methods for easily defining new data models and attaching custom serializers and validators
 
   * Django Model Classes

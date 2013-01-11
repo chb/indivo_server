@@ -2613,7 +2613,7 @@ see http://sandbox-api.smartplatforms.org/ontology
         },
     "data_fields":{
         },
-    "description":"Retrieve a specific instance of a SMART allergy.",
+    "description":"Retrieve a specific instance of a SMART Allergy or AllergyExclusion.",
     "return_desc":"SMART RDF describing the AllergyAllergyExclusion",
     "return_ex":'''
 <?xml version="1.0" encoding="UTF-8"?>
@@ -5167,7 +5167,7 @@ SDMX Example:
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
-        'MODEL_NAME':'The name of the SMART data_model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API#Record_Calls>`_.',
+        'MODEL_NAME':'The name of the SMART data_model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://dev.smartplatforms.org/reference/rest_api/>`_.',
         },
     "query_opts":{
         },
@@ -5333,7 +5333,7 @@ SDMX Example:
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
         'MODEL_ID':'The id of the SMART data_model to retrieve',
-        'MODEL_NAME':'The name of the SMART data model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_REST_API#Record_Calls>`_.',
+        'MODEL_NAME':'The name of the SMART data model to retrieve (i.e. ``problems``). Options are defined by the `SMART API <http://dev.smartplatforms.org/reference/rest_api/>`_.',
         },
     "query_opts":{
         },

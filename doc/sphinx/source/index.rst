@@ -71,8 +71,7 @@ App Developers
 Indivo Administrators
 ^^^^^^^^^^^^^^^^^^^^^
 
-You'll probably want to start with our 
-`Installation Instructions <http://wiki.chip.org/indivo/index.php/Technical_Documentation#HOWTOs>`_.
+You'll probably want to start with our :doc:`Installation Instructions <howtos/install-ubuntu>`.
 
 .. toctree::
    :maxdepth: 1
