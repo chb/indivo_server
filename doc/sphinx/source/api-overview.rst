@@ -565,9 +565,11 @@ A number of Indivo documents contain coded values. These can be based on UMLS,
 SNOMED, etc. Indivo provides a generic API for looking up coded values. This API 
 is particularly built to support live autocomplete in JavaScript.  
 
-**Note** These calls require that your instance has been loaded with coding systems.
-For information on how to do this, please see our :ref:`note <coding-systems-install>`
-in the installations instructions.  
+.. note::
+
+	These calls require that your instance has been loaded with coding systems.
+	For information on how to do this, please see our :ref:`note <coding-systems-install>`
+	in the installations instructions.  
 
 .. glossary::
    
@@ -669,14 +671,15 @@ Account Administration
      :http:post:`/accounts/{ACCOUNT_ID}/secret-resend`, but this call combines
      both actions.
 
-     Note that this call resets both the primary and secondary secrets. The 
-     user will need to be given this secondary secret in a channel other than 
-     email. If a User Interface Application performed this reset, then the 
-     secondary secret should display on screen while the primary secret is 
-     automatically sent by email. The user interface could obtain the secondary 
-     secret (which is short) by calling :http:get:`/accounts/{ACCOUNT_ID}/secret`, 
-     but the call to :http:post:`/accounts/{ACCOUNT_ID}/forgot-password` returns 
-     the secondary secret to avoid the extra call.
+	 .. note::
+	     This call resets both the primary and secondary secrets. The 
+	     user will need to be given this secondary secret in a channel other than 
+	     email. If a User Interface Application performed this reset, then the 
+	     secondary secret should display on screen while the primary secret is 
+	     automatically sent by email. The user interface could obtain the secondary 
+	     secret (which is short) by calling :http:get:`/accounts/{ACCOUNT_ID}/secret`, 
+	     but the call to :http:post:`/accounts/{ACCOUNT_ID}/forgot-password` returns 
+	     the secondary secret to avoid the extra call.
 
    :http:post:`/accounts/{ACCOUNT_ID}/initialize/{PRIMARY_SECRET}`
      Initialize a new account.

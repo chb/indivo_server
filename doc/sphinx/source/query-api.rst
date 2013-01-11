@@ -99,14 +99,18 @@ Ordering Operators
   sorted by that field. Fields are sorted in ascending order by default, and 
   prefixing them with a '-' will reverse the order to descending. 
 
-  **Note:** If ``order_by`` is used with a grouping, ``{field}`` may only refer 
-  to the field used with ``group_by``, ``date_group``, or ``aggregate_by``.
+  .. note::
+  
+	  If ``order_by`` is used with a grouping, ``{field}`` may only refer 
+	  to the field used with ``group_by``, ``date_group``, or ``aggregate_by``.
 
 Grouping and Aggregating Operators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Note: Calls using grouping and aggregating operators will return data according 
-to the aggregation schema, not the standard query schema**
+.. note:: 
+	
+	Calls using grouping and aggregating operators will return data according 
+	to the aggregation schema, not the standard query schema
 
 * ``group_by``: Syntax is: ``?group_by={field}``. Groups result sets by the 
   passed field, which must be a data field exposed by the desired report type. 
@@ -160,8 +164,10 @@ Date-based Operators
   **If used with** ``order_by``, **the ordering field must be identical to the 
   grouping field or the field passed in** ``aggregate_by``.
 
-  **Note: using this operator will result in the return of an aggregation 
-  schema.** 
+  .. note::
+  
+  	using this operator will result in the return of an aggregation 
+  	schema. 
 
   Valid increments are:
   

@@ -52,11 +52,13 @@ You can do this by configuring the following settings in ``settings.py``:
      'bob'. The third would have a label of 'Ted Kennedy', and be populated by the data
      profile 'patient_2'.
 
-**Note:** Demo Mode autocreates records any time the API call to create an account,
-:http:post:`/accounts/`, is called. This means that any records created through other
-means (i.e. by a call to :http:post:`/records/`) will not be populated with data. If 
-your registration UI or admin app handles record creation, this could lead to the 
-existence of some records populated with sample data, and others without it.
+.. note:: 
+	
+	Demo Mode autocreates records any time the API call to create an account,
+	:http:post:`/accounts/`, is called. This means that any records created through other
+	means (i.e. by a call to :http:post:`/records/`) will not be populated with data. If 
+	your registration UI or admin app handles record creation, this could lead to the 
+	existence of some records populated with sample data, and others without it.
 
 
 .. _sample-data-dir:

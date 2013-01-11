@@ -126,14 +126,14 @@ Here's a sample credentials file, for our built-in Problems app::
       "consumer_secret": "SECRETFORTHEPROBLEMSAPP:CHANGEME"
   }
 
-**Notes:** 
+.. note::
 
-* If your app is a SMART app, you probably haven't explicitly generated a 'consumer key'. You should set the 
-  ``consumer_key`` field of the credentials file to match the ``id`` field of your app manifest file.
-
-* If your app is a SMART CONNECT app (or connects to Indivo using :ref:`connect-auth`), you do not need a 
-  consumer secret. In such a case, set the ``consumer_secret`` field of the credentials file to the empty 
-  string: ``''``.
+	* If your app is a SMART app, you probably haven't explicitly generated a 'consumer key'. You should set the 
+	  ``consumer_key`` field of the credentials file to match the ``id`` field of your app manifest file.
+	
+	* If your app is a SMART CONNECT app (or connects to Indivo using :ref:`connect-auth`), you do not need a 
+	  consumer secret. In such a case, set the ``consumer_secret`` field of the credentials file to the empty 
+	  string: ``''``.
 
 Managing the Registered Apps
 ----------------------------

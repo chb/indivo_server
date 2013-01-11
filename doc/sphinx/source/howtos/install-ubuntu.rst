@@ -11,11 +11,13 @@ Pre-Requisites
 
 This documents the installation of a complete Indivo X server and user interface. For concreteness, we show all of the exact instructions needed when installing on Ubuntu Linux 11.04 (Natty) or 11.10 (Oneiric). We welcome variants of these explicit instructions from folks installing on other operating systems, we will be happy to post them alongside these instructions.
 
-*Note*: We recommend you do this by sudo'ing from a non-root user.  If you would like to do this as root make sure you create at least one non-root user with::
+.. note::
 
-	useradd -m {USER}
+	We recommend you do this by sudo'ing from a non-root user.  If you would like to do this as root make sure you create at least one non-root user with::
+
+		useradd -m {USER}
 	
-otherwise the default locale will not be set.  This issue is most common on a new OS build.
+	otherwise the default locale will not be set.  This issue is most common on a new OS build.
 
 You will need the following for Indivo:
 
@@ -42,11 +44,13 @@ You will need the following for Indivo:
 
 * Apache 2 (for production) with module ``mod_wsgi`` (``mod_ssl`` for HTTPS is strongly recommended for production, but we won't cover its installation here.)::
 
-	apt-get install apache2-mpm-prefork 
+		apt-get install apache2-mpm-prefork 
 
-  *NOTE*: For Lucid, you may need to do an apt-get update before making the following command::
+  .. note:: 
+  	
+  	For Lucid, you may need to do an apt-get update before making the following command::
 
-	apt-get install libapache2-mod-wsgi
+		apt-get install libapache2-mod-wsgi
 
 * easy_install for Python::
  
@@ -95,7 +99,9 @@ Install
 Setup
 """""
 
-*Note*: You'll have the easiest time naming your database ``indivo``
+.. note:: 
+
+	You'll have the easiest time naming your database ``indivo``
 
 There are two ways to authenticate to PostgreSQL: use your Unix credentials, or use a separate username and password. 
 We strongly recommend the latter, and our instructions are tailored appropriately. If you know how to use PostgreSQL 
@@ -201,7 +207,11 @@ Install
 
 If you do not have a supported installation of Oracle already, the odds are good that you shouldn't be running Indivo on Oracle. Also, Oracle doesn't play nicely with Debian Linux, so you also probably shouldn't be setting it up on Ubuntu. These installation instructions assume that you have a running instance of Oracle on another machine, and describe how to connect to it from an Indivo instance running on Ubuntu.
 
-You'll need an installation of Oracle against which to bind the Python drivers. You can use Oracle XE (express edition), which is free and based on Oracle 11i. We used the `following installation instructions <http://www.cyberciti.biz/faq/howto-install-linux-oracle-database-xe-server/>`_. **NOTE**: These instructions only work for 32-bit Linux. For 64-bit versions, Oracle doesn't offer a solution.
+You'll need an installation of Oracle against which to bind the Python drivers. You can use Oracle XE (express edition), which is free and based on Oracle 11i. We used the `following installation instructions <http://www.cyberciti.biz/faq/howto-install-linux-oracle-database-xe-server/>`_. 
+
+.. note::
+
+	These instructions only work for 32-bit Linux. For 64-bit versions, Oracle doesn't offer a solution.
 
 Get the Python Oracle driver, `cx_Oracle <http://cx-oracle.sourceforge.net/>`_, with installation instructions `explained here <http://catherinedevlin.blogspot.com/2008/06/cxoracle-and-oracle-xe-on-ubuntu.html>`_.
 
@@ -288,8 +298,11 @@ Copy ``settings.py.default`` to ``settings.py``, and open it up. Make sure to lo
   
 * set the ``SEND_MAIL`` parameter to True or False depending on whether you want emails actually being sent.
 * set the ``EMAIL_*`` parameters appropriately for sending out emails.
-* Under ``utils/`` copy ``indivo_data.xml.default`` to ``indivo_data.xml`` and edit accordingly.  **Note**: Make sure to do this step before 
-  resetting the database, as the credentials for users/apps in ``indivo_data.xml`` cannot be changed without an additional reset of the database.
+* Under ``utils/`` copy ``indivo_data.xml.default`` to ``indivo_data.xml`` and edit accordingly.  
+
+  .. note::
+  
+	  Make sure to do this step before resetting the database
 
 Resetting the Database
 ^^^^^^^^^^^^^^^^^^^^^^

@@ -16,7 +16,9 @@ The :doc:`Indivo API <../api-reference>` defines how to call the Indivo X server
 
 This document explains the details of how to build an Indivo app, using Python. Of course, any other programming language / web platform can be used following the same principles.
 
-**NOTE**, as of Indivo X Beta 1, this problems app is fully integrated into the Indivo UI Server, for ease of deployment. This does not change the fact that you can and should build additional apps as separate servers.
+.. note::
+
+	As of Indivo X Beta 1, this problems app is fully integrated into the Indivo UI Server, for ease of deployment. This does not change the fact that you can and should build additional apps as separate servers.
 
 Scope
 -----
@@ -46,9 +48,11 @@ Thus, our application needs:
 
 * an ``index`` URL::
 	
-	/start_auth?record_id={record_id}&carenet_id={carenet_id}
+		/start_auth?record_id={record_id}&carenet_id={carenet_id}
 
-  Note that only one of those two variables will be filled in.
+  .. note:: 
+	
+  	Only one of those two params will be filled in.
 
 * an ``oauth_callback`` URL that complies with the oAuth protocol (v1.0a)::
 

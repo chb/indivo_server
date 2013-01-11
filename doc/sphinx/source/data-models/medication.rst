@@ -9,9 +9,6 @@ As :ref:`SDML <sdml>`:
 .. include:: /../../../indivo/data_models/core/medication/model.sdml
    :literal:
 
-**Note**: Since SDML doesn't provide for Boolean Fields, we are unable to define the *dispense_as_written* field 
-properly in SDML. Our actual implementation of the Medication data model uses a Django Model Class for this reason.
-
 As a Django Model Class:
 
 .. include:: /../../../indivo/data_models/core/medication/model.py
