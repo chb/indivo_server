@@ -259,7 +259,7 @@ Get the Code
 From A Packaged Release
 """""""""""""""""""""""
 
-* Download the latest release of Indivo X from our `tags page <https://github.com/chb/indivo_server/tags>`_ and untar into ``indivo_server/``. Do not change this directory name--it will break the django settings file.
+* Download the latest release of Indivo X from our `tags page <https://github.com/chb/indivo_server/tags>`__ and untar into ``indivo_server/``. Do not change this directory name--it will break the django settings file.
 
 From Github
 """""""""""
@@ -351,7 +351,7 @@ Once that's done, assuming you've installed everything in ``/web/indivo_server``
 
 and have everything loaded properly.
 
-See more info on codingsystems and where to find the data files :doc:`here <coding-systems>`.
+See more info on codingsystems and where to find the data files :doc:`here <../coding-systems>`.
 
 Database Cleanup
 ^^^^^^^^^^^^^^^^
@@ -377,7 +377,7 @@ Get the Code
 From a Packaged Release
 """""""""""""""""""""""
 
-* Download the latest release of Indivo X UI Server from our `tags page <https://github.com/chb/indivo_ui_server/tags>`_ and untar into ``indivo_ui_server/``. 
+* Download the latest release of Indivo X UI Server from our `tags page <https://github.com/chb/indivo_ui_server/tags>`__ and untar into ``indivo_ui_server/``. 
   
   .. note::
   
@@ -491,7 +491,7 @@ Assuming you installed Indivo Server and UI in ``/web``, the steps to getting Ap
 
 * *Really*, have you checked this www-data permission issue? This will be the cause of all your problems if you don't check this carefully.
 
-* Check your ``/etc/apache2/sites-enabled/000-default`` file again and make sure that your ``Alias /static/ `` lines match the above example exactly
+* Check your ``/etc/apache2/sites-enabled/000-default`` file again and make sure that your ``Alias /static/`` lines match the above example exactly
 
 * Restart Apache::
 

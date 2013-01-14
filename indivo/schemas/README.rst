@@ -20,7 +20,7 @@ Schemas are divided into the following categories:
   provided (and installed) by third parties.
 
 * *Common*: schemas that provide supporting definitions for other 
-  schemas (i.e. the schema for CodedValues).
+  schemas (i.e. the schema for Annotation).
 
 Directory Format
 ----------------

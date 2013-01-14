@@ -81,9 +81,6 @@ Metadata and Indivo Internal Data Structures
    permissions-schema
    record-schema
    reqtoken-schema
-   codes-schema
-   values-schema
-   provider-schema
 
 Reporting
 ^^^^^^^^^

@@ -197,13 +197,13 @@ SDMX looks exactly like SDMJ, with the exceptions that:
 
 Here's the same example document we just saw as SDMJ in SDMX form:
 
-.. include:: /../../../indivo/schemas/metadata/sdmx/sdmx.xml
+.. include:: /../../../indivo/schemas/data/core/sdmx/sdmx.xml
    :literal:
 
 For those who like to work with XML in conjunction with schemas, here's an XSD which describes SDMX and can be used to
 validate it:
 
-.. include:: /../../../indivo/schemas/metadata/sdmx/schema.xsd
+.. include:: /../../../indivo/schemas/data/core/sdmx/schema.xsd
    :literal:
 
 Representing Dates
