@@ -146,15 +146,26 @@ class IndivoSchemaLoader(object):
         return schema.assertValid
 
     def _get_transform_from_py(self, schema_dir):
+        module = None
+
+        # check to see if we have already loaded another version
+        try:
+            module = __import__(TRANSFORM_NAME)
+        except ImportError:
+            pass
 
         # Add the python module to the path
         sys.path.insert(0, schema_dir.dir_path)
 
         # import the module
-        try:
-            module = __import__(TRANSFORM_NAME)
-        except ImportError:
-            return None
+        if module:
+            # since we use the same module name for all .py transforms, we might need to reload
+            reload(module)
+        else:
+            try:
+                module = __import__(TRANSFORM_NAME)
+            except ImportError:
+                return None
 
         # Now that we have the module, remove the module from the path
         sys.path.pop(0)
