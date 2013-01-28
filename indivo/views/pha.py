@@ -148,7 +148,7 @@ def request_token(request):
     * *indivo_carenet_id*: The carenet to which to bind the request token.
 
     Will return :http:statuscode:`200` with the request token on success,
-    :http:statuscode:`403` if the oauth signature on the request was missing
+    :http:statuscode:`401` if the oauth signature on the request was missing
     or faulty.
 
     """
@@ -162,8 +162,10 @@ def request_token(request):
                                                             carenet_id = request.REQUEST.get('indivo_carenet_id', None))
         return HttpResponse(request_token.to_string(), mimetype='text/plain')
     except oauth.OAuthError, e:
-        # an exception can be raised if there is a bad signature (or no signature) in the request
-        raise PermissionDenied()
+        logging.debug('Request token - OAuthError: %s' % e)
+    
+    # bad signature (or no signature), unauthorized
+    return HttpResponse('Unauthorized', status=401)
 
 
 def exchange_token(request):
@@ -173,7 +175,7 @@ def exchange_token(request):
     token that has previously been authorized.
 
     Will return :http:statuscode:`200` with the access token on success,
-    :http:statuscode:`403` if the oauth signature is missing or invalid.
+    :http:statuscode:`401` if the oauth signature is missing or invalid.
 
     """
     
@@ -183,11 +185,13 @@ def exchange_token(request):
     try:
         from indivo.accesscontrol.oauth_servers import OAUTH_SERVER
         access_token = OAUTH_SERVER.exchange_request_token(request.oauth_request)
-        # an exception can be raised if there is a bad signature (or no signature) in the request
-    except:
-        raise PermissionDenied()
+        return HttpResponse(access_token.to_string(), mimetype='text/plain')
+    except oauth.OAuthError, e:
+        logging.debug('Exchange token - OAuthError: %s' % e)
     
-    return HttpResponse(access_token.to_string(), mimetype='text/plain')
+    # bad signature (or no signature), unauthorized
+    return HttpResponse('Unauthorized', status=401)
+
 
 def autonomous_access_token(request, pha, record):
     """ Fetch an access token for an autonomous app to access a record.
