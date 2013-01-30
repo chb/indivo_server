@@ -7,7 +7,6 @@
 
 """
 
-#import libxml2
 from lxml import etree
 
 from indivo.lib import utils
@@ -17,8 +16,7 @@ from base import *
 from django.db.models import Q
 
 ACTIVE_STATE = 'active'
-
-
+MIN_POSTAL_CODE_LENGTH = 4
 
 @marsloader()
 def record_list(request, account, query_options):
@@ -82,34 +80,46 @@ def record(request, record):
   return render_template('record', {'record': record})
 
 def record_search(request):
-  """ Search for records by label (usually the same as full name).
+    """ Search for records by label (usually the same as full name), given name, family name, or postal code.  If multiple
+    search fields are specified, matches will require matching on all fields.
 
-  request.GET must contain the query parameters, any of:
+    request.GET must contain at least one of:
 
-  * *label*: The record's label
+    * *label*: The record's label; case-insensitive containment match
+    * *given_name*: The record's given_name; case-insensitive starts-with match
+    * *family_name*: The record's family_name; case-insensitive starts-with match
+    * *postal_code*: The record's postal_code; case-insensitive starts-with match, and must specify a minimum of 4 characters
 
-  This call returns all records matching any part of any of the 
-  query parameters: i.e. it ORs together the query parameters and
-  runs a partial-text match on each.
+    Will return :http:statuscode:`200` with XML describing matching
+    records on success, :http:statuscode:`400` if no query parameters
+    are passed.
 
-  Will return :http:statuscode:`200` with XML describing matching
-  records on success, :http:statuscode:`400` if no query parameters 
-  are passed.
+    """
 
-  """
+    label = request.GET.get('label', None)
+    given_name = request.GET.get('given_name', None)
+    family_name = request.GET.get('family_name', None)
+    postal_code = request.GET.get('postal_code', None)
 
-  label = request.GET.get('label', None)
+    if not (label or given_name or family_name or postal_code):
+        return HttpResponseBadRequest('No search criteria given')
 
-  if not label:
-    return HttpResponseBadRequest('No search criteria given')
+    if postal_code and len(postal_code) < MIN_POSTAL_CODE_LENGTH:
+        return HttpResponseBadRequest('Postal code must be specified to at least %d digits' % (MIN_POSTAL_CODE_LENGTH))
 
-  query_filter = Q()
-  if label:
-    query_filter |= Q(label__icontains=label)
+    query_filter = Q()
+    if label:
+        query_filter = query_filter & Q(label__icontains=label)
+    if given_name:
+        query_filter = query_filter & Q(demographics__name_given__istartswith=given_name)
+    if family_name:
+        query_filter = query_filter & Q(demographics__name_family__istartswith=family_name)
+    if postal_code:
+        query_filter = query_filter & Q(demographics__adr_postalcode__istartswith=postal_code)
 
-  query = Record.objects.filter(query_filter)
+    query = Record.objects.filter(query_filter)
 
-  return render_template('record_list', {'records':query}, type='xml')
+    return render_template('record_list', {'records':query}, type='xml')
                                          
 @utils.django_json
 def record_phas(request, record):

@@ -773,6 +773,7 @@ class RecordInternalTests(InternalTests):
         # ADD REPORTS
 
     def test_record_search(self):
+        # Searching by label
         url = '/records/search?label=%s'
 
         # expect only two existing records: our record and 'the empty record'
@@ -808,3 +809,96 @@ class RecordInternalTests(InternalTests):
         self.assertEqual(len(results), 2)
         self.assertEqual(set([r.get('id') for r in results]), 
                          set([self.record.id, search_record.id]))
+
+        # Searching by given_name
+        url = '/records/search?given_name=%s'
+
+        # run a search to return our record
+        response = self.client.get(url%self.record.demographics.name_given)
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.record.id)
+
+        # run a search to return the other record, using partial matching
+        response = self.client.get(url%search_record.demographics.name_given[:3])
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), search_record.id)
+
+        # run a search that should return no records
+        response = self.client.get(url%'junk')
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 0)
+
+        # Searching by family_name
+        url = '/records/search?family_name=%s'
+
+        # full match
+        response = self.client.get(url%self.record.demographics.name_family)
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.record.id)
+
+        # partial match
+        response = self.client.get(url%search_record.demographics.name_family[:3])
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), search_record.id)
+
+        # no match
+        response = self.client.get(url%'junk')
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 0)
+
+        # empty string
+        response = self.client.get(url%'')
+        self.assertEqual(response.status_code, 400)
+
+        # space
+        response = self.client.get(url%' ')
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 0)
+
+        # wildcard
+        response = self.client.get(url%'*')
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 0)
+
+        # Searching by postal_code
+        url = '/records/search?postal_code=%s'
+
+        # full match
+        response = self.client.get(url%self.record.demographics.adr_postalcode)
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.record.id)
+
+        # partial match
+        response = self.client.get(url%self.record.demographics.adr_postalcode[:4])
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].get('id'), self.record.id)
+
+        # no match
+        response = self.client.get(url%'junk')
+        self.assertEqual(response.status_code, 200)
+        results = etree.XML(response.content).findall('Record')
+        self.assertEqual(len(results), 0)
+
+        # not enough characters specified
+        response = self.client.get(url%'9')
+        self.assertEqual(response.status_code, 400)
+
+        # Searching by bad param
+        response = self.client.get('/records/search?junk=junkvalue')
+        self.assertEqual(response.status_code, 400)
