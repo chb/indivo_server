@@ -21,4 +21,6 @@ import logging, datetime
 from indivo.lib import utils
 from indivo.lib.utils import render_template, render_template_raw
 
+logger = logging.getLogger(__name__)
+
 DONE = render_template('ok', {}, type="xml")

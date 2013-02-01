@@ -1,8 +1,7 @@
 __all__ = ['Application', 'IndivoClient', 'IndivoClientError']
 
 # System
-import sys, os, urllib, logging
-logging.basicConfig(level=logging.INFO)
+import sys, os, urllib
 
 # Application
 TEST_MODULES_DIR_LOC = os.path.abspath(os.path.dirname(__file__)) + '/../test_modules'

@@ -9,7 +9,6 @@ import hashlib
 import uuid
 import copy
 import string
-import logging
 
 from datetime import datetime, timedelta
 from oauth import oauth

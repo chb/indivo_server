@@ -3,7 +3,7 @@ Authentication for Indivo
 """
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-import logging, functools, urllib
+import functools, urllib
 from django.core.exceptions import PermissionDenied
 from indivo import models
 

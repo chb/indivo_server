@@ -61,10 +61,14 @@ def record_set_owner(request, record):
   """
 
   try:
+    account_id = request.raw_post_data
+    if not account_id:
+        logger.info('No Account specified')
+        return HttpResponseBadRequest()
     record.owner = Principal.objects.get(email=request.raw_post_data)
     record.save()
   except Principal.DoesNotExist:
-    logging.error('Post has no owner in body')
+    logger.info('Account not found')
     return HttpResponseBadRequest()
   return render_template('account', {'account': record.owner})
     

@@ -1,3 +1,5 @@
+import os
+
 # settings.py:
 #
 # Settings for the IndivoX Backend Server.
@@ -107,10 +109,49 @@ VALIDATE_XML = True # Validate XML docs to process against the Indivo schemas?
 CORE_SCHEMA_DIRS = [APP_HOME + '/indivo/schemas/data/core',] # Directories for core schemas
 CONTRIB_SCHEMA_DIRS = [APP_HOME + '/indivo/schemas/data/contrib',] # Directories for contributed schemas
 
-# logging
-import logging
-logging.basicConfig(level = logging.DEBUG, format = '%(asctime)s %(levelname)s %(message)s',
-                    filename = APP_HOME + '/indivo.log', filemode = 'a')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level':'DEBUG',
+            'class':'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(APP_HOME, 'indivo.log'),
+            },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'INFO',
+            },
+        'django.db.backends': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+            },
+        'oauth': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+        'indivo': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        }
+    }
+}
+
 
 #############################
 # For Indivo/Django Experts #
@@ -121,7 +162,7 @@ INDIVO_ACCESS_CONTROL_EXCEPTION = "^/codes/"
 
 MANAGERS = ADMINS
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # Local time zone for this installation. Choices can be found here:
@@ -160,7 +201,6 @@ ADMIN_MEDIA_PREFIX = '/media/'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (

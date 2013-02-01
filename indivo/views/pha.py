@@ -8,7 +8,6 @@
 """
 
 import urllib, urlparse
-import logging
 
 from base import *
 
@@ -162,7 +161,7 @@ def request_token(request):
                                                             carenet_id = request.REQUEST.get('indivo_carenet_id', None))
         return HttpResponse(request_token.to_string(), mimetype='text/plain')
     except oauth.OAuthError, e:
-        logging.debug('Request token - OAuthError: %s' % e)
+        logger.info('Request token - OAuthError: %s' % e)
     
     # bad signature (or no signature), unauthorized
     return HttpResponse('Unauthorized', status=401)
@@ -187,7 +186,7 @@ def exchange_token(request):
         access_token = OAUTH_SERVER.exchange_request_token(request.oauth_request)
         return HttpResponse(access_token.to_string(), mimetype='text/plain')
     except oauth.OAuthError, e:
-        logging.debug('Exchange token - OAuthError: %s' % e)
+        logger.debug('Exchange token - OAuthError: %s' % e)
     
     # bad signature (or no signature), unauthorized
     return HttpResponse('Unauthorized', status=401)
@@ -273,7 +272,7 @@ def session_create(request):
         from indivo.accesscontrol.oauth_servers import SESSION_OAUTH_SERVER
         token = SESSION_OAUTH_SERVER.generate_and_preauthorize_access_token(request.principal, user=user)
     else:
-        logging.debug('indivo.views.pha.session_create(): This user is not active')
+        logger.info('This user is not active')
         raise PermissionDenied()
     
     return HttpResponse(str(token), mimetype='text/plain')

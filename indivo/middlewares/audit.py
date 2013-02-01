@@ -26,6 +26,8 @@ AUDIT_LEVELS = {
   'HIGH': [BASIC, PRINCIPAL_INFO, RESOURCES, REQUEST_INFO, RESPONSE_INFO]
 }
 
+logger = logging.getLogger(__name__)
+
 class AuditWrapper(object):
   """
   Audit...
@@ -166,7 +168,7 @@ class AuditWrapper(object):
       self.save_response(data)
 
     if status_code == 403:
-      logging.error("permission denied")
+      logger.error("permission denied")
       from django import http
       return http.HttpResponseForbidden("<h4>Permission Denied</h4>")
 
@@ -186,4 +188,4 @@ class AuditWrapper(object):
     self.audit_obj.save()
 
   def process_exception(self, request, exception):
-    logging.error(str(exception))
+    logger.error(str(exception))

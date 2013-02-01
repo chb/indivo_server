@@ -7,7 +7,7 @@ and Indivo data models
 
 from django.core.exceptions import *
 
-import functools, copy, logging
+import functools, copy
 
 from oauth import oauth, djangoutils
 

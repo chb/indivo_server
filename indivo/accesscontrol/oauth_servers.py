@@ -8,7 +8,7 @@ from django.db import transaction
 
 from indivo import models
 
-import datetime, logging
+import datetime
 
 
 class UserDataStore(oauth.OAuthStore):

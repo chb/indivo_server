@@ -7,7 +7,7 @@
 
 """
 
-import logging, copy
+import copy
 from base import *
 from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
 from indivo.lib.query import FactQuery, DATE, STRING, NUMBER

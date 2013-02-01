@@ -15,6 +15,8 @@ from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from indivo.accesscontrol.access_rule import AccessRule
 
+logger = logging.getLogger(__name__)
+
 class Authorization(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -55,7 +57,7 @@ class Authorization(object):
             
         # still here? throw up
         except:
-            logging.debug('indivo.middlewares.Authorization: access_rule.check() was unsuccessful')
+            logger.debug('access_rule.check() was unsuccessful')
         
         raise PermissionDenied
     
