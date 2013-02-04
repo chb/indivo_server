@@ -124,11 +124,6 @@ LOGGING = {
             'formatter': 'verbose',
             'filename': os.path.join(APP_HOME, 'indivo.log'),
             },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
     },
     'loggers': {
         'django': {
@@ -144,14 +139,20 @@ LOGGING = {
         'oauth': {
             'handlers': ['file'],
             'level': 'DEBUG',
+            'propagate': False,
         },
+        'south': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        }
         'indivo': {
             'handlers': ['file'],
             'level': 'DEBUG',
+            'propagate': False,
         }
     }
 }
-
 
 #############################
 # For Indivo/Django Experts #
@@ -205,10 +206,10 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'indivo_server.indivo.middlewares.authentication.Authentication',
-    'indivo_server.indivo.middlewares.paramloader.ParamLoader',
-    'indivo_server.indivo.middlewares.authorization.Authorization',
-    'indivo_server.indivo.middlewares.audit.AuditWrapper'
+    'indivo.middlewares.authentication.Authentication',
+    'indivo.middlewares.paramloader.ParamLoader',
+    'indivo.middlewares.authorization.Authorization',
+    'indivo.middlewares.audit.AuditWrapper'
 )
 
 
@@ -227,8 +228,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'indivo',
     'codingsystems',
-    # for migrations
-    'south',
+    'south',  # for migrations
 )
 
 # cookie
@@ -245,4 +245,3 @@ SERIALIZATION_MODULES = {
     "indivo_python" : "indivo.serializers.python",
     "indivo_xml": "indivo.serializers.xml_serializer"
 }
-
