@@ -411,35 +411,80 @@ def document_create_or_update(request, pha, record=None, document_id=None, exter
     return __local_document_create(request, record, pha, full_external_id, existing_doc)
 
 
-def record_app_specific_document(request, record, pha, document_id):
+def record_app_document(request, record, pha, document_id):
     """ Retrieve a record-app-specific document. 
     
     Calls into :py:meth:`~indivo.views.documents.document.document`.
 
     """
-    return document(request, document_id, record=record, pha=pha)
+    return document(request, document_id=document_id, record=record, pha=pha)
+
+def record_app_document_ext(request, record, pha, external_id):
+    """ Retrieve a record-app-specific document with an associated external id. 
+    
+    Calls into :py:meth:`~indivo.views.documents.document.document`.
+
+    """
+
+    full_external_id = Document.prepare_external_id(external_id, pha=pha, 
+                                                    pha_specific=True, 
+                                                    record_specific=True)
+    if not full_external_id:
+      raise Http404
+
+    return document(request, external_id=full_external_id, record=record, pha=pha)
 
 
-def app_specific_document(request, pha, document_id):
+def app_document(request, pha, document_id):
     """ Retrive an app-specific document.
 
     Calls into :py:meth:`~indivo.views.documents.document.document`.
 
     """
 
-    return document(request, document_id, pha=pha)
+    return document(request, document_id=document_id, pha=pha)
 
+def app_document_ext(request, pha, external_id):
+    """ Retrive an app-specific document with an associated external id.
 
-def record_specific_document(request, record, document_id):
+    Calls into :py:meth:`~indivo.views.documents.document.document`.
+
+    """
+
+    full_external_id = Document.prepare_external_id(external_id, pha=pha, 
+                                                    pha_specific=True, 
+                                                    record_specific=False)
+    if not full_external_id:
+      raise Http404
+
+    return document(request, external_id=full_external_id, pha=pha)
+
+def record_document(request, record, document_id):
     """ Retrieve a record-specific document.
 
     Calls into :py:meth:`~indivo.views.documents.document.document`.
 
     """
 
-    return document(request, document_id, record=record)
+    return document(request, document_id=document_id, record=record)
 
-def document(request, document_id, record=None, pha=None):
+def record_document_ext(request, record, pha, external_id):
+    """ Retrieve a record-specific document with an associated external id.
+
+    Calls into :py:meth:`~indivo.views.documents.document.document`.
+
+    """
+
+
+    full_external_id = Document.prepare_external_id(external_id, pha,
+                                                    pha_specific=False, 
+                                                    record_specific=True)
+    if not full_external_id:
+      raise Http404
+
+    return document(request, external_id=full_external_id, record=record)
+
+def document(request, document_id=None, external_id=None, record=None, pha=None):
     """ Retrieve a document, record- and/or app-specific. 
 
     **Arguments:**
@@ -447,6 +492,8 @@ def document(request, document_id, record=None, pha=None):
     * *request*: the incoming Django HttpRequest object.
 
     * *document_id*: the internal identifier of the document to retrieve.
+
+    * *external_id*: the external identifier of the document to retrieve.
 
     * *record*: if the document is record-specific, this
         :py:class:`~indivo.models.records_and_documents.Record`
@@ -466,8 +513,10 @@ def document(request, document_id, record=None, pha=None):
     * A :py:exc:`django.http.Http404` if the document could not be found.
 
     """
-
-    document = _get_document(pha=pha, record=record, document_id=document_id)
+    if (document_id):
+        document = _get_document(pha=pha, record=record, document_id=document_id)
+    elif (external_id):
+        document = _get_document(pha=pha, record=record, external_id=external_id)
     if not document \
         or (pha and document.pha != pha):
         raise Http404

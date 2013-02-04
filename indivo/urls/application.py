@@ -17,12 +17,13 @@ urlpatterns = patterns('',
 
     # create app-specific doc by document external ID
     (r'^/documents/external/(?P<external_id>[^/]+)$', 
-      MethodDispatcher({'PUT': app_document_create_or_update_ext})),
+      MethodDispatcher({'PUT': app_document_create_or_update_ext,
+                        'GET': app_document_ext})),
 
     # One app-specific document
     # app-specific document replace
     (r'^/documents/(?P<document_id>[^/]+)$', 
-      MethodDispatcher({'GET': app_specific_document, 
+      MethodDispatcher({'GET': app_document, 
                         'PUT': app_document_create_or_update, 
                         'DELETE': app_document_delete})),
 

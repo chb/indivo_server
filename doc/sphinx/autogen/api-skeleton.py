@@ -1012,6 +1012,32 @@ Preferences format is defined by the app setting the preferences, and will there
 
 },
 {
+    "method":"GET",
+    "path":"/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}",
+    "view_func_name":"app_document_ext",
+    "access_doc":"A user app with an id matching the app email in the URL.",
+    "url_params":{
+        'EXTERNAL_ID':'The unique identifier of the Indivo document',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Retrive an app-specific document with an associated external id.",
+    "return_desc":":http:statuscode:`200` with the raw content of the document, or :http:statuscode:`404` if the document could not be found.",
+    "return_ex":'''
+<DefaultProblemsPreferences record_id="123">
+  <Preference name="hide_void" value="true" />
+  <Preference name="show_rels" value="false" />
+</DefaultProblemsPreferences>
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
     "method":"PUT",
     "path":"/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}",
     "view_func_name":"app_document_create_or_update_ext",
@@ -1112,7 +1138,7 @@ Preferences format is defined by the app setting the preferences, and will there
 {
     "method":"GET",
     "path":"/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}",
-    "view_func_name":"app_specific_document",
+    "view_func_name":"app_document",
     "access_doc":"A user app with an id matching the app email in the URL.",
     "url_params":{
         'PHA_EMAIL':'The email identifier of the Indivo user app',
@@ -2613,7 +2639,7 @@ see http://sandbox-api.smartplatforms.org/ontology
         },
     "data_fields":{
         },
-    "description":"Retrieve a specific instance of a SMART Allergy or AllergyExclusion.",
+    "description":"Retrieve a specific instance of a SMART allergy.",
     "return_desc":"SMART RDF describing the AllergyAllergyExclusion",
     "return_ex":'''
 <?xml version="1.0" encoding="UTF-8"?>
@@ -2918,6 +2944,33 @@ xmlns:sp="http://smartplatforms.org/terms#"
 
 },
 {
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}",
+    "view_func_name":"record_app_document_ext",
+    "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'EXTERNAL_ID':'The unique identifier of the Indivo document',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Retrieve a record-app-specific document with an associated external id.",
+    "return_desc":":http:statuscode:`200` with the raw content of the document, or :http:statuscode:`404` if the document could not be found.",
+    "return_ex":'''
+<ProblemsPreferences record_id="123">
+  <Preference name="hide_void" value="true" />
+  <Preference name="show_rels" value="false" />
+</ProblemsPreferences>
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
     "method":"POST",
     "path":"/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}",
     "view_func_name":"record_app_document_create_or_update_ext",
@@ -3050,7 +3103,7 @@ xmlns:sp="http://smartplatforms.org/terms#"
 {
     "method":"GET",
     "path":"/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}",
-    "view_func_name":"record_app_specific_document",
+    "view_func_name":"record_app_document",
     "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',
@@ -3310,7 +3363,7 @@ oauth_token=abcd1fw3gasdgh3&oauth_token_secret=jgrlhre4291hfjas&xoauth_indivo_re
   <QueryParams>
     <Filters>
       <Filter name="document_id" value="234"/>
-      <Filter name="req_view_func" value="record_specific_document"/>
+      <Filter name="req_view_func" value="record_document"/>
     </Filters>
   </QueryParams>
   <Report>
@@ -3839,6 +3892,30 @@ application/json:
 
 },
 {
+    "method":"GET",
+    "path":"/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}",
+    "view_func_name":"record_document_ext",
+    "access_doc":"A user app with access to the record, with an id matching the app email in the URL.",
+    "url_params":{
+        'RECORD_ID':'The id string associated with the Indivo record',
+        'EXTERNAL_ID':'The external identifier of the desired resource',
+        'PHA_EMAIL':'The email identifier of the Indivo user app',
+        },
+    "query_opts":{
+        },
+    "data_fields":{
+        },
+    "description":"Retrieve a record-specific document with an associated external id.",
+    "return_desc":"DESCRIBE THE VALUES THAT THE CALL RETURNS",
+    "return_ex":'''
+GIVE AN EXAMPLE OF A RETURN VALUE
+''',
+    "deprecated": None,
+    "added": None,
+    "changed": None,
+
+},
+{
     "method":"PUT",
     "path":"/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}",
     "view_func_name":"document_create_by_ext_id",
@@ -4003,7 +4080,7 @@ application/json:
 {
     "method":"GET",
     "path":"/records/{RECORD_ID}/documents/{DOCUMENT_ID}",
-    "view_func_name":"record_specific_document",
+    "view_func_name":"record_document",
     "access_doc":"A user app with access to the record, or a principal in full control of the record",
     "url_params":{
         'RECORD_ID':'The id string associated with the Indivo record',

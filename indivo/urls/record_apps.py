@@ -19,12 +19,13 @@ urlpatterns = patterns('',
   # create app-specific doc by document external ID
   (r'^(?P<pha_email>[^/]+)/documents/external/(?P<external_id>[^/]+)$', 
       MethodDispatcher({
+              'GET' : record_app_document_ext, 
               'POST' : record_app_document_create_or_update_ext, 
               'PUT'  : record_app_document_create_or_update_ext})),
 
   # One app-specific document
   (r'^(?P<pha_email>[^/]+)/documents/(?P<document_id>[^/]+)$', MethodDispatcher({
-                'GET': record_app_specific_document,
+                'GET': record_app_document,
                 'DELETE': record_app_document_delete})),
 
   # One app-specific document's metadata

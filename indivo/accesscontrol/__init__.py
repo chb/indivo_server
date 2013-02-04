@@ -123,11 +123,11 @@ def load_access_rules():
   AccessRule('Chrome App Priveleges', chrome_app_priveleges, views)
 
   # PHA-related views
-  def app_specific_priveleges(principal, pha, **unused_args):
+  def app_priveleges(principal, pha, **unused_args):
     """The user app itself."""
     return pha_app_access(principal, pha)
   views = [pha_delete]
-  AccessRule('App Specific Priveleges', app_specific_priveleges, views)
+  AccessRule('App Specific Priveleges', app_priveleges, views)
 
   # Oauth-related views
   def account_for_oauth(principal, **unused_args):
@@ -279,7 +279,7 @@ def load_access_rules():
            report_ccr,
            record_document_list,
            record_document_meta,
-           record_specific_document,
+           record_document,
            record_document_label,
            document_versions,
            document_create_by_rel,
@@ -299,6 +299,7 @@ def load_access_rules():
            document_version_by_ext_id,
            record_document_label_ext,
            record_document_meta_ext,
+           record_document_ext,
            ]
   AccessRule('Record Doc Access Ext', record_doc_access_ext, views)
 
@@ -331,7 +332,8 @@ def load_access_rules():
   views = [record_app_document_meta,
            record_app_document_meta_ext,
            record_app_document_list,
-           record_app_specific_document,
+           record_app_document,
+           record_app_document_ext,
            record_app_document_create,
            record_app_document_create_or_update_ext,
            record_app_document_label,
@@ -347,7 +349,8 @@ def load_access_rules():
   views = [app_document_meta,
            app_document_meta_ext,
            app_document_list,
-           app_specific_document,
+           app_document,
+           app_document_ext,
            app_document_create,
            app_document_create_or_update,
            app_document_create_or_update_ext,

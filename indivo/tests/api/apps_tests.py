@@ -66,6 +66,10 @@ class PHAInternalTests(InternalTests):
         response = self.client.get('/apps/%s'%(self.app.email))
         self.assertEquals(response.status_code, 200)
 
+    def test_get_external_document(self):
+        response = self.client.get('/apps/%s/documents/external/%s'%(self.app.email,TEST_A_DOCS[1]['external_id']))
+        self.assertEquals(response.status_code, 200)            
+    
     def test_get_external_document_meta(self):
         response = self.client.get('/apps/%s/documents/external/%s/meta'%(self.app.email,TEST_A_DOCS[1]['external_id']))
         self.assertEquals(response.status_code, 200)            

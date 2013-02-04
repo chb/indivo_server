@@ -33,17 +33,17 @@
   <call name="pha" method="GET" url="/apps/{PHA_EMAIL}" />
   <call name="app_document_list" method="GET" url="/apps/{PHA_EMAIL}/documents/" />
   <call name="app_document_create" method="POST" url="/apps/{PHA_EMAIL}/documents/" />
+  <call name="app_document_ext" method="GET" url="/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}" />
   <call name="app_document_create_or_update_ext" method="PUT" url="/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}" />
   <call name="app_document_meta_ext" method="GET" url="/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}/meta" />
   <call name="app_document_delete" method="DELETE" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
-  <call name="app_specific_document" method="GET" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
+  <call name="app_document" method="GET" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
   <call name="app_document_create_or_update" method="PUT" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
   <call name="app_document_label" method="PUT" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label" />
   <call name="app_document_meta" method="GET" url="/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/meta" />
   <call name="app_manifest" method="GET" url="/apps/{PHA_EMAIL}/manifest" />
   <call name="app_record_list" method="GET" url="/apps/{PHA_EMAIL}/records/" />
   <call name="autonomous_access_token" method="POST" url="/apps/{PHA_EMAIL}/records/{RECORD_ID}/access_token" />
-  <call name="smart_capabilities" method="GET" url="/capabilities/" />
   <call name="carenet_delete" method="DELETE" url="/carenets/{CARENET_ID}" />
   <call name="carenet_account_list" method="GET" url="/carenets/{CARENET_ID}/accounts/" />
   <call name="carenet_account_create" method="POST" url="/carenets/{CARENET_ID}/accounts/" />
@@ -59,13 +59,10 @@
   <call name="carenet_document_meta" method="GET" url="/carenets/{CARENET_ID}/documents/{DOCUMENT_ID}/meta" />
   <call name="carenet_record" method="GET" url="/carenets/{CARENET_ID}/record" />
   <call name="carenet_rename" method="POST" url="/carenets/{CARENET_ID}/rename" />
-  <call name="carenet_equipment_list" method="GET" url="/carenets/{CARENET_ID}/reports/minimal/equipment/" />
-  <call name="carenet_measurement_list" method="GET" url="/carenets/{CARENET_ID}/reports/minimal/measurements/{LAB_CODE}/" />
-  <call name="carenet_procedure_list" method="GET" url="/carenets/{CARENET_ID}/reports/minimal/procedures/" />
-  <call name="carenet_simple_clinical_notes_list" method="GET" url="/carenets/{CARENET_ID}/reports/minimal/simple-clinical-notes/" />
   <call name="carenet_generic_list" method="GET" url="/carenets/{CARENET_ID}/reports/{DATA_MODEL}/" />
   <call name="coding_systems_list" method="GET" url="/codes/systems/" />
   <call name="coding_system_query" method="GET" url="/codes/systems/{SYSTEM_SHORT_NAME}/query" />
+  <call name="smart_manifest" method="GET" url="/manifest" />
   <call name="exchange_token" method="POST" url="/oauth/access_token" />
   <call name="request_token_approve" method="POST" url="/oauth/internal/request_tokens/{REQTOKEN_ID}/approve" />
   <call name="request_token_claim" method="POST" url="/oauth/internal/request_tokens/{REQTOKEN_ID}/claim" />
@@ -79,17 +76,19 @@
   <call name="record_search" method="GET" url="/records/search" />
   <call name="record" method="GET" url="/records/{RECORD_ID}" />
   <call name="smart_allergies" method="GET" url="/records/{RECORD_ID}/allergies/" />
+  <call name="smart_allergies_instance" method="GET" url="/records/{RECORD_ID}/allergies/{MODEL_ID}" />
   <call name="record_phas" method="GET" url="/records/{RECORD_ID}/apps/" />
   <call name="pha_record_delete" method="DELETE" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}" />
   <call name="record_pha" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}" />
   <call name="record_pha_enable" method="PUT" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}" />
   <call name="record_app_document_list" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/" />
   <call name="record_app_document_create" method="POST" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/" />
+  <call name="record_app_document_ext" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}" />
   <call name="record_app_document_create_or_update_ext" method="POST" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}" />
   <call name="record_app_document_create_or_update_ext" method="PUT" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}" />
   <call name="record_app_document_meta_ext" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/external/{EXTERNAL_ID}/meta" />
   <call name="record_app_document_delete" method="DELETE" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
-  <call name="record_app_specific_document" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
+  <call name="record_app_document" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}" />
   <call name="record_app_document_label" method="PUT" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/label" />
   <call name="record_app_document_meta" method="GET" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/documents/{DOCUMENT_ID}/meta" />
   <call name="record_pha_setup" method="POST" url="/records/{RECORD_ID}/apps/{PHA_EMAIL}/setup" />
@@ -108,11 +107,12 @@
   <call name="documents_delete" method="DELETE" url="/records/{RECORD_ID}/documents/" />
   <call name="record_document_list" method="GET" url="/records/{RECORD_ID}/documents/" />
   <call name="document_create" method="POST" url="/records/{RECORD_ID}/documents/" />
+  <call name="record_document_ext" method="GET" url="/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}" />
   <call name="document_create_by_ext_id" method="PUT" url="/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}" />
   <call name="record_document_label_ext" method="PUT" url="/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/label" />
   <call name="record_document_meta_ext" method="GET" url="/records/{RECORD_ID}/documents/external/{PHA_EMAIL}/{EXTERNAL_ID}/meta" />
   <call name="document_rels" method="PUT" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID_0}/rels/{REL}/{DOCUMENT_ID_1}" />
-  <call name="record_specific_document" method="GET" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}" />
+  <call name="record_document" method="GET" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}" />
   <call name="document_carenets" method="GET" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/" />
   <call name="carenet_document_delete" method="DELETE" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}" />
   <call name="carenet_document_placement" method="PUT" url="/records/{RECORD_ID}/documents/{DOCUMENT_ID}/carenets/{CARENET_ID}" />
@@ -139,15 +139,12 @@
   <call name="record_set_owner" method="POST" url="/records/{RECORD_ID}/owner" />
   <call name="record_set_owner" method="PUT" url="/records/{RECORD_ID}/owner" />
   <call name="report_ccr" method="GET" url="/records/{RECORD_ID}/reports/experimental/ccr" />
-  <call name="equipment_list" method="GET" url="/records/{RECORD_ID}/reports/minimal/equipment/" />
-  <call name="measurement_list" method="GET" url="/records/{RECORD_ID}/reports/minimal/measurements/{LAB_CODE}/" />
-  <call name="procedure_list" method="GET" url="/records/{RECORD_ID}/reports/minimal/procedures/" />
-  <call name="simple_clinical_notes_list" method="GET" url="/records/{RECORD_ID}/reports/minimal/simple-clinical-notes/" />
   <call name="generic_list" method="GET" url="/records/{RECORD_ID}/reports/{DATA_MODEL}/" />
   <call name="record_shares" method="GET" url="/records/{RECORD_ID}/shares/" />
   <call name="record_share_add" method="POST" url="/records/{RECORD_ID}/shares/" />
   <call name="record_share_delete" method="DELETE" url="/records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}" />
   <call name="record_share_delete" method="POST" url="/records/{RECORD_ID}/shares/{OTHER_ACCOUNT_ID}/delete" />
   <call name="smart_generic" method="GET" url="/records/{RECORD_ID}/{MODEL_NAME}/" />
+  <call name="smart_generic_instance" method="GET" url="/records/{RECORD_ID}/{MODEL_NAME}/{MODEL_ID}" />
   <call name="get_version" method="GET" url="/version" />
 </api>

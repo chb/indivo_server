@@ -27,13 +27,14 @@ urlpatterns = patterns('',
 
     # create by document external ID
     (r'^external/(?P<pha_email>[^/]+)/(?P<external_id>[^/]+)$', 
-      MethodDispatcher({'PUT' : document_create_by_ext_id})),
+      MethodDispatcher({'PUT' : document_create_by_ext_id,
+                        'GET': record_document_ext})),
     (r'^external/(?P<pha_email>[^/]+)/(?P<external_id>[^/]+)/meta$', 
       MethodDispatcher({'GET': record_document_meta_ext})),
 
     # single document
     (r'^(?P<document_id>[^/]+)$', MethodDispatcher({
-                'GET': record_specific_document})),
+                'GET': record_document})),
     
     # document metadata
     (r'^(?P<document_id>[^/]+)/meta$', MethodDispatcher({ 'GET': record_document_meta,

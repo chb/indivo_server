@@ -207,6 +207,11 @@ class RecordInternalTests(InternalTests):
         response = self.client.put(url, data=TEST_RA_DOCS[1]['content'], content_type='text/xml')
         self.assertEquals(response.status_code, 200)
 
+        # Get document by ext_id
+        url = '/records/%s/apps/%s/documents/external/%s'%(record_id, pha_email, TEST_RA_DOCS[1]['external_id']) 
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        
         # Get Meta by ext_id
         url = '/records/%s/apps/%s/documents/external/%s/meta'%(record_id, pha_email, TEST_RA_DOCS[1]['external_id']) 
         response = self.client.get(url)
@@ -370,6 +375,14 @@ class RecordInternalTests(InternalTests):
         url= '/records/%s/documents/external/%s/%s/label'%(record_id, pha_email, ext_id)
         self.check_unsupported_http_methods(bad_methods, url)
         response = self.client.put(url, data=TEST_R_DOCS[0]['label'], content_type='text/plain')
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_record_specific_doc_ext(self):
+        record_id = self.record.id
+        ext_id = TEST_R_DOCS[0]['external_id']
+        pha_email = self.pha.email
+        url = '/records/%s/documents/external/%s/%s'%(record_id, pha_email, ext_id)
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_record_specific_doc_meta_ext(self):
