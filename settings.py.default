@@ -128,7 +128,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers':['file'],
-            'propagate': True,
+            'propagate': False,
             'level':'INFO',
             },
         'django.db.backends': {
