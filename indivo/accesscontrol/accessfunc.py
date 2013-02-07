@@ -60,7 +60,7 @@ def pha_carenet_access(principal, carenet):
     account = principal.account
     if not account:
         return False
-    return account.isInCarenet(carenet) \
+    return account.isInCarenet(carenet)
 
 
 # Note: app-and-record-specific storage is NOT for record-sensitive data:
