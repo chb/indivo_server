@@ -19,6 +19,8 @@ import logging
 import string, random
 import functools
 
+logger = logging.getLogger(__name__)
+
 # taken from pointy-stick.com with some modifications
 class MethodDispatcher(object):
     def __init__(self, method_map):
@@ -51,11 +53,11 @@ def send_mail(subject, body, sender, recipient_list):
         try:
             mail.send_mail(subject, body, sender, recipient_list)
         except Exception, e:
-            logging.error("Exception raised when trying to send the following email: %s" % e)
-            logging.error("-----\nFrom: %s\nTo: %s\nSubject: %s\n\n%s\n-----" % (sender, ', '.join(recipient_list), subject, body))
+            logger.error("Exception raised when trying to send the following email: %s" % e)
+            logger.error("-----\nFrom: %s\nTo: %s\nSubject: %s\n\n%s\n-----" % (sender, ', '.join(recipient_list), subject, body))
             raise e
     else:
-        logging.debug("send_mail to set to false, would have sent email to %s\n\n%s" % (', '.join(recipient_list), body))
+        logger.debug("send_mail to set to false, would have sent email to %s\n\n%s" % (', '.join(recipient_list), body))
 
 def render_template_raw(template_name, vars, type='xml'):
     t_obj = loader.get_template('%s.%s' % (template_name, type))
