@@ -5,6 +5,7 @@ IDP - Indivo Document Processing
 import os
 import sys
 import hashlib
+import logging
 import re
 from StringIO import StringIO
 from lxml import etree
@@ -16,6 +17,8 @@ from django.core.files.base import ContentFile
 from indivo.lib.utils import LazyProperty
 from indivo.lib.simpledatamodel import SDMXData, SDMJData
 from . import REGISTERED_SCHEMAS
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_PREFIX= "http://indivo.org/vocab/xml/documents#"
 ETREE_NS_RE = re.compile(r'{(?P<ns>.*?)}')
@@ -185,8 +188,10 @@ class DocumentProcessing(object):
       if self.transform_func:
         return self.transform_func(self.content_etree)
     except ValueError:
+      logger.warn("transform failed", exc_info=1)
       raise
     except Exception:
+      logger.warn("transform failed", exc_info=1)
       pass
     
     # return None if we don't have a transform func,
