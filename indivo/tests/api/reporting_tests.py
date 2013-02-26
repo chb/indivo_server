@@ -125,10 +125,10 @@ class ReportingInternalTests(InternalTests):
         response_json = json.loads(response.content)
         self.assertTrue(len(response_json), 1)
 
-        # check to make sure Model name is correct, and that it has 37 fields        
+        # check to make sure Model name is correct, and that it has the correct number of fields
         first_lab = response_json[0]
         self.assertEquals(first_lab['__modelname__'], 'LabResult')
-        self.assertEquals(len(first_lab), 43)
+        self.assertEquals(len(first_lab), 37)
 
     def test_generic_query_api(self):
         record_id = self.record.id

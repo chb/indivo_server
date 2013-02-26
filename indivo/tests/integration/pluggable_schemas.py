@@ -156,8 +156,8 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         labs = response_xml.findall('./Model')
         self.assertEqual(len(labs), 2)
         lab = labs[0]
-        
-        self.assertEqual(len(lab.findall('Field')), 41)
+
+        self.assertEqual(len(lab.findall('Field')), 35)
         self.assertEqual(lab.get('name'), 'LabResult')
         
     def test_sdmx_schema(self):

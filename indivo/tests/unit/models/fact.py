@@ -55,9 +55,7 @@ class FactModelUnitTests(InternalTests):
             'coded_title': models.CharField,
             'coded_provenance_source_code': models.CharField,
             'coded_provenance_title': models.CharField,
-            'coded_provenance_translation_fidelity_identifier': models.CharField,
-            'coded_provenance_translation_fidelity_system': models.CharField,
-            'coded_provenance_translation_fidelity_title': models.CharField,
+            'coded_provenance_translation_fidelity': models.CharField,
             }
         self.assertEqual(len(valid_fields.keys()), len(FactSubclass._meta.local_fields))
         for field in FactSubclass._meta.local_fields:

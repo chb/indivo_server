@@ -43,7 +43,7 @@ class CodeProvenanceField(DummyField):
     
     * ``value_source_code``, URI for the source code
     * ``value_title``, the human-readable title of the element
-    * ``value_translation_fidelity_*``, fields defined in :py:class:`~indivo.fields.TranslationFidelityField`
+    * ``value_translation_fidelity``, URI for the SMART TranslationFidelity code
 
     When describing instances of your model (either when defining a
     :ref:`transform output <transform-output-types>` or when referencing fields using 
@@ -55,7 +55,7 @@ class CodeProvenanceField(DummyField):
     replacements = {
         'source_code': (models.CharField, {'max_length':255, 'null':True, 'db_column':'sc'}),
         'title': (models.CharField, {'max_length':255, 'null':True}),
-        'translation_fidelity': (CodeField, {'db_column':'tf'}),
+        'translation_fidelity': (models.CharField, {'max_length':255, 'null':True, 'db_column':'tf'}),
         }
 
 class CodedValueField(DummyField):

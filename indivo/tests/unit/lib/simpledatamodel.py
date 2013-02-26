@@ -90,9 +90,7 @@ class SDMLUnitTests(InternalTests):
             'code_title': models.CharField,
             'code_provenance_source_code': models.CharField,
             'code_provenance_title': models.CharField,
-            'code_provenance_translation_fidelity_identifier': models.CharField,
-            'code_provenance_translation_fidelity_system': models.CharField,
-            'code_provenance_translation_fidelity_title': models.CharField,
+            'code_provenance_translation_fidelity': models.CharField,
             'quantity_value': models.CharField, # ValueAndUnit fields should be expanded
             'quantity_unit': models.CharField,
             'pharmacy_ncpdpid': models.CharField, # Pharmacy fields should be expanded

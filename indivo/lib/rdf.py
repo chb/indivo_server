@@ -794,10 +794,10 @@ class PatientGraph(object):
         if title or source_code:
             self.g.add((node, DCTERMS['title'], Literal(title)))
             self.g.add((node, DCTERMS['sourceCode'], Literal(source_code)))
-        
-        translation_fidelity_node = self.new_code(translation_fidelity)
-        if translation_fidelity_node:
-            self.g.add((node, SPCODE['TranslationFidelity'], translation_fidelity_node))
+
+
+        if translation_fidelity:
+            self.g.add((node, SPCODE['TranslationFidelity'], URIRef(translation_fidelity)))
         
         return node
 
@@ -1134,12 +1134,13 @@ class PatientGraph(object):
         
         try:
             title = getattr(model, '%s_title' % (field_prefix))
+            source_code = getattr(model, '%s_source_code' % (field_prefix))
+            translation_fidelity = getattr(model, '%s_translation_fidelity' % (field_prefix))
             if title:
                 provenance["title"] = title
-            source_code = getattr(model, '%s_source_code' % (field_prefix))
+
             if source_code:
                 provenance["sourceCode"] = source_code 
-            translation_fidelity = self._getCodeFromField(model, "%s_translation_fidelity" % (field_prefix), classes=[SPCODE['TranslationFidelity']])
             if translation_fidelity:
                 provenance["translationFidelity"] = translation_fidelity
         except AttributeError:
