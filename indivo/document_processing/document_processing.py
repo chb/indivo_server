@@ -67,6 +67,7 @@ class DocumentProcessing(object):
 
     # if mime_type is null, we assume it's XML
     self.is_binary = (mime_type and mime_type not in TEXT_MIMETYPES)
+    logger.debug("Identified Document as %s" % ("binary" if self.is_binary else "non-binary"))
     self.is_xml = mime_type in XML_MIMETYPES
     self.content = content
     self.processed_facts = []
@@ -186,7 +187,10 @@ class DocumentProcessing(object):
   def transformed_doc(self):
     try:
       if self.transform_func:
+        logger.debug("Running transform registered for %s on Document" % self.fqn)
         return self.transform_func(self.content_etree)
+      else:
+          logger.debug("No transform found for Document")
     except ValueError:
       logger.warn("transform failed", exc_info=1)
       raise
