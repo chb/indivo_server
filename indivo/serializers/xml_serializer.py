@@ -98,7 +98,8 @@ class Serializer(base.Serializer):
         """
         field_element = etree.Element("Field", name=field.name)
         
-        if field.creates_table:
+        if field.rel.through._meta.auto_created:
+            related = getattr(obj, field.name).all()
             new_serializer = Serializer()
             self.options.update({'seen': self.seen})
             parsed_results = new_serializer.serialize(related, **self.options)
