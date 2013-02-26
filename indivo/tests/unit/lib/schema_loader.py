@@ -5,10 +5,13 @@ from django.conf import settings
 
 import os
 
-NS = 'http://indivo.org/vocab/xml/documents#'
+INDIVO_NS = 'http://indivo.org/vocab/xml/documents#'
+RDF_NS = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 
+# dictionary of core schema directories we expect  #TODO: dynamically build
 VALID_CORE_SCHEMAS = {
-    'sdmx': NS+'Models',
+    'sdmx': INDIVO_NS + 'Models',
+    'rdf': RDF_NS + 'RDF'
     }
 
 INVALID_CORE_SCHEMAS = (

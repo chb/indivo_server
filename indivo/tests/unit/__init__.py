@@ -6,3 +6,5 @@ from models import *
 
 # Tests of library Functionality
 from lib import *
+
+from .rdf import *

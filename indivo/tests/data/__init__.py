@@ -12,3 +12,4 @@ from sdm import TEST_SDML_DOCS, TEST_SDMJ_DOCS, TEST_SDMX_DOCS
 from sdm import INVALID_TEST_SDML_DOCS, INVALID_TEST_SDMJ_DOCS, INVALID_TEST_SDMX_DOCS
 from document_processing import TEST_DOCUMENT_PROCESSING_DOCS
 from testmed import TEST_TESTMED_JSON
+from .rdfxml import TEST_MODEL_RDF_XML
