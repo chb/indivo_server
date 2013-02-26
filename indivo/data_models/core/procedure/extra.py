@@ -1,6 +1,6 @@
 from indivo.serializers import DataModelSerializers
 from indivo.data_models.options import DataModelOptions
-from indivo.lib.rdf import PatientGraph
+from indivo.rdf.rdf import PatientGraph
 from indivo.validators import ExactValueValidator, NonNullValidator
 
 SNOMED_URI = 'http://purl.bioontology.org/ontology/SNOMEDCT/'

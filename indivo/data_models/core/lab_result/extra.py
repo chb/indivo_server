@@ -1,7 +1,7 @@
 from indivo.serializers import DataModelSerializers
 from indivo.validators import ValueInSetValidator, ExactValueValidator, NonNullValidator
 from indivo.data_models.options import DataModelOptions
-from indivo.lib.rdf import PatientGraph
+from indivo.rdf.rdf import PatientGraph
 
 LAB_INTERP_URI="http://smartplatforms.org/terms/codes/LabResultInterpretation#"
 LAB_STATUS_URI="http://smartplatforms.org/terms/codes/LabStatus#"

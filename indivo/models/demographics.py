@@ -2,18 +2,19 @@
 Indivo Model for Demographics
 """
 import os
-from django.conf import settings
 from lxml import etree
 
+from django.conf import settings
 from django.db import models
 from django.core import serializers
 from django.utils import simplejson
 
 from base import BaseModel, DataModelBase
 from indivo.fields import AddressField, NameField, TelephoneField
-from indivo.lib.iso8601 import parse_utc_date 
-from indivo.lib.rdf import PatientGraph
+from indivo.lib.iso8601 import parse_utc_date
+from indivo.rdf.rdf import PatientGraph
 from indivo.serializers.json import IndivoJSONEncoder
+
 
 FIELDS = ('bday', 
           'email', 

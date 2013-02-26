@@ -11,7 +11,7 @@ from django.http import HttpResponseBadRequest, HttpResponse, Http404, HttpRespo
 from django.db.models.loading import get_model
 from indivo.lib.view_decorators import marsloader
 from indivo.lib.query import FactQuery
-from indivo.lib.rdf import PatientGraph
+from indivo.rdf.rdf import PatientGraph
 from indivo.models import Allergy, AllergyExclusion
 
 from .generic import _generic_list

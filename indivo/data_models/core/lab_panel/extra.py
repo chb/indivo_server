@@ -1,7 +1,6 @@
 from indivo.serializers import DataModelSerializers
-from indivo.validators import ValueInSetValidator, ExactValueValidator, NonNullValidator
 from indivo.data_models.options import DataModelOptions
-from indivo.lib.rdf import PatientGraph
+from indivo.rdf.rdf import PatientGraph
 
 LOINC_URI="http://purl.bioontology.org/ontology/LNC/"
 
