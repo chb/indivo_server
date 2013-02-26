@@ -8,19 +8,10 @@ information across sites of care and over time. Indivo is free and
 open-source, uses open, unencumbered standards, and is actively deployed 
 in diverse settings.
 
-See indivohealth.org for more information about the project.
+See http://docs.indivohealth.org for technical documentation and installation guides
 
-See docs.indivohealth.org for technical documentation.
+See http://indivohealth.org for more information about the project.
 
-Required Setup
---------------
-
-* cron jobs should be scheduled to run::
-  
-  python manage.py cleanup_old_tokens
-
-See http://wiki.chip.org/indivo/index.php/HOWTO:_install_Indivo_X for 
-full installation instructions.
 
 Licensing
 ---------
