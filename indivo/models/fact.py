@@ -56,3 +56,30 @@ class Fact(BaseModel):
         root = serializers.serialize("indivo_xml", queryset)
         return etree.tostring(root)
 
+    @LazyProperty
+    def filter_fields(self):
+        """Dictionary of field_name:(field_name, field_type) for query-able fields on this Fact"""
+        if not hasattr(self, '_filter_fields'):
+            self.attach_filter_fields()
+
+        # _filter_fields attribute is set on the Class, so we return a copy here to avoid accidental alteration
+        return self._filter_fields.copy()
+
+    @classmethod
+    def attach_filter_fields(cls):
+        """Inspect the Class and attach a list of valid filter fields for querying"""
+        # all data models have a default created_at
+        filters = {'created_at': ('created_at', 'date')}
+
+        # find all viable local fields and add them as valid filters
+        for field in cls._meta.local_fields:
+            if field.serialize and field.rel is None:
+                # determine field type, defaulting to string
+                field_type = 'string'
+                if isinstance(field, models.DateField) or isinstance(field, models.TimeField):
+                    field_type = 'date'
+                elif isinstance(field, models.DecimalField) or isinstance(field, models.FloatField) or isinstance(field, models.IntegerField):
+                    field_type = 'number'
+                    # add to filters
+                filters[field.name] = (field.name, field_type )
+        cls._filter_fields = filters

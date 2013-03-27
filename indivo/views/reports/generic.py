@@ -148,7 +148,7 @@ def _generic_list(request, query_options, data_model, record=None, carenet=None,
       raise Http404
 
   # build query
-  model_filters =  model_class.filter_fields # TODO: possible to make a lazy class property?
+  model_filters =  model_class().filter_fields
   query = FactQuery(model_class, 
                 model_filters,
                 query_options,

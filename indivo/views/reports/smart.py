@@ -46,7 +46,7 @@ SMART_DATE_FILTERS = {
 @marsloader(query_api_support=True)
 def smart_generic(request, query_options, record, model_name):
     """ SMART-compatible alias for the generic list view: returns data_models serialized as SMART RDF."""
-    
+
     data_model_name = SMART_URLS_TO_DATAMODELS.get(model_name, None)
     if not data_model_name:
         raise Http404
@@ -72,8 +72,7 @@ def smart_generic(request, query_options, record, model_name):
                           }
             # these options overwrite any date_range value passed to the query, since it is a SMART call
             query_options.update({'date_range':date_range})
-            
-    
+
     return _generic_list(request, query_options, data_model_name, response_format="application/rdf+xml", record=record)
 
 @marsloader(query_api_support=True)
@@ -99,8 +98,8 @@ def smart_allergies(request, query_options, record):
     order_by_field = order_by if not descending_sort else order_by[1:]
     
     # grab Allergies and Exclusions without limit or offset
-    allergies_query = FactQuery(Allergy, Allergy.filter_fields, query_options, record, request_url=request.build_absolute_uri())
-    exclusions_query = FactQuery(AllergyExclusion, AllergyExclusion.filter_fields, query_options, record, request_url=request.build_absolute_uri())
+    allergies_query = FactQuery(Allergy, Allergy().filter_fields, query_options, record, request_url=request.build_absolute_uri())
+    exclusions_query = FactQuery(AllergyExclusion, AllergyExclusion().filter_fields, query_options, record, request_url=request.build_absolute_uri())
     
     try:
         allergies_query.execute()
@@ -140,7 +139,7 @@ def smart_generic_instance(request, record, model_name, model_id):
         # model class not found
         raise Http404
     try:
-        fact_query = FactQuery(model_class, model_class.filter_fields, {}, record, fact_id=model_id)
+        fact_query = FactQuery(model_class, model_class().filter_fields, {}, record, fact_id=model_id)
         fact_query.execute()
         if fact_query.trc == 1:
             # found
@@ -164,12 +163,12 @@ def smart_allergies_instance(request, record, model_id):
     try:
         # Allergy and AllergyExclusion IDs are non-overlapping, so we can search
         # for them sequentially
-        fact_query = FactQuery(Allergy, Allergy.filter_fields, {}, record, None, model_id)
+        fact_query = FactQuery(Allergy, Allergy().filter_fields, {}, record, None, model_id)
         fact_query.execute()
         if fact_query.trc == 1:
             data = Allergy.to_rdf(fact_query, record)
         else:
-            fact_query = FactQuery(AllergyExclusion, AllergyExclusion.filter_fields, {}, record, None, model_id)
+            fact_query = FactQuery(AllergyExclusion, AllergyExclusion().filter_fields, {}, record, None, model_id)
             fact_query.execute()
             if fact_query.trc == 1:
                 data = AllergyExclusion.to_rdf(fact_query, record)

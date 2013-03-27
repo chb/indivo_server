@@ -6,7 +6,7 @@ from django.db.models.loading import cache
 
 from south.db import db
 
-from indivo.data_models import attach_filter_fields, IndivoDataModelLoader
+from indivo.data_models import IndivoDataModelLoader
 from indivo.models import *
 from indivo.tests.data import *
 from indivo.lib import iso8601
@@ -333,7 +333,6 @@ class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
         """ Load data models from an SDML literal. """
         models = [] 
         for model in SDML(sdml).get_output():
-            attach_filter_fields(model)
             models.append(model)
         self.load_models(models)
         return models
