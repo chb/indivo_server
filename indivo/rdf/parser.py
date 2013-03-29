@@ -2,9 +2,12 @@ import logging
 from lxml import etree
 from rdflib import Graph
 
-from .transforms.medication import MedicationTransform
+from .transforms import *
 
-PARSE_MAP = {'Medication': MedicationTransform()}
+PARSE_MAP = {
+    'Medication': MedicationTransform(),
+    'Fulfillment': FulfillmentTransform(),
+}
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +26,7 @@ def parse(doc_etree):
     _smart_tag = lambda tag_name: "{%s}%s"%("http://smartplatforms.org/terms#", tag_name)
     for model_name in PARSE_MAP:
         elements = doc_etree.find(_smart_tag(model_name))
-        if elements:
+        if len(elements) > 0:
             return PARSE_MAP.get(model_name)(g)
 
     return None

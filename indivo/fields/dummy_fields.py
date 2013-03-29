@@ -286,7 +286,7 @@ class ProviderField(DummyField):
 
     """
     
-    gender_choices = ( ('m', 'male'), ('f', 'female'), )
+    gender_choices = ( ('m', 'male'), ('f', 'female'), ('male', 'male'), ('female', 'female'), )
     
     replacements = {
         'dea_number': (models.CharField, {'max_length':255, 'null':True}),

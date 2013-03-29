@@ -10,3 +10,6 @@
 [submodule "sample_data"]
 	path = sample_data
 	url = git://github.com/chb/indivo_sample_data.git
+[submodule "smart_common"]
+	path = smart_common
+	url = git://github.com/chb/smart_common.git

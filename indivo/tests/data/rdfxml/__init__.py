@@ -1,2 +1,3 @@
 from testmodel import TEST_MODEL_RDF_XML
 from medication import SMART_MEDICATION_RDF_XML
+from fulfillment import SMART_FULFILLMENT_RDF_XML
