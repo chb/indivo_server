@@ -21,11 +21,11 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../../')) # ind
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../../../')) # indivo_server
 
 # Make sure we can grab Django settings
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'    
+os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings'
 
 # Mock packages that we don't need so that code imports work
 # on systems without the packages
-mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension', 'rdflib', 'rdflib.collection', 'psycopg2', 'psycopg2.extensions']
+mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension',  'rdflib.collection', 'rdflib.exceptions.UniquenessError']
 class Mock(object):
     def __init__(self, *args, **kwargs):
         pass
@@ -44,7 +44,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
     
     # Use a special rtd.org settings module
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings_rtfd'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings_rtfd'
 
     # generate the autocode and the api-reference
     from django.core.management import call_command

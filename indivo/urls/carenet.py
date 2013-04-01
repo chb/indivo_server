@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include
 
 from indivo.views import *
 from indivo.lib.utils import MethodDispatcher

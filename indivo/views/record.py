@@ -61,11 +61,11 @@ def record_set_owner(request, record):
   """
 
   try:
-    account_id = request.raw_post_data
+    account_id = request.body
     if not account_id:
         logger.info('No Account specified')
         return HttpResponseBadRequest()
-    record.owner = Principal.objects.get(email=request.raw_post_data)
+    record.owner = Principal.objects.get(email=request.body)
     record.save()
   except Principal.DoesNotExist:
     logger.info('Account not found')
@@ -331,7 +331,7 @@ def _record_create(request, principal_email=None, external_id=None):
   """
 
   # If the xml data is not valid return an HttpResponseBadRequest Obj
-  xml_data = request.raw_post_data
+  xml_data = request.body
   try:
     etree.XML(xml_data)
   except:
@@ -403,7 +403,7 @@ def record_pha_setup(request, record, pha):
   # make sure that any permission restrictions on the current PHA are 
   # transitioned accordingly.
 
-  content = request.raw_post_data
+  content = request.body
 
   # if there is a document, create it
   if content:

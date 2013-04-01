@@ -12,7 +12,7 @@
 import sys
 import os
 from django.core import management
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings'
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../'))
 from django.db import connection, DatabaseError, IntegrityError
 

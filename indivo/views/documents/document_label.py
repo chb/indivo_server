@@ -100,7 +100,7 @@ def _document_label(request, record=None, document_id=None, external_id=None, ph
 
   """
 
-  label = request.raw_post_data
+  label = request.body
 
   # Get the document
   full_external_id = Document.prepare_external_id(external_id, pha, pha_specific = app_specific)

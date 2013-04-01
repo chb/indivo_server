@@ -6,11 +6,13 @@ indivo-connector
 ##
 ## DJANGO SETUP
 ##
-from django.core.management import setup_environ
-import settings, string
+import string
+import os
+import sys
+from indivo.models import *
+from xml.etree import ElementTree
 
-setup_environ(settings)
-
+os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings'
 ##
 ## constants
 ##
@@ -24,10 +26,6 @@ INFO = """<patient>
 ##
 ## now the script
 ##
-
-import sys, os
-from indivo.models import *
-from xml.etree import ElementTree
 
 def dump_documents():
   out_dir = sys.argv[1]

@@ -136,7 +136,7 @@ def record_message_attach(request, record, message_id, attachment_num):
   
   try:
     for message in messages:
-      message.add_attachment(attachment_num, request.raw_post_data)
+      message.add_attachment(attachment_num, request.body)
   except IntegrityError as e:
       raise e
   except Exception as e:

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include
 
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
@@ -6,8 +6,8 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     # Coding Systems
-    (r'^codes/', include('indivo_server.codingsystems.urls')),
+    (r'^codes/', include('codingsystems.urls')),
                        
     # Everything to indivo
-    (r'^', include('indivo_server.indivo.urls.urls')),
+    (r'^', include('indivo.urls.urls')),
 )

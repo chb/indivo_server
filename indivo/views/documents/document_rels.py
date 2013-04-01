@@ -180,7 +180,7 @@ def _document_create_by_rel(request, record, document_id, rel, pha=None, externa
     new_doc = _document_create( record = record, 
                                 creator = request.principal,
                                 pha = None,
-                                content = request.raw_post_data,
+                                content = request.body,
                                 external_id = full_external_id,
                                 mime_type = utils.get_content_type(request))
     # create the rel

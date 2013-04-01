@@ -1,5 +1,4 @@
 import os
-import settings
 import json
 
 from lxml import etree

@@ -80,7 +80,7 @@ def _document_version(request, record, document_id, pha=None, external_id=None):
   try:
     new_doc = _document_create(record=record, 
                                creator=request.principal, 
-                               content=request.raw_post_data,
+                               content=request.body,
                                replaces_document = old_document, 
                                pha=None,
                                external_id = full_external_id,

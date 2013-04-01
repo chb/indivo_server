@@ -197,7 +197,7 @@ prep work except the final call to build the docs.
         output_dir = 'source/autocode'
         source_dir = settings.APP_HOME + '/indivo/'
         
-        cmd = 'sphinx-apidoc -o %s %s %s'%(output_dir, 
+        cmd = 'sphinx-apidoc -o %s %s %s'%(output_dir,
                                            source_dir, 
                                            ' '.join(self.autocode_exclude_paths))
         self.chdir_and_execute(settings.APP_HOME+'/doc/sphinx', cmd)
