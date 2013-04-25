@@ -250,7 +250,9 @@ def record_share_add(request, record):
       other_account_id = request.POST[ACCOUNT_ID].lower().strip()
       account = Account.objects.get(email=other_account_id)
       RecordNotificationRoute.objects.get_or_create(account = account, record = record)
-      share = AccountFullShare.objects.get_or_create(record = record, with_account = account, role_label = request.POST.get('role_label', None))
+      share, result = AccountFullShare.objects.get_or_create(record = record, with_account = account)
+      share.role_label = request.POST.get('role_label', None)
+      share.save()
       return DONE
     else:
       return HttpResponseBadRequest()
