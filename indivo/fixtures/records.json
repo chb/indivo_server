@@ -1,0 +1,26 @@
+[
+	{
+		"pk": "dc10d0fd-a19a-404e-a3cc-1089dd8aa6e3",
+		"model": "indivo.record",
+		"fields": {
+			"creator": null,
+			"created_at": "2013-04-02T17:03:39.271",
+			"modified_at": "2013-04-02T17:03:39.271",
+			"label": "John S. Smith",
+			"external_id": null,
+			"demographics": null
+		}
+	},
+	{
+		"pk": "e18b00e7-8772-4db4-8e41-6ab3cfbfea67",
+		"model": "indivo.record",
+		"fields": {
+			"creator": null,
+			"created_at": "2013-04-02T17:03:40.617",
+			"modified_at": "2013-04-02T17:03:40.617",
+			"label": "Mary",
+			"external_id": null,
+			"demographics": null
+		}
+	}
+]
