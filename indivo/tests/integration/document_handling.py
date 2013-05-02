@@ -10,11 +10,6 @@ from indivo.tests.data import TEST_DEMOGRAPHICS_XML
 class DocumentHandlingIntegrationTests(IndivoLiveServerTestCase):
     fixtures = ['machineApps', 'userApps', 'accountsWithRecords', 'statusNames', 'authSystems', 'documentSchemas']
 
-    ADMIN_CONSUMER_PARAMS = {"consumer_key": "admin_key",
-                             "consumer_secret": "admin_secret"}
-    CHROME_CONSUMER_PARAMS = {"consumer_key":"chrome_key",
-                              "consumer_secret":"chrome_secret"}
-
     @classmethod
     def setUpClass(cls):
         super(DocumentHandlingIntegrationTests, cls).setUpClass()
@@ -130,7 +125,7 @@ class DocumentHandlingIntegrationTests(IndivoLiveServerTestCase):
         self.assert_400(resp)
 
         # try to replace a non-existent document
-        resp, content = self.chrome_client.document_version(record_id=record_id_1, document_id='facke', body='<test>doc7</test>')
+        resp, content = self.chrome_client.document_version(record_id=record_id_1, document_id='fake', body='<test>doc7</test>')
         self.assert_404(resp)
 
         # check version count

@@ -1,5 +1,3 @@
-from lxml import etree
-
 from indivo.tests.internal_tests import IndivoLiveServerTestCase
 
 from indivo.tests.indivo_client_py.client import IndivoClient

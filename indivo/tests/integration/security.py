@@ -74,8 +74,7 @@ class SecurityIntegrationTests(IndivoLiveServerTestCase):
 
         """
         super(SecurityIntegrationTests, self).setUp()
-        self.server_params = {'api_base':self.live_server_url,
-                         'authorization_base':'FAKE'}
+        self.server_params = {'api_base':self.live_server_url, 'authorization_base':'FAKE'}
         self.admin_client = IndivoClient(self.server_params, self.ADMIN_CONSUMER_PARAMS)
         self.chrome_client = IndivoClient(self.server_params, self.CHROME_CONSUMER_PARAMS)
         self.user_client_1 = IndivoClient(self.server_params, self.USER_CONSUMER_PARAMS)
@@ -238,9 +237,9 @@ class SecurityIntegrationTests(IndivoLiveServerTestCase):
     def test_account_management_owner(self):
         """only admin apps and Account owners should be able to make these"""
         self._account_management_owner(self.user_client_1, self.account_1_id)
-        # self._account_management_owner(self.user_client_1_with_access_token, self.account_1_id)
+        self._account_management_owner(self.user_client_1_with_access_token, self.account_1_id)
         self._account_management_owner(self.user_client_1_in_carenet_with_access_token, self.account_2_id)
-        # self._account_management_owner(self.user_client_1_in_carenet_with_access_token, self.account_1_id)
+        self._account_management_owner(self.user_client_1_in_carenet_with_access_token, self.account_1_id)
         self._account_management_owner(self.user_client_2, self.account_1_id)
         self._account_management_owner(self.autonomous_client, self.account_1_id)
         self._account_management_owner(self.chrome_client_with_session_account_1, self.account_2_id)
@@ -260,6 +259,7 @@ class SecurityIntegrationTests(IndivoLiveServerTestCase):
         self._account_management_no_admin_app(self.autonomous_client, self.account_1_id, self.autonomous_app_email)
         self._account_management_no_admin_app(self.admin_client, self.account_1_id, self.admin_app_email)
         self._account_management_no_admin_app(self.chrome_client, self.account_1_id, self.chrome_app_email)
+        self._account_management_no_admin_app(self.chrome_client_with_session_account_1, self.account_2_id, self.chrome_app_email)
 
     def test_account_management_admin_app_only(self):
         """admin apps only"""
@@ -277,8 +277,8 @@ class SecurityIntegrationTests(IndivoLiveServerTestCase):
         self._account_management_by_ext_id(self.user_client_2, self.user_app_email_2)
         self._account_management_by_ext_id(self.autonomous_client, self.autonomous_app_email)
         self._account_management_by_ext_id(self.chrome_client_with_session_account_1, self.chrome_app_email)
-        self._account_management_by_ext_id(self.admin_client, self.user_app_email) # non-matching app id
-        self._account_management_by_ext_id(self.chrome_client, self.user_app_email) # non-matching app id
+        self._account_management_by_ext_id(self.admin_client, self.user_app_email)  # non-matching app id
+        self._account_management_by_ext_id(self.chrome_client, self.user_app_email)  # non-matching app id
 
     def test_chrome_app_privileges(self):
         """chrome apps only"""
@@ -371,7 +371,7 @@ class SecurityIntegrationTests(IndivoLiveServerTestCase):
     def test_record_doc_access_ext(self):
         """User app with access to record, and matching id"""
         self._record_doc_access_ext(self.user_client_1, self.record_created_by_admin_id, self.user_app_email, self.document_1_id)
-        self._record_doc_access_ext(self.user_client_1_with_access_token, self.record_created_by_admin_id, self.user_app_email_2, self.document_1_id) # valid token, but wrong app id
+        self._record_doc_access_ext(self.user_client_1_with_access_token, self.record_created_by_admin_id, self.user_app_email_2, self.document_1_id)  # valid token, but wrong app id
         self._record_doc_access_ext(self.user_client_2, self.record_created_by_admin_id, self.user_app_email_2, self.document_1_id)
         self._record_doc_access_ext(self.autonomous_client, self.record_created_by_admin_id, self.autonomous_app_email, self.document_1_id)
         self._record_doc_access_ext(self.admin_client, self.record_created_by_admin_id, self.user_app_email, self.document_1_id)

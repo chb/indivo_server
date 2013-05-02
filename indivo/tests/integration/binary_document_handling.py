@@ -7,9 +7,6 @@ from indivo.tests.indivo_client_py.client import IndivoClient
 class BinaryDocumentIntegrationTests(IndivoLiveServerTestCase):
     fixtures = ['userApps', 'statusNames']
 
-    CONSUMER_PARAMS = {"consumer_key": "user_key",
-                       "consumer_secret": "user_secret"}
-
     @classmethod
     def setUpClass(cls):
         super(BinaryDocumentIntegrationTests, cls).setUpClass()
@@ -18,7 +15,7 @@ class BinaryDocumentIntegrationTests(IndivoLiveServerTestCase):
         super(BinaryDocumentIntegrationTests, self).setUp()
         server_params = {'api_base':self.live_server_url,
                          'authorization_base':'FAKE'}
-        self.client = IndivoClient(server_params, self.CONSUMER_PARAMS)
+        self.client = IndivoClient(server_params, self.USER_CONSUMER_PARAMS)
 
     def test_binary_documents(self):
         with open('indivo/tests/data/binary/xxsmall_binary.chp', 'rb') as binary_file:

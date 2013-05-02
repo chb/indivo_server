@@ -24,14 +24,16 @@ class AccountIntegrationTests(IndivoLiveServerTestCase):
         self.assert_200(resp)
 
         resp, content = self.client.account_authsystem_add(account_email='ben5@indivo.org',
-                                                           body={'system':'password', 'username':'ben5',
+                                                           body={'system':'password',
+                                                                 'username':'ben5',
                                                                  'password':'test5'})
         self.assert_200(resp)
-        
+
         # create an account
-        resp, content = self.client.account_create(body=
-            {'account_id':'ben@indivo.org', 'primary_secret_p':'1', 'secondary_secret_p':'1',
-             'contact_email':'ben@adida.net'})
+        resp, content = self.client.account_create(body={'account_id':'ben@indivo.org',
+                                                         'primary_secret_p':'1',
+                                                         'secondary_secret_p':'1',
+                                                         'contact_email':'ben@adida.net'})
         self.assert_200(resp)
 
         # reset it
@@ -58,7 +60,8 @@ class AccountIntegrationTests(IndivoLiveServerTestCase):
 
         # set username and password
         resp, content = self.client.account_authsystem_add(account_email='ben@indivo.org',
-                                                           body={'system':'password', 'username':'ben',
+                                                           body={'system':'password',
+                                                                 'username':'ben',
                                                                  'password':'test'})
         self.assert_200(resp)
 

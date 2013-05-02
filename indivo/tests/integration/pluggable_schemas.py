@@ -1,13 +1,12 @@
 import os
-import sys
 import json
-import datetime
 from lxml import etree
 
 from indivo.document_processing import IndivoSchemaLoader
-from indivo.lib.iso8601 import parse_utc_date as date
+from indivo.lib.iso8601 import parse_iso8601_datetime as date
 from indivo.tests.internal_tests import TransactionInternalTests
 from indivo.tests.data import TEST_ACCOUNTS, TEST_RECORDS, TEST_TESTMED_JSON
+
 
 class PluggableSchemaIntegrationTests(TransactionInternalTests):
 
@@ -38,12 +37,12 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
     def test_nested_model_json(self):
         # post new document with a TestMed
         test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
-        response = self.client.post('/records/%s/documents/'%(self.record.id), 
+        response = self.client.post('/records/%s/documents/' % (self.record.id),
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
 
         # get a JSON encoded report on TestMed
-        response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id), {'response_format':'application/json'})
+        response = self.client.get('/records/%s/reports/TestMed/' % (self.record.id), {'response_format':'application/json'})
         self.assertEquals(response.status_code, 200)
 
         # parse response and check against expected         
@@ -68,12 +67,12 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
     def test_nested_model_xml(self):
         # post new document with a TestMed
         test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
-        response = self.client.post('/records/%s/documents/'%(self.record.id), 
+        response = self.client.post('/records/%s/documents/' % (self.record.id),
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
         
         # get a JSON encoded report on TestMed
-        response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id), {'response_format':'application/xml'})
+        response = self.client.get('/records/%s/reports/TestMed/' % (self.record.id), {'response_format':'application/xml'})
         self.assertEquals(response.status_code, 200)
 
         # parse response and check          
@@ -105,12 +104,12 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
     def test_default_response_format(self):
         # post new document with a TestMed
         test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
-        response = self.client.post('/records/%s/documents/'%(self.record.id), 
+        response = self.client.post('/records/%s/documents/' % (self.record.id),
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
 
         # request TestMed report without specifying response_format
-        response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id))
+        response = self.client.get('/records/%s/reports/TestMed/' % (self.record.id))
         self.assertEquals(response.status_code, 200)
         
         # should get back JSON
@@ -136,19 +135,19 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
 
         # post new document with a TestMed
         test_med_data = open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed.xml')).read()
-        response = self.client.post('/records/%s/documents/'%(self.record.id), 
+        response = self.client.post('/records/%s/documents/' % (self.record.id),
                                     test_med_data,'application/xml')
         self.assertEquals(response.status_code, 200)
         
         # request an unsupported response_format
-        response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id), {'response_format':'application/junk'})
+        response = self.client.get('/records/%s/reports/TestMed/' % (self.record.id), {'response_format':'application/junk'})
         self.assertEquals(response.status_code, 400)
         
     def test_core_model_xml(self):
         #Add some sample Reports
         self.loadTestReports(record=self.record)
         
-        response = self.client.get('/records/%s/reports/LabResult/'%(self.record.id), {'response_format':'application/xml'})
+        response = self.client.get('/records/%s/reports/LabResult/' % (self.record.id), {'response_format':'application/xml'})
         self.assertEquals(response.status_code, 200)
         
         # parse response and check          
@@ -164,12 +163,12 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
 
         # Post an SDMX document that matches our TestMed datamodel
         sdmx_doc = open(os.path.join(self.TEST_DATAMODEL_DIR, 'testmodel/example.sdmx')).read()
-        url = "/records/%s/documents/"%self.record.id
+        url = "/records/%s/documents/" % self.record.id
         response = self.client.post(url, data=sdmx_doc, content_type='application/xml')
         self.assertEqual(response.status_code, 200)
 
         # Now fetch the TestMed data elements, and expect to find our data
-        url ="/records/%s/reports/TestMed/?response_format=application/xml"%self.record.id
+        url = "/records/%s/reports/TestMed/?response_format=application/xml" % (self.record.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
@@ -178,13 +177,13 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
 
         # Check the top-level TestMed
         required_fields = {
-            'date_started': (date, datetime.datetime(year=2010, month=8, day=7)),
+            'date_started': (date, date('2010-08-07')),
             'name': (str, "med2"),
             'brand_name': (str, "MyExpensiveMed"),
             'frequency': (float, 4),
             'prescription': None,
-            'fills': None
-            }
+            'fills': None,
+        }
         test_meds = response_etree.findall('Model')
         self.assertEqual(len(test_meds), 1)
         test_med_el = test_meds[0]
@@ -193,17 +192,17 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         # Check the Prescription Node
         required_fields = {
             'prescribed_by_name': (str, "Dr. Doktor"),
-            'prescribed_on': (date, datetime.datetime(year=2010, month=8, day=7, hour=11)),
-            }
+            'prescribed_on': (date, date('2010-08-07T11')),
+        }
         scrip_node_models = test_med_el.find('Field[@name="prescription"]').findall('Model')
         self.assertEqual(len(scrip_node_models), 1)
         self.assertValidSDMXModel(scrip_node_models[0], {'name':'TestPrescription'}, required_fields)
 
         # Check the Fill Node
         required_fields = {
-            'date_filled': (date, datetime.datetime(year=2010, month=8, day=7, hour=16)),
+            'date_filled': (date, date('2010-08-07T16')),
             'supply_days': (float, 30),
-            }
+        }
         fill_node_models = test_med_el.find('Field[@name="fills"]').find('Models').findall('Model')
         self.assertEqual(len(fill_node_models), 1)        
         self.assertValidSDMXModel(fill_node_models[0], {'name':'TestFill'}, required_fields)
@@ -216,7 +215,7 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         invalid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed2.xml.invalid')).read())
         invalid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed3.xml.invalid')).read())
         for doc in invalid_docs:
-            response = self.client.post("/records/%s/documents/"%self.record.id, data=doc, content_type='application/xml')
+            response = self.client.post("/records/%s/documents/" % (self.record.id), data=doc, content_type='application/xml')
             self.assertTrue(response.status_code, 400)
 
         # post some documents that are valid against the validators
@@ -225,12 +224,11 @@ class PluggableSchemaIntegrationTests(TransactionInternalTests):
         valid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed2.xml')).read())
         valid_docs.append(open(os.path.join(self.TEST_SCHEMA_DIR, 'testmed/testmed3.xml')).read())
         for doc in valid_docs:
-            response = self.client.post("/records/%s/documents/"%self.record.id, data=doc, content_type='application/xml')
+            response = self.client.post("/records/%s/documents/" % (self.record.id), data=doc, content_type='application/xml')
             self.assertTrue(response.status_code, 400)
         
         # Only these three docs should come back in a report
-        response = self.client.get('/records/%s/reports/TestMed/'%(self.record.id), {'response_format':'application/json'})
+        response = self.client.get('/records/%s/reports/TestMed/' % (self.record.id), {'response_format':'application/json'})
         self.assertEquals(response.status_code, 200)
         response_json = json.loads(response.content)
         self.assertEquals(len(response_json), 3)
- 

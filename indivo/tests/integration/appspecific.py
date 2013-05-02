@@ -8,11 +8,6 @@ from indivo.tests.internal_tests import IndivoLiveServerTestCase
 class AppSpecificIntegrationTests(IndivoLiveServerTestCase):
     fixtures = ['authSystems', 'machineApps', 'userApps', 'records', 'statusNames']
 
-    ADMIN_CONSUMER_PARAMS = {"consumer_key": "admin_key",
-                             "consumer_secret": "admin_secret"}
-    USER_CONSUMER_PARAMS = {"consumer_key": "user_key",
-                            "consumer_secret": "user_secret"}
-
     @classmethod
     def setUpClass(cls):
         super(AppSpecificIntegrationTests, cls).setUpClass()
@@ -36,24 +31,26 @@ class AppSpecificIntegrationTests(IndivoLiveServerTestCase):
 
         # store an app-specific document
         resp, content = self.user_client.app_document_create_or_update_ext(pha_email=self.user_app_email,
-                                                           external_id='foobar_partition_appspecific',
-                                                           body=TEST_ALLERGIES[0])
+                                                                           external_id='foobar_partition_appspecific',
+                                                                           body=TEST_ALLERGIES[0])
         self.assert_200(resp)
         root = etree.XML(content)
         app_specific_doc_id = root.attrib['id']
 
         # store an app-record-specific document
         self.user_client.update_token(token)
-        resp, content = self.user_client.record_app_document_create_or_update_ext(record_id=record_id, pha_email=self.user_app_email,
-                                                 external_id='foobar_partition_apprecordspecific',
-                                                 body=TEST_ALLERGIES[0])
+        resp, content = self.user_client.record_app_document_create_or_update_ext(record_id=record_id,
+                                                                                  pha_email=self.user_app_email,
+                                                                                  external_id='foobar_partition_apprecordspecific',
+                                                                                  body=TEST_ALLERGIES[0])
         self.assert_200(resp)
         root = etree.XML(content)
         app_record_specific_doc_id = root.attrib['id']
 
         # get it by metadata
-        self.user_client.record_app_document_meta_ext(record_id=record_id, pha_email=self.user_app_email,
-                                                       external_id='foobar_partition_apprecordspecific')
+        self.user_client.record_app_document_meta_ext(record_id=record_id,
+                                                      pha_email=self.user_app_email,
+                                                      external_id='foobar_partition_apprecordspecific')
         self.assert_200(resp)
 
         self.user_client.token = None
@@ -64,7 +61,7 @@ class AppSpecificIntegrationTests(IndivoLiveServerTestCase):
         app_doc_ids = [doc.attrib['id'] for doc in docs]
 
         self.user_client.update_token(token)
-        resp, content = self.user_client.record_app_document_list(record_id= record_id, pha_email=self.user_app_email)
+        resp, content = self.user_client.record_app_document_list(record_id=record_id, pha_email=self.user_app_email)
         self.assert_200(resp)
         root = etree.XML(content)
         docs = root.findall('Document')
@@ -95,7 +92,7 @@ class AppSpecificIntegrationTests(IndivoLiveServerTestCase):
         app_doc_ids = [doc.attrib['id'] for doc in docs]
 
         self.user_client.update_token(token)
-        resp, content = self.user_client.record_app_document_list(record_id= record_id, pha_email=self.user_app_email)
+        resp, content = self.user_client.record_app_document_list(record_id=record_id, pha_email=self.user_app_email)
         self.assert_200(resp)
         root = etree.XML(content)
         docs = root.findall('Document')

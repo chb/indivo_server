@@ -6,14 +6,8 @@ from indivo.tests.indivo_client_py.client import IndivoClient
 from indivo.tests.internal_tests import IndivoLiveServerTestCase
 
 
-
 class AuditingIntegrationTests(IndivoLiveServerTestCase):
     fixtures = ['machineApps', 'userApps', 'accountsWithRecords', 'statusNames', 'authSystems']
-
-    ADMIN_CONSUMER_PARAMS = {"consumer_key": "admin_key",
-                             "consumer_secret": "admin_secret"}
-    CHROME_CONSUMER_PARAMS = {"consumer_key":"chrome_key",
-                              "consumer_secret":"chrome_secret"}
 
     @classmethod
     def setUpClass(cls):
@@ -30,8 +24,9 @@ class AuditingIntegrationTests(IndivoLiveServerTestCase):
         record_id = 'dc10d0fd-a19a-404e-a3cc-1089dd8aa6e4'
         # set username and password
         resp, content = self.chrome_client.account_authsystem_add(account_email='testaccount@indivo.org',
-                                                           body={'system':'password', 'username':'test',
-                                                                 'password':'test_password'})
+                                                                  body={'system':'password',
+                                                                        'username':'test',
+                                                                        'password':'test_password'})
         self.assert_200(resp)
 
         resp, content = self.chrome_client.session_create({'username': 'test', 'password':'test_password'})
