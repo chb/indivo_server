@@ -68,6 +68,8 @@ class DocumentHandlingIntegrationTests(IndivoLiveServerTestCase):
         self.assert_200(resp)
         resp, content = self.chrome_client.document_set_status(record_id=record_id_1, document_id=doc_id, body={'status':'void','reason':'void reason 2'})
         self.assert_200(resp)
+        resp, content = self.chrome_client.document_set_status(record_id=record_id_1, document_id=doc_id, body={'status':'void'})
+        self.assert_400(resp)
         resp, content = self.chrome_client.document_set_status(record_id=record_id_1, document_id=doc_id, body={'status':'badstatus','reason':'bad reason'})
         self.assert_400(resp)
         resp, content = self.chrome_client.document_status_history(record_id=record_id_1, document_id=doc_id)
