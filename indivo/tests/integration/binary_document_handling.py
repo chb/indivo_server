@@ -5,7 +5,7 @@ from indivo.tests.indivo_client_py.client import IndivoClient
 
 
 class BinaryDocumentIntegrationTests(IndivoLiveServerTestCase):
-    fixtures = ['userApps']
+    fixtures = ['userApps', 'statusNames']
 
     CONSUMER_PARAMS = {"consumer_key": "user_key",
                        "consumer_secret": "user_secret"}

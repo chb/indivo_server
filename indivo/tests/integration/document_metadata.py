@@ -6,7 +6,7 @@ from indivo.tests.indivo_client_py.client import IndivoClient
 
 
 class DocumentMetadataIntegrationTests(IndivoLiveServerTestCase):
-    fixtures = ['machineApps', 'userApps', 'records']
+    fixtures = ['machineApps', 'userApps', 'records', 'statusNames']
 
     @classmethod
     def setUpClass(cls):
