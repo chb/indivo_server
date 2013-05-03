@@ -1,5 +1,5 @@
 from indivo.models import Medication, Fill
-from indivo.lib.iso8601 import parse_utc_date as date
+from indivo.lib.iso8601 import parse_iso8601_datetime as date
 
 med = Medication(
     name_title="AMITRIPTYLINE HCL 50 MG TAB",

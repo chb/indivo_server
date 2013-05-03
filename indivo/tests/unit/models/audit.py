@@ -1,7 +1,8 @@
+from django.utils import timezone
+
 from indivo.tests.internal_tests import InternalTests
 from indivo.models import Audit
 
-import datetime
 
 class AuditModelUnitTests(InternalTests):
     def setUp(self):
@@ -11,7 +12,7 @@ class AuditModelUnitTests(InternalTests):
         super(AuditModelUnitTests, self).tearDown()
 
     def test_construction(self):
-        now = datetime.datetime.now()
+        now = timezone.now()
         
         args = {'datetime':now,
                 'view_func':'create_record',

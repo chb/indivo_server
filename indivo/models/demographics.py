@@ -11,7 +11,7 @@ from django.utils import simplejson
 
 from base import BaseModel, DataModelBase
 from indivo.fields import AddressField, NameField, TelephoneField
-from indivo.lib.iso8601 import parse_utc_date
+from indivo.lib.iso8601 import parse_iso8601_datetime
 from indivo.rdf.rdf import PatientGraph
 from indivo.serializers.json import IndivoJSONEncoder
 
@@ -79,7 +79,7 @@ class Demographics(BaseModel):
             raise ValueError("Input document didn't validate, error was: %s"%(str(e)))
   
         # parse XML
-        attrs['bday'] = parse_utc_date(root.findtext(_tag('dateOfBirth')))
+        attrs['bday'] = parse_iso8601_datetime(root.findtext(_tag('dateOfBirth')))
         attrs['gender'] = root.findtext(_tag('gender'))
         attrs['email'] = root.findtext(_tag('email'))
         attrs['ethnicity'] = root.findtext(_tag('ethnicity'))

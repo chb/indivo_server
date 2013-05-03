@@ -5,12 +5,16 @@ inspired by django.contrib.auth middleware, but doing it differently
 for tighter integration into email-centric users in Indivo.
 """
 
-import sys, logging
-from indivo.accesscontrol import security
-from indivo.models import Audit, Principal, Record, Document
+import sys
+import logging
 from time import strftime
+
 from django.http import *
 from django.conf import settings
+from django.utils import timezone
+
+from indivo.accesscontrol import security
+from indivo.models import Audit, Principal, Record, Document
 
 # AUDIT DATA CATEGORIES:
 BASIC = 'basic' # REQUIRED, if audit_level > 'NONE': basic info about request
@@ -60,7 +64,7 @@ class AuditWrapper(object):
       return None
 
     # Basic Info
-    basic['datetime'] = strftime("%Y-%m-%d %H:%M:%S")
+    basic['datetime'] = timezone.now()
 
     if hasattr(view_func, 'resolve'):
       view_func = view_func.resolve(request)
@@ -177,7 +181,7 @@ class AuditWrapper(object):
   def save_response(self, data):
     if not self.audit_obj and data:
       # We got an exception before hitting auditwrapper on the way in: make sure to add basic info
-      data['datetime'] = strftime("%Y-%m-%d %H:%M:%S")
+      data['datetime'] = timezone.now()
       self.audit_obj = Audit(**data)
 
     else:

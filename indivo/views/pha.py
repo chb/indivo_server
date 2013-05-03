@@ -7,17 +7,19 @@
 
 """
 
-import urllib, urlparse
+import urllib
+import urlparse
+import base64
+import hmac
+import datetime
+
+from oauth import oauth
+
+from django.utils import timezone
 
 from base import *
-
-from oauth.djangoutils import extract_request
-from oauth import oauth
-from indivo.views.documents.document import _get_document
 from indivo.lib import iso8601
-import base64, hmac, datetime
 
-from django.utils import simplejson
 
 def all_manifests(request):
     """ List SMART manifests for all available userapps.
@@ -90,7 +92,7 @@ def record_pha_enable(request, record, pha):
     auth_by = request.principal if request.principal.isType('Account') else None
     share, create_p = PHAShare.objects.get_or_create(record=record,
                                                      with_pha=pha,
-                                                     defaults={'authorized_at': datetime.datetime.now(),
+                                                     defaults={'authorized_at': timezone.now(),
                                                                'authorized_by': auth_by})
     return DONE
     
@@ -418,8 +420,8 @@ def surl_verify(request):
     query = urlparse.parse_qs(parsed_url.query)
 
     # check timestamp (cheapest thing to check, we check it first)
-    url_timestamp = iso8601.parse_utc_date(query['surl_timestamp'][0])
-    if (datetime.datetime.utcnow() - url_timestamp) > datetime.timedelta(hours=1):
+    url_timestamp = iso8601.parse_iso8601_datetime(query['surl_timestamp'][0])
+    if (timezone.now() - url_timestamp) > datetime.timedelta(hours=1):
         return OLD
     
     # generate the secret that should be used here

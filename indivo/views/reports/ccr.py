@@ -8,18 +8,17 @@
 """
 
 from django.http import HttpResponseBadRequest
-from indivo.lib.view_decorators import marsloader
+from django.utils import timezone
+
 from indivo.lib.utils import render_template
 from indivo.lib.sharing_utils import carenet_facts_filter
 from indivo.models import *
-
-import datetime
 
 
 def report_ccr(request, record=None, carenet=None):
   """ Export patient data as a Continuity of Care Record (CCR) document.
   
-  Will return :http:statuscode:`200` with a CCR on success, 
+  Will return :http:statuscode:`200` with a CCR on success,
   :http:statuscode:`400` if neither a record or carenet was passed.
 
   """
@@ -44,7 +43,7 @@ def report_ccr(request, record=None, carenet=None):
 
 
   return render_template('reports/ccr', 
-                         {'record': record, 'now': datetime.datetime.utcnow(),
+                         {'record': record, 'now': timezone.now(),
                           'medications': medications,
                           'immunizations' : immunizations,
                           'vitalsigns' : vitalsigns},

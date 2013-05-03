@@ -19,7 +19,7 @@ class FulfillmentTransformUnitTests(InternalTests):
         facts = FulfillmentTransform()(graph)
 
         comparison_fill = Fill(
-            date=iso8601.parse_utc_date('2010-05-12T04:00:00Z'),
+            date=iso8601.parse_iso8601_datetime('2010-05-12T04:00:00Z'),
             dispenseDaysSupply='30',
             pbm='T00000000001011',
             pharmacy_adr_city='WonderCity',

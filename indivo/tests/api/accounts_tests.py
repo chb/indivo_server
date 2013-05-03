@@ -52,7 +52,7 @@ class TransactionAccountInternalTests(TransactionInternalTests):
         self.assertEquals(response.status_code, 400)
 
 
-class AccountInternalTests(InternalTests):  
+class AccountInternalTests(InternalTests):
 
     def setUp(self):
         return accountStateSetUp(self)
@@ -373,7 +373,7 @@ class AccountInternalTests(InternalTests):
         self.assertNotRaises(Exception, AccessToken.objects.get, token=rt, token_secret=rs, connect_auth_p=False)
 
         db_rt = AccessToken.objects.get(token=rt)
-        self.assertEqual(db_rt.expires_at, iso8601.parse_utc_date(data.findtext('ExpiresAt')))
+        self.assertEqual(db_rt.expires_at, iso8601.parse_iso8601_datetime(data.findtext('ExpiresAt')), 'ExpiresAt does not match.  NOTE: failure expected on MySQL, since it truncates fractional seconds')
 
         # Get a 404 for invalid accounts, apps, and records
         url = '/accounts/%s/apps/%s/connect_credentials'%('BOGUS_ACCOUNT', self.pha.email)

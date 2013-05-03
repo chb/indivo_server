@@ -1,16 +1,16 @@
 """
 Indivo Models for Applications that extend Indivo
 """
+import urllib
+import datetime
 
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
-from records_and_documents import Record, DocumentSchema
 from base import Object, Principal, BaseModel, BaseMeta
 
-import urllib, datetime
 import indivo
-from indivo.lib.utils import render_template_raw
 
 try:
     from django.utils import simplejson
@@ -70,9 +70,6 @@ class OAuthApp(Principal):
           return simplejson.dumps(manifests)
       return manifests
           
-
-## HACK because of problem
-#OAuthApp = Principal
 
 ##
 ## PHAs
@@ -386,7 +383,7 @@ class SessionToken(Object):
   
   def save(self, *args, **kwargs):
     if self.expires_at == None:
-      self.expires_at = datetime.datetime.utcnow() + datetime.timedelta(minutes = 30)
+      self.expires_at = timezone.now() + datetime.timedelta(minutes = 30)
     super(SessionToken, self).save(*args, **kwargs)
 
   def __str__(self):

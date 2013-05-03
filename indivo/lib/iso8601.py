@@ -4,6 +4,9 @@
 """
 
 from datetime import datetime, time
+import isodate
+
+from django.utils import timezone
 
 # the iso8601 date formats we accept and produce, and nothing else for now
 ISO8601_UTC_DATETIME_FORMAT_MICRO = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -11,20 +14,15 @@ ISO8601_UTC_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 ISO8601_UTC_DATE_FORMAT = "%Y-%m-%d"
 ISO8601_UTC_TIME_FORMAT = "%H:%M:%SZ"
 
-def parse_utc_date(datestring):
-    """
-    parse a date expected to be in UTC format, either a datetime or a date only
-    """
-    try:
-        return datetime.strptime(datestring, ISO8601_UTC_DATE_FORMAT)
-    except ValueError:
-        try:
-            return datetime.strptime(datestring, ISO8601_UTC_DATETIME_FORMAT_MICRO)
-        except ValueError:
-            # another valueerror here and we surface it to the proc calling parse
-            return datetime.strptime(datestring, ISO8601_UTC_DATETIME_FORMAT)
 
 def format_utc_date(date, date_only=False):
+    """Format a datetime, date, or time to ISO 8601 UTC
+
+    :param date: datetime/date/time to format
+    :param date_only: force output of only date component
+    :return: ISO 8601 UTC string representation
+
+    """
     try:
         if isinstance(date, time):
             return date.strftime(ISO8601_UTC_TIME_FORMAT)
@@ -37,3 +35,34 @@ def format_utc_date(date, date_only=False):
                 return date.strftime(ISO8601_UTC_DATETIME_FORMAT)
     except ValueError:
         return "BAD DATE"
+
+
+def parse_iso8601_date(string):
+    """Parse an ISO 8601 string into a date
+
+    :param string: ISO 8601 string to parse
+    """
+    return isodate.parse_date(string)
+
+
+def parse_iso8601_datetime(string):
+    """Parse an ISO 8601 string into a datetime
+
+      * forces datetime into UTC if TZ not specified
+
+      * sets time component to time.min if not specified
+
+    :param string: ISO 8601 string to parse
+    """
+    result = None
+
+    try:
+        result = isodate.parse_datetime(string)
+    except ValueError:
+        result = isodate.parse_date(string)
+        result = datetime.combine(result, time.min)
+
+    if result and timezone.is_naive(result):
+        result = timezone.make_aware(result, timezone.utc)
+
+    return result

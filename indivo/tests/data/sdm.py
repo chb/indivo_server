@@ -322,7 +322,7 @@ INVALID_TEST_SDMJ_DOCS = ['''
 {
     "__modelname__": "TestMedication2",
     "name": "ibuprofen",
-    "date_started": "2010-10-01T00:00:00Zabc",
+    "date_started": "2010-10-01T1a00:34Z",
     "date_stopped": "2010-10-31T00:00:00Z",
     "brand_name": "Advil",
     "route": "Oral",

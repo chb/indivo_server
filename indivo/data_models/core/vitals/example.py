@@ -1,5 +1,5 @@
 from indivo.models import Encounter, VitalSigns
-from indivo.lib.iso8601 import parse_utc_date as date
+from indivo.lib.iso8601 import parse_iso8601_datetime as date
 
 encounter_fact = Encounter(
     startDate=date("2009-05-16T12:00:00Z"),

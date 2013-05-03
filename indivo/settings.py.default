@@ -122,7 +122,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.path.join(APP_HOME, 'indivo.log'),
+            'filename': os.path.join(APP_HOME, '../indivo.log'),
             },
     },
     'loggers': {
@@ -175,7 +175,7 @@ TEMPLATE_DEBUG = DEBUG
 ## IMPORTANT for Indivo: do NOT change this timezone to your local timezone.
 ## KEEP IT as UTC.
 TIME_ZONE = 'UTC'
-
+USE_TZ = True
 ## ALSO, we recommend that, if you use PostgreSQL, you set the timezone to UTC in postgresql.conf
 
 # Language code for this installation. All choices can be found here:
@@ -213,7 +213,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-ROOT_URLCONF = 'indivo_server.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
   APP_HOME + "/templates",
@@ -226,6 +226,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sites',
+    'django.contrib.staticfiles',
     'indivo',
     'codingsystems',
     'south',  # for migrations
@@ -263,3 +264,5 @@ DATETIME_INPUT_FORMATS = (
     "%Y-%m-%dT%H:%M:%S.%fZ", #ISO8601_UTC_DATETIME_FORMAT_MICRO
     "%Y-%m-%dT%H:%M:%SZ",    #ISO8601_UTC_DATETIME_FORMAT
 )
+
+STATIC_URL = '/static/'

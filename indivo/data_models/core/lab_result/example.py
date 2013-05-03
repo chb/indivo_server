@@ -1,5 +1,5 @@
 from indivo.models import LabResult
-from indivo.lib.iso8601 import parse_utc_date as date
+from indivo.lib.iso8601 import parse_iso8601_datetime as date
 
 lab_fact = LabResult(
     date=date("2009-05-16T12:00:00Z"),

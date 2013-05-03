@@ -184,8 +184,8 @@ class SDMJDataUnitTests(TransactionInternalTests):
         # Make sure the testmedication2 object parsed as expected
         med_expected_fields = {
             'name': 'ibuprofen',
-            'date_started': iso8601.parse_utc_date('2010-10-01T00:00:00Z'),
-            'date_stopped': iso8601.parse_utc_date('2010-10-31T00:00:00Z'),
+            'date_started': iso8601.parse_iso8601_datetime('2010-10-01T00:00:00Z'),
+            'date_stopped': iso8601.parse_iso8601_datetime('2010-10-31T00:00:00Z'),
             'brand_name': 'Advil',
             'route': 'Oral',
             }
@@ -201,8 +201,8 @@ class SDMJDataUnitTests(TransactionInternalTests):
         scrip_expected_fields = {
             'prescribed_by_name': 'Kenneth D. Mandl',
             'prescribed_by_institution': 'Children\'s Hospital Boston',
-            'prescribed_on': iso8601.parse_utc_date('2010-09-30T00:00:00Z'),
-            'prescribed_stop_on': iso8601.parse_utc_date('2010-10-31T00:00:00Z'),
+            'prescribed_on': iso8601.parse_iso8601_datetime('2010-09-30T00:00:00Z'),
+            'prescribed_stop_on': iso8601.parse_iso8601_datetime('2010-10-31T00:00:00Z'),
             }
         self.check_object_fields(scrip_obj, scrip_expected_fields)
 
@@ -215,8 +215,8 @@ class SDMJDataUnitTests(TransactionInternalTests):
             'supply_days': 15,
             'filled_at_name': 'CVS',
             }
-        fill_dates = set([iso8601.parse_utc_date('2010-10-01T00:00:00Z'), 
-                          iso8601.parse_utc_date('2010-10-16T00:00:00Z')])
+        fill_dates = set([iso8601.parse_iso8601_datetime('2010-10-01T00:00:00Z'),
+                          iso8601.parse_iso8601_datetime('2010-10-16T00:00:00Z')])
         for fill_obj in fill_objs:
             self.check_object_fields(fill_obj, fill_expected_fields)
             self.assertEqual(fill_obj.testmedication2, med_obj)
@@ -306,8 +306,8 @@ class SDMXDataUnitTests(TransactionInternalTests):
         # Make sure the testmedication2 object parsed as expected
         med_expected_fields = {
             'name': 'ibuprofen',
-            'date_started': iso8601.parse_utc_date('2010-10-01T00:00:00Z'),
-            'date_stopped': iso8601.parse_utc_date('2010-10-31T00:00:00Z'),
+            'date_started': iso8601.parse_iso8601_datetime('2010-10-01T00:00:00Z'),
+            'date_stopped': iso8601.parse_iso8601_datetime('2010-10-31T00:00:00Z'),
             'brand_name': 'Advil',
             'route': 'Oral',
             }
@@ -323,8 +323,8 @@ class SDMXDataUnitTests(TransactionInternalTests):
         scrip_expected_fields = {
             'prescribed_by_name': 'Kenneth D. Mandl',
             'prescribed_by_institution': 'Children\'s Hospital Boston',
-            'prescribed_on': iso8601.parse_utc_date('2010-09-30T00:00:00Z'),
-            'prescribed_stop_on': iso8601.parse_utc_date('2010-10-31T00:00:00Z'),
+            'prescribed_on': iso8601.parse_iso8601_datetime('2010-09-30T00:00:00Z'),
+            'prescribed_stop_on': iso8601.parse_iso8601_datetime('2010-10-31T00:00:00Z'),
             }
         self.check_object_fields(scrip_obj, scrip_expected_fields)
 
@@ -337,8 +337,8 @@ class SDMXDataUnitTests(TransactionInternalTests):
             'supply_days': 15,
             'filled_at_name': 'CVS',
             }
-        fill_dates = set([iso8601.parse_utc_date('2010-10-01T00:00:00Z'), 
-                          iso8601.parse_utc_date('2010-10-16T00:00:00Z')])
+        fill_dates = set([iso8601.parse_iso8601_datetime('2010-10-01T00:00:00Z'),
+                          iso8601.parse_iso8601_datetime('2010-10-16T00:00:00Z')])
         for fill_obj in fill_objs:
             self.check_object_fields(fill_obj, fill_expected_fields)
             self.assertEqual(fill_obj.testmedication2, med_obj)

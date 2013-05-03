@@ -4,8 +4,8 @@
 		"model": "indivo.record",
 		"fields": {
 			"creator": null,
-			"created_at": "2013-04-02T17:03:39.271",
-			"modified_at": "2013-04-02T17:03:39.271",
+			"created_at": "2013-04-02T17:03:39.271Z",
+			"modified_at": "2013-04-02T17:03:39.271Z",
 			"label": "John S. Smith",
 			"external_id": null,
 			"demographics": null
@@ -16,8 +16,8 @@
 		"model": "indivo.record",
 		"fields": {
 			"creator": null,
-			"created_at": "2013-04-02T17:03:40.617",
-			"modified_at": "2013-04-02T17:03:40.617",
+			"created_at": "2013-04-02T17:03:40.617Z",
+			"modified_at": "2013-04-02T17:03:40.617Z",
 			"label": "Mary",
 			"external_id": null,
 			"demographics": null

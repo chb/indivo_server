@@ -6,6 +6,7 @@ from django.test import LiveServerTestCase
 from django.test.testcases import disable_transaction_methods, restore_transaction_methods
 from django.db import connection
 from django.db.models.loading import cache
+from django.utils import timezone
 
 from south.db import db
 
@@ -132,7 +133,7 @@ class IndivoTests(object):
         """
 
         if not second:
-            second = datetime.datetime.now()
+            second = timezone.now()
 
         defaults = {'seconds':10}
         defaults.update(kwargs)
@@ -167,7 +168,7 @@ class IndivoTests(object):
         if not datestring and accept_null:
             return
         else:
-            return iso8601.parse_utc_date(datestring)
+            return iso8601.parse_iso8601_datetime(datestring)
 
     def addAppToRecord(self, record, with_pha, carenet=None):
         share = PHAShare.objects.create(record=record, with_pha=with_pha, carenet=carenet)

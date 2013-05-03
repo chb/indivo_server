@@ -1,5 +1,5 @@
 from indivo.models import Procedure
-from indivo.lib.iso8601 import parse_utc_date as date
+from indivo.lib.iso8601 import parse_iso8601_datetime as date
 
 procedure_fact = Procedure(
     date=date("2011-02-15T12:00:00Z"),

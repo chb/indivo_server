@@ -7,7 +7,7 @@ import urllib
 
 from indivo.lib.sharing_utils import carenet_facts_filter
 from indivo.lib.utils import render_template
-from indivo.lib.iso8601 import parse_utc_date
+from indivo.lib.iso8601 import parse_iso8601_datetime
 from django.db.models import Avg, Count, Max, Min, Sum
 from django.db import connection
 from django.db.backends import postgresql_psycopg2, mysql, oracle
@@ -27,7 +27,7 @@ NUMBER = 'number'
 
 EXPOSED_TYPES = {
   STRING: str,
-  DATE: parse_utc_date,
+  DATE: parse_iso8601_datetime,
   NUMBER: float
   }
 
