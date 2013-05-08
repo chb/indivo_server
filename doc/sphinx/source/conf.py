@@ -42,11 +42,6 @@ for mod_name in mocks:
 # SPECIAL SETUP FOR READTHEDOCS.ORG
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-
-    # mock psycopg2
-    sys.modules['psycopg2.extensions'] = Mock()
-    sys.modules['psycopg2'] = Mock()
-
     # Use a special rtd.org settings module
     os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings_rtfd'
 
