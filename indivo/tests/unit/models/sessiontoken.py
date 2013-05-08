@@ -1,14 +1,15 @@
+import datetime
+
+from django.db import IntegrityError, transaction
+from django.utils import timezone
+
 from indivo.tests.internal_tests import enable_transactions
 from base import TokenModelUnitTests
 from indivo.tests.data.account import TEST_ACCOUNTS
-from indivo.tests.data.record import TEST_RECORDS
-from indivo.tests.data.app import TEST_USERAPPS
 from indivo.models import SessionToken
-from django.db import IntegrityError, transaction
-
-import datetime
 
 SESSION_TOKEN_EXPIRATION = 30 # minutes until a session token should expire
+
 
 class SessionTokenModelUnitTests(TokenModelUnitTests):
     def setUp(self):
@@ -49,7 +50,7 @@ class SessionTokenModelUnitTests(TokenModelUnitTests):
         st = SessionToken(**self.args)
         self.assertEqual(st.expires_at, None)
 
-        now = datetime.datetime.now()
+        now = timezone.now()
         st.save()
         self.assertNotEqual(st.expires_at, None)
         

@@ -78,16 +78,16 @@ class ReportingInternalTests(InternalTests):
         record_id = self.record.id        
 
         # make some audits
-        import datetime
+        from django.utils import timezone
         audit_args = {
-            'datetime': datetime.datetime.now(),
+            'datetime': timezone.now(),
             'view_func': 'FUNC1',
             'request_successful': True,
             'record_id': record_id
             }
         Audit.objects.create(**audit_args)
         audit_args = {
-            'datetime': datetime.datetime.now(),
+            'datetime': timezone.now(),
             'view_func': 'FUNC2',
             'request_successful': True, 
             'record_id': record_id

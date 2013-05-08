@@ -1,9 +1,10 @@
 """
 Accounts and authentication
 """
+from django.utils import simplejson
+from django.utils import timezone
 
 from base import *
-from django.utils import simplejson
 from indivo.lib import utils
 import indivo
 
@@ -90,13 +91,13 @@ class Account(Principal):
             return False
     
     def on_successful_login(self):
-        self.last_login_at = datetime.now()
+        self.last_login_at = timezone.now()
         self.total_login_count += 1
         self.failed_login_count = 0
         self.save()
     
     def on_failed_login(self):
-        self.last_failed_login_at = datetime.utcnow()
+        self.last_failed_login_at = timezone.now()
         self.failed_login_count += 1
         if self.failed_login_count >= MAX_FAILED_LOGINS:
             self.set_state(DISABLED)
@@ -107,7 +108,7 @@ class Account(Principal):
             raise Exception("account is retired, no further state changes allowed")
     
         self.state = state
-        self.last_state_change = datetime.utcnow()
+        self.last_state_change = timezone.now()
     
     def disable(self):
         self.set_state(DISABLED)
@@ -118,7 +119,7 @@ class Account(Principal):
         # but only if the system is configured to allow for this reenablement
         # by default it is not
         if ACCOUNT_REENABLE_TIMEOUT and self.state == DISABLED and self.last_failed_login_at and \
-            datetime.utcnow() - self.last_failed_login_at > timedelta(seconds=ACCOUNT_REENABLE_TIMEOUT):
+            timezone.now() - self.last_failed_login_at > timedelta(seconds=ACCOUNT_REENABLE_TIMEOUT):
             self.set_state(ACTIVE)
             self.failed_login_count = 0
             self.save()

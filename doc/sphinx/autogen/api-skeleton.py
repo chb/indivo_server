@@ -2443,7 +2443,7 @@ see http://sandbox-api.smartplatforms.org/ontology
         },
     "data_fields":{
         },
-    "description":"Search for records by label (usually the same as full name).",
+    "description":"Search for records by label (usually the same as full name), given name, family name, or postal code.  If multiple",
     "return_desc":":http:statuscode:`200` with a list of matching records on success, :http:statuscode:`400` if no query parameters were passed.",
     "return_ex":'''
 <Records>

@@ -1,0 +1,24 @@
+[
+	{
+		"pk": "ebb3b0f6-3e07-425d-b158-e5d0540e6a9b",
+		"model": "indivo.authsystem",
+		"fields": {
+			"internal_p": false,
+			"created_at": "2013-04-02 17:03:38Z",
+			"modified_at": "2013-04-02 17:03:38Z",
+			"short_name": "test_auth_system",
+			"creator": null
+		}
+	},
+	{
+		"pk": "ff9ed0da-081a-4bb6-a117-0dcf9e62a5c4",
+		"model": "indivo.authsystem",
+		"fields": {
+			"internal_p": true,
+			"created_at": "2013-04-02 17:03:39Z",
+			"modified_at": "2013-04-02 17:03:39Z",
+			"short_name": "password",
+			"creator": null
+		}
+	}
+]

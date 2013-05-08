@@ -151,7 +151,7 @@ class LazyProperty(object):
         setattr(obj, self._calculate.func_name, value)
         return value
 
-class DjangoVersionDependentExecutor(object):
+class DjangoVersionDependentExecutor(object): #TODO: remove?
     """ class which will execute different code based on Django's version.
 
     Syntax for a version requirement is ``{major}.{minor}.{revision}[+|-]``, 

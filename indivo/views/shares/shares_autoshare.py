@@ -27,7 +27,7 @@ def autoshare_list(request, record):
 
   Will return :http:statuscode:`200` with a list of carenets that have an autoshare
   set up for doctype *type* on success, :http:statuscode:`404`
-  if the specified *type* doesn't exist.
+  if the specified *type* doesn't exist, or :http:statuscode:`400` if no type specified
 
   """
 
@@ -40,6 +40,10 @@ def autoshare_list(request, record):
       raise Http404
     carenets = [autoshare.carenet for autoshare in CarenetAutoshare.objects.select_related().filter(
                   record = record, type = docschema)]
+  else:
+      # no type specified
+    return HttpResponseBadRequest('No type specified')
+
   return render_template('carenets', {  'carenets'  : carenets, 
                                         'record'    : record}, type="xml")
 

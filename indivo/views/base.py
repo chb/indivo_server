@@ -9,7 +9,6 @@
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.core.exceptions import *
-from django.core import serializers
 from django.db import transaction
 
 from indivo.models import *

@@ -1,15 +1,15 @@
-Installation Instructions for Ubuntu
-====================================
+Installation Instructions for Ubuntu 12.04
+==========================================
 
 Defaults
 --------
 
-This document sets up the Indivo backend server and Indivo UI server on the same machine. The backend server runs on port 8000, the UI server on port 80 by default. This is configurable by changing the appropriate port numbers in the instructions below.
+This document sets up the Indivo backend server and Indivo UI server on the same machine. The backend server runs on port 8000, the UI server on port 80 by default. This is configurable by changing the appropriate port numbers in the instructions below.  For databases, the instructions below assume ``indivo`` for the user and database name
 
 Pre-Requisites
 --------------
 
-This documents the installation of a complete Indivo X server and user interface. For concreteness, we show all of the exact instructions needed when installing on Ubuntu Linux 11.04 (Natty) or 11.10 (Oneiric). We welcome variants of these explicit instructions from folks installing on other operating systems, we will be happy to post them alongside these instructions.
+This documents the installation of a complete Indivo X server and user interface. For concreteness, we show all of the exact instructions needed when installing on Ubuntu Linux 12.04.  We welcome variants of these explicit instructions from folks installing on other operating systems, and are happy to post them alongside these instructions.
 
 .. note::
 
@@ -19,54 +19,10 @@ This documents the installation of a complete Indivo X server and user interface
 	
 	otherwise the default locale will not be set.  This issue is most common on a new OS build.
 
-You will need the following for Indivo:
+Install the following system packages::
 
-* Recent Linux installation (Kernel 2.6+)
+	apt-get install libxslt-dev libxml2-dev python-dev git
 
-* Python 2.6+ (**NOT 2.5 or below**) with package ``lxml``::
-
-	apt-get install python-lxml
-
-* Django 1.2 or 1.3 (**1.1 is NO LONGER SUPPORTED**)
-
-  From source::
-	
-		wget http://www.djangoproject.com/download/1.3.1/tarball/
-		tar xzvf Django-1.3.1.tar.gz
-		cd Django-1.3.1
-		sudo python setup.py install
-		cd ..
-		rm -rf Django-1.3.1 Django-1.3.1.tar.gz
-
-  Using a package manager (**Ubuntu 10.10 or later**)::
-
-		apt-get install python-django
-
-* Apache 2 (for production) with module ``mod_wsgi`` (``mod_ssl`` for HTTPS is strongly recommended for production, but we won't cover its installation here.)::
-
-		apt-get install apache2-mpm-prefork 
-
-  .. note:: 
-  	
-  	For Lucid, you may need to do an apt-get update before making the following command::
-
-		apt-get install libapache2-mod-wsgi
-
-* easy_install for Python::
- 
-	apt-get install python-setuptools
-
-* the Django South DB migration library::
-
-	easy_install South 
-
-* Python Markdown support::
-
-	easy_install Markdown
-
-* RDF support::
-
-	easy_install rdflib
 
 Database Install
 ----------------
@@ -77,23 +33,9 @@ Postgres
 Install
 """""""
 
-* PostgreSQL 8.3+ (8.4 recommended and the default on Ubuntu 10.10)::
+Install the PostgreSQL meta package (currently PostgreSQL 9.1 on 12.04) and header files for libpq5::
 
-	apt-get install postgresql
-
-* The psycopg python binding for postgres.
-  
-  For Ubuntu 11.04 and below, simply install with::
-
-	apt-get install python-psycopg2
-
-  Recent versions of psycopg2 (2.4.2+) are incompatible with Django. If your 
-  default version is 2.4.2 or greater (true as of Ubuntu 11.10), install version 
-  2.4.1 instead, from http://initd.org/psycopg/tarballs/PSYCOPG-2-4/psycopg2-2.4.1.tar.gz 
-  (instructions for installation may be found at http://initd.org/psycopg/install/ ). 
-  If you've already installed a newer version of psycopg2, you can downgrade with::
-
-		pip install psycopg2==2.4.1
+    apt-get install postgresql libpq-dev
 
 
 Setup
@@ -101,46 +43,43 @@ Setup
 
 .. note:: 
 
-	You'll have the easiest time naming your database ``indivo``
+	the instructions below assume you have named your database ``indivo`` and will create a database user named ``indivo``
+
+Create a PostgreSQL user for your Indivo service, e.g. "indivo" and setup a password::
+
+	su postgres
+	createuser --superuser indivo
+	psql
+	postgres=# \password indivo
+	postgres=# \q
+
+Create the Database and make the Indivo user its owner::
+
+	createdb -U indivo -O indivo indivo
 
 There are two ways to authenticate to PostgreSQL: use your Unix credentials, or use a separate username and password. 
 We strongly recommend the latter, and our instructions are tailored appropriately. If you know how to use PostgreSQL 
 and want to use Unix-logins, go for it, just remember that when you use Apache, it will usually try to log in using its 
 username, ``www-data``.
 
-in ``/etc/postgresql/8.4/main/pg_hba.conf``, find the line that reads::
+in ``/etc/postgresql/9.1/main/pg_hba.conf``, find the line that reads::
 
-	local     all     all        ident
+	local     all     all        peer
 
-This should be the second uncommented line in your default config. Change it to::
+This should be the second uncommented line in your default config. Alter it to be::
 
 	local     all     all        md5
 
 You will need to restart PostgreSQL::
 
-	service postgresql-8.4 restart
-
-or, on postgres  9+::
-
 	service postgresql restart
 
-Create a PostgreSQL user for your Indivo service, e.g. "indivo" and setup a password::
 
-	su - postgres
-	createuser --superuser indivo
-	psql
-	postgres=# \password indivo
-	postgres=# \q
-	logout
-
-Create the Database and make the Indivo user its owner::
-
-	createdb -U indivo -O indivo indivo
 
 More Information
 """"""""""""""""
 
-See the `Django PostgreSQL notes <https://docs.djangoproject.com/en/1.3/ref/databases/#postgresql-notes>`_
+See the `Django PostgreSQL notes <https://docs.djangoproject.com/en/1.4/ref/databases/#postgresql-notes>`_
 
 MySQL
 ^^^^^
@@ -197,7 +136,7 @@ Date formatting doesn't work quite the same as it does on the other backends. Sp
 More Information
 """"""""""""""""
 
-See the `Django MySQL notes <https://docs.djangoproject.com/en/1.3/ref/databases/#mysql-notes>`_
+See the `Django MySQL notes <https://docs.djangoproject.com/en/1.4/ref/databases/#mysql-notes>`_
 
 Oracle
 ^^^^^^
@@ -248,7 +187,7 @@ Test that cx_Oracle has been installed. If the following command exits silently,
 More Information
 """""""""""""""" 
 
-See the `Django Oracle notes <https://docs.djangoproject.com/en/1.3/ref/databases/#oracle-notes>`_
+See the `Django Oracle notes <https://docs.djangoproject.com/en/1.4/ref/databases/#oracle-notes>`_
 
 Indivo Server
 -------------
@@ -269,13 +208,14 @@ From Github
 	cd /desired/install/directory
 	git clone --recursive git://github.com/chb/indivo_server.git
 
-* If you want to run the bleeding edge version of Indivo, you're done. If you want to use an official release, you can list releases with::
+* If you want to run the stable version of Indivo, you're done. If you want to use a tagged release, you can list them with::
 
 	git tag -n1
 	
   and checkout your desired release and update its submodules with::
   
 	git checkout {TAGNAME}
+	git submodule init
 	git submodule update
 	
 where tagname might be (i.e., for version 2.0) ``v2.0.0``.
@@ -283,26 +223,39 @@ where tagname might be (i.e., for version 2.0) ``v2.0.0``.
 Configuration
 ^^^^^^^^^^^^^
 
-Copy ``settings.py.default`` to ``settings.py``, and open it up. Make sure to look at the 'Required Setup' settings, and examine 'Advanced Setup' if you are interested. As an absolute minimum, update the following:
+Copy ``indivo/settings.py.default`` to ``indivo/settings.py``, and open it up. Make sure to look at the 'Required Setup' settings, and examine 'Advanced Setup' if you are interested. As an absolute minimum, update the following:
 
 * set ``SECRET_KEY`` to a unique value, and don't share it with anybody
 * set ``APP_HOME`` to the complete path to the location where you've installed ``indivo_server``, e.g. ``/web/indivo_server``
 * set ``SITE_URL_PREFIX`` to the URL where your server is running, including port number e.g. ``https://pchr.acme.com:8443``
 * Database Settings: Edit the 'default' database under ``DATABASES``, and:
 
-  * set ``ENGINE`` to the database backend you are using, prefixed by 'django.db.backends.'. Available options are 'postgresql_psycopg2', 'mysql', and 'oracle'.
+  * set ``ENGINE`` to the database backend you are using, prefixed by 'django.db.backends.'. Supported options are 'postgresql_psycopg2', 'mysql', and 'oracle'.
   * set ``NAME`` to the name you would like to use for your database. If you followed the database setup instructions above, you should leave this as 'indivo'.
   * set ``USER`` to the username you chose, in this documentation ``indivo``, and set ``PASSWORD`` accordingly.
   * If your database is located on another machine, set ``HOST`` and ``PORT`` appropriately.
-  * If you are running Oracle, see https://docs.djangoproject.com/en/1.2/ref/databases/#id11 for how to configure the database settings.
+  * If you are running Oracle, see https://docs.djangoproject.com/en/1.4/ref/databases/#id11 for how to configure the database settings.
   
 * set the ``SEND_MAIL`` parameter to True or False depending on whether you want emails actually being sent.
 * set the ``EMAIL_*`` parameters appropriately for sending out emails.
-* Under ``utils/`` copy ``indivo_data.xml.default`` to ``indivo_data.xml`` and edit accordingly.  
+* Under ``utils/`` copy ``indivo_data.xml.default`` to ``indivo_data.xml`` and edit to configure initial accounts, records, and sample data profiles.
 
   .. note::
   
-	  Make sure to do this step before resetting the database
+	  Make sure to complete these steps before running the reset script below
+
+Install Required Packages
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We provide a pip requirements file for Indivo, so you just need to make sure you have pip installed on your system.  The easiest way to get pip in Ubuntu 12.04 is to run::
+
+    apt-get install python-pip
+
+If you want to read more about other installation methods, please visit http://www.pip-installer.org/en/latest/installing.html
+
+Depending on your database of choice, you will want to edit ``requirements.txt`` and make sure you comment out or uncomment the libraries you need.  Once you have done this and have pip installed, run::
+
+    pip install -r requirements.txt
 
 Resetting the Database
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -329,29 +282,8 @@ Resetting the Database
 
 		python load_codingsystems.py
 
-You must run ``reset.py`` or ``utils/importer.py`` before the accounts and applications you set up in indivo_data.xml exist.
+You must run ``reset.py`` or ``utils/importer.py`` before the accounts and records you set up in indivo_data.xml exist.
 
-.. _coding-systems-install:
-
-Coding Systems
-^^^^^^^^^^^^^^
-
-TODO
-Indivo uses SNOMED CT for problem coding, HL7v3 for immunization coding, and LOINC for lab coding. Medication coding will likely use RxNorm. In most cases, the license on these coding systems does **not** allow us to redistribute these codes with Indivo. We don't like this. We wish we had truly free coding systems for health. We've told the folks at the National Library of Medicine as much. But there's not much we can do about this for now.
-
-What we've done is make it easy for you to load coding systems into Indivo if you can get them independently. Get the HL7 v3 codes from hl7.org, get the SNOMED CT dataset from UMLS. You should see "|"-separated files. Examples of how these files are formatted can be found in ``codingsystems/data/sample``. Once you've downloaded these files independently from the coding system agencies, copy them to:
-
-* ``codingsystems/data/complete/SNOMEDCT_CORE_SUBSET_200911_utf8.txt``
-* ``codingsystems/data/complete/HL7_V3_VACCINES.txt``
-* ``codingsystems/data/complete/LOINCDB.txt``
-
-Once that's done, assuming you've installed everything in ``/web/indivo_server``, you can run::
-
-	utils/reset.sh.py -c
-
-and have everything loaded properly.
-
-See more info on codingsystems and where to find the data files :doc:`here <../coding-systems>`.
 
 Database Cleanup
 ^^^^^^^^^^^^^^^^

@@ -2,10 +2,11 @@
 Indivo Models for Carenets
 """
 
-import urllib, datetime
+import urllib
+import datetime
 
 from django.db import models
-from django.conf import settings
+from django.utils import timezone
 
 from base import Object, Principal, INDIVO_APP_LABEL
 
@@ -198,7 +199,7 @@ class PHAShare(Object):
         access_token_params['account'] = account
 
       # FIXME: parameterize length of token validity
-      access_token_params['expires_at'] = datetime.datetime.utcnow() + datetime.timedelta(minutes = 30)
+      access_token_params['expires_at'] = timezone.now() + datetime.timedelta(minutes = 30)
 
     return AccessToken.objects.create(**access_token_params)
 

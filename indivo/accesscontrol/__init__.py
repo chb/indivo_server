@@ -115,19 +115,19 @@ def load_access_rules():
   AccessRule('Account Management By Ext Id', 
              account_management_by_ext_id, views)
 
-  def chrome_app_priveleges(principal, **unused_args):
+  def chrome_app_privileges(principal, **unused_args):
     """Any Indivo UI app."""
     return principal.isType('chrome')
   views = [session_create,
            account_initialize]
-  AccessRule('Chrome App Priveleges', chrome_app_priveleges, views)
+  AccessRule('Chrome App Privileges', chrome_app_privileges, views)
 
   # PHA-related views
-  def app_priveleges(principal, pha, **unused_args):
+  def app_privileges(principal, pha, **unused_args):
     """The user app itself."""
     return pha_app_access(principal, pha)
   views = [pha_delete]
-  AccessRule('App Specific Priveleges', app_priveleges, views)
+  AccessRule('App Specific Privileges', app_privileges, views)
 
   # Oauth-related views
   def account_for_oauth(principal, **unused_args):

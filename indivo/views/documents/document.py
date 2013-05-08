@@ -296,7 +296,7 @@ def __local_document_create(request, record, pha, external_id, existing_doc):
         doc = _document_create(record             = record, 
                                creator           = request.principal,
                                pha               = pha, 
-                               content           = request.raw_post_data, 
+                               content           = request.body,
                                external_id       = external_id,
                                replaces_document = existing_doc,
                                mime_type         = utils.get_content_type(request))

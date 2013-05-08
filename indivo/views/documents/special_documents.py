@@ -105,7 +105,7 @@ def set_demographics(request, record):
 
   # build new demographics
   try:
-    new_demographics = Demographics.from_xml(request.raw_post_data)
+    new_demographics = Demographics.from_xml(request.body)
   except Exception as e:
     return HttpResponseBadRequest(str(e))  
 
@@ -113,7 +113,7 @@ def set_demographics(request, record):
   try:
     new_doc = _document_create(record=record, 
                                creator=request.principal, 
-                               content=request.raw_post_data,
+                               content=request.body,
                                pha=None,
                                replaces_document=demographics_doc)
     new_demographics.document = new_doc

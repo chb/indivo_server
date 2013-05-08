@@ -4,7 +4,7 @@ remove accesstokens and sessiontokens that are expired.
 
 
 from django.core.management.base import BaseCommand, CommandError
-import datetime, time
+from django.utils import timezone
 from indivo.models import *
 from oauth.oauth import TIMESTAMP_THRESHOLD
 
@@ -13,7 +13,7 @@ class Command(BaseCommand):
     help = 'clean up old session and access tokens'
 
     def handle(self, *args, **options):
-        now = datetime.datetime.utcnow()
+        now = timezone.now()
         max_delta = datetime.timedelta(seconds=TIMESTAMP_THRESHOLD)
         oldest_nonce = now - max_delta
 

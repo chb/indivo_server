@@ -74,72 +74,84 @@ Now YourModel has both a standard CharField, and also other fields defined by th
 Field Subclasses:
 
 .. autoclass:: indivo.fields.CodeField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.CodedValueField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.ValueAndUnitField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.AddressField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.NameField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.TelephoneField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.PharmacyField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.ProviderField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.VitalSignField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.BloodPressureField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.ValueRangeField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.fields.QuantitativeResultField(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
@@ -241,6 +253,7 @@ This file should be named ``extra.py``, and can be dropped into the filesystem n
 the ``model.py`` file in the same directory. Options are:
 
 .. autoclass:: indivo.data_models.options.DataModelOptions(Type)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
@@ -395,12 +408,14 @@ https://docs.djangoproject.com/en/1.2/ref/validators/#built-in-validators.
 In addition, Indivo defines a few useful validators in :py:mod:`indivo.validators`:
 
 .. autoclass:: indivo.validators.ValueInSetValidator(valid_values, nullable=False)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:
    :no-show-inheritance:
 
 .. autoclass:: indivo.validators.ExactValueValidator(valid_value, nullable=False)
+   :noindex:
    :no-members:
    :no-undoc-members:
    :no-private-members:

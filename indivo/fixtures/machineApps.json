@@ -1,0 +1,52 @@
+[
+	{
+		"pk": "cb9452cf-38f4-419d-b299-1a765b03daeb",
+		"model": "indivo.principal",
+		"fields": {
+			"type": "MachineApp",
+			"created_at": "2013-04-02T17:03:40.671Z",
+			"modified_at": "2013-04-02T17:03:40.671Z",
+			"email": "chrome@apps.indivo.org",
+			"creator": null
+		}
+	},
+	{
+		"pk": "cb9452cf-38f4-419d-b299-1a765b03daeb",
+		"model": "indivo.machineapp",
+		"fields": {
+			"app_type": "chrome",
+			"name": "Test UI App",
+			"author": "Mr Plow",
+			"secret": "chrome_secret",
+			"version": "2.0.0",
+			"indivo_version": "2.0.0",
+			"consumer_key": "chrome_key",
+			"description": "test chrome app"
+		}
+	},
+	{
+		"pk": "d00056d3-c88d-495b-a700-69d2401db40b",
+		"model": "indivo.principal",
+		"fields": {
+			"type": "MachineApp",
+			"created_at": "2013-04-02T17:03:40.695Z",
+			"modified_at": "2013-04-02T17:03:40.695Z",
+			"email": "admin@apps.indivo.org",
+			"creator": null
+		}
+	},
+	{
+		"pk": "d00056d3-c88d-495b-a700-69d2401db40b",
+		"model": "indivo.machineapp",
+		"fields": {
+			"app_type": "admin",
+			"name": "Test Admin App",
+			"author": "Mr Plow",
+			"secret": "admin_secret",
+			"version": "2.0.0",
+			"indivo_version": "2.0.0",
+			"consumer_key": "admin_key",
+			"description": "test admin app"
+		}
+	}
+]

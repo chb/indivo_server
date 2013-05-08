@@ -1,18 +1,16 @@
 """
 Decorators for views
 """
+import inspect
+from functools import update_wrapper,wraps
 
 from django.http import Http404, HttpResponseBadRequest
+from django.db import IntegrityError
+from django.db import transaction
+
 from indivo import models
 from indivo import check_safety
 from indivo.lib import iso8601
-
-from django.db import IntegrityError
-from django.db import transaction 
-from functools import wraps
-
-import inspect
-import functools
 
 DEFAULT_ORDERBY = 'created_at'
 QUERY_OPTIONS_ARG = 'query_options'
@@ -50,8 +48,8 @@ def marsloader(query_api_support = False):
       
       def parse_date_range(value):
           field, start_date, end_date = value.split('*')
-          start_date = None if start_date == '' else iso8601.parse_utc_date(start_date)
-          end_date = None if end_date == '' else iso8601.parse_utc_date(end_date)
+          start_date = None if start_date == '' else iso8601.parse_iso8601_datetime(start_date)
+          end_date = None if end_date == '' else iso8601.parse_iso8601_datetime(end_date)
           return {'field':field, 'start_date':start_date, 'end_date':end_date}
       
       def parse_date_group(value):
@@ -59,7 +57,7 @@ def marsloader(query_api_support = False):
           return {'field':field, 'time_incr':time_incr}
       
       def parse_date(value):
-          return iso8601.parse_utc_date(value)
+          return iso8601.parse_iso8601_datetime(value)
       
       check_safety()
       
@@ -131,7 +129,7 @@ def marsloader(query_api_support = False):
       return func(request, **kwargs)
 
     # Return the wrapped Function
-    return functools.update_wrapper(marsloader_func, func)
+    return update_wrapper(marsloader_func, func)
 
   # Return the function decorator
   return marsloader_decorator

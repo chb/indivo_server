@@ -7,13 +7,14 @@
 
 """
 
-from base import *
-
-import datetime
-
 import markdown
-from indivo.lib import mdx_linkexpander
+
 from django.db import IntegrityError
+from django.utils import timezone
+
+from base import *
+from indivo.lib import mdx_linkexpander
+
 
 def _get_subject(request):
   """Extract a message subject from request.POST."""
@@ -136,7 +137,7 @@ def record_message_attach(request, record, message_id, attachment_num):
   
   try:
     for message in messages:
-      message.add_attachment(attachment_num, request.raw_post_data)
+      message.add_attachment(attachment_num, request.body)
   except IntegrityError as e:
       raise e
   except Exception as e:
@@ -187,7 +188,7 @@ def account_inbox_message(request, account, message_id):
 
   # if message not read, mark it read
   if not message.read_at:
-    message.read_at = datetime.datetime.utcnow()
+    message.read_at = timezone.now()
     message.save()
 
   # markdown
@@ -235,7 +236,7 @@ def account_message_archive(request, account, message_id):
 
   message = account.message_as_recipient.get(id = message_id)
   if not message.archived_at:
-    message.archived_at = datetime.datetime.utcnow()
+    message.archived_at = timezone.now()
     message.save()
   return DONE
 

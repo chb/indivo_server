@@ -11,10 +11,13 @@ except ImportError:
     except ImportError:
         raise ImportError("Couldn't find an installation of SimpleJSON")
 
+import isodate
+
 from django.db import models
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignRelatedObjectsDescriptor, ReverseManyRelatedObjectsDescriptor
 from indivo.models import Fact
+from django.utils import timezone
 from lxml import etree
 from indivo.lib import iso8601
 from indivo.fields import CodedValueField, CodeField, ValueAndUnitField, AddressField
@@ -292,7 +295,7 @@ class SDMJData(SDMJ):
         if not model_name:
             raise SDMDataException("All SDM data instances must specify the model they belong to.")
         del instance_dict[MODEL_NAME_KEY]
-     
+
         try:
             model_class = getattr(__import__('indivo.models', fromlist=[str(model_name)]), model_name, None)
         except ImportError:
@@ -333,19 +336,23 @@ class SDMJData(SDMJ):
 
                 if not model_field:
                     raise SDMDataException("Non-existent data field: %s"%fieldname)
-                
+                # TODO: SDMX version of this reads out the raw value, do we need to do that here as well?
                 if not raw_value:
                     fields[fieldname] = None
                 
                 else:
 
                     # since everything is coming in as a string, try converting to native Django types
-                    if isinstance(model_field, models.DateField):
+                    if isinstance(model_field, models.DateTimeField):
                         try:
-                            value = iso8601.parse_utc_date(raw_value)
+                            value = iso8601.parse_iso8601_datetime(raw_value)
                         except Exception as e:
                             raise SDMDataException("SDM data for field %s should have been an iso8601 datetime: got %s instead"%(fieldname, raw_value))
-
+                    elif isinstance(model_field, models.DateField):
+                        try:
+                            value = iso8601.parse_iso8601_date(raw_value)
+                        except Exception as e:
+                            raise SDMDataException("SDM data for field %s should have been an iso8601 datetime: got %s instead"%(fieldname, raw_value))
                     elif isinstance(model_field, models.FloatField) and raw_value:
                         try:
                             value = float(raw_value)
@@ -489,7 +496,7 @@ class SDMXData(object):
         model_name = instance_etree.get('name', None)
         if not model_name:
             raise SDMDataException("All SDM data instances must specify the model they belong to.")
-     
+
         try:
             model_class = getattr(__import__('indivo.models', fromlist=[model_name]), model_name, None)
         except ImportError:
@@ -541,12 +548,16 @@ class SDMXData(object):
                 
                 else:
                     # since everything is coming in as a string, try converting to native Django types
-                    if isinstance(model_field, models.DateField):
+                    if isinstance(model_field, models.DateTimeField):
                         try:
-                            value = iso8601.parse_utc_date(raw_value)
+                            value = iso8601.parse_iso8601_datetime(raw_value)
                         except Exception as e:
                             raise SDMDataException("SDM data for field %s should have been an iso8601 datetime: got %s instead"%(fieldname, raw_value))
-
+                    elif isinstance(model_field, models.DateField):
+                        try:
+                            value = iso8601.parse_iso8601_date(raw_value)
+                        except Exception as e:
+                            raise SDMDataException("SDM data for field %s should have been an iso8601 datetime: got %s instead"%(fieldname, raw_value))
                     elif isinstance(model_field, models.FloatField) and raw_value:
                         try:
                             value = float(raw_value)

@@ -13,3 +13,6 @@
 [submodule "smart_common"]
 	path = smart_common
 	url = git://github.com/chb/smart_common.git
+[submodule "indivo/tests/indivo_client_py"]
+	path = indivo/tests/indivo_client_py
+	url = git://github.com/chb/indivo_client_py.git

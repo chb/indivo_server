@@ -1,8 +1,12 @@
+import urlparse
+
 import django.test
 from django.conf import settings
+from django.test import LiveServerTestCase
 from django.test.testcases import disable_transaction_methods, restore_transaction_methods
 from django.db import connection
 from django.db.models.loading import cache
+from django.utils import timezone
 
 from south.db import db
 
@@ -129,7 +133,7 @@ class IndivoTests(object):
         """
 
         if not second:
-            second = datetime.datetime.now()
+            second = timezone.now()
 
         defaults = {'seconds':10}
         defaults.update(kwargs)
@@ -164,7 +168,7 @@ class IndivoTests(object):
         if not datestring and accept_null:
             return
         else:
-            return iso8601.parse_utc_date(datestring)
+            return iso8601.parse_iso8601_datetime(datestring)
 
     def addAppToRecord(self, record, with_pha, carenet=None):
         share = PHAShare.objects.create(record=record, with_pha=with_pha, carenet=carenet)
@@ -300,12 +304,83 @@ class IndivoTests(object):
 
     def tearDown(self):
         self.restore_test_settings()
+        self.enableAccessControl()
 
 class InternalTests(IndivoTests, django.test.TestCase):
     """ subclass of Django's TestCase with access to useful utils 
         specific to Indivo tests (model creation, access control overrides, etc.).
         Doesn't allow transaction management in tests. """
     pass
+
+class IndivoTestUtils():
+    ADMIN_CONSUMER_PARAMS = {"consumer_key": "admin_key",
+                             "consumer_secret": "admin_secret"}
+    CHROME_CONSUMER_PARAMS = {"consumer_key":"chrome_key",
+                              "consumer_secret":"chrome_secret"}
+    USER_CONSUMER_PARAMS = {"consumer_key": "user_key",
+                            "consumer_secret": "user_secret"}
+    USER_CONSUMER_PARAMS_2 = {"consumer_key": "user2_key",
+                            "consumer_secret": "user2_secret"}
+    AUTONOMOUS_CONSUMER_PARAMS = {"consumer_key": "autonomous_key",
+                                  "consumer_secret": "autonomous_secret"}
+
+    @classmethod
+    def parse_tokens(cls, content):
+        return dict(urlparse.parse_qsl(content))
+
+    def assert_200(self, response):
+        """
+        Assert that this response has an http status code of 200
+
+        :param response: httplib2.Response object
+        """
+        self.assertEqual(response['status'], '200')
+
+    def assert_400(self, response):
+        """
+        Assert that this response has an http status code of 400
+
+        :param response: httplib2.Response object
+        """
+        self.assertEqual(response['status'], '400')
+
+    def assert_401(self, response):
+        """
+        Assert that this response has an http status code of 401
+
+        :param response: httplib2.Response object
+        """
+        self.assertEqual(response['status'], '401')
+
+    def assert_403(self, response):
+        """
+        Assert that this response has an http status code of 403
+
+        :param response: httplib2.Response object
+        """
+        self.assertEqual(response['status'], '403')
+
+    def assert_403_or_404(self, response):
+        """
+        Assert that this response has an http status code of 403 or 404
+
+        :param response: httplib2.Response object
+        """
+        self.assertIn(response['status'], ['403', '404'])
+
+    def assert_404(self, response):
+        """
+        Assert that this response has an http status code of 404
+
+        :param response: httplib2.Response object
+        """
+        self.assertEqual(response['status'], '404')
+
+class IndivoLiveServerTestCase(LiveServerTestCase, IndivoTestUtils):
+    """
+    """
+    pass
+
 
 class TransactionInternalTests(IndivoTests, django.test.TransactionTestCase):
     """ subclass of Django's TransactionTestCase with access to useful utils 

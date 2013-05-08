@@ -1,14 +1,11 @@
 """
 OAuth servers for users and admins
 """
+from django.utils import timezone
 
 import oauth.oauth as oauth
 
-from django.db import transaction
-
 from indivo import models
-
-import datetime
 
 
 class UserDataStore(oauth.OAuthStore):
@@ -114,7 +111,7 @@ class UserDataStore(oauth.OAuthStore):
     if (record or carenet) == None:
       raise Exception("at least record or carenet must be set")
 
-    request_token.authorized_at = datetime.datetime.utcnow()
+    request_token.authorized_at = timezone.now()
     request_token.authorized_by = account
 
     # store the share in the request token
