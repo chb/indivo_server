@@ -53,7 +53,7 @@ def load_access_rules():
   # Account-related views
   def account_management_owner(principal, account, **unused_args):
     """Any admin app, or the Account owner."""
-    return principal.isType('MachineApp') or principal.isSame(account)
+    return principal.isType('MachineApp') or principal == account
   views = [account_info,
            account_info_set,
            account_username_set,
@@ -70,7 +70,7 @@ def load_access_rules():
 
   def account_management_no_admin_app(principal, account, **unused_args):
     """The Account owner."""
-    return principal.isSame(account)
+    return principal == account
   views = [account_password_change,
            account_inbox,
            account_inbox_message,
