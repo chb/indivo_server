@@ -23,22 +23,6 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + '/../../../')) # 
 # Make sure we can grab Django settings
 os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings'
 
-# Mock packages that we don't need so that code imports work
-# on systems without the packages
-mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension', 'rdflib.collection', 'rdflib.exceptions.UniquenessError']
-class Mock(object):
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __getattr__(self, name):
-        return Mock()
-
-    def __call__(self, *args, **kwargs):
-        return Mock()
-
-for mod_name in mocks:
-    sys.modules[mod_name] = Mock()
-
 # SPECIAL SETUP FOR READTHEDOCS.ORG
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:

@@ -23,7 +23,7 @@ SECRET_KEY = 'REPLACEMENOW'
 
 # absolute filepath where indivo_server is installed
 import os
-APP_HOME = os.path.abspath(os.path.dirname(__file__))
+APP_HOME = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir)
 
 # Automatically create new records with sample data by default
 DEMO_MODE = False
@@ -51,7 +51,7 @@ UI_SERVER_URL = 'http://localhost'
 # Storage Settings
 DATABASES = {
     'default':{
-        'ENGINE':'django.db.backends.sqlite3', # '.postgresql_psycopg2', '.mysql', or '.oracle'
+        'ENGINE':'django.db.backends.postgresql_psycopg2', # '.postgresql_psycopg2', '.mysql', or '.oracle'
         'NAME':'indivo', # Required to be non-empty string
         'USER':'', # Required to be non-empty string
         'PASSWORD':'',
@@ -108,10 +108,51 @@ VALIDATE_XML = True # Validate XML docs to process against the Indivo schemas?
 CORE_SCHEMA_DIRS = [APP_HOME + '/indivo/schemas/data/core',] # Directories for core schemas
 CONTRIB_SCHEMA_DIRS = [APP_HOME + '/indivo/schemas/data/contrib',] # Directories for contributed schemas
 
-# logging
-import logging
-logging.basicConfig(level = logging.DEBUG, format = '%(asctime)s %(levelname)s %(message)s',
-                    filename = APP_HOME + '/indivo.log', filemode = 'a')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(name)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level':'DEBUG',
+            'class':'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(APP_HOME, '../indivo.log'),
+            },
+        },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': False,
+            'level':'INFO',
+            },
+        'django.db.backends': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': False,
+            },
+        'oauth': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+            },
+        'south': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+            },
+        'indivo': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+            }
+    }
+}
+
 
 #############################
 # For Indivo/Django Experts #
@@ -134,7 +175,7 @@ TEMPLATE_DEBUG = DEBUG
 ## IMPORTANT for Indivo: do NOT change this timezone to your local timezone.
 ## KEEP IT as UTC.
 TIME_ZONE = 'UTC'
-
+USE_TZ = True
 ## ALSO, we recommend that, if you use PostgreSQL, you set the timezone to UTC in postgresql.conf
 
 # Language code for this installation. All choices can be found here:
@@ -166,14 +207,14 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'indivo_server.indivo.middlewares.authentication.Authentication',
-    'indivo_server.indivo.middlewares.paramloader.ParamLoader',
-    'indivo_server.indivo.middlewares.authorization.Authorization',
-    'indivo_server.indivo.middlewares.audit.AuditWrapper'
+    'indivo.middlewares.authentication.Authentication',
+    'indivo.middlewares.paramloader.ParamLoader',
+    'indivo.middlewares.authorization.Authorization',
+    'indivo.middlewares.audit.AuditWrapper'
 )
 
 
-ROOT_URLCONF = 'indivo_server.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
   APP_HOME + "/templates",
@@ -186,6 +227,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sites',
+    'django.contrib.staticfiles',
     'indivo',
     'codingsystems',
     # for migrations
@@ -207,3 +249,21 @@ SERIALIZATION_MODULES = {
     "indivo_xml": "indivo.serializers.xml_serializer"
 }
 
+DATETIME_INPUT_FORMATS = (
+    '%Y-%m-%d %H:%M:%S',     # '2006-10-25 14:30:59'
+    '%Y-%m-%d %H:%M:%S.%f',  # '2006-10-25 14:30:59.000200'
+    '%Y-%m-%d %H:%M',        # '2006-10-25 14:30'
+    '%Y-%m-%d',              # '2006-10-25'
+    '%m/%d/%Y %H:%M:%S',     # '10/25/2006 14:30:59'
+    '%m/%d/%Y %H:%M:%S.%f',  # '10/25/2006 14:30:59.000200'
+    '%m/%d/%Y %H:%M',        # '10/25/2006 14:30'
+    '%m/%d/%Y',              # '10/25/2006'
+    '%m/%d/%y %H:%M:%S',     # '10/25/06 14:30:59'
+    '%m/%d/%y %H:%M:%S.%f',  # '10/25/06 14:30:59.000200'
+    '%m/%d/%y %H:%M',        # '10/25/06 14:30'
+    '%m/%d/%y',              # '10/25/06'
+    "%Y-%m-%dT%H:%M:%S.%fZ", #ISO8601_UTC_DATETIME_FORMAT_MICRO
+    "%Y-%m-%dT%H:%M:%SZ",    #ISO8601_UTC_DATETIME_FORMAT
+)
+
+STATIC_URL = '/static/'
