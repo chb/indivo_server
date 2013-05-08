@@ -25,7 +25,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings'
 
 # Mock packages that we don't need so that code imports work
 # on systems without the packages
-mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension',  'rdflib.collection', 'rdflib.exceptions.UniquenessError']
+mocks = ['markdown', 'markdown.preprocessors.Preprocessor', 'mardown.Extension', 'rdflib.collection', 'rdflib.exceptions.UniquenessError']
 class Mock(object):
     def __init__(self, *args, **kwargs):
         pass
@@ -36,19 +36,22 @@ class Mock(object):
     def __call__(self, *args, **kwargs):
         return Mock()
 
-for mod_name in mocks:
-    sys.modules[mod_name] = Mock()
-
 # SPECIAL SETUP FOR READTHEDOCS.ORG
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-    
+
+    # mock psycopg2
+    mocks.append('psycopg2.extensions')
+    mocks.append('psycopg2')
     # Use a special rtd.org settings module
     os.environ['DJANGO_SETTINGS_MODULE'] = 'indivo.settings_rtfd'
 
     # generate the autocode and the api-reference
     from django.core.management import call_command
     call_command('generate_docs', 'prepare')
+
+for mod_name in mocks:
+    sys.modules[mod_name] = Mock()
 
 # -- General configuration -----------------------------------------------------
 
