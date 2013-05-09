@@ -122,7 +122,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.path.join(APP_HOME, '../indivo.log'),
+            'filename': os.path.join(APP_HOME, 'indivo.log'),
             },
     },
     'loggers': {
