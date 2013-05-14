@@ -29,28 +29,17 @@ data-types using the Indivo API.
 The code is available `on github <https://github.com/chb/IndivoFramework-ios>`__, and documentation is
 available `in the Indivo docs <http://docs.indivohealth.org/projects/indivo-x-ios-framework/en/latest/>`_.
 
-Java Client
-^^^^^^^^^^^
-
-Our java client is a simple layer over the Indivo API. **WARNING:** the client is not yet fully up to date
-for Indivo version 2.0, so use at your own risk!
-
-Code is available `on github <https://github.com/chb/indivo_client_java>`__, and although there is no
-publicly hosted documentation, there are helpful examples in README files in the source code.
 
 SMART Clients
 ^^^^^^^^^^^^^
 
 Since Indivo now supports the `SMART API <http://smartplatforms.org>`_, apps written using SMART client libraries
-will also run on Indivo. See the documentation for SMART client libraries:
+will also run on Indivo. See their `documentation <http://dev.smartplatforms.org>` for more information
 
-* `in javascript <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_App_Javascript_Libraries>`_
+.. note::
 
-* `in python <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_App_Python_Library>`_
+	Make sure the the SMART clients you use support SMART v0.4
 
-* `in java <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_App_Java_Library>`_
-
-* or `in .NET <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_Container_DotNET_Libraries>`_
 
 Building a Client Library
 -------------------------

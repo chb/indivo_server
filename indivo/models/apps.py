@@ -122,7 +122,7 @@ class PHA(OAuthApp):
     """ Produce a PHA object from an app manifest.
 
     Manifests should correspond to SMART manifest format 
-    (http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_Packaging_Applications_via_SMART_Manifest),
+    (http://dev.smartplatforms.org/reference/app_manifest/),
     with some optional Indivo specific extensions, namely:
 
     * *oauth_callback_url*: A callback URL for Indivo-style oAuth access
@@ -269,7 +269,7 @@ class MachineApp(OAuthApp):
     """ Produce a MachineApp object from an app manifest.
 
     Manifests should correspond to SMART manifest format 
-    (http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_Packaging_Applications_via_SMART_Manifest),
+    (http://docs-v06.smartplatforms.org/reference/app_manifest/),
     with one required Indivo specific extensions, namely:
     
     * *ui_app*: ``true`` or ``false``. Whether the machineapp is a UIApp ('chrome app').

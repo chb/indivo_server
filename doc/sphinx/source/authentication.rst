@@ -292,6 +292,6 @@ authentication process is as follows:
 
 * The UI app then appends a `well-formed oAuth header <http://tools.ietf.org/html/rfc5849>`_ containing the access token to 
   the user app's start url. The format of the header (and required parameters) are described 
-  `in the SMART documentation <http://wiki.chip.org/smart-project/index.php/Developers_Documentation:_SMART_Container_Javascript_Libraries#App_Instance_Credentials>`_.
+  `in the SMART documentation <http://dev.smartplatforms.org/libraries/container_javascript/>`_.
 
 * The user app extracts the access token and indivo record ID from the oauth header, and uses it to sign subsequent API calls.

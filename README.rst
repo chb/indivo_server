@@ -12,15 +12,6 @@ See indivohealth.org for more information about the project.
 
 See docs.indivohealth.org for technical documentation.
 
-Required Setup
---------------
-
-* cron jobs should be scheduled to run::
-  
-  python manage.py cleanup_old_tokens
-
-See http://wiki.chip.org/indivo/index.php/HOWTO:_install_Indivo_X for 
-full installation instructions.
 
 Licensing
 ---------
