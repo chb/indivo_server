@@ -64,6 +64,9 @@ App Developers
    Messaging and Notifications <messaging>
    Schemas <schemas/index>
 
+Indivo Administrators
+^^^^^^^^^^^^^^^^^^^^^
+
 .. toctree::
    :maxdepth: 1
 
