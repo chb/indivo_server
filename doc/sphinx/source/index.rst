@@ -100,6 +100,16 @@ Indivo Hackers
    Schemas <schemas/index>
    todos
 
+Release Notes
+^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   releases/*
+   
+
 Indices and tables
 ==================
 
