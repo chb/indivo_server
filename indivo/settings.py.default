@@ -24,7 +24,7 @@ ADMINS = (
 SECRET_KEY = 'REPLACEMENOW'
 
 # absolute filepath where indivo_server is installed
-APP_HOME = '/web/indivo_server'
+APP_HOME = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir)
 
 # Automatically create new records with sample data by default
 DEMO_MODE = False
