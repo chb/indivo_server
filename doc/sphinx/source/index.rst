@@ -16,7 +16,7 @@ the following categories:
 
 * `General Interest`_: You've heard about this 'Indivo X' project, and want to learn
   more about what it can do. You might want to check out our 
-  `non-technical wiki <http://wiki.chip.org/indivo/index.php/Indivo>`_ before 
+  `non-technical site <http://indivohealth.org`_ before 
   diving into this more technical overview.
 
 * `App Developers`_: You want to build applications that enable patients to engage in
@@ -63,12 +63,6 @@ App Developers
    Experimental API <experimental-api>
    Messaging and Notifications <messaging>
    Schemas <schemas/index>
-
-Indivo Administrators
-^^^^^^^^^^^^^^^^^^^^^
-
-You'll probably want to start with our 
-`Installation Instructions <http://wiki.chip.org/indivo/index.php/Technical_Documentation#HOWTOs>`_.
 
 .. toctree::
    :maxdepth: 1
