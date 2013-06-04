@@ -45,8 +45,6 @@ class AuditWrapper(object):
     if not AUDIT_LEVELS.has_key(self.audit_level):
       raise Exception('Invalid audit level in settings.py: %s'%(self.audit_level))
 
-    self.audit_obj = None
-
   def must_audit(self, request):
     if self.audit_level == 'None':
       return False
@@ -60,7 +58,7 @@ class AuditWrapper(object):
 
     # Don't audit unless required to
     if not self.must_audit(request):
-      self.audit_obj = None
+      request.audit_obj = None
       return None
 
     # Basic Info
@@ -131,7 +129,7 @@ class AuditWrapper(object):
       else:
         pass # ignore data categories we don't know about
 
-    self.audit_obj = Audit(**data) if data else None
+    request.audit_obj = Audit(**data) if data else None
     
     return None
 
@@ -169,7 +167,7 @@ class AuditWrapper(object):
 
     # Don't audit if we failed and aren't auditing failures
     if self.audit_failure or status_code < 400:
-      self.save_response(data)
+      self.save_response(request.audit_obj, data)
 
     if status_code == 403:
       logger.error("permission denied")
@@ -178,18 +176,18 @@ class AuditWrapper(object):
 
     return response
 
-  def save_response(self, data):
-    if not self.audit_obj and data:
+  def save_response(self, audit_obj, data):
+    if not audit_obj and data:
       # We got an exception before hitting auditwrapper on the way in: make sure to add basic info
       data['datetime'] = timezone.now()
-      self.audit_obj = Audit(**data)
+      audit_obj = Audit(**data)
 
     else:
       for k,v in data.iteritems():
-        if hasattr(self.audit_obj, k):
-          setattr(self.audit_obj, k, v)
-        
-    self.audit_obj.save()
+        if hasattr(audit_obj, k):
+          setattr(audit_obj, k, v)
+
+    audit_obj.save()
 
   def process_exception(self, request, exception):
     logger.error(str(exception))
