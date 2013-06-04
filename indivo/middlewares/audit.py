@@ -167,7 +167,7 @@ class AuditWrapper(object):
 
     # Don't audit if we failed and aren't auditing failures
     if self.audit_failure or status_code < 400:
-      self.save_response(request.audit_obj, data)
+      self.save_response(request, data)
 
     if status_code == 403:
       logger.error("permission denied")
@@ -176,7 +176,8 @@ class AuditWrapper(object):
 
     return response
 
-  def save_response(self, audit_obj, data):
+  def save_response(self, request, data):
+    audit_obj = getattr(request, 'audit_obj', None)
     if not audit_obj and data:
       # We got an exception before hitting auditwrapper on the way in: make sure to add basic info
       data['datetime'] = timezone.now()
@@ -188,6 +189,3 @@ class AuditWrapper(object):
           setattr(audit_obj, k, v)
 
     audit_obj.save()
-
-  def process_exception(self, request, exception):
-    logger.error(str(exception))
