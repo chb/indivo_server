@@ -31,9 +31,9 @@ class CodeField(DummyField):
     """
 
     replacements = {
-        'identifier': (models.CharField, {'max_length':255, 'null':True, 'db_column':'id'}),
-        'title': (models.CharField, {'max_length':255, 'null':True}),
-        'system': (models.CharField, {'max_length':255, 'null':True, 'db_column':'sys'}),
+        'identifier': (models.CharField, {'max_length':200, 'null':True, 'db_column':'id'}),
+        'title': (models.CharField, {'max_length':200, 'null':True}),
+        'system': (models.CharField, {'max_length':200, 'null':True, 'db_column':'sys'}),
         }
 
 class CodeProvenanceField(DummyField):
@@ -53,9 +53,9 @@ class CodeProvenanceField(DummyField):
     """
 
     replacements = {
-        'source_code': (models.CharField, {'max_length':255, 'null':True, 'db_column':'sc'}),
-        'title': (models.CharField, {'max_length':255, 'null':True}),
-        'translation_fidelity': (models.CharField, {'max_length':255, 'null':True, 'db_column':'tf'}),
+        'source_code': (models.CharField, {'max_length':200, 'null':True, 'db_column':'sc'}),
+        'title': (models.CharField, {'max_length':200, 'null':True}),
+        'translation_fidelity': (models.CharField, {'max_length':50, 'null':True, 'db_column':'tf'}),
         }
 
 class CodedValueField(DummyField):
@@ -75,7 +75,7 @@ class CodedValueField(DummyField):
     """
 
     replacements = {
-        'title': (models.CharField, {'max_length':255, 'null':True}),
+        'title': (models.CharField, {'max_length':200, 'null':True}),
         'code': (CodeField, {}),
         'provenance': (CodeProvenanceField, {'db_column':'prov'}),
         }
@@ -320,7 +320,7 @@ class VitalSignField(DummyField):
     """
     
     replacements = {
-        'unit': (models.CharField, {'max_length':255, 'null':True}),
+        'unit': (models.CharField, {'max_length':25, 'null':True}),
         'value': (models.FloatField, {'null':True}),
         'name': (CodedValueField, {}),
         }
