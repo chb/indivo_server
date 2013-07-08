@@ -89,7 +89,7 @@ Install
 
 * The Mysql server (*only tested with v5.0+*)::
 	
-	sudo apt-get install mysql-server
+	sudo apt-get install mysql-server libmysqlclient-dev
 	
   When prompted, enter a password for the root user.
 
@@ -103,7 +103,7 @@ Setup
 * Change the default storage engine to InnoDB, which supports transactions. In ``/etc/mysql/my.cnf``, find the line reading ``[mysqld]``. Directly underneath that line, add::
 
 	default-storage-engine = innodb
-	default-character-set = utf8
+	character-set-server = utf8
 
   Then restart mysql with::
 
@@ -260,9 +260,32 @@ Depending on your database of choice, you will want to edit ``requirements.txt``
 Resetting the Database
 ^^^^^^^^^^^^^^^^^^^^^^
 
-* On postgres or mysql from your base install directory::
+PostgreSQL
+""""""""""
+From your base install directory::
 
 	python utils/reset.py 
+
+MySQL
+"""""
+
+Currently some migrations on our development branch create rows that are too wide for MySQL when using UTF-8, so until we merge these appropriately you will have to perform a few extra steps
+
+* turn off South migrations in your `settings.py` by commenting it out from your `INSTALLED_APPS`
+* run::
+
+    python manage.py syncdb
+
+* turn South migrations back on
+* run::
+
+    python manage.py syncdb
+    python manage.py migrate --fake indivo
+    python utils/reset.py --no-syncdb
+
+
+Other
+"""""
 
 * On other database backends, we don't yet have reset scripts. You can reset Indivo by:
 
