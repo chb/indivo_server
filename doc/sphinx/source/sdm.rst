@@ -1,4 +1,4 @@
-Indivo Simple Data Modeling Lanaguage (SDML)
+Indivo Simple Data Modeling Language (SDML)
 ============================================
 
 Introduction
