@@ -25,16 +25,16 @@ def format_utc_date(date, date_only=False):
     """
     try:
         if isinstance(date, time):
-            return date.strftime(ISO8601_UTC_TIME_FORMAT)
+            return isodate.strftime(date, ISO8601_UTC_TIME_FORMAT)
         elif date_only:
-            return date.strftime(ISO8601_UTC_DATE_FORMAT)
+            return isodate.strftime(date, ISO8601_UTC_DATE_FORMAT)
         else:
             if date.microsecond:
-                return date.strftime(ISO8601_UTC_DATETIME_FORMAT_MICRO)
+                return isodate.strftime(date, ISO8601_UTC_DATETIME_FORMAT_MICRO)
             else:
-                return date.strftime(ISO8601_UTC_DATETIME_FORMAT)
+                return isodate.strftime(date, ISO8601_UTC_DATETIME_FORMAT)
     except ValueError:
-        return "BAD DATE"
+        return "BAD DATE"  # TODO: poor behaviour
 
 
 def parse_iso8601_date(string):
