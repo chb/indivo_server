@@ -1,5 +1,5 @@
-Welcome to Indivo
-=================
+Welcome to Indivo™
+==================
 
 Indivo™ is the original personally controlled health record (PCHR) system. 
 A PCHR enables an individual to own and manage a complete, secure, digital 
