@@ -1,16 +1,16 @@
-Welcome to Indivo
-=================
+Welcome to Indivo™
+==================
 
-Indivo is the original personally controlled health record (PCHR) system. 
+Indivo™ is the original personally controlled health record (PCHR) system. 
 A PCHR enables an individual to own and manage a complete, secure, digital 
 copy of her health and wellness information. Indivo integrates health 
-information across sites of care and over time. Indivo is free and 
+information across sites of care and over time. Indivo™ is free and 
 open-source, uses open, unencumbered standards, and is actively deployed 
 in diverse settings.
 
 See http://docs.indivohealth.org for technical documentation and installation guides
 
-See http://indivohealth.org for more information about the project.
+See http://indivohealth.org for more information about the project and Indivohealth™
 
 
 Licensing
