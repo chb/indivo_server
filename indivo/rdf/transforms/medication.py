@@ -62,6 +62,7 @@ class MedicationTransform(BaseRDFTransform):
 
             # create Medication by form
             fact_form = MedicationForm(fact_params)
+            import pdb; pdb.set_trace()
             medication = fact_form.save()
 
             # process related facts

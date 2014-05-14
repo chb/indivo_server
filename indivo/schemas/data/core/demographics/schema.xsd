@@ -50,7 +50,7 @@
   <xs:element name="Demographics">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="dateOfBirth" type="xs:date" minOccurs="1" />
+        <xs:element name="dateOfBirth" type="xs:date" minOccurs="0" />
         <xs:element name="gender" type="indivo:GenderType" minOccurs="1" />
         <xs:element name="email" type="xs:string" minOccurs="0" />
         <xs:element name="ethnicity" type="xs:string" minOccurs="0" />

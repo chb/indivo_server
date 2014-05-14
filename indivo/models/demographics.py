@@ -48,7 +48,7 @@ class Demographics(BaseModel):
     document = models.ForeignKey('Document', null=True)
     
     adr = AddressField()
-    bday = models.DateField()
+    bday = models.DateField(null=True)
     email = models.CharField(max_length=200, null=True)
     ethnicity = models.CharField(max_length=200, null=True)
     gender = models.CharField(max_length=50)
@@ -79,7 +79,9 @@ class Demographics(BaseModel):
             raise ValueError("Input document didn't validate, error was: %s"%(str(e)))
   
         # parse XML
-        attrs['bday'] = parse_iso8601_datetime(root.findtext(_tag('dateOfBirth')))
+        bday = root.findtext(_tag('dateOfBirth'))
+        if bday:
+          attrs['bday'] = parse_iso8601_datetime(bday)
         attrs['gender'] = root.findtext(_tag('gender'))
         attrs['email'] = root.findtext(_tag('email'))
         attrs['ethnicity'] = root.findtext(_tag('ethnicity'))
