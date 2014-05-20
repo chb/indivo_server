@@ -228,14 +228,15 @@ Copy ``indivo/settings.py.default`` to ``indivo/settings.py``, and open it up. M
 * set ``SECRET_KEY`` to a unique value, and don't share it with anybody
 * set ``APP_HOME`` to the complete path to the location where you've installed ``indivo_server``, e.g. ``/web/indivo_server``
 * set ``SITE_URL_PREFIX`` to the URL where your server is running, including port number e.g. ``https://pchr.acme.com:8443``
-* Database Settings: Edit the 'default' database under ``DATABASES``, and:
+* Edit the 'default' database under ``DATABASES``, and:
 
   * set ``ENGINE`` to the database backend you are using, prefixed by 'django.db.backends.'. Supported options are 'postgresql_psycopg2', 'mysql', and 'oracle'.
   * set ``NAME`` to the name you would like to use for your database. If you followed the database setup instructions above, you should leave this as 'indivo'.
   * set ``USER`` to the username you chose, in this documentation ``indivo``, and set ``PASSWORD`` accordingly.
   * If your database is located on another machine, set ``HOST`` and ``PORT`` appropriately.
   * If you are running Oracle, see https://docs.djangoproject.com/en/1.4/ref/databases/#id11 for how to configure the database settings.
-  
+
+* If you are running MySQL, add the line ``SOUTH_TESTS_MIGRATE = False`` to your settings file
 * set the ``SEND_MAIL`` parameter to True or False depending on whether you want emails actually being sent.
 * set the ``EMAIL_*`` parameters appropriately for sending out emails.
 * Under ``utils/`` copy ``indivo_data.xml.default`` to ``indivo_data.xml`` and edit to configure initial accounts, records, and sample data profiles.
