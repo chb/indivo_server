@@ -226,7 +226,6 @@ Configuration
 Copy ``indivo/settings.py.default`` to ``indivo/settings.py``, and open it up. Make sure to look at the 'Required Setup' settings, and examine 'Advanced Setup' if you are interested. As an absolute minimum, update the following:
 
 * set ``SECRET_KEY`` to a unique value, and don't share it with anybody
-* set ``APP_HOME`` to the complete path to the location where you've installed ``indivo_server``, e.g. ``/web/indivo_server``
 * set ``SITE_URL_PREFIX`` to the URL where your server is running, including port number e.g. ``https://pchr.acme.com:8443``
 * Edit the 'default' database under ``DATABASES``, and:
 
