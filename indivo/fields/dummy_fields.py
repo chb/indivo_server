@@ -55,7 +55,7 @@ class CodeProvenanceField(DummyField):
     replacements = {
         'source_code': (models.CharField, {'max_length':200, 'null':True, 'db_column':'sc'}),
         'title': (models.CharField, {'max_length':200, 'null':True}),
-        'translation_fidelity': (models.CharField, {'max_length':50, 'null':True, 'db_column':'tf'}),
+        'translation_fidelity': (models.CharField, {'max_length':200, 'null':True, 'db_column':'tf'}),
         }
 
 class CodedValueField(DummyField):
