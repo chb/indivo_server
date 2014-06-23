@@ -1,4 +1,4 @@
-ATTACHABLE_ATTRS = ['to_rdf', 'to_xml', 'to_json',]
+ATTACHABLE_ATTRS = ['to_rdf', 'to_xml', 'to_json', 'to_sdmx',]
 
 class DataModelSerializers(object):
     """ Abstract base class for defining serializers that should be attached to a data model class.
@@ -14,7 +14,10 @@ class DataModelSerializers(object):
     * ``to_json(queryset, result_count, record=None, carenet=None)``: takes a queryset, and formats it as a valid 
       `JSON <http://www.json.org/>`_ string.
 
-    In order to be called, the methods must be attached to that data model class by calling the 
+    * ``to_sdmx(doc_etree)``: takes an etree, and returns another etree as a valid Simple Data Model XML.
+      Actually, this method is not a serializer, but a preprocessor for the :ref:`SDMX <sdmx>` transform.
+
+    In order to be called, the methods must be attached to that data model class by calling the
     ``attach_to_data_model()`` method.
 
     """
