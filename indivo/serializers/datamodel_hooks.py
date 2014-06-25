@@ -30,10 +30,11 @@ class DataModelSerializers(object):
             attr_val = getattr(cls, attr_name, None)
             if attr_val:
                 # unbind the method from our class
-                unbound_func = attr_val.__func__
+                def unbound_func_factory(unbound_func):
+                    return lambda cls, *args, **kwargs: unbound_func(*args, **kwargs)
 
                 # Wrap it as a classmethod
-                cm = classmethod(lambda cls, *args, **kwargs: unbound_func(*args, **kwargs))
+                cm = classmethod(unbound_func_factory(attr_val.__func__))
 
                 # And bind it to our data model
                 setattr(data_model_cls, attr_name, cm)
