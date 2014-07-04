@@ -13,7 +13,7 @@ class Transform(BaseTransform):
             el.tag = el.tag.replace(INDIVO_DOC_NS, '')
 
         # Look for a preprocessor for the SDMX transform, then call it
-        for model_etree in doc_etree.findall('Model'):
+        for model_etree in doc_etree.iter(tag='Model'):
             model_name = model_etree.get('name')
             if model_name:
                 try:
