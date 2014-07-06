@@ -2,6 +2,7 @@ import uuid
 
 from lxml import etree
 
+from django.conf import settings
 from django.core import serializers
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -28,7 +29,7 @@ class Fact(BaseModel):
     def uri(self, modelname=None):
         if not modelname:
             modelname = self.__class__.__name__.lower() + 's'
-        return "http://indivo.org/records/%s/%s/%s"%(self.record.id, modelname, self.id)
+        return "%s/records/%s/%s/%s"%(settings.SITE_URL_PREFIX, self.record.id, modelname, self.id) 
     
     #Meta = BaseMeta(True)
     
