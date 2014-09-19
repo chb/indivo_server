@@ -1,4 +1,4 @@
-ATTACHABLE_ATTRS = ['to_rdf', 'to_xml', 'to_json',]
+ATTACHABLE_ATTRS = ['to_rdf', 'to_xml', 'to_json', 'to_sdmx',]
 
 class DataModelSerializers(object):
     """ Abstract base class for defining serializers that should be attached to a data model class.
@@ -14,7 +14,10 @@ class DataModelSerializers(object):
     * ``to_json(queryset, result_count, record=None, carenet=None)``: takes a queryset, and formats it as a valid 
       `JSON <http://www.json.org/>`_ string.
 
-    In order to be called, the methods must be attached to that data model class by calling the 
+    * ``to_sdmx(doc_etree)``: takes an etree, and returns another etree as a valid Simple Data Model XML.
+      Actually, this method is not a serializer, but a preprocessor for the :ref:`SDMX <sdmx>` transform.
+
+    In order to be called, the methods must be attached to that data model class by calling the
     ``attach_to_data_model()`` method.
 
     """
@@ -27,10 +30,11 @@ class DataModelSerializers(object):
             attr_val = getattr(cls, attr_name, None)
             if attr_val:
                 # unbind the method from our class
-                unbound_func = attr_val.__func__
+                def unbound_func_factory(unbound_func):
+                    return lambda cls, *args, **kwargs: unbound_func(*args, **kwargs)
 
                 # Wrap it as a classmethod
-                cm = classmethod(lambda cls, *args, **kwargs: unbound_func(*args, **kwargs))
+                cm = classmethod(unbound_func_factory(attr_val.__func__))
 
                 # And bind it to our data model
                 setattr(data_model_cls, attr_name, cm)

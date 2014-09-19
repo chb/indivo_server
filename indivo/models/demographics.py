@@ -117,7 +117,7 @@ class Demographics(BaseModel):
         return klass(**attrs)
         
     def uri(self):
-        return "http://indivo.org/records/%s/demographics"%(self.record.id)
+        return "%s/records/%s/demographics"%(settings.SITE_URL_PREFIX, self.record.id)
         
     def as_json(self):
         """JSON string representation of Demographics instance"""

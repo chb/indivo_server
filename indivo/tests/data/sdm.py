@@ -322,37 +322,6 @@ INVALID_TEST_SDMJ_DOCS = ['''
 {
     "__modelname__": "TestMedication2",
     "name": "ibuprofen",
-    "date_started": "2010-10-01T1a00:34Z",
-    "date_stopped": "2010-10-31T00:00:00Z",
-    "brand_name": "Advil",
-    "route": "Oral",
-    "prescription": {
-        "__modelname__": "TestPrescription2",
-        "prescribed_by_name": "Kenneth D. Mandl",
-        "prescribed_by_institution": "Children's Hospital Boston",
-        "prescribed_on": "2010-09-30T00:00:00Z",
-        "prescribed_stop_on": "2010-10-31T00:00:00Z"
-    },
-    "fills": [
-        {
-            "__modelname__": "TestFill2",
-            "date_filled": "2010-10-01T00:00:00Z",
-            "supply_days": "15",
-            "filled_at_name": "CVS"
-        },
-        {
-            "__modelname__": "TestFill2",
-            "date_filled": "2010-10-16T00:00:00Z",
-            "supply_days": "15",
-            "filled_at_name": "CVS"
-        }
-    ]
-}
-''',
-'''
-{
-    "__modelname__": "TestMedication2",
-    "name": "ibuprofen",
     "date_started": "2010-10-01T00:00:00Z",
     "date_stopped": "2010-10-31T00:00:00Z",
     "brand_name": "Advil",
