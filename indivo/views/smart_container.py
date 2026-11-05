@@ -16,7 +16,7 @@ def smart_ontology(request):
     # TODO: cache this file and serve it statically
     url = 'http://sandbox-api.smartplatforms.org/ontology'
 
-    ontology = urllib2.urlopen(url).read()
+    ontology = urllib2.urlopen(url, timeout=30).read()
     return HttpResponse(ontology, mimetype="application/rdf+xml")
 
 def smart_capabilities(request):
